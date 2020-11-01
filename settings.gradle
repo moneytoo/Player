@@ -1,0 +1,3 @@
+include ':extension-ffmpeg-release'
+include ':app'
+rootProject.name = "Player"
