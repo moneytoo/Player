@@ -48,8 +48,8 @@ public class PlayerActivity extends Activity {
         playerView.setControllerShowTimeoutMs(3000);
 
         // https://github.com/google/ExoPlayer/issues/5765
-        DefaultTimeBar timeBar = (DefaultTimeBar) playerView.findViewById(R.id.exo_progress);
-        timeBar.setBufferedColor(0x33FFFFFF);
+//        DefaultTimeBar timeBar = (DefaultTimeBar) playerView.findViewById(R.id.exo_progress);
+//        timeBar.setBufferedColor(0x33FFFFFF);
 
         playbackStateListener = new PlaybackStateListener();
 

@@ -6,7 +6,7 @@ import android.view.WindowManager;
 
 class BrightnessControl {
 
-    public static Activity activity;
+    private Activity activity;
 
     public BrightnessControl(Activity activity) {
         this.activity = activity;

@@ -22,6 +22,8 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
     private float gestureScrollY = 0f;
     private float gestureScrollX = 0f;
 
+    private final float SCROLL_STEP = Utils.dpToPx(16);
+
     private Runnable textClearRunnable = new Runnable() {
         @Override
         public void run() {
@@ -75,22 +77,24 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         } else {
-//            setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-//                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-//                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-//                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-            setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_IMMERSIVE
-                            // Set the content to appear under the system bars so that the
-                            // content doesn't resize when the system bars hide and show.
-                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            // Hide the nav bar and status bar
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_FULLSCREEN);
+            setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+
+            // does not auto hide status bar when swiped from top
+//            setSystemUiVisibility(
+//                    View.SYSTEM_UI_FLAG_IMMERSIVE
+//                            // Set the content to appear under the system bars so that the
+//                            // content doesn't resize when the system bars hide and show.
+//                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+//                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+//                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+//                            // Hide the nav bar and status bar
+//                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+//                            | View.SYSTEM_UI_FLAG_FULLSCREEN);
         }
     }
 
@@ -101,7 +105,6 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
         gestureScrollY = 0;
         gestureScrollX = 0;
         gestureOrientation = Orientation.UNKNOWN;
-//        setCustomErrorMessage(null);
 
         return false;
     }
@@ -130,6 +133,11 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float distanceX, float distanceY) {
         Log.d("CUSTOM", "onScroll");
 
+        // Exclude top status bar area
+        if (motionEvent.getY() < Utils.dpToPx(24))
+            return false;
+
+
         if (gestureScrollY == 0 || gestureScrollX == 0) {
             gestureScrollY = 0.0001f;
             gestureScrollX = 0.0001f;
@@ -138,19 +146,19 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
 
         if (gestureOrientation == Orientation.HORIZONTAL || gestureOrientation == Orientation.UNKNOWN) {
             gestureScrollX += distanceX;
-            if (Math.abs(gestureScrollX) > 40f) {
+            if (Math.abs(gestureScrollX) > SCROLL_STEP) {
                 gestureOrientation = Orientation.HORIZONTAL;
 //                PlayerActivity.player.setSeekParameters(SeekParameters.CLOSEST_SYNC);
                 if (gestureScrollX > 0)
-                    PlayerActivity.player.seekTo(PlayerActivity.player.getCurrentPosition() - 3000);
+                    PlayerActivity.player.seekTo(PlayerActivity.player.getCurrentPosition() - 2000);
                 else
-                    PlayerActivity.player.seekTo(PlayerActivity.player.getCurrentPosition() + 3000);
+                    PlayerActivity.player.seekTo(PlayerActivity.player.getCurrentPosition() + 2000);
                 gestureScrollX = 0.0001f;
             }
         }
         if (gestureOrientation == Orientation.VERTICAL || gestureOrientation == Orientation.UNKNOWN) {
             gestureScrollY += distanceY;
-            if (Math.abs(gestureScrollY) > 40f) {
+            if (Math.abs(gestureScrollY) > SCROLL_STEP) {
                 gestureOrientation = Orientation.VERTICAL;
                 PlayerActivity.mBrightnessControl.changeBrightness(gestureScrollY > 0);
                 gestureScrollY = 0.0001f;
@@ -158,7 +166,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
             }
         }
 
-        return false;
+        return true;
     }
 
     @Override
