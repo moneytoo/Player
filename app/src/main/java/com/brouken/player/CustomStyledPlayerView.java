@@ -123,7 +123,6 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
         if (motionEvent.getY() < Utils.dpToPx(24))
             return false;
 
-
         if (gestureScrollY == 0 || gestureScrollX == 0) {
             gestureScrollY = 0.0001f;
             gestureScrollX = 0.0001f;
