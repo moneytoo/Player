@@ -58,12 +58,10 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
                 break;
         }
 
-        if (this.mDetector.onTouchEvent(ev)) {
-            return true;
-        }
-//        return super.onTouchEvent(ev);
-        return true;
+        mDetector.onTouchEvent(ev);
 
+        // Handle all events to avoid conflict with internal handlers
+        return true;
     }
 
     @Override
@@ -83,18 +81,6 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                     | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
-
-            // does not auto hide status bar when swiped from top
-//            setSystemUiVisibility(
-//                    View.SYSTEM_UI_FLAG_IMMERSIVE
-//                            // Set the content to appear under the system bars so that the
-//                            // content doesn't resize when the system bars hide and show.
-//                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-//                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-//                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-//                            // Hide the nav bar and status bar
-//                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-//                            | View.SYSTEM_UI_FLAG_FULLSCREEN);
         }
     }
 
