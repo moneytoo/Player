@@ -1,11 +1,12 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Player" parent="android:Theme.Material.NoActionBar.Fullscreen">
+<!--    <style name="Theme.Player" parent="android:Theme.Material.NoActionBar.Fullscreen">-->
+    <style name="Theme.Player" parent="android:Theme.Material.NoActionBar">
         <!-- Status bar color. -->
         <!--<item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>-->
         <!-- Customize your theme here. -->
-        <item name="android:windowLayoutInDisplayCutoutMode">
-            shortEdges
-        </item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
     </style>
 </resources>

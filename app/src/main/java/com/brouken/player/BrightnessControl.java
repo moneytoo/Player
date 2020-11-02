@@ -1,30 +1,31 @@
 package com.brouken.player;
 
 import android.app.Activity;
+import android.util.Log;
 import android.view.WindowManager;
 
 class BrightnessControl {
 
-    Activity activity;
+    public static Activity activity;
 
     public BrightnessControl(Activity activity) {
         this.activity = activity;
     }
 
     public float getScreenBrightness() {
-        //Log.d(TAG, "b=" + getWindow().getAttributes().screenBrightness);
+        Log.d("BRIGHTNESS", "b=" + activity.getWindow().getAttributes().screenBrightness);
         return activity.getWindow().getAttributes().screenBrightness;
     }
 
     public void setScreenBrightness(final float brightness) {
-        //Log.d(TAG, "setScreenBrightness " + brightness);
+        Log.d("BRIGHTNESS", "setScreenBrightness " + brightness);
         WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
         lp.screenBrightness = brightness;
         activity.getWindow().setAttributes(lp);
     }
 
     public void changeBrightness(final boolean increase) {
-        //Log.d(TAG, "changeBrightness " + increase);
+        Log.d("BRIGHTNESS", "changeBrightness " + increase);
         final float step = 1f / 30f;
 
         float brightness = getScreenBrightness();
