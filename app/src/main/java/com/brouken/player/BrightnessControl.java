@@ -13,19 +13,19 @@ class BrightnessControl {
     }
 
     public float getScreenBrightness() {
-        Log.d("BRIGHTNESS", "b=" + activity.getWindow().getAttributes().screenBrightness);
+//        Log.d("BRIGHTNESS", "b=" + activity.getWindow().getAttributes().screenBrightness);
         return activity.getWindow().getAttributes().screenBrightness;
     }
 
     public void setScreenBrightness(final float brightness) {
-        Log.d("BRIGHTNESS", "setScreenBrightness " + brightness);
+//        Log.d("BRIGHTNESS", "setScreenBrightness " + brightness);
         WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
         lp.screenBrightness = brightness;
         activity.getWindow().setAttributes(lp);
     }
 
     public void changeBrightness(final boolean increase) {
-        Log.d("BRIGHTNESS", "changeBrightness " + increase);
+//        Log.d("BRIGHTNESS", "changeBrightness " + increase);
         final float step = 1f / 30f;
 
         float brightness = getScreenBrightness();

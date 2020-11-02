@@ -22,6 +22,13 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
     private float gestureScrollY = 0f;
     private float gestureScrollX = 0f;
 
+    private Runnable textClearRunnable = new Runnable() {
+        @Override
+        public void run() {
+            setCustomErrorMessage(null);
+        }
+    };
+
     public CustomStyledPlayerView(Context context) {
         this(context, null);
     }
@@ -38,7 +45,16 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-//        Log.d("CUSTOM", ev.toString());
+        Log.d("CUSTOM", ev.toString());
+
+        switch (ev.getActionMasked()) {
+            case MotionEvent.ACTION_DOWN:
+                removeCallbacks(textClearRunnable);
+                break;
+            case MotionEvent.ACTION_UP:
+                postDelayed(textClearRunnable, 400);
+                break;
+        }
 
         if (this.mDetector.onTouchEvent(ev)) {
             return true;
@@ -85,7 +101,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
         gestureScrollY = 0;
         gestureScrollX = 0;
         gestureOrientation = Orientation.UNKNOWN;
-        setCustomErrorMessage(null);
+//        setCustomErrorMessage(null);
 
         return false;
     }
@@ -112,7 +128,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
 
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float distanceX, float distanceY) {
-//        Log.d("CUSTOM", "onScroll");
+        Log.d("CUSTOM", "onScroll");
 
         if (gestureScrollY == 0 || gestureScrollX == 0) {
             gestureScrollY = 0.0001f;

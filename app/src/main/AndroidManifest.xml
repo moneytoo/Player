@@ -25,6 +25,9 @@
                 <data android:scheme="file"/>
                 <data android:mimeType="video/mp4"/>
                 <data android:mimeType="video/x-matroska"/>
+                <data android:mimeType="video/webm"/>
+<!--                <data android:mimeType="video/ogg"/>-->
+                <data android:mimeType="video/3gpp"/>
             </intent-filter>
         </activity>
     </application>
