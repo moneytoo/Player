@@ -1,6 +1,7 @@
 package com.brouken.player;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -31,6 +32,9 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
         }
     };
 
+    private AudioManager mAudioManager;
+
+
     public CustomStyledPlayerView(Context context) {
         this(context, null);
     }
@@ -43,6 +47,8 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
         super(context, attrs, defStyleAttr);
         setControllerVisibilityListener(this);
         mDetector = new GestureDetectorCompat(context,this);
+
+        mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
     @Override
@@ -141,13 +147,28 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
                 gestureScrollX = 0.0001f;
             }
         }
+
+        // LEFT = Brightness  |  RIGHT = Volume
         if (gestureOrientation == Orientation.VERTICAL || gestureOrientation == Orientation.UNKNOWN) {
             gestureScrollY += distanceY;
             if (Math.abs(gestureScrollY) > SCROLL_STEP) {
                 gestureOrientation = Orientation.VERTICAL;
-                PlayerActivity.mBrightnessControl.changeBrightness(gestureScrollY > 0);
+
+                if (motionEvent.getX() < getWidth() / 2) {
+                    PlayerActivity.mBrightnessControl.changeBrightness(gestureScrollY > 0);
+                    setCustomErrorMessage("Brightness: " + (int) (PlayerActivity.mBrightnessControl.getScreenBrightness() * 100) + "%");
+                } else {
+                    if (gestureScrollY > 0) {
+                        //PlayerActivity.player.increaseDeviceVolume();
+                        mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+                    } else {
+                        //PlayerActivity.player.decreaseDeviceVolume();
+                        mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+                    }
+                    setCustomErrorMessage("Volume: " + PlayerActivity.player.getDeviceVolume());
+                }
+
                 gestureScrollY = 0.0001f;
-                setCustomErrorMessage("Brightness: " + (int) (PlayerActivity.mBrightnessControl.getScreenBrightness() * 100) + "%");
             }
         }
 
