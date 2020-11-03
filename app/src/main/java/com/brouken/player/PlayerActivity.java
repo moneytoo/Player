@@ -2,11 +2,14 @@ package com.brouken.player;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Toast;
 
 import androidx.core.view.GestureDetectorCompat;
 
@@ -82,30 +85,43 @@ public class PlayerActivity extends Activity {
     }
 
     private void initializePlayer() {
-        //Log.d(TAG, getIntent().getData().toString());
 
-        if (player == null) {
-            DefaultTrackSelector trackSelector = new DefaultTrackSelector(this);
-            /*trackSelector.setParameters(
-                    trackSelector.buildUponParameters().setMaxVideoSizeSd());*/
-            RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
-                    .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
-            player = new SimpleExoPlayer.Builder(this, renderersFactory)
-                    .setTrackSelector(trackSelector)
+        if (mPrefs.mediaUri == null) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("To play a video, open it in this Player from any file manager.");
+            final AlertDialog dialog = builder.create();
+            dialog.show();
+
+            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    finish();
+                }
+            });
+        } else {
+            if (player == null) {
+                DefaultTrackSelector trackSelector = new DefaultTrackSelector(this);
+                /*trackSelector.setParameters(
+                        trackSelector.buildUponParameters().setMaxVideoSizeSd());*/
+                RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
+                        .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
+                player = new SimpleExoPlayer.Builder(this, renderersFactory)
+                        .setTrackSelector(trackSelector)
+                        .build();
+            }
+
+            playerView.setPlayer(player);
+            MediaItem mediaItem = new MediaItem.Builder()
+                    .setUri(mPrefs.mediaUri)
+                    .setMimeType(mPrefs.mediaType)
                     .build();
+            player.setMediaItem(mediaItem);
+
+            player.setPlayWhenReady(mPrefs.playbackPosition == 0l);
+            player.seekTo(mPrefs.currentWindow, mPrefs.playbackPosition);
+            player.addListener(playbackStateListener);
+            player.prepare();
         }
-
-        playerView.setPlayer(player);
-        MediaItem mediaItem = new MediaItem.Builder()
-                .setUri(mPrefs.mediaUri)
-                .setMimeType(mPrefs.mediaType)
-                .build();
-        player.setMediaItem(mediaItem);
-
-        player.setPlayWhenReady(mPrefs.playbackPosition == 0l);
-        player.seekTo(mPrefs.currentWindow, mPrefs.playbackPosition);
-        player.addListener(playbackStateListener);
-        player.prepare();
     }
 
     private void releasePlayer() {
