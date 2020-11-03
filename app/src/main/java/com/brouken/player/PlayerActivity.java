@@ -59,7 +59,8 @@ public class PlayerActivity extends Activity {
         }
 
         mBrightnessControl = new BrightnessControl(this);
-        mBrightnessControl.setScreenBrightness(mPrefs.brightness);
+        mBrightnessControl.currentBrightnessLevel = mPrefs.brightness;
+        mBrightnessControl.setScreenBrightness(mBrightnessControl.levelToBrightness(mBrightnessControl.currentBrightnessLevel));
     }
 
     @Override
@@ -110,7 +111,7 @@ public class PlayerActivity extends Activity {
     private void releasePlayer() {
         if (player != null) {
             mPrefs.updatePosition(player.getCurrentWindowIndex(), player.getCurrentPosition());
-            mPrefs.updateBrightness(mBrightnessControl.getScreenBrightness());
+            mPrefs.updateBrightness(mBrightnessControl.currentBrightnessLevel);
             player.removeListener(playbackStateListener);
             player.release();
             player = null;

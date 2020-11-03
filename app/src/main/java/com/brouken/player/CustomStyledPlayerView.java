@@ -25,7 +25,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
 
     private final float SCROLL_STEP = Utils.dpToPx(16);
 
-    private Runnable textClearRunnable = new Runnable() {
+    private final Runnable textClearRunnable = new Runnable() {
         @Override
         public void run() {
             setCustomErrorMessage(null);
@@ -156,13 +156,11 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
 
                 if (motionEvent.getX() < getWidth() / 2) {
                     PlayerActivity.mBrightnessControl.changeBrightness(gestureScrollY > 0);
-                    setCustomErrorMessage("Brightness: " + (int) (PlayerActivity.mBrightnessControl.getScreenBrightness() * 100) + "%");
+                    setCustomErrorMessage("Brightness: " + PlayerActivity.mBrightnessControl.currentBrightnessLevel);
                 } else {
                     if (gestureScrollY > 0) {
-                        //PlayerActivity.player.increaseDeviceVolume();
                         mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
                     } else {
-                        //PlayerActivity.player.decreaseDeviceVolume();
                         mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
                     }
                     setCustomErrorMessage("Volume: " + PlayerActivity.player.getDeviceVolume());

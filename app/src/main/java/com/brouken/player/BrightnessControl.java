@@ -8,39 +8,34 @@ class BrightnessControl {
 
     private Activity activity;
 
+    public int currentBrightnessLevel = 15;
+
     public BrightnessControl(Activity activity) {
         this.activity = activity;
     }
 
     public float getScreenBrightness() {
-//        Log.d("BRIGHTNESS", "b=" + activity.getWindow().getAttributes().screenBrightness);
         return activity.getWindow().getAttributes().screenBrightness;
     }
 
     public void setScreenBrightness(final float brightness) {
-//        Log.d("BRIGHTNESS", "setScreenBrightness " + brightness);
         WindowManager.LayoutParams lp = activity.getWindow().getAttributes();
         lp.screenBrightness = brightness;
         activity.getWindow().setAttributes(lp);
     }
 
     public void changeBrightness(final boolean increase) {
-//        Log.d("BRIGHTNESS", "changeBrightness " + increase);
-        final float step = 1f / 30f;
+        final int newBrightnessLevel = (increase ? currentBrightnessLevel + 1 : currentBrightnessLevel - 1);
 
-        float brightness = getScreenBrightness();
-        if ((brightness <= 0f && !increase) || (brightness >= 1f && increase))
+        if (newBrightnessLevel < 0 || newBrightnessLevel > 30)
             return;
-        if (increase) {
-            if (brightness + step > 1f)
-                setScreenBrightness(1f);
-            else
-                setScreenBrightness(brightness + step);
-        } else {
-            if (brightness - step < 0f)
-                setScreenBrightness(0f);
-            else
-                setScreenBrightness(brightness - step);
-        }
+
+        currentBrightnessLevel = newBrightnessLevel;
+        setScreenBrightness(levelToBrightness(newBrightnessLevel));
+    }
+
+    float levelToBrightness(final int level) {
+        final double d = 0.064 + 0.936 / (double) 30 * (double) level;
+        return (float) (d * d);
     }
 }

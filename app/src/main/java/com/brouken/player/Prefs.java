@@ -14,7 +14,7 @@ class Prefs {
     public int currentWindow = 0;
     public long playbackPosition = 0;
 
-    public float brightness = 0.5f;
+    public int brightness = 20;
 
     public Prefs(Context context) {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -26,9 +26,9 @@ class Prefs {
             mediaUri = Uri.parse(mSharedPreferences.getString("mediaUri", null));
         if (mSharedPreferences.contains("mediaType"))
             mediaType = mSharedPreferences.getString("mediaType", null);
-        currentWindow = mSharedPreferences.getInt("currentWindow", 0);
-        playbackPosition = mSharedPreferences.getLong("playbackPosition", 0);
-        brightness = mSharedPreferences.getFloat("brightness", 0.5f);
+        currentWindow = mSharedPreferences.getInt("currentWindow", currentWindow);
+        playbackPosition = mSharedPreferences.getLong("playbackPosition", playbackPosition);
+        brightness = mSharedPreferences.getInt("brightness", brightness);
     }
 
     public void updateMedia(final Uri uri, final String type) {
@@ -55,10 +55,10 @@ class Prefs {
         sharedPreferencesEditor.commit();
     }
 
-    public void updateBrightness(final float brightness) {
+    public void updateBrightness(final int brightness) {
         this.brightness = brightness;
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        sharedPreferencesEditor.putFloat("brightness", brightness);
+        sharedPreferencesEditor.putInt("brightness", brightness);
         sharedPreferencesEditor.commit();
 
     }
