@@ -4,8 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000"
-    android:keepScreenOn="true">
+    android:background="#000000">
 
     <com.brouken.player.CustomStyledPlayerView
         android:id="@+id/video_view"

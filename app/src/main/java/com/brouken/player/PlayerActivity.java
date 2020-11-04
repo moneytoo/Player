@@ -1,17 +1,12 @@
 package com.brouken.player;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.GestureDetector;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Toast;
 
-import androidx.core.view.GestureDetectorCompat;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -21,6 +16,8 @@ import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
+
+import java.io.File;
 
 public class PlayerActivity extends Activity {
 
@@ -86,7 +83,7 @@ public class PlayerActivity extends Activity {
 
     private void initializePlayer() {
 
-        if (mPrefs.mediaUri == null) {
+        if (mPrefs.mediaUri == null || !Utils.mediaExists(this, mPrefs.mediaUri)) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage("To play a video, open it in this Player from any file manager.");
             final AlertDialog dialog = builder.create();
@@ -157,6 +154,11 @@ public class PlayerActivity extends Activity {
                     break;
             }
             Log.d(TAG, "changed state to " + stateString);
+        }
+
+        @Override
+        public void onIsPlayingChanged(boolean isPlaying) {
+            playerView.setKeepScreenOn(isPlaying);
         }
     }
 }
