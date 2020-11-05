@@ -42,7 +42,7 @@ public class PlayerActivity extends Activity {
         playerView.setShowRewindButton(false);
 
         playerView.setControllerHideOnTouch(true);
-        playerView.setControllerAutoShow(true);
+        playerView.setControllerAutoShow(false);
         playerView.setControllerShowTimeoutMs(CONTROLLER_TIMEOUT);
 
         // https://github.com/google/ExoPlayer/issues/5765
@@ -71,7 +71,7 @@ public class PlayerActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
-        //Utils.hideSystemUi(playerView);
+        Utils.hideSystemUi(playerView);
     }
 
     @Override
