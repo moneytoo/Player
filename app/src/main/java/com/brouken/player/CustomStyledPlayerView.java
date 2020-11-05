@@ -61,6 +61,9 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
                 break;
             case MotionEvent.ACTION_UP:
                 postDelayed(textClearRunnable, 400);
+
+                // Reset timeout as it could be disabled during seek
+                setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
                 break;
         }
 
@@ -138,6 +141,12 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
         if (gestureOrientation == Orientation.HORIZONTAL || gestureOrientation == Orientation.UNKNOWN) {
             gestureScrollX += distanceX;
             if (Math.abs(gestureScrollX) > SCROLL_STEP) {
+
+                // Make controller always visible and not hiding during seek
+                if (!controllerVisible)
+                    showController();
+                setControllerShowTimeoutMs(0);
+
                 gestureOrientation = Orientation.HORIZONTAL;
 //                PlayerActivity.player.setSeekParameters(SeekParameters.CLOSEST_SYNC);
                 if (gestureScrollX > 0)
