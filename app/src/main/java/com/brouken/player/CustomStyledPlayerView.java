@@ -78,18 +78,13 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
         Log.d("CUSTOM", "onVisibilityChange " + visibility);
         controllerVisible = visibility == View.VISIBLE;
 
+        Log.d("CUSTOM", "getControllerShowTimeoutMs " + getControllerShowTimeoutMs());
+
         // https://developer.android.com/training/system-ui/immersive
         if (visibility == View.VISIBLE) {
-            setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+            Utils.showSystemUi(this);
         } else {
-            setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
-                    | View.SYSTEM_UI_FLAG_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            Utils.hideSystemUi(this);
         }
     }
 

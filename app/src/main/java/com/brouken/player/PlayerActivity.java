@@ -26,7 +26,7 @@ public class PlayerActivity extends Activity {
     private Prefs mPrefs;
     public static BrightnessControl mBrightnessControl;
 
-    public static final int CONTROLLER_TIMEOUT = 2500;
+    public static final int CONTROLLER_TIMEOUT = 3500;
 
 
     @Override
@@ -71,6 +71,7 @@ public class PlayerActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+        //Utils.hideSystemUi(playerView);
     }
 
     @Override
