@@ -16,6 +16,6 @@ Features already provided by ExoPlayer:
 
 Actual features of this Player:
 
- * Horizontal swipe to seek
+ * Horizontal swipe to quickly seek
  * Vertical swipe to change brightness (left) / volume (right)
- * Rembember last opened file, brightness
+ * Remember last opened file, brightness

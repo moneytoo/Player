@@ -10,6 +10,7 @@ import android.view.View;
 
 import androidx.core.view.GestureDetectorCompat;
 
+import com.google.android.exoplayer2.SeekParameters;
 import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
 
@@ -24,6 +25,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
     private float gestureScrollX = 0f;
 
     private final float SCROLL_STEP = Utils.dpToPx(16);
+    private final long SEEK_STEP = 1000;
 
     private final Runnable textClearRunnable = new Runnable() {
         @Override
@@ -33,7 +35,6 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
     };
 
     private AudioManager mAudioManager;
-
 
     public CustomStyledPlayerView(Context context) {
         this(context, null);
@@ -143,11 +144,19 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
                 setControllerShowTimeoutMs(0);
 
                 gestureOrientation = Orientation.HORIZONTAL;
-//                PlayerActivity.player.setSeekParameters(SeekParameters.CLOSEST_SYNC);
-                if (gestureScrollX > 0)
-                    PlayerActivity.player.seekTo(PlayerActivity.player.getCurrentPosition() - 2000);
-                else
-                    PlayerActivity.player.seekTo(PlayerActivity.player.getCurrentPosition() + 2000);
+                final long position;
+
+                if (gestureScrollX > 0) {
+                    PlayerActivity.player.setSeekParameters(SeekParameters.PREVIOUS_SYNC);
+                    if (PlayerActivity.player.getCurrentPosition() - SEEK_STEP < 0)
+                        position = 0;
+                    else
+                        position = PlayerActivity.player.getCurrentPosition() - SEEK_STEP;
+                    PlayerActivity.player.seekTo(position);
+                } else {
+                    PlayerActivity.player.setSeekParameters(SeekParameters.NEXT_SYNC);
+                    PlayerActivity.player.seekTo(PlayerActivity.player.getCurrentPosition() + SEEK_STEP);
+                }
                 gestureScrollX = 0.0001f;
             }
         }
