@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.WindowInsets;
 
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlayer;
@@ -14,6 +16,7 @@ import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
+import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 
 public class PlayerActivity extends Activity {
 
@@ -49,6 +52,20 @@ public class PlayerActivity extends Activity {
         DefaultTimeBar timeBar = (DefaultTimeBar) playerView.findViewById(R.id.exo_progress);
         timeBar.setBufferedColor(0x33FFFFFF);
 
+        StyledPlayerControlView controlView = playerView.findViewById(R.id.exo_controller);
+
+        controlView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
+                if (windowInsets != null) {
+                    view.setPadding(windowInsets.getSystemWindowInsetLeft(), windowInsets.getSystemWindowInsetTop(),
+                            windowInsets.getSystemWindowInsetRight(), windowInsets.getSystemWindowInsetBottom());
+                    windowInsets.consumeSystemWindowInsets();
+                }
+                return windowInsets;
+            }
+        });
+
         playbackStateListener = new PlaybackStateListener();
 
         mPrefs = new Prefs(this);
@@ -60,6 +77,8 @@ public class PlayerActivity extends Activity {
         mBrightnessControl.currentBrightnessLevel = mPrefs.brightness;
         mBrightnessControl.setScreenBrightness(mBrightnessControl.levelToBrightness(mBrightnessControl.currentBrightnessLevel));
     }
+
+
 
     @Override
     public void onStart() {
