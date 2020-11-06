@@ -24,6 +24,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
     private float gestureScrollY = 0f;
     private float gestureScrollX = 0f;
 
+    private final float IGNORE_BORDER = Utils.dpToPx(24);
     private final float SCROLL_STEP = Utils.dpToPx(16);
     private final long SEEK_STEP = 1000;
 
@@ -54,8 +55,6 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        Log.d("CUSTOM", ev.toString());
-
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 removeCallbacks(textClearRunnable);
@@ -76,10 +75,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
 
     @Override
     public void onVisibilityChange(int visibility) {
-        Log.d("CUSTOM", "onVisibilityChange " + visibility);
         controllerVisible = visibility == View.VISIBLE;
-
-        Log.d("CUSTOM", "getControllerShowTimeoutMs " + getControllerShowTimeoutMs());
 
         // https://developer.android.com/training/system-ui/immersive
         if (visibility == View.VISIBLE) {
@@ -91,8 +87,6 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
 
     @Override
     public boolean onDown(MotionEvent motionEvent) {
-        Log.d("CUSTOM", "onDown");
-
         gestureScrollY = 0;
         gestureScrollX = 0;
         gestureOrientation = Orientation.UNKNOWN;
@@ -102,13 +96,10 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
 
     @Override
     public void onShowPress(MotionEvent motionEvent) {
-        Log.d("CUSTOM", "onShowPress");
     }
 
     @Override
     public boolean onSingleTapUp(MotionEvent motionEvent) {
-        Log.d("CUSTOM", "onSingleTapUp");
-
         if (!controllerVisible) {
             showController();
             return true;
@@ -122,10 +113,9 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
 
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float distanceX, float distanceY) {
-        Log.d("CUSTOM", "onScroll");
-
-        // Exclude top status bar area
-        if (motionEvent.getY() < Utils.dpToPx(24))
+        // Exclude edge areas
+        if (motionEvent.getY() < IGNORE_BORDER || motionEvent.getX() < IGNORE_BORDER ||
+                motionEvent.getY() > getHeight() - IGNORE_BORDER || motionEvent.getX() > getWidth() - IGNORE_BORDER)
             return false;
 
         if (gestureScrollY == 0 || gestureScrollX == 0) {
