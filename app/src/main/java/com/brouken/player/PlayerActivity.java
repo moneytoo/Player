@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,9 +13,11 @@ import android.provider.DocumentsContract;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import com.google.android.exoplayer2.DefaultRenderersFactory;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
@@ -36,8 +39,6 @@ public class PlayerActivity extends Activity {
 
     public static final int CONTROLLER_TIMEOUT = 3500;
 
-    private boolean dialogAction = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,6 @@ public class PlayerActivity extends Activity {
 
         playerView.setControllerHideOnTouch(true);
         playerView.setControllerAutoShow(true);
-        playerView.setControllerShowTimeoutMs(CONTROLLER_TIMEOUT);
 
         // https://github.com/google/ExoPlayer/issues/5765
         DefaultTimeBar timeBar = (DefaultTimeBar) playerView.findViewById(R.id.exo_progress);
@@ -70,6 +70,23 @@ public class PlayerActivity extends Activity {
                     windowInsets.consumeSystemWindowInsets();
                 }
                 return windowInsets;
+            }
+        });
+
+        ImageButton buttonSubtitle = playerView.findViewById(R.id.exo_subtitle);
+
+        LinearLayout controls = playerView.findViewById(R.id.exo_basic_controls);
+        ImageButton buttonOpen = new ImageButton(this);
+        buttonOpen.setImageResource(R.drawable.ic_baseline_folder_open_24);
+        buttonOpen.setBackgroundColor(Color.TRANSPARENT);
+        buttonOpen.setScaleType(ImageView.ScaleType.FIT_CENTER);
+        buttonOpen.setLayoutParams(buttonSubtitle.getLayoutParams());
+        controls.addView(buttonOpen, 0);
+
+        buttonOpen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                openFile(mPrefs.mediaUri);
             }
         });
 
@@ -116,51 +133,51 @@ public class PlayerActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == 0 && resultCode == RESULT_OK) {
-            mPrefs.updateMedia(data.getData(),data.getType());
-            initializePlayer();
+        if (requestCode == 0) {
+            if (resultCode == RESULT_OK) {
+                mPrefs.updateMedia(data.getData(),data.getType());
+                initializePlayer();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 
     private void initializePlayer() {
-        if (mPrefs.mediaUri == null || !Utils.mediaExists(this, mPrefs.mediaUri)) {
-            dialogAction = false;
+        boolean haveMedia = mPrefs.mediaUri != null && Utils.mediaExists(this, mPrefs.mediaUri);
+
+        if (mPrefs.firstRun) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("To play a video, open it from any file manager or use the action bellow.");
-            builder.setNeutralButton("Open video", new DialogInterface.OnClickListener() {
+            builder.setMessage("To play a video, open it from any file manager or use the action in the bottom bar.\nUse vertical and horizontal gestures to change brightness, volume and seek in video.");
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogAction = true;
-                    openFile(mPrefs.mediaUri);
+                    dialogInterface.dismiss();
                 }
             });
             final AlertDialog dialog = builder.create();
             dialog.show();
+            mPrefs.markFirstRun();
+        }
 
-            dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                @Override
-                public void onDismiss(DialogInterface dialogInterface) {
-                    if (!dialogAction)
-                        finish();
-                }
-            });
-        } else {
-            if (player == null) {
-                DefaultTrackSelector trackSelector = new DefaultTrackSelector(this);
-                /*trackSelector.setParameters(
-                        trackSelector.buildUponParameters().setMaxVideoSizeSd());*/
-                RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
-                        .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
-                player = new SimpleExoPlayer.Builder(this, renderersFactory)
-                        .setTrackSelector(trackSelector)
-                        .build();
-            }
+        if (player == null) {
+            DefaultTrackSelector trackSelector = new DefaultTrackSelector(this);
+            /*trackSelector.setParameters(
+                    trackSelector.buildUponParameters().setMaxVideoSizeSd());*/
+            RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
+                    .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
+            player = new SimpleExoPlayer.Builder(this, renderersFactory)
+                    .setTrackSelector(trackSelector)
+                    .build();
+        }
 
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
-            playerView.setPlayer(player);
+        playerView.setPlayer(player);
+
+        if (haveMedia) {
+            playerView.setControllerShowTimeoutMs(CONTROLLER_TIMEOUT);
+
             MediaItem mediaItem = new MediaItem.Builder()
                     .setUri(mPrefs.mediaUri)
                     .setMimeType(mPrefs.mediaType)
@@ -174,9 +191,14 @@ public class PlayerActivity extends Activity {
             }
 
             player.seekTo(mPrefs.currentWindow, mPrefs.playbackPosition);
-            player.addListener(playbackStateListener);
-            player.prepare();
+        } else {
+            playerView.setControllerShowTimeoutMs(-1);
+            playerView.showController();
         }
+
+        player.addListener(playbackStateListener);
+        player.prepare();
+
     }
 
     private void releasePlayer() {
@@ -209,8 +231,8 @@ public class PlayerActivity extends Activity {
                     mPrefs.updateMedia(null, null);
                     // buggy alertdialog
                     // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                    releasePlayer();
-                    initializePlayer();
+//                    releasePlayer();
+//                    initializePlayer();
                     break;
                 default:
                     stateString = "UNKNOWN_STATE             -";

@@ -13,8 +13,8 @@ class Prefs {
 
     public int currentWindow = 0;
     public long playbackPosition = 0;
-
     public int brightness = 20;
+    public boolean firstRun = true;
 
     public Prefs(Context context) {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -29,6 +29,7 @@ class Prefs {
         currentWindow = mSharedPreferences.getInt("currentWindow", currentWindow);
         playbackPosition = mSharedPreferences.getLong("playbackPosition", playbackPosition);
         brightness = mSharedPreferences.getInt("brightness", brightness);
+        firstRun = mSharedPreferences.getBoolean("firstRun", firstRun);
     }
 
     public void updateMedia(final Uri uri, final String type) {
@@ -69,5 +70,10 @@ class Prefs {
 
     }
 
-
+    public void markFirstRun() {
+        this.firstRun = false;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        sharedPreferencesEditor.putBoolean("firstRun", false);
+        sharedPreferencesEditor.commit();
+    }
 }
