@@ -29,7 +29,6 @@ import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 public class PlayerActivity extends Activity {
 
     private PlaybackStateListener playbackStateListener;
-    private static final String TAG = PlayerActivity.class.getName();
 
     private CustomStyledPlayerView playerView;
     public static SimpleExoPlayer player;
@@ -63,7 +62,6 @@ public class PlayerActivity extends Activity {
         controlView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
             @Override
             public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
-                Log.d(TAG, "controlView.onApplyWindowInsets");
                 if (windowInsets != null) {
                     view.setPadding(windowInsets.getSystemWindowInsetLeft(), windowInsets.getSystemWindowInsetTop(),
                             windowInsets.getSystemWindowInsetRight(), windowInsets.getSystemWindowInsetBottom());
@@ -79,7 +77,6 @@ public class PlayerActivity extends Activity {
         subtitleView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
             @Override
             public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
-                Log.d(TAG, "subtitleView.onApplyWindowInsets");
                 if (windowInsets != null) {
                     view.setPadding(windowInsets.getSystemWindowInsetLeft(), windowInsets.getSystemWindowInsetTop(),
                             windowInsets.getSystemWindowInsetRight(), windowInsets.getSystemWindowInsetBottom() + bottomBar.getHeight());
@@ -224,7 +221,7 @@ public class PlayerActivity extends Activity {
     }
 
     private class PlaybackStateListener implements Player.EventListener{
-
+/*
         @Override
         public void onPlaybackStateChanged(int playbackState) {
             String stateString;
@@ -245,9 +242,8 @@ public class PlayerActivity extends Activity {
                     stateString = "UNKNOWN_STATE             -";
                     break;
             }
-            Log.d(TAG, "changed state to " + stateString);
         }
-
+*/
         @Override
         public void onIsPlayingChanged(boolean isPlaying) {
             playerView.setKeepScreenOn(isPlaying);

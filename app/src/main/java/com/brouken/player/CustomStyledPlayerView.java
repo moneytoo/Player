@@ -178,8 +178,6 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
 
     @Override
     public void onLongPress(MotionEvent motionEvent) {
-        Log.d("CUSTOM", "onLongPress");
-
     }
 
     @Override
