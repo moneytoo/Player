@@ -2,10 +2,11 @@ package com.brouken.player;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.UriPermission;
 import android.content.pm.ActivityInfo;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -14,7 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.google.android.exoplayer2.DefaultRenderersFactory;
@@ -59,11 +59,11 @@ public class PlayerActivity extends Activity {
         DefaultTimeBar timeBar = (DefaultTimeBar) playerView.findViewById(R.id.exo_progress);
         timeBar.setBufferedColor(0x33FFFFFF);
 
-        StyledPlayerControlView controlView = playerView.findViewById(R.id.exo_controller);
-
+        final StyledPlayerControlView controlView = playerView.findViewById(R.id.exo_controller);
         controlView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
             @Override
             public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
+                Log.d(TAG, "controlView.onApplyWindowInsets");
                 if (windowInsets != null) {
                     view.setPadding(windowInsets.getSystemWindowInsetLeft(), windowInsets.getSystemWindowInsetTop(),
                             windowInsets.getSystemWindowInsetRight(), windowInsets.getSystemWindowInsetBottom());
@@ -73,14 +73,26 @@ public class PlayerActivity extends Activity {
             }
         });
 
-        ImageButton buttonSubtitle = playerView.findViewById(R.id.exo_subtitle);
+        /*
+        final FrameLayout bottomBar = playerView.findViewById(R.id.exo_bottom_bar);
+        final SubtitleView subtitleView = playerView.findViewById(R.id.exo_subtitles);
+        subtitleView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
+                Log.d(TAG, "subtitleView.onApplyWindowInsets");
+                if (windowInsets != null) {
+                    view.setPadding(windowInsets.getSystemWindowInsetLeft(), windowInsets.getSystemWindowInsetTop(),
+                            windowInsets.getSystemWindowInsetRight(), windowInsets.getSystemWindowInsetBottom() + bottomBar.getHeight());
+                    windowInsets.consumeSystemWindowInsets();
+                }
+                return windowInsets;
+            }
+        });
+        */
 
         LinearLayout controls = playerView.findViewById(R.id.exo_basic_controls);
-        ImageButton buttonOpen = new ImageButton(this);
+        ImageButton buttonOpen = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
         buttonOpen.setImageResource(R.drawable.ic_baseline_folder_open_24);
-        buttonOpen.setBackgroundColor(Color.TRANSPARENT);
-        buttonOpen.setScaleType(ImageView.ScaleType.FIT_CENTER);
-        buttonOpen.setLayoutParams(buttonSubtitle.getLayoutParams());
         controls.addView(buttonOpen, 0);
 
         buttonOpen.setOnClickListener(new View.OnClickListener() {
@@ -135,7 +147,16 @@ public class PlayerActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
-                mPrefs.updateMedia(data.getData(),data.getType());
+                // https://commonsware.com/blog/2020/06/13/count-your-saf-uri-permission-grants.html
+                final ContentResolver contentResolver = getContentResolver();
+                for (UriPermission taken : contentResolver.getPersistedUriPermissions()) {
+                    contentResolver.releasePersistableUriPermission(taken.getUri(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                }
+
+                final Uri uri = data.getData();
+                getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                mPrefs.updateMedia(uri, data.getType());
                 initializePlayer();
             }
         } else {
@@ -171,7 +192,7 @@ public class PlayerActivity extends Activity {
                     .build();
         }
 
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
         playerView.setPlayer(player);
 
@@ -244,6 +265,11 @@ public class PlayerActivity extends Activity {
         @Override
         public void onIsPlayingChanged(boolean isPlaying) {
             playerView.setKeepScreenOn(isPlaying);
+            if (isPlaying) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            } else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+            }
         }
     }
 
