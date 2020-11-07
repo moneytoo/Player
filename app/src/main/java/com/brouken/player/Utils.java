@@ -27,7 +27,7 @@ class Utils {
                 final InputStream inputStream = context.getContentResolver().openInputStream(uri);
                 inputStream.close();
                 return true;
-            } catch (IOException e) {
+            } catch (IOException | SecurityException e) {
                 return false;
             }
         }

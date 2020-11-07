@@ -32,7 +32,7 @@ class Prefs {
     }
 
     public void updateMedia(final Uri uri, final String type) {
-        if (!uri.equals(mediaUri)) {
+        if (uri != mediaUri) {
             updatePosition(0, 0);
         }
 
@@ -40,8 +40,14 @@ class Prefs {
         mediaType = type;
 
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        sharedPreferencesEditor.putString("mediaUri", uri.toString());
-        sharedPreferencesEditor.putString("mediaType", mediaType);
+        if (uri == null)
+            sharedPreferencesEditor.remove("mediaUri");
+        else
+            sharedPreferencesEditor.putString("mediaUri", uri.toString());
+        if (type == null)
+            sharedPreferencesEditor.remove("mediaType");
+        else
+            sharedPreferencesEditor.putString("mediaType", mediaType);
         sharedPreferencesEditor.commit();
     }
 

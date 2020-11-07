@@ -3,7 +3,12 @@ package com.brouken.player;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowInsets;
@@ -30,6 +35,8 @@ public class PlayerActivity extends Activity {
     public static BrightnessControl mBrightnessControl;
 
     public static final int CONTROLLER_TIMEOUT = 3500;
+
+    private boolean dialogAction = false;
 
 
     @Override
@@ -71,6 +78,15 @@ public class PlayerActivity extends Activity {
         mPrefs = new Prefs(this);
         if (getIntent().getData() != null) {
             mPrefs.updateMedia(getIntent().getData(), getIntent().getType());
+
+//            getContentResolver().takePersistableUriPermission(getIntent().getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION) ;
+//
+//            for (UriPermission perm : getContentResolver().getPersistedUriPermissions()) {
+//                Log.d(TAG, perm.toString());
+//                if (perm.getUri().equals(getIntent().getData())) {
+//                    Log.d(TAG, "OKKK");
+//                }
+//            }
         }
 
         mBrightnessControl = new BrightnessControl(this);
@@ -98,18 +114,36 @@ public class PlayerActivity extends Activity {
         releasePlayer();
     }
 
-    private void initializePlayer() {
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        if (requestCode == 0 && resultCode == RESULT_OK) {
+            mPrefs.updateMedia(data.getData(),data.getType());
+            initializePlayer();
+        }
+    }
+
+    private void initializePlayer() {
         if (mPrefs.mediaUri == null || !Utils.mediaExists(this, mPrefs.mediaUri)) {
+            dialogAction = false;
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("To play a video, open it in this Player from any file manager.");
+            builder.setMessage("To play a video, open it from any file manager or use the action bellow.");
+            builder.setNeutralButton("Open video", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    dialogAction = true;
+                    openFile(mPrefs.mediaUri);
+                }
+            });
             final AlertDialog dialog = builder.create();
             dialog.show();
 
             dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
                 @Override
                 public void onDismiss(DialogInterface dialogInterface) {
-                    finish();
+                    if (!dialogAction)
+                        finish();
                 }
             });
         } else {
@@ -123,6 +157,8 @@ public class PlayerActivity extends Activity {
                         .setTrackSelector(trackSelector)
                         .build();
             }
+
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
             playerView.setPlayer(player);
             MediaItem mediaItem = new MediaItem.Builder()
@@ -159,17 +195,22 @@ public class PlayerActivity extends Activity {
         public void onPlaybackStateChanged(int playbackState) {
             String stateString;
             switch (playbackState) {
-                case ExoPlayer.STATE_IDLE:
+                case Player.STATE_IDLE:
                     stateString = "ExoPlayer.STATE_IDLE      -";
                     break;
-                case ExoPlayer.STATE_BUFFERING:
+                case Player.STATE_BUFFERING:
                     stateString = "ExoPlayer.STATE_BUFFERING -";
                     break;
-                case ExoPlayer.STATE_READY:
+                case Player.STATE_READY:
                     stateString = "ExoPlayer.STATE_READY     -";
                     break;
-                case ExoPlayer.STATE_ENDED:
+                case Player.STATE_ENDED:
                     stateString = "ExoPlayer.STATE_ENDED     -";
+                    mPrefs.updateMedia(null, null);
+                    // buggy alertdialog
+                    // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                    releasePlayer();
+                    initializePlayer();
                     break;
                 default:
                     stateString = "UNKNOWN_STATE             -";
@@ -182,5 +223,16 @@ public class PlayerActivity extends Activity {
         public void onIsPlayingChanged(boolean isPlaying) {
             playerView.setKeepScreenOn(isPlaying);
         }
+    }
+
+    private void openFile(Uri pickerInitialUri) {
+        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("video/*");
+
+        if (Build.VERSION.SDK_INT >= 26)
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+
+        startActivityForResult(intent, 0);
     }
 }
