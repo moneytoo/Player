@@ -107,15 +107,6 @@ public class PlayerActivity extends Activity {
         mPrefs = new Prefs(this);
         if (getIntent().getData() != null) {
             mPrefs.updateMedia(getIntent().getData(), getIntent().getType());
-
-//            getContentResolver().takePersistableUriPermission(getIntent().getData(), Intent.FLAG_GRANT_READ_URI_PERMISSION) ;
-//
-//            for (UriPermission perm : getContentResolver().getPersistedUriPermissions()) {
-//                Log.d(TAG, perm.toString());
-//                if (perm.getUri().equals(getIntent().getData())) {
-//                    Log.d(TAG, "OKKK");
-//                }
-//            }
         }
 
         mBrightnessControl = new BrightnessControl(this);
@@ -249,11 +240,6 @@ public class PlayerActivity extends Activity {
                     break;
                 case Player.STATE_ENDED:
                     stateString = "ExoPlayer.STATE_ENDED     -";
-                    mPrefs.updateMedia(null, null);
-                    // buggy alertdialog
-                    // setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-//                    releasePlayer();
-//                    initializePlayer();
                     break;
                 default:
                     stateString = "UNKNOWN_STATE             -";
