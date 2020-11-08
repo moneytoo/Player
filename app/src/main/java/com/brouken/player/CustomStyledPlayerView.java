@@ -166,7 +166,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
                     } else {
                         mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
                     }
-                    setCustomErrorMessage("Volume: " + PlayerActivity.player.getDeviceVolume());
+                    setCustomErrorMessage("Volume: " + mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
                 }
 
                 gestureScrollY = 0.0001f;
