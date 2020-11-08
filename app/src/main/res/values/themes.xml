@@ -6,7 +6,7 @@
     </style>
 
     <style name="ExoStyledControls.Button.Center">
-        <item name="android:layout_width">72dp</item>
-        <item name="android:layout_height">72dp</item>
+        <item name="android:layout_width">80dp</item>
+        <item name="android:layout_height">80dp</item>
     </style>
 </resources>

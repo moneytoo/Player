@@ -7,15 +7,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.UriPermission;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
-import android.util.Log;
+import android.util.TypedValue;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowInsets;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.MediaItem;
@@ -38,6 +42,7 @@ public class PlayerActivity extends Activity {
 
     public static final int CONTROLLER_TIMEOUT = 3500;
 
+    private TextView titleView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +104,17 @@ public class PlayerActivity extends Activity {
             }
         });
 
+        int padding = getResources().getDimensionPixelOffset(R.dimen.exo_time_view_padding);
+        FrameLayout centerView = playerView.findViewById(R.id.exo_center_view);
+        titleView = new TextView(this);
+        titleView.setBackgroundResource(R.color.exo_bottom_bar_background);
+        titleView.setTextColor(Color.WHITE);
+        titleView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+        titleView.setPadding(padding, padding, padding, padding);
+        titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+        titleView.setVisibility(View.GONE);
+        centerView.addView(titleView);
+
         playbackStateListener = new PlaybackStateListener();
 
         mPrefs = new Prefs(this);
@@ -142,7 +158,11 @@ public class PlayerActivity extends Activity {
                 }
 
                 final Uri uri = data.getData();
-                getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                try {
+                    contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
 
                 mPrefs.updateMedia(uri, data.getType());
                 initializePlayer();
@@ -200,6 +220,9 @@ public class PlayerActivity extends Activity {
             }
 
             player.seekTo(mPrefs.currentWindow, mPrefs.playbackPosition);
+
+            titleView.setText(Utils.getFileName(this, mPrefs.mediaUri));
+            titleView.setVisibility(View.VISIBLE);
         } else {
             playerView.setControllerShowTimeoutMs(-1);
             playerView.showController();
