@@ -39,6 +39,7 @@ public class PlayerActivity extends Activity {
 
     private Prefs mPrefs;
     public static BrightnessControl mBrightnessControl;
+    public static boolean haveMedia;
 
     public static final int CONTROLLER_TIMEOUT = 3500;
 
@@ -173,7 +174,7 @@ public class PlayerActivity extends Activity {
     }
 
     private void initializePlayer() {
-        boolean haveMedia = mPrefs.mediaUri != null && Utils.mediaExists(this, mPrefs.mediaUri);
+        haveMedia = mPrefs.mediaUri != null && Utils.mediaExists(this, mPrefs.mediaUri);
 
         if (mPrefs.firstRun) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);

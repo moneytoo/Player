@@ -63,7 +63,8 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
                 postDelayed(textClearRunnable, 400);
 
                 // Reset timeout as it could be disabled during seek
-                setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+                if (PlayerActivity.haveMedia)
+                    setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
                 break;
         }
 
@@ -104,7 +105,8 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
             showController();
             return true;
         } else if (getControllerHideOnTouch()) {
-            hideController();
+            if (PlayerActivity.haveMedia)
+                hideController();
             return true;
         }
 
@@ -136,18 +138,20 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
                 gestureOrientation = Orientation.HORIZONTAL;
                 final long position;
 
-                if (gestureScrollX > 0) {
-                    PlayerActivity.player.setSeekParameters(SeekParameters.PREVIOUS_SYNC);
-                    if (PlayerActivity.player.getCurrentPosition() - SEEK_STEP < 0)
-                        position = 0;
-                    else
-                        position = PlayerActivity.player.getCurrentPosition() - SEEK_STEP;
-                    PlayerActivity.player.seekTo(position);
-                } else {
-                    PlayerActivity.player.setSeekParameters(SeekParameters.NEXT_SYNC);
-                    PlayerActivity.player.seekTo(PlayerActivity.player.getCurrentPosition() + SEEK_STEP);
+                if (PlayerActivity.haveMedia) {
+                    if (gestureScrollX > 0) {
+                        PlayerActivity.player.setSeekParameters(SeekParameters.PREVIOUS_SYNC);
+                        if (PlayerActivity.player.getCurrentPosition() - SEEK_STEP < 0)
+                            position = 0;
+                        else
+                            position = PlayerActivity.player.getCurrentPosition() - SEEK_STEP;
+                        PlayerActivity.player.seekTo(position);
+                    } else {
+                        PlayerActivity.player.setSeekParameters(SeekParameters.NEXT_SYNC);
+                        PlayerActivity.player.seekTo(PlayerActivity.player.getCurrentPosition() + SEEK_STEP);
+                    }
+                    gestureScrollX = 0.0001f;
                 }
-                gestureScrollX = 0.0001f;
             }
         }
 

@@ -17,3 +17,9 @@ Actual features of this Player:
  * Horizontal swipe to quickly seek
  * Vertical swipe to change brightness (left) / volume (right)
  * Remember last opened file, brightness
+ * Video title etc.
+ * No ads, tracking or even the Internet permission
+
+## Download
+
+Available at the [Play Store](https://play.google.com/store/apps/details?id=com.brouken.player)
