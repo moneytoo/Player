@@ -152,17 +152,25 @@ public class PlayerActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
+                final Uri uri = data.getData();
+                boolean uriAlreadyTaken = false;
+
                 // https://commonsware.com/blog/2020/06/13/count-your-saf-uri-permission-grants.html
                 final ContentResolver contentResolver = getContentResolver();
-                for (UriPermission taken : contentResolver.getPersistedUriPermissions()) {
-                    contentResolver.releasePersistableUriPermission(taken.getUri(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                for (UriPermission persistedUri : contentResolver.getPersistedUriPermissions()) {
+                    if (persistedUri.getUri().equals(uri)) {
+                        uriAlreadyTaken = true;
+                    } else {
+                        contentResolver.releasePersistableUriPermission(persistedUri.getUri(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    }
                 }
 
-                final Uri uri = data.getData();
-                try {
-                    contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                } catch (SecurityException e) {
-                    e.printStackTrace();
+                if (!uriAlreadyTaken) {
+                    try {
+                        contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 mPrefs.updateMedia(uri, data.getType());
