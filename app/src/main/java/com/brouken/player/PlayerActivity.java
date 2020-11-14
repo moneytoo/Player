@@ -6,12 +6,12 @@ import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.UriPermission;
-import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
+import android.provider.Settings;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +44,8 @@ public class PlayerActivity extends Activity {
     public static final int CONTROLLER_TIMEOUT = 3500;
 
     private TextView titleView;
+
+    private boolean restoreOrientationLock;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -176,6 +178,15 @@ public class PlayerActivity extends Activity {
                 mPrefs.updateMedia(uri, data.getType());
                 initializePlayer();
             }
+
+            try {
+                if (restoreOrientationLock) {
+                    Settings.System.putInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0);
+                    restoreOrientationLock = false;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -208,8 +219,6 @@ public class PlayerActivity extends Activity {
                     .setTrackSelector(trackSelector)
                     .build();
         }
-
-//        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
 
         playerView.setPlayer(player);
 
@@ -279,15 +288,19 @@ public class PlayerActivity extends Activity {
         @Override
         public void onIsPlayingChanged(boolean isPlaying) {
             playerView.setKeepScreenOn(isPlaying);
-            if (isPlaying) {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-            } else {
-                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-            }
         }
     }
 
     private void openFile(Uri pickerInitialUri) {
+        try {
+            if (Settings.System.getInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION) == 0) {
+                Settings.System.putInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 1);
+                restoreOrientationLock = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("video/*");
