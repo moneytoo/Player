@@ -231,13 +231,13 @@ public class PlayerActivity extends Activity {
                     .build();
             player.setMediaItem(mediaItem);
 
-            final boolean play = mPrefs.playbackPosition == 0l;
+            final boolean play = mPrefs.getPosition() == 0l;
             player.setPlayWhenReady(play);
             if (play) {
                 playerView.hideController();
             }
 
-            player.seekTo(mPrefs.currentWindow, mPrefs.playbackPosition);
+            player.seekTo(mPrefs.getPosition());
 
             titleView.setText(Utils.getFileName(this, mPrefs.mediaUri));
             titleView.setVisibility(View.VISIBLE);
@@ -253,7 +253,7 @@ public class PlayerActivity extends Activity {
 
     private void releasePlayer() {
         if (player != null) {
-            mPrefs.updatePosition(player.getCurrentWindowIndex(), player.getCurrentPosition());
+            mPrefs.updatePosition(player.getCurrentPosition());
             mPrefs.updateBrightness(mBrightnessControl.currentBrightnessLevel);
             player.removeListener(playbackStateListener);
             player.release();
@@ -262,29 +262,6 @@ public class PlayerActivity extends Activity {
     }
 
     private class PlaybackStateListener implements Player.EventListener{
-/*
-        @Override
-        public void onPlaybackStateChanged(int playbackState) {
-            String stateString;
-            switch (playbackState) {
-                case Player.STATE_IDLE:
-                    stateString = "ExoPlayer.STATE_IDLE      -";
-                    break;
-                case Player.STATE_BUFFERING:
-                    stateString = "ExoPlayer.STATE_BUFFERING -";
-                    break;
-                case Player.STATE_READY:
-                    stateString = "ExoPlayer.STATE_READY     -";
-                    break;
-                case Player.STATE_ENDED:
-                    stateString = "ExoPlayer.STATE_ENDED     -";
-                    break;
-                default:
-                    stateString = "UNKNOWN_STATE             -";
-                    break;
-            }
-        }
-*/
         @Override
         public void onIsPlayingChanged(boolean isPlaying) {
             playerView.setKeepScreenOn(isPlaying);

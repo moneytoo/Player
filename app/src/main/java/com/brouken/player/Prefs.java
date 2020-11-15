@@ -5,20 +5,29 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.LinkedHashMap;
+
 class Prefs {
+    Context mContext;
     SharedPreferences mSharedPreferences;
 
     public Uri mediaUri;
     public String mediaType;
 
-    public int currentWindow = 0;
-    public long playbackPosition = 0;
     public int brightness = 20;
     public boolean firstRun = true;
 
+    private LinkedHashMap positions;
+
     public Prefs(Context context) {
+        mContext = context;
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         loadSavedPreferences();
+        loadPositions();
     }
 
     private void loadSavedPreferences() {
@@ -26,17 +35,11 @@ class Prefs {
             mediaUri = Uri.parse(mSharedPreferences.getString("mediaUri", null));
         if (mSharedPreferences.contains("mediaType"))
             mediaType = mSharedPreferences.getString("mediaType", null);
-        currentWindow = mSharedPreferences.getInt("currentWindow", currentWindow);
-        playbackPosition = mSharedPreferences.getLong("playbackPosition", playbackPosition);
         brightness = mSharedPreferences.getInt("brightness", brightness);
         firstRun = mSharedPreferences.getBoolean("firstRun", firstRun);
     }
 
     public void updateMedia(final Uri uri, final String type) {
-        if (uri != mediaUri) {
-            updatePosition(0, 0);
-        }
-
         mediaUri = uri;
         mediaType = type;
 
@@ -52,14 +55,15 @@ class Prefs {
         sharedPreferencesEditor.commit();
     }
 
-    public void updatePosition(final int window, final long position) {
-        currentWindow = window;
-        playbackPosition = position;
+    public void updatePosition(final long position) {
+        if (mediaUri == null)
+            return;
 
-        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        sharedPreferencesEditor.putInt("currentWindow", window);
-        sharedPreferencesEditor.putLong("playbackPosition", position);
-        sharedPreferencesEditor.commit();
+        while (positions.size() > 100)
+            positions.remove(positions.keySet().toArray()[0]);
+
+        positions.put(mediaUri.toString(), position);
+        savePositions();
     }
 
     public void updateBrightness(final int brightness) {
@@ -75,5 +79,38 @@ class Prefs {
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         sharedPreferencesEditor.putBoolean("firstRun", false);
         sharedPreferencesEditor.commit();
+    }
+
+    private void savePositions() {
+        try {
+            FileOutputStream fos = mContext.openFileOutput("positions", Context.MODE_PRIVATE);
+            ObjectOutputStream os = new ObjectOutputStream(fos);
+            os.writeObject(positions);
+            os.close();
+            fos.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void loadPositions() {
+        try {
+            FileInputStream fis = mContext.openFileInput("positions");
+            ObjectInputStream is = new ObjectInputStream(fis);
+            positions = (LinkedHashMap) is.readObject();
+            is.close();
+            fis.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            positions = new LinkedHashMap(10);
+        }
+    }
+
+    public long getPosition() {
+        Object val = positions.get(mediaUri.toString());
+        if (val == null)
+            return 0l;
+        else
+            return (long) positions.get(mediaUri.toString());
     }
 }
