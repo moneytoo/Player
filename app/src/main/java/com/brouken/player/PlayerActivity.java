@@ -3,6 +3,7 @@ package com.brouken.player;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.UriPermission;
@@ -20,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.MediaItem;
@@ -29,9 +31,14 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.StyledPlayerControlView;
+import com.google.android.exoplayer2.util.MimeTypes;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class PlayerActivity extends Activity {
 
+    private Context mContext;
     private PlaybackStateListener playbackStateListener;
 
     private CustomStyledPlayerView playerView;
@@ -52,6 +59,7 @@ public class PlayerActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
+        mContext = getApplicationContext();
         playerView = findViewById(R.id.video_view);
 
         playerView.setShowNextButton(false);
@@ -107,6 +115,15 @@ public class PlayerActivity extends Activity {
             }
         });
 
+        buttonOpen.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                Toast.makeText(mContext,"Load subtitles", Toast.LENGTH_SHORT).show();
+                loadSubtitleFile(mPrefs.mediaUri);
+                return true;
+            }
+        });
+
         int padding = getResources().getDimensionPixelOffset(R.dimen.exo_time_view_padding);
         FrameLayout centerView = playerView.findViewById(R.id.exo_center_view);
         titleView = new TextView(this);
@@ -152,6 +169,15 @@ public class PlayerActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            if (restoreOrientationLock) {
+                Settings.System.putInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0);
+                restoreOrientationLock = false;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         if (requestCode == 0) {
             if (resultCode == RESULT_OK) {
                 final Uri uri = data.getData();
@@ -178,14 +204,18 @@ public class PlayerActivity extends Activity {
                 mPrefs.updateMedia(uri, data.getType());
                 initializePlayer();
             }
+        } else if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                final Uri uri = data.getData();
 
-            try {
-                if (restoreOrientationLock) {
-                    Settings.System.putInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 0);
-                    restoreOrientationLock = false;
+                try {
+                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                } catch (SecurityException e) {
+                    e.printStackTrace();
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
+
+                mPrefs.updateSubtitle(uri);
+                initializePlayer();
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -225,11 +255,14 @@ public class PlayerActivity extends Activity {
         if (haveMedia) {
             playerView.setControllerShowTimeoutMs(CONTROLLER_TIMEOUT);
 
-            MediaItem mediaItem = new MediaItem.Builder()
+            MediaItem.Builder mediaItemBuilder = new MediaItem.Builder()
                     .setUri(mPrefs.mediaUri)
-                    .setMimeType(mPrefs.mediaType)
-                    .build();
-            player.setMediaItem(mediaItem);
+                    .setMimeType(mPrefs.mediaType);
+            if (mPrefs.subtitleUri != null) {
+                MediaItem.Subtitle subtitle = new MediaItem.Subtitle(mPrefs.subtitleUri, MimeTypes.APPLICATION_SUBRIP, null);
+                mediaItemBuilder.setSubtitles(new ArrayList<>(Arrays.asList(subtitle)));
+            }
+            player.setMediaItem(mediaItemBuilder.build());
 
             final boolean play = mPrefs.getPosition() == 0l;
             player.setPlayWhenReady(play);
@@ -255,6 +288,7 @@ public class PlayerActivity extends Activity {
         if (player != null) {
             mPrefs.updatePosition(player.getCurrentPosition());
             mPrefs.updateBrightness(mBrightnessControl.currentBrightnessLevel);
+            //TrackSelectionArray trackSelectionArray = player.getCurrentTrackSelections();
             player.removeListener(playbackStateListener);
             player.release();
             player = null;
@@ -268,7 +302,7 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    private void openFile(Uri pickerInitialUri) {
+    private void enableRotation() {
         try {
             if (Settings.System.getInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION) == 0) {
                 Settings.System.putInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 1);
@@ -277,6 +311,10 @@ public class PlayerActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private void openFile(Uri pickerInitialUri) {
+        enableRotation();
 
         final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
@@ -286,5 +324,18 @@ public class PlayerActivity extends Activity {
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
 
         startActivityForResult(intent, 0);
+    }
+
+    private void loadSubtitleFile(Uri pickerInitialUri) {
+        enableRotation();
+
+        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+
+        if (Build.VERSION.SDK_INT >= 26)
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
+
+        startActivityForResult(intent, 1);
     }
 }

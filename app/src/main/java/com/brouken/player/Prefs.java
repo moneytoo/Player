@@ -16,6 +16,7 @@ class Prefs {
     SharedPreferences mSharedPreferences;
 
     public Uri mediaUri;
+    public Uri subtitleUri;
     public String mediaType;
 
     public int brightness = 20;
@@ -37,11 +38,14 @@ class Prefs {
             mediaType = mSharedPreferences.getString("mediaType", null);
         brightness = mSharedPreferences.getInt("brightness", brightness);
         firstRun = mSharedPreferences.getBoolean("firstRun", firstRun);
+        if (mSharedPreferences.contains("subtitleUri"))
+            subtitleUri = Uri.parse(mSharedPreferences.getString("subtitleUri", null));
     }
 
     public void updateMedia(final Uri uri, final String type) {
         mediaUri = uri;
         mediaType = type;
+        updateSubtitle(null);
 
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         if (uri == null)
@@ -52,6 +56,16 @@ class Prefs {
             sharedPreferencesEditor.remove("mediaType");
         else
             sharedPreferencesEditor.putString("mediaType", mediaType);
+        sharedPreferencesEditor.commit();
+    }
+
+    public void updateSubtitle(final Uri uri) {
+        subtitleUri = uri;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        if (uri == null)
+            sharedPreferencesEditor.remove("subtitleUri");
+        else
+            sharedPreferencesEditor.putString("subtitleUri", uri.toString());
         sharedPreferencesEditor.commit();
     }
 
