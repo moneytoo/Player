@@ -13,6 +13,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.Settings;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,6 +135,8 @@ public class PlayerActivity extends Activity {
         titleView.setPadding(padding, padding, padding, padding);
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         titleView.setVisibility(View.GONE);
+        titleView.setMaxLines(1);
+        titleView.setEllipsize(TextUtils.TruncateAt.END);
         centerView.addView(titleView);
 
         playbackStateListener = new PlaybackStateListener();
