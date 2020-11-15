@@ -28,6 +28,8 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
     private final float SCROLL_STEP = Utils.dpToPx(16);
     private final long SEEK_STEP = 1000;
 
+    private boolean restorePlayState;
+
     private final Runnable textClearRunnable = new Runnable() {
         @Override
         public void run() {
@@ -65,6 +67,11 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
                 // Reset timeout as it could be disabled during seek
                 if (PlayerActivity.haveMedia)
                     setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+
+                if (restorePlayState) {
+                    restorePlayState = false;
+                    PlayerActivity.player.play();
+                }
                 break;
         }
 
@@ -134,6 +141,13 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
                 if (!controllerVisible)
                     showController();
                 setControllerShowTimeoutMs(0);
+
+                if (gestureOrientation == Orientation.UNKNOWN) {
+                    if (PlayerActivity.player.isPlaying()) {
+                        restorePlayState = true;
+                        PlayerActivity.player.pause();
+                    }
+                }
 
                 gestureOrientation = Orientation.HORIZONTAL;
                 final long position;
