@@ -53,6 +53,7 @@ public class PlayerActivity extends Activity {
     private TextView titleView;
 
     private boolean restoreOrientationLock;
+    private boolean restorePlayState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -282,6 +283,10 @@ public class PlayerActivity extends Activity {
         player.addListener(playbackStateListener);
         player.prepare();
 
+        if (restorePlayState) {
+            restorePlayState = false;
+            player.play();
+        }
     }
 
     private void releasePlayer() {
@@ -289,6 +294,9 @@ public class PlayerActivity extends Activity {
             mPrefs.updatePosition(player.getCurrentPosition());
             mPrefs.updateBrightness(mBrightnessControl.currentBrightnessLevel);
             //TrackSelectionArray trackSelectionArray = player.getCurrentTrackSelections();
+            if (player.isPlaying()) {
+                restorePlayState = true;
+            }
             player.removeListener(playbackStateListener);
             player.release();
             player = null;
