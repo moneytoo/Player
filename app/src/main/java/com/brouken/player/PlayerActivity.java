@@ -89,6 +89,25 @@ public class PlayerActivity extends Activity {
             }
         });
 
+        final View exoErrorMessage = playerView.findViewById(R.id.exo_error_message);
+        exoErrorMessage.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
+                if (windowInsets != null) {
+                    final int bottom = (int) getResources().getDimension(R.dimen.exo_error_message_margin_bottom);
+
+                    final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
+                    layoutParams.setMargins(windowInsets.getSystemWindowInsetLeft() / 2, 0,
+                            windowInsets.getSystemWindowInsetRight() / 2, bottom);
+                    view.setLayoutParams(layoutParams);
+
+                    windowInsets.consumeSystemWindowInsets();
+                }
+                return windowInsets;
+            }
+        });
+
+
         /*
         final FrameLayout bottomBar = playerView.findViewById(R.id.exo_bottom_bar);
         final SubtitleView subtitleView = playerView.findViewById(R.id.exo_subtitles);
