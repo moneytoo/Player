@@ -7,6 +7,8 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.view.View;
 
+import com.google.android.exoplayer2.util.MimeTypes;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +22,7 @@ class Utils {
         return (int) (px / Resources.getSystem().getDisplayMetrics().density);
     }
 
-    public static boolean mediaExists(final Context context, final Uri uri) {
+    public static boolean fileExists(final Context context, final Uri uri) {
         if ("file".equals(uri.getScheme())) {
             final File file = new File(uri.getPath());
             return file.exists();
@@ -80,5 +82,43 @@ class Utils {
         if (result.indexOf(".") > 0)
             result = result.substring(0, result.lastIndexOf("."));
         return result;
+    }
+
+    public static String getSubtitleMime(Uri uri) {
+        final String path = uri.getPath();
+        if (path.endsWith(".ssa") || path.endsWith(".ass")) {
+            return MimeTypes.TEXT_SSA;
+        } else if (path.endsWith(".vtt")) {
+            return MimeTypes.TEXT_VTT;
+        } else if (path.endsWith(".ttml") ||  path.endsWith(".xml") || path.endsWith(".dfxp")) {
+            return MimeTypes.APPLICATION_TTML;
+        } else {
+            return MimeTypes.APPLICATION_SUBRIP;
+        }
+    }
+
+    public static String getSubtitleLanguage(Context context, Uri uri) {
+        final String path = uri.getPath();
+
+        if (path.endsWith(".srt")) {
+            int last = path.lastIndexOf(".");
+            int prev = last;
+
+            for (int i = last; i >= 0; i--) {
+                prev = path.indexOf(".", i);
+                if (prev != last)
+                    break;
+            }
+
+            int len = last - prev;
+
+            if (len >= 2 && len <= 6) {
+                // TODO: Validate lang
+                final String lang = path.substring(prev + 1, last);
+                return lang;
+            }
+        }
+
+        return getFileName(context, uri);
     }
 }

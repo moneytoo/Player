@@ -227,7 +227,7 @@ public class PlayerActivity extends Activity {
     }
 
     private void initializePlayer() {
-        haveMedia = mPrefs.mediaUri != null && Utils.mediaExists(this, mPrefs.mediaUri);
+        haveMedia = mPrefs.mediaUri != null && Utils.fileExists(this, mPrefs.mediaUri);
 
         if (mPrefs.firstRun) {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -262,8 +262,11 @@ public class PlayerActivity extends Activity {
             MediaItem.Builder mediaItemBuilder = new MediaItem.Builder()
                     .setUri(mPrefs.mediaUri)
                     .setMimeType(mPrefs.mediaType);
-            if (mPrefs.subtitleUri != null) {
-                MediaItem.Subtitle subtitle = new MediaItem.Subtitle(mPrefs.subtitleUri, MimeTypes.APPLICATION_SUBRIP, null);
+            if (mPrefs.subtitleUri != null && Utils.fileExists(this, mPrefs.subtitleUri)) {
+                final String subtitleMime = Utils.getSubtitleMime(mPrefs.subtitleUri);
+                final String subtitleLanguage = Utils.getSubtitleLanguage(this, mPrefs.subtitleUri);
+
+                MediaItem.Subtitle subtitle = new MediaItem.Subtitle(mPrefs.subtitleUri, subtitleMime, subtitleLanguage);
                 mediaItemBuilder.setSubtitles(new ArrayList<>(Arrays.asList(subtitle)));
             }
             player.setMediaItem(mediaItemBuilder.build());
@@ -343,6 +346,16 @@ public class PlayerActivity extends Activity {
         final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
+
+        final String[] supportedMimeTypes = {
+                MimeTypes.APPLICATION_SUBRIP,
+                MimeTypes.TEXT_SSA,
+                MimeTypes.TEXT_VTT,
+                MimeTypes.APPLICATION_TTML,
+                "text/*",
+                "application/octet-stream"
+        };
+        intent.putExtra(Intent.EXTRA_MIME_TYPES, supportedMimeTypes);
 
         if (Build.VERSION.SDK_INT >= 26)
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);

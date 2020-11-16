@@ -9,16 +9,18 @@ ExoPlayer properly synces audio with video track when using Bluetooth earphones/
 Features already provided by ExoPlayer:
 
  * Audio track selection
- * Subtitle selection (embedded only)
+ * Subtitle selection
  * Playback speed control
 
 Actual features of this Player:
 
  * Horizontal swipe to quickly seek
  * Vertical swipe to change brightness (left) / volume (right)
- * Remember last opened file, brightness
+ * Remember last opened file, its position, brightness
  * Video title etc.
  * No ads, tracking or even the Internet permission
+
+ To load an external (non-embedded) subtitles, long press the file open action in the bottom bar.
 
 ## Download
 
