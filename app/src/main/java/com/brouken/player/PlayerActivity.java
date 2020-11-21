@@ -413,6 +413,7 @@ public class PlayerActivity extends Activity {
             titleView.setText(Utils.getFileName(this, mPrefs.mediaUri));
             titleView.setVisibility(View.VISIBLE);
 
+            player.setHandleAudioBecomingNoisy(true);
             mediaSession.setActive(true);
         } else {
             playerView.setControllerShowTimeoutMs(-1);
