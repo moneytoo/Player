@@ -2,18 +2,27 @@ package com.brouken.player;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
+import android.app.PictureInPictureParams;
+import android.app.RemoteAction;
+import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.UriPermission;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.drawable.Icon;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.Rational;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
@@ -41,6 +51,7 @@ public class PlayerActivity extends Activity {
 
     private Context mContext;
     private PlaybackStateListener playbackStateListener;
+    private BroadcastReceiver mReceiver;
 
     private CustomStyledPlayerView playerView;
     public static SimpleExoPlayer player;
@@ -50,6 +61,7 @@ public class PlayerActivity extends Activity {
     public static boolean haveMedia;
 
     public static final int CONTROLLER_TIMEOUT = 3500;
+    private static final String ACTION_MEDIA_TOGGLE_PLAY = "media_toggle_play";
 
     private TextView titleView;
 
@@ -139,11 +151,44 @@ public class PlayerActivity extends Activity {
         buttonOpen.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Toast.makeText(mContext,"Load subtitles", Toast.LENGTH_SHORT).show();
+                Toast.makeText(PlayerActivity.this,"Load subtitles", Toast.LENGTH_SHORT).show();
                 loadSubtitleFile(mPrefs.mediaUri);
                 return true;
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+            ImageButton buttonPiP = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
+            buttonPiP.setImageResource(R.drawable.ic_baseline_picture_in_picture_alt_24);
+            controls.addView(buttonPiP, 5);
+
+            buttonPiP.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    final Format format = player.getVideoFormat();
+
+                    if (format == null) {
+                        Toast.makeText(PlayerActivity.this,"No opened video", Toast.LENGTH_SHORT).show();
+                    } else {
+                        playerView.setControllerAutoShow(false);
+                        playerView.setControllerShowTimeoutMs(0);
+                        playerView.hideController();
+
+                        final PendingIntent pendingIntent = PendingIntent.getBroadcast(PlayerActivity.this, 0, new Intent(ACTION_MEDIA_TOGGLE_PLAY), 0);
+                        final Icon icon = Icon.createWithResource(PlayerActivity.this, R.drawable.ic_baseline_not_started_10);
+                        final RemoteAction remoteAction = new RemoteAction(icon, "Play/Pause", "Play or pause", pendingIntent);
+
+                        final PictureInPictureParams pictureInPictureParams = new PictureInPictureParams.Builder()
+                                .setActions(new ArrayList<>(Arrays.asList(remoteAction)))
+                                .setAspectRatio(new Rational(format.width, format.height))
+                                .build();
+                        PlayerActivity.this.setPictureInPictureParams(pictureInPictureParams);
+                        PlayerActivity.this.enterPictureInPictureMode();
+                    }
+                }
+            });
+        }
 
         int padding = getResources().getDimensionPixelOffset(R.dimen.exo_time_view_padding);
         FrameLayout centerView = playerView.findViewById(R.id.exo_center_view);
@@ -188,6 +233,28 @@ public class PlayerActivity extends Activity {
     public void onStop() {
         super.onStop();
         releasePlayer();
+    }
+
+    @Override
+    public void onPictureInPictureModeChanged(boolean isInPictureInPictureMode, Configuration newConfig) {
+        super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
+
+        if (isInPictureInPictureMode) {
+            mReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    if (player.isPlaying()) {
+                        player.pause();
+                    } else {
+                        player.play();
+                    }
+                }
+            };
+            registerReceiver(mReceiver, new IntentFilter(ACTION_MEDIA_TOGGLE_PLAY));
+        } else {
+            unregisterReceiver(mReceiver);
+            mReceiver = null;
+        }
     }
 
     @Override

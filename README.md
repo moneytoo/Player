@@ -17,10 +17,11 @@ Actual features of this Player:
  * Horizontal swipe to quickly seek
  * Vertical swipe to change brightness (left) / volume (right)
  * Remember last opened file, its position, brightness
+ * PiP (Picture in Picture) on Android 8 or higher
  * Video title etc.
  * No ads, tracking or even the Internet permission
 
- To load an external (non-embedded) subtitles, long press the file open action in the bottom bar.
+To load an external (non-embedded) subtitles, long press the file open action in the bottom bar.
 
 ## Download
 
