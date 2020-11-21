@@ -29,5 +29,6 @@ android {
 dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-core:2.12.1'
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.12.1'
+    implementation 'com.google.android.exoplayer:extension-mediasession:2.12.1'
     implementation project(':extension-ffmpeg-release')
 }

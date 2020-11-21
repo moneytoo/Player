@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.Settings;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.text.TextUtils;
 import android.util.Rational;
 import android.util.TypedValue;
@@ -43,6 +44,7 @@ import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
 import com.google.android.exoplayer2.text.CaptionStyleCompat;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
@@ -58,6 +60,8 @@ public class PlayerActivity extends Activity {
     private PlaybackStateListener playbackStateListener;
     private BroadcastReceiver mReceiver;
     private AudioManager mAudioManager;
+    private MediaSessionCompat mediaSession;
+    private MediaSessionConnector mediaSessionConnector;
 
     private CustomStyledPlayerView playerView;
     public static SimpleExoPlayer player;
@@ -379,6 +383,10 @@ public class PlayerActivity extends Activity {
 
         playerView.setPlayer(player);
 
+        mediaSession = new MediaSessionCompat(this, "Just Player");
+        mediaSessionConnector = new MediaSessionConnector(mediaSession);
+        mediaSessionConnector.setPlayer(player);
+
         if (haveMedia) {
             playerView.setControllerShowTimeoutMs(CONTROLLER_TIMEOUT);
 
@@ -404,6 +412,8 @@ public class PlayerActivity extends Activity {
 
             titleView.setText(Utils.getFileName(this, mPrefs.mediaUri));
             titleView.setVisibility(View.VISIBLE);
+
+            mediaSession.setActive(true);
         } else {
             playerView.setControllerShowTimeoutMs(-1);
             playerView.showController();
@@ -420,6 +430,8 @@ public class PlayerActivity extends Activity {
 
     private void releasePlayer() {
         if (player != null) {
+            mediaSession.setActive(false);
+            mediaSession.release();
             mPrefs.updatePosition(player.getCurrentPosition());
             mPrefs.updateBrightness(mBrightnessControl.currentBrightnessLevel);
             //TrackSelectionArray trackSelectionArray = player.getCurrentTrackSelections();
