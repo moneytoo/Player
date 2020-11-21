@@ -30,7 +30,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
 
     private boolean restorePlayState;
 
-    private final Runnable textClearRunnable = new Runnable() {
+    public final Runnable textClearRunnable = new Runnable() {
         @Override
         public void run() {
             setCustomErrorMessage(null);
@@ -179,12 +179,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
                     PlayerActivity.mBrightnessControl.changeBrightness(gestureScrollY > 0);
                     setCustomErrorMessage("Brightness: " + PlayerActivity.mBrightnessControl.currentBrightnessLevel);
                 } else {
-                    if (gestureScrollY > 0) {
-                        mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-                    } else {
-                        mAudioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-                    }
-                    setCustomErrorMessage("Volume: " + mAudioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+                    Utils.adjustVolume(mAudioManager, this, gestureScrollY > 0);
                 }
 
                 gestureScrollY = 0.0001f;

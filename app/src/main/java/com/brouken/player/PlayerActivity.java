@@ -17,6 +17,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Icon;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Rational;
 import android.util.TypedValue;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
@@ -55,6 +57,7 @@ public class PlayerActivity extends Activity {
     private Context mContext;
     private PlaybackStateListener playbackStateListener;
     private BroadcastReceiver mReceiver;
+    private AudioManager mAudioManager;
 
     private CustomStyledPlayerView playerView;
     public static SimpleExoPlayer player;
@@ -77,6 +80,7 @@ public class PlayerActivity extends Activity {
         setContentView(R.layout.activity_player);
 
         mContext = getApplicationContext();
+        mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         playerView = findViewById(R.id.video_view);
 
         playerView.setShowNextButton(false);
@@ -242,6 +246,30 @@ public class PlayerActivity extends Activity {
     public void onStop() {
         super.onStop();
         releasePlayer();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                playerView.removeCallbacks(playerView.textClearRunnable);
+                Utils.adjustVolume(mAudioManager, playerView, keyCode == KeyEvent.KEYCODE_VOLUME_UP);
+                return true;
+            default:
+                return super.onKeyDown(keyCode, event);
+        }
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_VOLUME_UP:
+            case KeyEvent.KEYCODE_VOLUME_DOWN:
+                playerView.postDelayed(playerView.textClearRunnable, 400);
+                return true;
+        }
+        return super.onKeyUp(keyCode, event);
     }
 
     @Override
