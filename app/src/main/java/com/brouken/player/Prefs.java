@@ -12,12 +12,24 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedHashMap;
 
 class Prefs {
+
+    private static final String PREF_KEY_MEDIA_URI = "mediaUri";
+    private static final String PREF_KEY_MEDIA_TYPE = "mediaType";
+    private static final String PREF_KEY_BRIGHTNESS = "brightness";
+    private static final String PREF_KEY_FIRST_RUN = "firstRun";
+    private static final String PREF_KEY_SUBTITLE_URI = "subtitleUri";
+    private static final String PREF_KEY_AUDIO_TRACK = "audioTrack";
+    private static final String PREF_KEY_SUBTITLE_TRACK = "subtitleTrack";
+
     Context mContext;
     SharedPreferences mSharedPreferences;
 
     public Uri mediaUri;
     public Uri subtitleUri;
     public String mediaType;
+
+    public int subtitleTrack = -1;
+    public int audioTrack = -1;
 
     public int brightness = 20;
     public boolean firstRun = true;
@@ -32,30 +44,36 @@ class Prefs {
     }
 
     private void loadSavedPreferences() {
-        if (mSharedPreferences.contains("mediaUri"))
-            mediaUri = Uri.parse(mSharedPreferences.getString("mediaUri", null));
-        if (mSharedPreferences.contains("mediaType"))
-            mediaType = mSharedPreferences.getString("mediaType", null);
-        brightness = mSharedPreferences.getInt("brightness", brightness);
-        firstRun = mSharedPreferences.getBoolean("firstRun", firstRun);
-        if (mSharedPreferences.contains("subtitleUri"))
-            subtitleUri = Uri.parse(mSharedPreferences.getString("subtitleUri", null));
+        if (mSharedPreferences.contains(PREF_KEY_MEDIA_URI))
+            mediaUri = Uri.parse(mSharedPreferences.getString(PREF_KEY_MEDIA_URI, null));
+        if (mSharedPreferences.contains(PREF_KEY_MEDIA_TYPE))
+            mediaType = mSharedPreferences.getString(PREF_KEY_MEDIA_TYPE, null);
+        brightness = mSharedPreferences.getInt(PREF_KEY_BRIGHTNESS, brightness);
+        firstRun = mSharedPreferences.getBoolean(PREF_KEY_FIRST_RUN, firstRun);
+        if (mSharedPreferences.contains(PREF_KEY_SUBTITLE_URI))
+            subtitleUri = Uri.parse(mSharedPreferences.getString(PREF_KEY_SUBTITLE_URI, null));
+        if (mSharedPreferences.contains(PREF_KEY_AUDIO_TRACK))
+            audioTrack = mSharedPreferences.getInt(PREF_KEY_AUDIO_TRACK, audioTrack);
+        if (mSharedPreferences.contains(PREF_KEY_SUBTITLE_TRACK))
+            subtitleTrack = mSharedPreferences.getInt(PREF_KEY_SUBTITLE_TRACK, subtitleTrack);
     }
 
     public void updateMedia(final Uri uri, final String type) {
         mediaUri = uri;
         mediaType = type;
         updateSubtitle(null);
+        updateAudioTrack(-1);
+        updateSubtitleTrack(-1);
 
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         if (uri == null)
-            sharedPreferencesEditor.remove("mediaUri");
+            sharedPreferencesEditor.remove(PREF_KEY_MEDIA_URI);
         else
-            sharedPreferencesEditor.putString("mediaUri", uri.toString());
+            sharedPreferencesEditor.putString(PREF_KEY_MEDIA_URI, uri.toString());
         if (type == null)
-            sharedPreferencesEditor.remove("mediaType");
+            sharedPreferencesEditor.remove(PREF_KEY_MEDIA_TYPE);
         else
-            sharedPreferencesEditor.putString("mediaType", mediaType);
+            sharedPreferencesEditor.putString(PREF_KEY_MEDIA_TYPE, mediaType);
         sharedPreferencesEditor.commit();
     }
 
@@ -63,9 +81,9 @@ class Prefs {
         subtitleUri = uri;
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         if (uri == null)
-            sharedPreferencesEditor.remove("subtitleUri");
+            sharedPreferencesEditor.remove(PREF_KEY_SUBTITLE_URI);
         else
-            sharedPreferencesEditor.putString("subtitleUri", uri.toString());
+            sharedPreferencesEditor.putString(PREF_KEY_SUBTITLE_URI, uri.toString());
         sharedPreferencesEditor.commit();
     }
 
@@ -83,7 +101,7 @@ class Prefs {
     public void updateBrightness(final int brightness) {
         this.brightness = brightness;
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        sharedPreferencesEditor.putInt("brightness", brightness);
+        sharedPreferencesEditor.putInt(PREF_KEY_BRIGHTNESS, brightness);
         sharedPreferencesEditor.commit();
 
     }
@@ -91,7 +109,7 @@ class Prefs {
     public void markFirstRun() {
         this.firstRun = false;
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        sharedPreferencesEditor.putBoolean("firstRun", false);
+        sharedPreferencesEditor.putBoolean(PREF_KEY_FIRST_RUN, false);
         sharedPreferencesEditor.commit();
     }
 
@@ -127,4 +145,25 @@ class Prefs {
         else
             return (long) positions.get(mediaUri.toString());
     }
+
+    public void updateAudioTrack(final int track) {
+        this.audioTrack = track;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        if (track < 0)
+            sharedPreferencesEditor.remove(PREF_KEY_AUDIO_TRACK);
+        else
+            sharedPreferencesEditor.putInt(PREF_KEY_AUDIO_TRACK, track);
+        sharedPreferencesEditor.commit();
+    }
+
+    public void updateSubtitleTrack(final int track) {
+        this.subtitleTrack = track;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        if (track < 0)
+            sharedPreferencesEditor.remove(PREF_KEY_SUBTITLE_TRACK);
+        else
+            sharedPreferencesEditor.putInt(PREF_KEY_SUBTITLE_TRACK, track);
+        sharedPreferencesEditor.commit();
+    }
+
 }

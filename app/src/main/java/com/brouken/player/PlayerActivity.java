@@ -38,6 +38,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.MediaItem;
@@ -45,8 +46,10 @@ import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
+import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.text.CaptionStyleCompat;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 import com.google.android.exoplayer2.util.MimeTypes;
@@ -62,6 +65,7 @@ public class PlayerActivity extends Activity {
     private AudioManager mAudioManager;
     private MediaSessionCompat mediaSession;
     private MediaSessionConnector mediaSessionConnector;
+    private DefaultTrackSelector trackSelector;
 
     private CustomStyledPlayerView playerView;
     public static SimpleExoPlayer player;
@@ -69,6 +73,7 @@ public class PlayerActivity extends Activity {
     private Prefs mPrefs;
     public static BrightnessControl mBrightnessControl;
     public static boolean haveMedia;
+    private boolean setTracks;
 
     public static final int CONTROLLER_TIMEOUT = 3500;
     private static final String ACTION_MEDIA_TOGGLE_PLAY = "media_toggle_play";
@@ -368,7 +373,7 @@ public class PlayerActivity extends Activity {
         }
 
         if (player == null) {
-            DefaultTrackSelector trackSelector = new DefaultTrackSelector(this);
+            trackSelector = new DefaultTrackSelector(this);
             /*trackSelector.setParameters(
                     trackSelector.buildUponParameters().setMaxVideoSizeSd());*/
             RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
@@ -398,6 +403,8 @@ public class PlayerActivity extends Activity {
                 mediaItemBuilder.setSubtitles(new ArrayList<>(Arrays.asList(subtitle)));
             }
             player.setMediaItem(mediaItemBuilder.build());
+
+            setTracks = true;
 
             final boolean play = mPrefs.getPosition() == 0l;
             player.setPlayWhenReady(play);
@@ -433,9 +440,12 @@ public class PlayerActivity extends Activity {
         if (player != null) {
             mediaSession.setActive(false);
             mediaSession.release();
+
             mPrefs.updatePosition(player.getCurrentPosition());
             mPrefs.updateBrightness(mBrightnessControl.currentBrightnessLevel);
-            //TrackSelectionArray trackSelectionArray = player.getCurrentTrackSelections();
+            mPrefs.updateSubtitleTrack(getSelectedTrack(C.TRACK_TYPE_TEXT));
+            mPrefs.updateAudioTrack(getSelectedTrack(C.TRACK_TYPE_AUDIO));
+
             if (player.isPlaying()) {
                 restorePlayState = true;
             }
@@ -449,6 +459,17 @@ public class PlayerActivity extends Activity {
         @Override
         public void onIsPlayingChanged(boolean isPlaying) {
             playerView.setKeepScreenOn(isPlaying);
+        }
+
+        @Override
+        public void onPlaybackStateChanged(int state) {
+            if (setTracks && state == Player.STATE_READY) {
+                setTracks = false;
+                if (mPrefs.audioTrack >= 0)
+                    setSelectedTrack(C.TRACK_TYPE_AUDIO, mPrefs.audioTrack);
+                if (mPrefs.subtitleTrack >= 0)
+                    setSelectedTrack(C.TRACK_TYPE_TEXT, mPrefs.subtitleTrack);
+            }
         }
     }
 
@@ -497,5 +518,39 @@ public class PlayerActivity extends Activity {
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
 
         startActivityForResult(intent, 1);
+    }
+
+    public void setSelectedTrack(final int trackType, final int trackIndex) {
+        final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
+        if (mappedTrackInfo != null) {
+            final DefaultTrackSelector.Parameters parameters = trackSelector.getParameters();
+            final DefaultTrackSelector.ParametersBuilder parametersBuilder = parameters.buildUpon();
+            for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
+                if (mappedTrackInfo.getRendererType(rendererIndex) == trackType) {
+                    parametersBuilder.clearSelectionOverrides(rendererIndex).setRendererDisabled(rendererIndex, false);
+                    final int [] tracks = {0};
+                    final DefaultTrackSelector.SelectionOverride selectionOverride = new DefaultTrackSelector.SelectionOverride(trackIndex, tracks);
+                    parametersBuilder.setSelectionOverride(rendererIndex, mappedTrackInfo.getTrackGroups(rendererIndex), selectionOverride);
+                }
+            }
+            trackSelector.setParameters(parametersBuilder);
+        }
+    }
+
+    public int getSelectedTrack(final int trackType) {
+        final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
+        if (mappedTrackInfo != null) {
+            for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
+                if (mappedTrackInfo.getRendererType(rendererIndex) == trackType) {
+                    final TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
+                    final DefaultTrackSelector.SelectionOverride selectionOverride = trackSelector.getParameters().getSelectionOverride(rendererIndex, trackGroups);
+                    if (selectionOverride == null || selectionOverride.length <= 0) {
+                        break;
+                    }
+                    return selectionOverride.groupIndex;
+                }
+            }
+        }
+        return -1;
     }
 }
