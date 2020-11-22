@@ -7,6 +7,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.view.View;
+import android.widget.ImageButton;
 
 import com.google.android.exoplayer2.util.MimeTypes;
 
@@ -126,5 +127,13 @@ class Utils {
     public static void adjustVolume(final AudioManager audioManager, final CustomStyledPlayerView playerView, final boolean raise) {
         audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, raise ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
         playerView.setCustomErrorMessage("Volume: " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+    }
+
+    public static void setButtonEnabled(final Context context, final ImageButton button, final boolean enabled) {
+        button.setEnabled(enabled);
+        button.setAlpha(enabled ?
+                        (float) context.getResources().getInteger(R.integer.exo_media_button_opacity_percentage_enabled) / 100 :
+                        (float) context.getResources().getInteger(R.integer.exo_media_button_opacity_percentage_disabled) / 100
+                );
     }
 }

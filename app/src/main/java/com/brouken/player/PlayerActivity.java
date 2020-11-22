@@ -74,6 +74,7 @@ public class PlayerActivity extends Activity {
     private static final String ACTION_MEDIA_TOGGLE_PLAY = "media_toggle_play";
 
     private TextView titleView;
+    private ImageButton buttonPiP;
 
     private boolean restoreOrientationLock;
     private boolean restorePlayState;
@@ -169,36 +170,32 @@ public class PlayerActivity extends Activity {
         });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
-            ImageButton buttonPiP = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
+            buttonPiP = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
             buttonPiP.setImageResource(R.drawable.ic_baseline_picture_in_picture_alt_24);
             controls.addView(buttonPiP, 5);
 
             buttonPiP.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    playerView.setControllerAutoShow(false);
+                    playerView.setControllerShowTimeoutMs(0);
+                    playerView.hideController();
 
                     final Format format = player.getVideoFormat();
+                    final PendingIntent pendingIntent = PendingIntent.getBroadcast(PlayerActivity.this, 0, new Intent(ACTION_MEDIA_TOGGLE_PLAY), 0);
+                    final Icon icon = Icon.createWithResource(PlayerActivity.this, R.drawable.ic_baseline_not_started_10);
+                    final RemoteAction remoteAction = new RemoteAction(icon, "Play/Pause", "Play or pause", pendingIntent);
 
-                    if (format == null) {
-                        Toast.makeText(PlayerActivity.this,"No opened video", Toast.LENGTH_SHORT).show();
-                    } else {
-                        playerView.setControllerAutoShow(false);
-                        playerView.setControllerShowTimeoutMs(0);
-                        playerView.hideController();
-
-                        final PendingIntent pendingIntent = PendingIntent.getBroadcast(PlayerActivity.this, 0, new Intent(ACTION_MEDIA_TOGGLE_PLAY), 0);
-                        final Icon icon = Icon.createWithResource(PlayerActivity.this, R.drawable.ic_baseline_not_started_10);
-                        final RemoteAction remoteAction = new RemoteAction(icon, "Play/Pause", "Play or pause", pendingIntent);
-
-                        final PictureInPictureParams pictureInPictureParams = new PictureInPictureParams.Builder()
-                                .setActions(new ArrayList<>(Arrays.asList(remoteAction)))
-                                .setAspectRatio(new Rational(format.width, format.height))
-                                .build();
-                        PlayerActivity.this.setPictureInPictureParams(pictureInPictureParams);
-                        PlayerActivity.this.enterPictureInPictureMode();
-                    }
+                    final PictureInPictureParams.Builder pictureInPictureParamsBuilder = new PictureInPictureParams.Builder()
+                            .setActions(new ArrayList<>(Arrays.asList(remoteAction)));
+                    if (format != null)
+                        pictureInPictureParamsBuilder.setAspectRatio(new Rational(format.width, format.height));
+                    PlayerActivity.this.setPictureInPictureParams(pictureInPictureParamsBuilder.build());
+                    PlayerActivity.this.enterPictureInPictureMode();
                 }
             });
+
+            Utils.setButtonEnabled(this, buttonPiP, false);
         }
 
         int padding = getResources().getDimensionPixelOffset(R.dimen.exo_time_view_padding);
@@ -412,6 +409,9 @@ public class PlayerActivity extends Activity {
 
             titleView.setText(Utils.getFileName(this, mPrefs.mediaUri));
             titleView.setVisibility(View.VISIBLE);
+
+            if (buttonPiP != null)
+                Utils.setButtonEnabled(this, buttonPiP, true);
 
             player.setHandleAudioBecomingNoisy(true);
             mediaSession.setActive(true);
