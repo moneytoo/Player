@@ -232,6 +232,12 @@ public class PlayerActivity extends Activity {
             final CaptionStyleCompat captionStyle = new CaptionStyleCompat(Color.WHITE, Color.TRANSPARENT, Color.TRANSPARENT, CaptionStyleCompat.EDGE_TYPE_OUTLINE, Color.BLACK, Typeface.DEFAULT_BOLD);
             playerView.getSubtitleView().setStyle(captionStyle);
         }
+
+        // Temporarily disable buggy controls on Lollipop: https://github.com/google/ExoPlayer/issues/8272
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+            final ImageButton overflowButton = playerView.findViewById(R.id.exo_overflow_show);
+            overflowButton.setVisibility(View.GONE);
+        }
     }
 
 
