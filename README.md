@@ -18,6 +18,7 @@ Actual features of this Player:
  * Vertical swipe to change brightness (left) / volume (right)
  * Remember last opened file, its position, brightness
  * PiP (Picture in Picture) on Android 8 or higher
+ * Resize (fit/crop)
  * Video title etc.
  * No ads, tracking or even the Internet permission
 
