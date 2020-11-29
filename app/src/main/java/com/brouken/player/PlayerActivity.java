@@ -50,6 +50,7 @@ import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.text.CaptionStyleCompat;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 import com.google.android.exoplayer2.util.MimeTypes;
@@ -80,6 +81,7 @@ public class PlayerActivity extends Activity {
 
     private TextView titleView;
     private ImageButton buttonPiP;
+    private ImageButton buttonAspectRatio;
 
     private boolean restoreOrientationLock;
     private boolean restorePlayState;
@@ -202,6 +204,26 @@ public class PlayerActivity extends Activity {
 
             Utils.setButtonEnabled(this, buttonPiP, false);
         }
+
+        buttonAspectRatio = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
+        buttonAspectRatio.setImageResource(R.drawable.ic_baseline_aspect_ratio_24);
+        controls.addView(buttonAspectRatio, 5);
+        buttonAspectRatio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (playerView.getResizeMode() == AspectRatioFrameLayout.RESIZE_MODE_FIT) {
+                    playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
+                    Utils.showText(playerView, "Crop");
+                } else {
+                    // Default mode
+                    playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+                    Utils.showText(playerView, "Fit");
+                }
+                // Keep controller UI visible - alternative to resetHideCallbacks()
+                playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+            }
+        });
+        Utils.setButtonEnabled(this, buttonAspectRatio, false);
 
         int padding = getResources().getDimensionPixelOffset(R.dimen.exo_time_view_padding);
         FrameLayout centerView = playerView.findViewById(R.id.exo_center_view);
@@ -398,6 +420,8 @@ public class PlayerActivity extends Activity {
         if (haveMedia) {
             playerView.setControllerShowTimeoutMs(CONTROLLER_TIMEOUT);
 
+            playerView.setResizeMode(mPrefs.resizeMode);
+
             MediaItem.Builder mediaItemBuilder = new MediaItem.Builder()
                     .setUri(mPrefs.mediaUri)
                     .setMimeType(mPrefs.mediaType);
@@ -426,6 +450,8 @@ public class PlayerActivity extends Activity {
             if (buttonPiP != null)
                 Utils.setButtonEnabled(this, buttonPiP, true);
 
+            Utils.setButtonEnabled(this, buttonAspectRatio, true);
+
             player.setHandleAudioBecomingNoisy(true);
             mediaSession.setActive(true);
         } else {
@@ -451,6 +477,7 @@ public class PlayerActivity extends Activity {
             mPrefs.updateBrightness(mBrightnessControl.currentBrightnessLevel);
             mPrefs.updateSubtitleTrack(getSelectedTrack(C.TRACK_TYPE_TEXT));
             mPrefs.updateAudioTrack(getSelectedTrack(C.TRACK_TYPE_AUDIO));
+            mPrefs.updateResizeMode(playerView.getResizeMode());
 
             if (player.isPlaying()) {
                 restorePlayState = true;

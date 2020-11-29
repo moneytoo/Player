@@ -136,4 +136,10 @@ class Utils {
                         (float) context.getResources().getInteger(R.integer.exo_media_button_opacity_percentage_disabled) / 100
                 );
     }
+
+    public static void showText(final CustomStyledPlayerView playerView, final String text) {
+        playerView.removeCallbacks(playerView.textClearRunnable);
+        playerView.setCustomErrorMessage(text);
+        playerView.postDelayed(playerView.textClearRunnable, 1200);
+    }
 }

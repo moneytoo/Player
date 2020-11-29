@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
+
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
@@ -20,6 +22,7 @@ class Prefs {
     private static final String PREF_KEY_SUBTITLE_URI = "subtitleUri";
     private static final String PREF_KEY_AUDIO_TRACK = "audioTrack";
     private static final String PREF_KEY_SUBTITLE_TRACK = "subtitleTrack";
+    private static final String PREF_KEY_RESIZE_MODE = "resizeMode";
 
     Context mContext;
     SharedPreferences mSharedPreferences;
@@ -27,6 +30,7 @@ class Prefs {
     public Uri mediaUri;
     public Uri subtitleUri;
     public String mediaType;
+    public int resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT;
 
     public int subtitleTrack = -1;
     public int audioTrack = -1;
@@ -56,6 +60,8 @@ class Prefs {
             audioTrack = mSharedPreferences.getInt(PREF_KEY_AUDIO_TRACK, audioTrack);
         if (mSharedPreferences.contains(PREF_KEY_SUBTITLE_TRACK))
             subtitleTrack = mSharedPreferences.getInt(PREF_KEY_SUBTITLE_TRACK, subtitleTrack);
+        if (mSharedPreferences.contains(PREF_KEY_RESIZE_MODE))
+            resizeMode = mSharedPreferences.getInt(PREF_KEY_RESIZE_MODE, resizeMode);
     }
 
     public void updateMedia(final Uri uri, final String type) {
@@ -64,6 +70,7 @@ class Prefs {
         updateSubtitle(null);
         updateAudioTrack(-1);
         updateSubtitleTrack(-1);
+        updateResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
 
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         if (uri == null)
@@ -166,4 +173,10 @@ class Prefs {
         sharedPreferencesEditor.commit();
     }
 
+    public void updateResizeMode(final int mode) {
+        this.resizeMode = mode;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        sharedPreferencesEditor.putInt(PREF_KEY_RESIZE_MODE, resizeMode);
+        sharedPreferencesEditor.commit();
+    }
 }
