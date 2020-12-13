@@ -24,7 +24,7 @@ Actual features of this Player:
 
 To load an external (non-embedded) subtitles, long press the file open action in the bottom bar.
 
-Donate: [PayPal](https://paypal.me/MarcelDopita)
+Donate: [PayPal](https://paypal.me/MarcelDopita) | [Bitcoin](bitcoin:BC1Q9U2EZGSNUG995FV0M4VAXA90UJJWLUCP78W4N0)
 
 ## Download
 
