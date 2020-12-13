@@ -24,6 +24,8 @@ Actual features of this Player:
 
 To load an external (non-embedded) subtitles, long press the file open action in the bottom bar.
 
+Donate: [PayPal](https://paypal.me/MarcelDopita)
+
 ## Download
 
-Available at the [Play Store](https://play.google.com/store/apps/details?id=com.brouken.player)
+Available on the [Play Store](https://play.google.com/store/apps/details?id=com.brouken.player)
