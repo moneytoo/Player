@@ -86,6 +86,9 @@ public class PlayerActivity extends Activity {
     private boolean restoreOrientationLock;
     private boolean restorePlayState;
 
+    final Rational rationalLimitWide = new Rational(239, 100);
+    final Rational rationalLimitTall = new Rational(100, 239);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -195,8 +198,16 @@ public class PlayerActivity extends Activity {
 
                     final PictureInPictureParams.Builder pictureInPictureParamsBuilder = new PictureInPictureParams.Builder()
                             .setActions(new ArrayList<>(Arrays.asList(remoteAction)));
-                    if (format != null)
-                        pictureInPictureParamsBuilder.setAspectRatio(new Rational(format.width, format.height));
+                    if (format != null) {
+                        Rational rational = new Rational(format.width, format.height);
+
+                        if (rational.floatValue() > rationalLimitWide.floatValue())
+                            rational = rationalLimitWide;
+                        else if (rational.floatValue() < rationalLimitTall.floatValue())
+                            rational = rationalLimitTall;
+
+                        pictureInPictureParamsBuilder.setAspectRatio(rational);
+                    }
                     PlayerActivity.this.setPictureInPictureParams(pictureInPictureParamsBuilder.build());
                     PlayerActivity.this.enterPictureInPictureMode();
                 }
