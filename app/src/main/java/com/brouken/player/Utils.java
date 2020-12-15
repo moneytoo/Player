@@ -33,7 +33,7 @@ class Utils {
                 final InputStream inputStream = context.getContentResolver().openInputStream(uri);
                 inputStream.close();
                 return true;
-            } catch (IOException | SecurityException e) {
+            } catch (Exception e) {
                 return false;
             }
         }
