@@ -22,4 +22,5 @@ Donate: [PayPal](https://paypal.me/MarcelDopita) | [Bitcoin](bitcoin:BC1Q9U2EZGS
 
 ## Download
 
-Available on the [Play Store](https://play.google.com/store/apps/details?id=com.brouken.player) | [F-Droid](https://f-droid.org/en/packages/com.brouken.player/)
+[<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="75">](https://play.google.com/store/apps/details?id=com.brouken.player)
+[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="75">](https://f-droid.org/packages/com.brouken.player/)
