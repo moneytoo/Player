@@ -15,7 +15,6 @@
         <activity
             android:name=".PlayerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:screenOrientation="sensorLandscape"
             android:supportsPictureInPicture="true"
             android:launchMode="singleInstance">
             <intent-filter>

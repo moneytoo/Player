@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.UriPermission;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Color;
@@ -33,6 +34,7 @@ import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.accessibility.CaptioningManager;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -53,6 +55,7 @@ import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.StyledPlayerControlView;
+import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.util.MimeTypes;
 
 import java.util.ArrayList;
@@ -93,6 +96,13 @@ public class PlayerActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+
+        mPrefs = new Prefs(this);
+        if (getIntent().getData() != null) {
+            mPrefs.updateMedia(getIntent().getData(), getIntent().getType());
+        }
+
+        Utils.setOrientation(this, mPrefs.orientation);
 
         mContext = getApplicationContext();
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
@@ -158,10 +168,8 @@ public class PlayerActivity extends Activity {
         });
         */
 
-        LinearLayout controls = playerView.findViewById(R.id.exo_basic_controls);
         ImageButton buttonOpen = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
         buttonOpen.setImageResource(R.drawable.ic_baseline_folder_open_24);
-        controls.addView(buttonOpen, 0);
 
         buttonOpen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -182,7 +190,6 @@ public class PlayerActivity extends Activity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
             buttonPiP = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
             buttonPiP.setImageResource(R.drawable.ic_baseline_picture_in_picture_alt_24);
-            controls.addView(buttonPiP, 5);
 
             buttonPiP.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -199,7 +206,11 @@ public class PlayerActivity extends Activity {
                     final PictureInPictureParams.Builder pictureInPictureParamsBuilder = new PictureInPictureParams.Builder()
                             .setActions(new ArrayList<>(Arrays.asList(remoteAction)));
                     if (format != null) {
-                        Rational rational = new Rational(format.width, format.height);
+                        Rational rational;
+                        if (Utils.isPortrait(format))
+                            rational = new Rational(format.height, format.width);
+                        else
+                            rational = new Rational(format.width, format.height);
 
                         if (rational.floatValue() > rationalLimitWide.floatValue())
                             rational = rationalLimitWide;
@@ -218,7 +229,6 @@ public class PlayerActivity extends Activity {
 
         buttonAspectRatio = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
         buttonAspectRatio.setImageResource(R.drawable.ic_baseline_aspect_ratio_24);
-        controls.addView(buttonAspectRatio, 5);
         buttonAspectRatio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -236,6 +246,20 @@ public class PlayerActivity extends Activity {
         });
         Utils.setButtonEnabled(this, buttonAspectRatio, false);
 
+        ImageButton buttonRotation = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
+        buttonRotation.setImageResource(R.drawable.ic_qs_auto_rotate);
+        buttonRotation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPrefs.orientation = Utils.getNextOrientation(mPrefs.orientation);
+                Utils.setOrientation(PlayerActivity.this, mPrefs.orientation);
+                Utils.showText(playerView, mPrefs.orientation.description, 2500);
+
+                // Keep controller UI visible - alternative to resetHideCallbacks()
+                playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+            }
+        });
+
         int padding = getResources().getDimensionPixelOffset(R.dimen.exo_time_view_padding);
         FrameLayout centerView = playerView.findViewById(R.id.exo_center_view);
         titleView = new TextView(this);
@@ -251,11 +275,6 @@ public class PlayerActivity extends Activity {
 
         playbackStateListener = new PlaybackStateListener();
 
-        mPrefs = new Prefs(this);
-        if (getIntent().getData() != null) {
-            mPrefs.updateMedia(getIntent().getData(), getIntent().getType());
-        }
-
         mBrightnessControl = new BrightnessControl(this);
         mBrightnessControl.currentBrightnessLevel = mPrefs.brightness;
         mBrightnessControl.setScreenBrightness(mBrightnessControl.levelToBrightness(mBrightnessControl.currentBrightnessLevel));
@@ -266,11 +285,37 @@ public class PlayerActivity extends Activity {
             playerView.getSubtitleView().setStyle(captionStyle);
         }
 
-        // Temporarily disable buggy controls on Lollipop: https://github.com/google/ExoPlayer/issues/8272
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
-            final ImageButton overflowButton = playerView.findViewById(R.id.exo_overflow_show);
-            overflowButton.setVisibility(View.GONE);
+        setSubtitleTextSizeNormal();
+
+        final LinearLayout exoBasicControls = playerView.findViewById(R.id.exo_basic_controls);
+        final LinearLayout exoExtraControls = playerView.findViewById(R.id.exo_extra_controls);
+
+        final ImageButton exoSubtitle = exoBasicControls.findViewById(R.id.exo_subtitle);
+        exoBasicControls.removeView(exoSubtitle);
+
+        final ImageButton exoSettings = exoExtraControls.findViewById(R.id.exo_settings);
+        exoExtraControls.removeView(exoSettings);
+
+        exoBasicControls.setVisibility(View.GONE);
+        exoExtraControls.setVisibility(View.GONE);
+
+        final FrameLayout exoBottomBar = playerView.findViewById(R.id.exo_bottom_bar);
+        final HorizontalScrollView horizontalScrollView = (HorizontalScrollView) getLayoutInflater().inflate(R.layout.controls, null);
+        final LinearLayout controls = horizontalScrollView.findViewById(R.id.controls);
+
+        controls.addView(buttonOpen);
+        controls.addView(exoSubtitle);
+        controls.addView(buttonAspectRatio);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+            controls.addView(buttonPiP);
         }
+        controls.addView(buttonRotation);
+        // Temporarily disable buggy controls on Lollipop: https://github.com/google/ExoPlayer/issues/8272
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            controls.addView(exoSettings);
+        }
+
+        exoBottomBar.addView(horizontalScrollView);
     }
 
 
@@ -322,6 +367,7 @@ public class PlayerActivity extends Activity {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
 
         if (isInPictureInPictureMode) {
+            setSubtitleTextSizePiP();
             mReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
@@ -334,6 +380,7 @@ public class PlayerActivity extends Activity {
             };
             registerReceiver(mReceiver, new IntentFilter(ACTION_MEDIA_TOGGLE_PLAY));
         } else {
+            setSubtitleTextSizeNormal();
             unregisterReceiver(mReceiver);
             mReceiver = null;
         }
@@ -489,6 +536,7 @@ public class PlayerActivity extends Activity {
             mPrefs.updateSubtitleTrack(getSelectedTrack(C.TRACK_TYPE_TEXT));
             mPrefs.updateAudioTrack(getSelectedTrack(C.TRACK_TYPE_AUDIO));
             mPrefs.updateResizeMode(playerView.getResizeMode());
+            mPrefs.updateOrientation();
 
             if (player.isPlaying()) {
                 restorePlayState = true;
@@ -507,6 +555,19 @@ public class PlayerActivity extends Activity {
 
         @Override
         public void onPlaybackStateChanged(int state) {
+            if (state == Player.STATE_READY) {
+                final Format format = player.getVideoFormat();
+                if (format != null) {
+                    if (mPrefs.orientation == Utils.Orientation.VIDEO) {
+                        if (Utils.isPortrait(format)) {
+                            PlayerActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+                        } else {
+                            PlayerActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+                        }
+                    }
+                }
+            }
+
             if (setTracks && state == Player.STATE_READY) {
                 setTracks = false;
                 if (mPrefs.audioTrack >= 0)
@@ -597,4 +658,15 @@ public class PlayerActivity extends Activity {
         }
         return -1;
     }
+
+    void setSubtitleTextSizeNormal() {
+        // Set universal text size as fraction size doesn't work well in portrait
+        playerView.getSubtitleView().setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+    }
+
+    void setSubtitleTextSizePiP() {
+        playerView.getSubtitleView().setFractionalTextSize(SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * 2);
+    }
+
+
 }

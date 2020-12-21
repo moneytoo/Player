@@ -1,6 +1,8 @@
 package com.brouken.player;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.media.AudioManager;
@@ -9,10 +11,10 @@ import android.provider.OpenableColumns;
 import android.view.View;
 import android.widget.ImageButton;
 
+import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.util.MimeTypes;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 
 class Utils {
@@ -137,9 +139,67 @@ class Utils {
                 );
     }
 
-    public static void showText(final CustomStyledPlayerView playerView, final String text) {
+    public static void showText(final CustomStyledPlayerView playerView, final String text, final long timeout) {
         playerView.removeCallbacks(playerView.textClearRunnable);
         playerView.setCustomErrorMessage(text);
-        playerView.postDelayed(playerView.textClearRunnable, 1200);
+        playerView.postDelayed(playerView.textClearRunnable, timeout);
+    }
+
+    public static void showText(final CustomStyledPlayerView playerView, final String text) {
+        showText(playerView, text, 1200);
+    }
+
+    public enum Orientation {
+        VIDEO(0, "Video orientation"),
+        SENSOR(1, "Auto-rotate");
+
+        public final int value;
+        public final String description;
+
+        private Orientation(int type, String description) {
+            this.value = type;
+            this.description = description;
+        }
+    }
+
+    public static void setOrientation(Activity activity, Orientation orientation) {
+        switch (orientation) {
+            case VIDEO:
+                if (PlayerActivity.player != null) {
+                    final Format format = PlayerActivity.player.getVideoFormat();
+                    if (format != null && isPortrait(format))
+                        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+                    else
+                        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+                } else {
+                    activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+                }
+
+                break;
+            case SENSOR:
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                break;
+            /*case SYSTEM:
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                break;*/
+        }
+    }
+
+    public static Orientation getNextOrientation(Orientation orientation) {
+        switch (orientation) {
+            case VIDEO:
+                return Orientation.SENSOR;
+            case SENSOR:
+            default:
+                return Orientation.VIDEO;
+        }
+    }
+
+    public static boolean isPortrait(Format format) {
+        if (format.rotationDegrees == 90 || format.rotationDegrees == 270) {
+            return format.width > format.height;
+        } else {
+            return format.height > format.width;
+        }
     }
 }
