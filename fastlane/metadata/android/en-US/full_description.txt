@@ -2,20 +2,14 @@ Android video player based on ExoPlayer library. It uses ExoPlayer's ffmpeg exte
 
 It properly synces audio with video track when using Bluetooth earphones/speaker.
 
-Features already provided by ExoPlayer:
+Player features:
 
- * Audio track selection
- * Subtitle selection (embedded only)
+ * Audio/subtitle track selection
  * Playback speed control
-
-Actual features of this Player:
-
  * Horizontal swipe to quickly seek
  * Vertical swipe to change brightness (left) / volume (right)
- * Remember last opened file, brightness
  * PiP (Picture in Picture) on Android 8 or higher
  * Resize (fit/crop)
- * Video title etc.
  * No ads, tracking or even the Internet permission
 
 To load an external (non-embedded) subtitles, long press the file open action in the bottom bar.

@@ -1,0 +1,2 @@
+- Add rotate action
+- Bug fixes
