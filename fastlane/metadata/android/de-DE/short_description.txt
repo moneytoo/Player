@@ -1,0 +1,1 @@
+Einfacher Videoplayer basierend auf ExoPlayer Programmbibliothek
