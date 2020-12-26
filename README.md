@@ -10,7 +10,7 @@ It properly synces audio with video track when using Bluetooth earphones/speaker
 
  * **Audio**: Vorbis, Opus, FLAC, ALAC, PCM/WAVE (μ-law, A-law), MP1, MP2, MP3, AMR (NB, WB), AAC (LC, ELD, HE; xHE on Android 9+), AC-3, E-AC-3, DTS, DTS-HD, TrueHD
  * **Video**: H.263, H.264 AVC (Baseline Profile; Main Profile on Android 6+), H.265 HEVC, MPEG-4 SP, VP8, VP9, AV1
- * **Containers**: MP4, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV
+ * **Containers**: MP4, MOV, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV
  * **Subtitles**: SRT, SSA, ASS, TTML, VTT
 
 HDR and HDR10+ video playback on compatible/supported hardware.
