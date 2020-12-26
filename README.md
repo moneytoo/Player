@@ -13,7 +13,7 @@ It properly synces audio with video track when using Bluetooth earphones/speaker
  * **Containers**: MP4, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV
  * **Subtitles**: SRT, SSA, ASS, TTML, VTT
 
-HDR and HDR10+ support on compatible/supported hardware.
+HDR and HDR10+ video playback on compatible/supported hardware.
 
 ## Features
 
