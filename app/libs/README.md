@@ -1,4 +1,4 @@
-This binary extension was build with following decoders:
+The binary ffmpeg extension was build with following decoders:
 
 ```
 ENABLED_DECODERS=(vorbis opus flac alac pcm_mulaw pcm_alaw mp3 amrnb amrwb aac ac3 eac3 dca mlp truehd)
