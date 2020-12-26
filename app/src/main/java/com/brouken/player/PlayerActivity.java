@@ -596,6 +596,9 @@ public class PlayerActivity extends Activity {
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("video/*");
 
+        // http://stackoverflow.com/a/31334967/1615876
+        intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
+
         if (Build.VERSION.SDK_INT >= 26)
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
 
@@ -608,6 +611,9 @@ public class PlayerActivity extends Activity {
         final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
+
+        // http://stackoverflow.com/a/31334967/1615876
+        intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
 
         final String[] supportedMimeTypes = {
                 MimeTypes.APPLICATION_SUBRIP,
