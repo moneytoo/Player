@@ -179,7 +179,7 @@ public class PlayerActivity extends Activity {
         */
 
         buttonOpen = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
-        buttonOpen.setImageResource(R.drawable.ic_baseline_folder_open_24);
+        buttonOpen.setImageResource(R.drawable.ic_folder_open_24dp);
         buttonOpen.setId(View.generateViewId());
 
         buttonOpen.setOnClickListener(new View.OnClickListener() {
@@ -203,7 +203,7 @@ public class PlayerActivity extends Activity {
             updatePictureInPictureActions(R.drawable.ic_play_arrow_24dp, "Play", CONTROL_TYPE_PLAY, REQUEST_PLAY);
 
             buttonPiP = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
-            buttonPiP.setImageResource(R.drawable.ic_baseline_picture_in_picture_alt_24);
+            buttonPiP.setImageResource(R.drawable.ic_picture_in_picture_alt_24dp);
 
             buttonPiP.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -237,7 +237,7 @@ public class PlayerActivity extends Activity {
         }
 
         buttonAspectRatio = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
-        buttonAspectRatio.setImageResource(R.drawable.ic_baseline_aspect_ratio_24);
+        buttonAspectRatio.setImageResource(R.drawable.ic_aspect_ratio_24dp);
         buttonAspectRatio.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -256,7 +256,7 @@ public class PlayerActivity extends Activity {
         Utils.setButtonEnabled(this, buttonAspectRatio, false);
 
         ImageButton buttonRotation = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
-        buttonRotation.setImageResource(R.drawable.ic_qs_auto_rotate);
+        buttonRotation.setImageResource(R.drawable.ic_auto_rotate_24dp);
         buttonRotation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

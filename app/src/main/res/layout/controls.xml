@@ -1,18 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<HorizontalScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/controls_scroll_view"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    android:layout_gravity="bottom|end"
     android:paddingStart="@dimen/exo_time_view_width"
-    android:scrollbars="none"
-    android:layout_gravity="bottom|end">
+    android:scrollbars="none">
+
     <LinearLayout
         android:id="@+id/controls"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:orientation="horizontal"
-        android:layoutDirection="ltr">
-    </LinearLayout>
+        android:layoutDirection="ltr"
+        android:orientation="horizontal"></LinearLayout>
 </HorizontalScrollView>
