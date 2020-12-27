@@ -1,14 +1,12 @@
 package com.brouken.player;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
 import android.app.RemoteAction;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.UriPermission;
@@ -40,6 +38,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.getkeepsafe.taptargetview.TapTarget;
+import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.Format;
@@ -78,11 +78,13 @@ public class PlayerActivity extends Activity {
     public static BrightnessControl mBrightnessControl;
     public static boolean haveMedia;
     private boolean setTracks;
+    public static boolean controllerVisible;
 
     public static final int CONTROLLER_TIMEOUT = 3500;
     private static final String ACTION_MEDIA_TOGGLE_PLAY = "media_toggle_play";
 
     private TextView titleView;
+    private ImageButton buttonOpen;
     private ImageButton buttonPiP;
     private ImageButton buttonAspectRatio;
 
@@ -168,8 +170,9 @@ public class PlayerActivity extends Activity {
         });
         */
 
-        ImageButton buttonOpen = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
+        buttonOpen = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
         buttonOpen.setImageResource(R.drawable.ic_baseline_folder_open_24);
+        buttonOpen.setId(View.generateViewId());
 
         buttonOpen.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -316,6 +319,43 @@ public class PlayerActivity extends Activity {
         }
 
         exoBottomBar.addView(horizontalScrollView);
+
+        playerView.setControllerVisibilityListener(new StyledPlayerControlView.VisibilityListener() {
+            @Override
+            public void onVisibilityChange(int visibility) {
+                controllerVisible = visibility == View.VISIBLE;
+
+                // https://developer.android.com/training/system-ui/immersive
+                if (visibility == View.VISIBLE) {
+                    Utils.showSystemUi(playerView);
+                } else {
+                    Utils.hideSystemUi(playerView);
+                }
+
+                if (controllerVisible && playerView.isControllerFullyVisible()) {
+                    if (mPrefs.firstRun) {
+                        TapTargetView.showFor(PlayerActivity.this,
+                                TapTarget.forView(buttonOpen, "Choose a video to play", "Tap to open a video file. Long tap to load external subtitles.")
+                                        .outerCircleColor(R.color.green)
+                                        .targetCircleColor(R.color.white)
+                                        .titleTextSize(22)
+                                        .titleTextColor(R.color.white)
+                                        .descriptionTextSize(14)
+                                        .cancelable(true),
+                                new TapTargetView.Listener() {
+                                    @Override
+                                    public void onTargetClick(TapTargetView view) {
+                                        super.onTargetClick(view);
+                                        buttonOpen.performClick();
+                                    }
+                                });
+                        // TODO: Explain gestures?
+                        //  "Use vertical and horizontal gestures to change brightness, volume and seek in video"
+                        mPrefs.markFirstRun();
+                    }
+                }
+            }
+        });
     }
 
 
@@ -443,20 +483,6 @@ public class PlayerActivity extends Activity {
 
     private void initializePlayer() {
         haveMedia = mPrefs.mediaUri != null && Utils.fileExists(this, mPrefs.mediaUri);
-
-        if (mPrefs.firstRun) {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage("To play a video, open it from any file manager or use the action in the bottom bar.\nUse vertical and horizontal gestures to change brightness, volume and seek in video.");
-            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    dialogInterface.dismiss();
-                }
-            });
-            final AlertDialog dialog = builder.create();
-            dialog.show();
-            mPrefs.markFirstRun();
-        }
 
         if (player == null) {
             trackSelector = new DefaultTrackSelector(this);

@@ -32,4 +32,5 @@ dependencies {
     implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion"
     implementation "com.google.android.exoplayer:extension-mediasession:$exoplayerVersion"
     implementation fileTree(dir: "libs", include: ["*.aar"])
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0'
 }

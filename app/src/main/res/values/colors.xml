@@ -4,4 +4,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="exo_bottom_bar_background">#66000000</color>
     <color name="exo_black_opacity_30">#00000000</color>
+    <color name="green">#3DDC84</color>
 </resources>

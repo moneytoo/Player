@@ -5,17 +5,13 @@ import android.media.AudioManager;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
 
 import androidx.core.view.GestureDetectorCompat;
 
 import com.google.android.exoplayer2.SeekParameters;
-import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
 
-public final class CustomStyledPlayerView extends StyledPlayerView implements StyledPlayerControlView.VisibilityListener, GestureDetector.OnGestureListener {
-
-    private boolean controllerVisible;
+public final class CustomStyledPlayerView extends StyledPlayerView implements GestureDetector.OnGestureListener {
 
     private GestureDetectorCompat mDetector;
 
@@ -48,7 +44,6 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
 
     public CustomStyledPlayerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setControllerVisibilityListener(this);
         mDetector = new GestureDetectorCompat(context,this);
 
         mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
@@ -81,18 +76,6 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
     }
 
     @Override
-    public void onVisibilityChange(int visibility) {
-        controllerVisible = visibility == View.VISIBLE;
-
-        // https://developer.android.com/training/system-ui/immersive
-        if (visibility == View.VISIBLE) {
-            Utils.showSystemUi(this);
-        } else {
-            Utils.hideSystemUi(this);
-        }
-    }
-
-    @Override
     public boolean onDown(MotionEvent motionEvent) {
         gestureScrollY = 0;
         gestureScrollX = 0;
@@ -107,7 +90,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
 
     @Override
     public boolean onSingleTapUp(MotionEvent motionEvent) {
-        if (!controllerVisible) {
+        if (!PlayerActivity.controllerVisible) {
             showController();
             return true;
         } else if (getControllerHideOnTouch()) {
@@ -137,7 +120,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements St
             if (Math.abs(gestureScrollX) > SCROLL_STEP) {
 
                 // Make controller always visible and not hiding during seek
-                if (!controllerVisible)
+                if (!PlayerActivity.controllerVisible)
                     showController();
                 setControllerShowTimeoutMs(0);
 
