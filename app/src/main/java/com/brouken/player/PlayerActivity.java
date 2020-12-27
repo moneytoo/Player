@@ -1,5 +1,6 @@
 package com.brouken.player;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
@@ -74,6 +75,8 @@ public class PlayerActivity extends Activity {
     private CustomStyledPlayerView playerView;
     public static SimpleExoPlayer player;
 
+    private Object mPictureInPictureParamsBuilder;
+
     private Prefs mPrefs;
     public static BrightnessControl mBrightnessControl;
     public static boolean haveMedia;
@@ -81,7 +84,12 @@ public class PlayerActivity extends Activity {
     public static boolean controllerVisible;
 
     public static final int CONTROLLER_TIMEOUT = 3500;
-    private static final String ACTION_MEDIA_TOGGLE_PLAY = "media_toggle_play";
+    private static final String ACTION_MEDIA_CONTROL = "media_control";
+    private static final String EXTRA_CONTROL_TYPE = "control_type";
+    private static final int REQUEST_PLAY = 1;
+    private static final int REQUEST_PAUSE = 2;
+    private static final int CONTROL_TYPE_PLAY = 1;
+    private static final int CONTROL_TYPE_PAUSE = 2;
 
     private TextView titleView;
     private ImageButton buttonOpen;
@@ -190,7 +198,10 @@ public class PlayerActivity extends Activity {
             }
         });
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+        if (isPiPSupported()) {
+            mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
+            updatePictureInPictureActions(R.drawable.ic_play_arrow_24dp, "Play", CONTROL_TYPE_PLAY, REQUEST_PLAY);
+
             buttonPiP = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
             buttonPiP.setImageResource(R.drawable.ic_baseline_picture_in_picture_alt_24);
 
@@ -202,12 +213,7 @@ public class PlayerActivity extends Activity {
                     playerView.hideController();
 
                     final Format format = player.getVideoFormat();
-                    final PendingIntent pendingIntent = PendingIntent.getBroadcast(PlayerActivity.this, 0, new Intent(ACTION_MEDIA_TOGGLE_PLAY), 0);
-                    final Icon icon = Icon.createWithResource(PlayerActivity.this, R.drawable.ic_baseline_not_started_10);
-                    final RemoteAction remoteAction = new RemoteAction(icon, "Play/Pause", "Play or pause", pendingIntent);
 
-                    final PictureInPictureParams.Builder pictureInPictureParamsBuilder = new PictureInPictureParams.Builder()
-                            .setActions(new ArrayList<>(Arrays.asList(remoteAction)));
                     if (format != null) {
                         Rational rational;
                         if (Utils.isPortrait(format))
@@ -220,10 +226,10 @@ public class PlayerActivity extends Activity {
                         else if (rational.floatValue() < rationalLimitTall.floatValue())
                             rational = rationalLimitTall;
 
-                        pictureInPictureParamsBuilder.setAspectRatio(rational);
+                        ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setAspectRatio(rational);
                     }
-                    PlayerActivity.this.setPictureInPictureParams(pictureInPictureParamsBuilder.build());
-                    PlayerActivity.this.enterPictureInPictureMode();
+                    setPictureInPictureParams(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
+                    enterPictureInPictureMode();
                 }
             });
 
@@ -309,7 +315,7 @@ public class PlayerActivity extends Activity {
         controls.addView(buttonOpen);
         controls.addView(exoSubtitle);
         controls.addView(buttonAspectRatio);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)) {
+        if (isPiPSupported()) {
             controls.addView(buttonPiP);
         }
         controls.addView(buttonRotation);
@@ -411,14 +417,21 @@ public class PlayerActivity extends Activity {
             mReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (player.isPlaying()) {
-                        player.pause();
-                    } else {
-                        player.play();
+                    if (intent == null || !ACTION_MEDIA_CONTROL.equals(intent.getAction())) {
+                        return;
+                    }
+
+                    switch (intent.getIntExtra(EXTRA_CONTROL_TYPE, 0)) {
+                        case CONTROL_TYPE_PLAY:
+                            player.play();
+                            break;
+                        case CONTROL_TYPE_PAUSE:
+                            player.pause();
+                            break;
                     }
                 }
             };
-            registerReceiver(mReceiver, new IntentFilter(ACTION_MEDIA_TOGGLE_PLAY));
+            registerReceiver(mReceiver, new IntentFilter(ACTION_MEDIA_CONTROL));
         } else {
             setSubtitleTextSizeNormal();
             unregisterReceiver(mReceiver);
@@ -577,6 +590,14 @@ public class PlayerActivity extends Activity {
         @Override
         public void onIsPlayingChanged(boolean isPlaying) {
             playerView.setKeepScreenOn(isPlaying);
+
+            if (isPiPSupported()) {
+                if (isPlaying) {
+                    updatePictureInPictureActions(R.drawable.ic_pause_24dp, "Pause", CONTROL_TYPE_PAUSE, REQUEST_PAUSE);
+                } else {
+                    updatePictureInPictureActions(R.drawable.ic_play_arrow_24dp, "Play", CONTROL_TYPE_PLAY, REQUEST_PLAY);
+                }
+            }
         }
 
         @Override
@@ -700,5 +721,19 @@ public class PlayerActivity extends Activity {
         playerView.getSubtitleView().setFractionalTextSize(SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * 2);
     }
 
+    boolean isPiPSupported() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
+    }
+
+    @TargetApi(26)
+    void updatePictureInPictureActions(final int iconId, final String title, final int controlType, final int requestCode) {
+        final ArrayList<RemoteAction> actions = new ArrayList<>();
+        final PendingIntent intent = PendingIntent.getBroadcast(PlayerActivity.this, requestCode,
+                        new Intent(ACTION_MEDIA_CONTROL).putExtra(EXTRA_CONTROL_TYPE, controlType), 0);
+        final Icon icon = Icon.createWithResource(PlayerActivity.this, iconId);
+        actions.add(new RemoteAction(icon, title, title, intent));
+        ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setActions(actions);
+        setPictureInPictureParams(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
+    }
 
 }
