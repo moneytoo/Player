@@ -210,8 +210,7 @@ public class PlayerActivity extends Activity {
 
                     ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setAspectRatio(rational);
                 }
-                setPictureInPictureParams(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
-                enterPictureInPictureMode();
+                enterPictureInPictureMode(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
             });
 
             Utils.setButtonEnabled(this, buttonPiP, false);
