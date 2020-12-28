@@ -27,10 +27,9 @@ android {
 }
 
 dependencies {
-    def exoplayerVersion = '2.12.2'
-    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayerVersion"
-    implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion"
-    implementation "com.google.android.exoplayer:extension-mediasession:$exoplayerVersion"
-    implementation fileTree(dir: "libs", include: ["*.aar"])
+    implementation 'com.google.android.exoplayer:exoplayer-core:2.12.2'
+    implementation 'com.google.android.exoplayer:exoplayer-ui:2.12.2'
+    implementation 'com.google.android.exoplayer:extension-mediasession:2.12.2'
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0'
+    implementation fileTree(dir: "libs", include: ["*.aar"])
 }
