@@ -13,5 +13,5 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layoutDirection="ltr"
-        android:orientation="horizontal"></LinearLayout>
+        android:orientation="horizontal" />
 </HorizontalScrollView>

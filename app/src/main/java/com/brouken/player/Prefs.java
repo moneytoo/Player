@@ -25,8 +25,8 @@ class Prefs {
     private static final String PREF_KEY_RESIZE_MODE = "resizeMode";
     private static final String PREF_KEY_ORIENTATION = "orientation";
 
-    Context mContext;
-    SharedPreferences mSharedPreferences;
+    final Context mContext;
+    final SharedPreferences mSharedPreferences;
 
     public Uri mediaUri;
     public Uri subtitleUri;
@@ -151,9 +151,9 @@ class Prefs {
     public long getPosition() {
         Object val = positions.get(mediaUri.toString());
         if (val == null)
-            return 0l;
+            return 0L;
         else
-            return (long) positions.get(mediaUri.toString());
+            return (long) val;
     }
 
     public void updateAudioTrack(final int track) {

@@ -22,9 +22,11 @@ class Utils {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
-    public static int pxToDp(int px) {
-        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
-    }
+//
+//    public static int pxToDp(int px) {
+//        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
+//    }
+//
 
     public static boolean fileExists(final Context context, final Uri uri) {
         if ("file".equals(uri.getScheme())) {
@@ -67,13 +69,10 @@ class Utils {
     public static String getFileName(Context context, Uri uri) {
         String result = null;
         if (uri.getScheme().equals("content")) {
-            Cursor cursor = context.getContentResolver().query(uri, null, null, null, null);
-            try {
+            try (Cursor cursor = context.getContentResolver().query(uri, null, null, null, null)) {
                 if (cursor != null && cursor.moveToFirst()) {
                     result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
                 }
-            } finally {
-                cursor.close();
             }
         }
         if (result == null) {
@@ -118,8 +117,7 @@ class Utils {
 
             if (len >= 2 && len <= 6) {
                 // TODO: Validate lang
-                final String lang = path.substring(prev + 1, last);
-                return lang;
+                return path.substring(prev + 1, last);
             }
         }
 
@@ -156,7 +154,7 @@ class Utils {
         public final int value;
         public final String description;
 
-        private Orientation(int type, String description) {
+        Orientation(int type, String description) {
             this.value = type;
             this.description = description;
         }

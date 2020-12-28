@@ -60,11 +60,10 @@ import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.util.MimeTypes;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 
 public class PlayerActivity extends Activity {
 
-    private Context mContext;
     private PlaybackStateListener playbackStateListener;
     private BroadcastReceiver mReceiver;
     private AudioManager mAudioManager;
@@ -114,7 +113,6 @@ public class PlayerActivity extends Activity {
 
         Utils.setOrientation(this, mPrefs.orientation);
 
-        mContext = getApplicationContext();
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         playerView = findViewById(R.id.video_view);
 
@@ -131,34 +129,28 @@ public class PlayerActivity extends Activity {
         timeBar.setBufferedColor(0x33FFFFFF);
 
         final StyledPlayerControlView controlView = playerView.findViewById(R.id.exo_controller);
-        controlView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
-                if (windowInsets != null) {
-                    view.setPadding(windowInsets.getSystemWindowInsetLeft(), windowInsets.getSystemWindowInsetTop(),
-                            windowInsets.getSystemWindowInsetRight(), windowInsets.getSystemWindowInsetBottom());
-                    windowInsets.consumeSystemWindowInsets();
-                }
-                return windowInsets;
+        controlView.setOnApplyWindowInsetsListener((view, windowInsets) -> {
+            if (windowInsets != null) {
+                view.setPadding(windowInsets.getSystemWindowInsetLeft(), windowInsets.getSystemWindowInsetTop(),
+                        windowInsets.getSystemWindowInsetRight(), windowInsets.getSystemWindowInsetBottom());
+                windowInsets.consumeSystemWindowInsets();
             }
+            return windowInsets;
         });
 
         final View exoErrorMessage = playerView.findViewById(R.id.exo_error_message);
-        exoErrorMessage.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
-                if (windowInsets != null) {
-                    final int bottom = (int) getResources().getDimension(R.dimen.exo_error_message_margin_bottom);
+        exoErrorMessage.setOnApplyWindowInsetsListener((view, windowInsets) -> {
+            if (windowInsets != null) {
+                final int bottom = (int) getResources().getDimension(R.dimen.exo_error_message_margin_bottom);
 
-                    final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
-                    layoutParams.setMargins(windowInsets.getSystemWindowInsetLeft() / 2, 0,
-                            windowInsets.getSystemWindowInsetRight() / 2, bottom);
-                    view.setLayoutParams(layoutParams);
+                final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
+                layoutParams.setMargins(windowInsets.getSystemWindowInsetLeft() / 2, 0,
+                        windowInsets.getSystemWindowInsetRight() / 2, bottom);
+                view.setLayoutParams(layoutParams);
 
-                    windowInsets.consumeSystemWindowInsets();
-                }
-                return windowInsets;
+                windowInsets.consumeSystemWindowInsets();
             }
+            return windowInsets;
         });
 
 
@@ -182,20 +174,12 @@ public class PlayerActivity extends Activity {
         buttonOpen.setImageResource(R.drawable.ic_folder_open_24dp);
         buttonOpen.setId(View.generateViewId());
 
-        buttonOpen.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openFile(mPrefs.mediaUri);
-            }
-        });
+        buttonOpen.setOnClickListener(view -> openFile(mPrefs.mediaUri));
 
-        buttonOpen.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                Toast.makeText(PlayerActivity.this,"Load subtitles", Toast.LENGTH_SHORT).show();
-                loadSubtitleFile(mPrefs.mediaUri);
-                return true;
-            }
+        buttonOpen.setOnLongClickListener(view -> {
+            Toast.makeText(PlayerActivity.this,"Load subtitles", Toast.LENGTH_SHORT).show();
+            loadSubtitleFile(mPrefs.mediaUri);
+            return true;
         });
 
         if (isPiPSupported()) {
@@ -205,32 +189,29 @@ public class PlayerActivity extends Activity {
             buttonPiP = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
             buttonPiP.setImageResource(R.drawable.ic_picture_in_picture_alt_24dp);
 
-            buttonPiP.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    playerView.setControllerAutoShow(false);
-                    playerView.setControllerShowTimeoutMs(0);
-                    playerView.hideController();
+            buttonPiP.setOnClickListener(view -> {
+                playerView.setControllerAutoShow(false);
+                playerView.setControllerShowTimeoutMs(0);
+                playerView.hideController();
 
-                    final Format format = player.getVideoFormat();
+                final Format format = player.getVideoFormat();
 
-                    if (format != null) {
-                        Rational rational;
-                        if (Utils.isPortrait(format))
-                            rational = new Rational(format.height, format.width);
-                        else
-                            rational = new Rational(format.width, format.height);
+                if (format != null) {
+                    Rational rational;
+                    if (Utils.isPortrait(format))
+                        rational = new Rational(format.height, format.width);
+                    else
+                        rational = new Rational(format.width, format.height);
 
-                        if (rational.floatValue() > rationalLimitWide.floatValue())
-                            rational = rationalLimitWide;
-                        else if (rational.floatValue() < rationalLimitTall.floatValue())
-                            rational = rationalLimitTall;
+                    if (rational.floatValue() > rationalLimitWide.floatValue())
+                        rational = rationalLimitWide;
+                    else if (rational.floatValue() < rationalLimitTall.floatValue())
+                        rational = rationalLimitTall;
 
-                        ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setAspectRatio(rational);
-                    }
-                    setPictureInPictureParams(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
-                    enterPictureInPictureMode();
+                    ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setAspectRatio(rational);
                 }
+                setPictureInPictureParams(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
+                enterPictureInPictureMode();
             });
 
             Utils.setButtonEnabled(this, buttonPiP, false);
@@ -238,35 +219,29 @@ public class PlayerActivity extends Activity {
 
         buttonAspectRatio = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
         buttonAspectRatio.setImageResource(R.drawable.ic_aspect_ratio_24dp);
-        buttonAspectRatio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (playerView.getResizeMode() == AspectRatioFrameLayout.RESIZE_MODE_FIT) {
-                    playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
-                    Utils.showText(playerView, "Crop");
-                } else {
-                    // Default mode
-                    playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
-                    Utils.showText(playerView, "Fit");
-                }
-                // Keep controller UI visible - alternative to resetHideCallbacks()
-                playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+        buttonAspectRatio.setOnClickListener(view -> {
+            if (playerView.getResizeMode() == AspectRatioFrameLayout.RESIZE_MODE_FIT) {
+                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
+                Utils.showText(playerView, "Crop");
+            } else {
+                // Default mode
+                playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+                Utils.showText(playerView, "Fit");
             }
+            // Keep controller UI visible - alternative to resetHideCallbacks()
+            playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
         });
         Utils.setButtonEnabled(this, buttonAspectRatio, false);
 
         ImageButton buttonRotation = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
         buttonRotation.setImageResource(R.drawable.ic_auto_rotate_24dp);
-        buttonRotation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                mPrefs.orientation = Utils.getNextOrientation(mPrefs.orientation);
-                Utils.setOrientation(PlayerActivity.this, mPrefs.orientation);
-                Utils.showText(playerView, mPrefs.orientation.description, 2500);
+        buttonRotation.setOnClickListener(view -> {
+            mPrefs.orientation = Utils.getNextOrientation(mPrefs.orientation);
+            Utils.setOrientation(PlayerActivity.this, mPrefs.orientation);
+            Utils.showText(playerView, mPrefs.orientation.description, 2500);
 
-                // Keep controller UI visible - alternative to resetHideCallbacks()
-                playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
-            }
+            // Keep controller UI visible - alternative to resetHideCallbacks()
+            playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
         });
 
         int padding = getResources().getDimensionPixelOffset(R.dimen.exo_time_view_padding);
@@ -291,7 +266,10 @@ public class PlayerActivity extends Activity {
         final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
         if (!captioningManager.isEnabled()) {
             final CaptionStyleCompat captionStyle = new CaptionStyleCompat(Color.WHITE, Color.TRANSPARENT, Color.TRANSPARENT, CaptionStyleCompat.EDGE_TYPE_OUTLINE, Color.BLACK, Typeface.DEFAULT_BOLD);
-            playerView.getSubtitleView().setStyle(captionStyle);
+
+            final SubtitleView subtitleView = playerView.getSubtitleView();
+            if (subtitleView != null)
+                playerView.getSubtitleView().setStyle(captionStyle);
         }
 
         setSubtitleTextSizeNormal();
@@ -527,13 +505,13 @@ public class PlayerActivity extends Activity {
                 final String subtitleLanguage = Utils.getSubtitleLanguage(this, mPrefs.subtitleUri);
 
                 MediaItem.Subtitle subtitle = new MediaItem.Subtitle(mPrefs.subtitleUri, subtitleMime, subtitleLanguage);
-                mediaItemBuilder.setSubtitles(new ArrayList<>(Arrays.asList(subtitle)));
+                mediaItemBuilder.setSubtitles(Collections.singletonList(subtitle));
             }
             player.setMediaItem(mediaItemBuilder.build());
 
             setTracks = true;
 
-            final boolean play = mPrefs.getPosition() == 0l;
+            final boolean play = mPrefs.getPosition() == 0L;
             player.setPlayWhenReady(play);
             if (play) {
                 playerView.hideController();
@@ -714,11 +692,15 @@ public class PlayerActivity extends Activity {
 
     void setSubtitleTextSizeNormal() {
         // Set universal text size as fraction size doesn't work well in portrait
-        playerView.getSubtitleView().setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+        final SubtitleView subtitleView = playerView.getSubtitleView();
+        if (subtitleView != null)
+            playerView.getSubtitleView().setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
     }
 
     void setSubtitleTextSizePiP() {
-        playerView.getSubtitleView().setFractionalTextSize(SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * 2);
+        final SubtitleView subtitleView = playerView.getSubtitleView();
+        if (subtitleView != null)
+            playerView.getSubtitleView().setFractionalTextSize(SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * 2);
     }
 
     boolean isPiPSupported() {

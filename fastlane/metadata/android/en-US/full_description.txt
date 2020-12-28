@@ -1,4 +1,4 @@
-Android video player based on ExoPlayer library. It uses ExoPlayer's ffmpeg extention with all its audio formats enabled (it can handle even special formats like AC3, EAC3, DTS, DTS HD, TrueHD etc.).
+Android video player based on ExoPlayer library. It uses ExoPlayer's ffmpeg extension with all its audio formats enabled (it can handle even special formats like AC3, EAC3, DTS, DTS HD, TrueHD etc.).
 
 It properly synces audio with video track when using Bluetooth earphones/speaker.
 

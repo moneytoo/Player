@@ -13,7 +13,7 @@ import com.google.android.exoplayer2.ui.StyledPlayerView;
 
 public final class CustomStyledPlayerView extends StyledPlayerView implements GestureDetector.OnGestureListener {
 
-    private GestureDetectorCompat mDetector;
+    private final GestureDetectorCompat mDetector;
 
     private Orientation gestureOrientation = Orientation.UNKNOWN;
     private float gestureScrollY = 0f;
@@ -25,14 +25,9 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     private boolean restorePlayState;
 
-    public final Runnable textClearRunnable = new Runnable() {
-        @Override
-        public void run() {
-            setCustomErrorMessage(null);
-        }
-    };
+    public final Runnable textClearRunnable = () -> setCustomErrorMessage(null);
 
-    private AudioManager mAudioManager;
+    private final AudioManager mAudioManager;
 
     public CustomStyledPlayerView(Context context) {
         this(context, null);
@@ -157,7 +152,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
             if (Math.abs(gestureScrollY) > SCROLL_STEP) {
                 gestureOrientation = Orientation.VERTICAL;
 
-                if (motionEvent.getX() < getWidth() / 2) {
+                if (motionEvent.getX() < (float)(getWidth() / 2)) {
                     PlayerActivity.mBrightnessControl.changeBrightness(gestureScrollY > 0);
                     setCustomErrorMessage("Brightness: " + PlayerActivity.mBrightnessControl.currentBrightnessLevel);
                 } else {
@@ -181,6 +176,6 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     }
 
     private enum Orientation {
-        HORIZONTAL, VERTICAL, UNKNOWN;
+        HORIZONTAL, VERTICAL, UNKNOWN
     }
 }

@@ -1,4 +1,4 @@
-Video přehrávač pro Android založený na knihovně ExoPlayer. Využívá rozšíření ExoPlayer ffmpeg s povolenými všemi audio formáty (zvládne tak i speciální formýty jako AC3, EAC3, DTS, DTS HD, TrueHD atd.).
+Video přehrávač pro Android založený na knihovně ExoPlayer. Využívá rozšíření ExoPlayer ffmpeg s povolenými všemi audio formáty (zvládne tak i speciální formáty jako AC3, EAC3, DTS, DTS HD, TrueHD atd.).
 
 Řádně synchronizuje stopu zvuku s videem při přehrávání přes Bluetooth sluchátka/reproduktor.
 

@@ -1,12 +1,11 @@
 package com.brouken.player;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.WindowManager;
 
 class BrightnessControl {
 
-    private Activity activity;
+    private final Activity activity;
 
     public int currentBrightnessLevel = 15;
 
