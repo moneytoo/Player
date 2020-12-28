@@ -1,5 +1,10 @@
 # Just (Video) Player
 
+[![Google Play](https://img.shields.io/endpoint?color=green&logoColor=green&url=https%3A%2F%2Fplayshields.herokuapp.com%2Fplay%3Fi%3Dcom.brouken.player%26l%3DGoogle%2520Play%26m%3Dv%24version)](https://play.google.com/store/apps/details?id=com.brouken.player)
+[![F-Droid](https://img.shields.io/f-droid/v/com.brouken.player)](https://f-droid.org/packages/com.brouken.player/)
+![Lines of code](https://img.shields.io/tokei/lines/github/moneytoo/Player)
+[![ExoPlayer](https://img.shields.io/badge/ExoPlayer-v2.12.2-007ec6)](https://github.com/google/ExoPlayer)
+
 Android video player based on [ExoPlayer](https://github.com/google/ExoPlayer)
 
 It uses ExoPlayer's ``extension-ffmpeg`` with [all its audio formats](https://exoplayer.dev/supported-formats.html#ffmpeg-extension) enabled (it can handle even special formats like AC3, EAC3, DTS, DTS HD, TrueHD etc.).
