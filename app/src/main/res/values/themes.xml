@@ -4,6 +4,7 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="android:windowBackground">@color/black</item>
     </style>
 
     <style name="ExoStyledControls.Button.Center">

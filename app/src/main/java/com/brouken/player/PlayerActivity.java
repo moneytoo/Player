@@ -30,7 +30,6 @@ import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
 import android.view.accessibility.CaptioningManager;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
