@@ -1,5 +1,3 @@
-<img align="left" width="56" src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/icon.png">
-
 # Just (Video) Player 
 
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/moneytoo/Player)](https://github.com/moneytoo/Player/releases/latest)
