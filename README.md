@@ -23,7 +23,7 @@ HDR and HDR10+ video playback on compatible/supported hardware.
 
 ## Screenshot
 
-<img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" height="320">
+<img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="540">
 
 ## Features
 
