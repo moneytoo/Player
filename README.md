@@ -1,4 +1,4 @@
-# Just (Video) Player
+# Just (Video) Player 
 
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/moneytoo/Player)](https://github.com/moneytoo/Player/releases/latest)
 [![Google Play](https://img.shields.io/endpoint?color=green&logoColor=green&url=https%3A%2F%2Fplayshields.herokuapp.com%2Fplay%3Fi%3Dcom.brouken.player%26l%3DGoogle%2520Play%26m%3Dv%24version)](https://play.google.com/store/apps/details?id=com.brouken.player)
@@ -20,6 +20,10 @@ It properly synces audio with video track when using Bluetooth earphones/speaker
  * **Subtitles**: SRT, SSA, ASS, TTML, VTT
 
 HDR and HDR10+ video playback on compatible/supported hardware.
+
+## Screenshot
+
+<img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" height="320">
 
 ## Features
 
