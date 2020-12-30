@@ -197,7 +197,7 @@ public class PlayerActivity extends Activity {
 
                 if (format != null) {
                     Rational rational;
-                    if (Utils.isPortrait(format))
+                    if (Utils.isRotated(format))
                         rational = new Rational(format.height, format.width);
                     else
                         rational = new Rational(format.width, format.height);

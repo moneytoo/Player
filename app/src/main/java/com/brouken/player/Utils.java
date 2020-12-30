@@ -191,8 +191,12 @@ class Utils {
         }
     }
 
-    public static boolean isPortrait(Format format) {
-        if (format.rotationDegrees == 90 || format.rotationDegrees == 270) {
+    public static boolean isRotated(final Format format) {
+        return format.rotationDegrees == 90 || format.rotationDegrees == 270;
+    }
+
+    public static boolean isPortrait(final Format format) {
+        if (isRotated(format)) {
             return format.width > format.height;
         } else {
             return format.height > format.width;
