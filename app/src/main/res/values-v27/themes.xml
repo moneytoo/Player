@@ -1,0 +1,6 @@
+<resources>
+
+    <style name="Theme.Player.Cutout" parent="Theme.Player">
+        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+    </style>
+</resources>

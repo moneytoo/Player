@@ -3,9 +3,10 @@
     <style name="Theme.Player" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="android:windowBackground">@color/black</item>
     </style>
+
+    <style name="Theme.Player.Cutout" parent="Theme.Player" />
 
     <style name="ExoStyledControls.Button.Center">
         <item name="android:layout_width">90dp</item>
