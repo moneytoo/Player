@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="Theme.Player" parent="android:Theme.Material.NoActionBar">
         <item name="android:windowTranslucentStatus">true</item>
@@ -8,7 +8,7 @@
 
     <style name="Theme.Player.Cutout" parent="Theme.Player" />
 
-    <style name="ExoStyledControls.Button.Center">
+    <style name="ExoStyledControls.Button.Center" tools:keep="@style/ExoStyledControls_Button_Center">
         <item name="android:layout_width">90dp</item>
         <item name="android:layout_height">90dp</item>
     </style>
