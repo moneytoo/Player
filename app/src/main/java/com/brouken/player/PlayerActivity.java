@@ -258,8 +258,10 @@ public class PlayerActivity extends Activity {
         playbackStateListener = new PlaybackStateListener();
 
         mBrightnessControl = new BrightnessControl(this);
-        mBrightnessControl.currentBrightnessLevel = mPrefs.brightness;
-        mBrightnessControl.setScreenBrightness(mBrightnessControl.levelToBrightness(mBrightnessControl.currentBrightnessLevel));
+        if (mPrefs.brightness >= 0) {
+            mBrightnessControl.currentBrightnessLevel = mPrefs.brightness;
+            mBrightnessControl.setScreenBrightness(mBrightnessControl.levelToBrightness(mBrightnessControl.currentBrightnessLevel));
+        }
 
         final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
         if (!captioningManager.isEnabled()) {

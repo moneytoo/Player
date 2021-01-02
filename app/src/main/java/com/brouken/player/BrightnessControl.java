@@ -7,7 +7,7 @@ class BrightnessControl {
 
     private final Activity activity;
 
-    public int currentBrightnessLevel = 15;
+    public int currentBrightnessLevel = -1;
 
     public BrightnessControl(Activity activity) {
         this.activity = activity;
@@ -24,6 +24,10 @@ class BrightnessControl {
     }
 
     public void changeBrightness(final boolean increase) {
+        if (currentBrightnessLevel < 0) {
+            currentBrightnessLevel = 20;
+        }
+
         final int newBrightnessLevel = (increase ? currentBrightnessLevel + 1 : currentBrightnessLevel - 1);
 
         if (newBrightnessLevel < 0 || newBrightnessLevel > 30)

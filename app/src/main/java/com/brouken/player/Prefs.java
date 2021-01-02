@@ -37,7 +37,7 @@ class Prefs {
     public int subtitleTrack = -1;
     public int audioTrack = -1;
 
-    public int brightness = 20;
+    public int brightness = -1;
     public boolean firstRun = true;
 
     private LinkedHashMap positions;
@@ -109,11 +109,12 @@ class Prefs {
     }
 
     public void updateBrightness(final int brightness) {
-        this.brightness = brightness;
-        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        sharedPreferencesEditor.putInt(PREF_KEY_BRIGHTNESS, brightness);
-        sharedPreferencesEditor.commit();
-
+        if (brightness >= 0) {
+            this.brightness = brightness;
+            final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+            sharedPreferencesEditor.putInt(PREF_KEY_BRIGHTNESS, brightness);
+            sharedPreferencesEditor.commit();
+        }
     }
 
     public void markFirstRun() {
