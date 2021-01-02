@@ -253,6 +253,7 @@ public class PlayerActivity extends Activity {
         titleView.setVisibility(View.GONE);
         titleView.setMaxLines(1);
         titleView.setEllipsize(TextUtils.TruncateAt.END);
+        titleView.setTextDirection(View.TEXT_DIRECTION_LOCALE);
         centerView.addView(titleView);
 
         playbackStateListener = new PlaybackStateListener();
