@@ -146,13 +146,13 @@ class Utils {
     }
 
     public enum Orientation {
-        VIDEO(0, "Video orientation"),
-        SENSOR(1, "Auto-rotate");
+        VIDEO(0, R.string.video_orientation_video),
+        SENSOR(1, R.string.video_orientation_sensor);
 
         public final int value;
-        public final String description;
+        public final int description;
 
-        Orientation(int type, String description) {
+        Orientation(int type, int description) {
             this.value = type;
             this.description = description;
         }

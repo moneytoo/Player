@@ -176,7 +176,7 @@ public class PlayerActivity extends Activity {
         buttonOpen.setOnClickListener(view -> openFile(mPrefs.mediaUri));
 
         buttonOpen.setOnLongClickListener(view -> {
-            Toast.makeText(PlayerActivity.this,"Load subtitles", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PlayerActivity.this, R.string.open_subtitles, Toast.LENGTH_SHORT).show();
             loadSubtitleFile(mPrefs.mediaUri);
             return true;
         });
@@ -220,11 +220,11 @@ public class PlayerActivity extends Activity {
         buttonAspectRatio.setOnClickListener(view -> {
             if (playerView.getResizeMode() == AspectRatioFrameLayout.RESIZE_MODE_FIT) {
                 playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
-                Utils.showText(playerView, "Crop");
+                Utils.showText(playerView, getString(R.string.video_resize_crop));
             } else {
                 // Default mode
                 playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
-                Utils.showText(playerView, "Fit");
+                Utils.showText(playerView, getString(R.string.video_resize_fit));
             }
             // Keep controller UI visible - alternative to resetHideCallbacks()
             playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
@@ -236,7 +236,7 @@ public class PlayerActivity extends Activity {
         buttonRotation.setOnClickListener(view -> {
             mPrefs.orientation = Utils.getNextOrientation(mPrefs.orientation);
             Utils.setOrientation(PlayerActivity.this, mPrefs.orientation);
-            Utils.showText(playerView, mPrefs.orientation.description, 2500);
+            Utils.showText(playerView, getString(mPrefs.orientation.description), 2500);
 
             // Keep controller UI visible - alternative to resetHideCallbacks()
             playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
@@ -320,7 +320,7 @@ public class PlayerActivity extends Activity {
                 if (controllerVisible && playerView.isControllerFullyVisible()) {
                     if (mPrefs.firstRun) {
                         TapTargetView.showFor(PlayerActivity.this,
-                                TapTarget.forView(buttonOpen, "Choose a video to play", "Tap to open a video file. Long tap to load external subtitles.")
+                                TapTarget.forView(buttonOpen, getString(R.string.onboarding_open_title), getString(R.string.onboarding_open_description))
                                         .outerCircleColor(R.color.green)
                                         .targetCircleColor(R.color.white)
                                         .titleTextSize(22)
