@@ -124,7 +124,7 @@ class Utils {
 
     public static void adjustVolume(final AudioManager audioManager, final CustomStyledPlayerView playerView, final boolean raise) {
         audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, raise ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-        playerView.setCustomErrorMessage("Volume: " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+        playerView.setCustomErrorMessage(" " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
     }
 
     public static void setButtonEnabled(final Context context, final ImageButton button, final boolean enabled) {
@@ -137,6 +137,7 @@ class Utils {
 
     public static void showText(final CustomStyledPlayerView playerView, final String text, final long timeout) {
         playerView.removeCallbacks(playerView.textClearRunnable);
+        playerView.clearIcon();
         playerView.setCustomErrorMessage(text);
         playerView.postDelayed(playerView.textClearRunnable, timeout);
     }

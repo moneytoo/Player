@@ -5,6 +5,7 @@ import android.media.AudioManager;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.widget.TextView;
 
 import androidx.core.view.GestureDetectorCompat;
 
@@ -25,9 +26,14 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     private boolean restorePlayState;
 
-    public final Runnable textClearRunnable = () -> setCustomErrorMessage(null);
+    public final Runnable textClearRunnable = () -> {
+        setCustomErrorMessage(null);
+        clearIcon();
+    };
 
     private final AudioManager mAudioManager;
+
+    private TextView exoErrorMessage;
 
     public CustomStyledPlayerView(Context context) {
         this(context, null);
@@ -42,6 +48,12 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
         mDetector = new GestureDetectorCompat(context,this);
 
         mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
+
+        exoErrorMessage = findViewById(R.id.exo_error_message);
+    }
+
+    public void clearIcon() {
+        exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
     }
 
     @Override
@@ -154,8 +166,10 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
                 if (motionEvent.getX() < (float)(getWidth() / 2)) {
                     PlayerActivity.mBrightnessControl.changeBrightness(gestureScrollY > 0);
-                    setCustomErrorMessage("Brightness: " + PlayerActivity.mBrightnessControl.currentBrightnessLevel);
+                    exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_brightness_medium_24, 0, 0, 0);
+                    setCustomErrorMessage(" " + PlayerActivity.mBrightnessControl.currentBrightnessLevel);
                 } else {
+                    exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_volume_up_24dp, 0, 0, 0);
                     Utils.adjustVolume(mAudioManager, this, gestureScrollY > 0);
                 }
 
