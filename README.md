@@ -37,6 +37,8 @@ HDR and HDR10+ video playback on compatible/supported hardware.
 
 To load an external (non-embedded) subtitles, long press the file open action in the bottom bar.
 
+**`WRITE_SETTINGS` ("Modify system settings") permission**: When the system file chooser is opened, it will always use current system orientation, even if the Player app sets its own. Granting this permission via adb (`adb shell pm grant com.brouken.player android.permission.WRITE_SETTINGS`) or App info screen will allow this app to temporarily enable Auto-rotate to at least partially mitigate [this imperfection](https://issuetracker.google.com/issues/141968218).
+
 Donate: [PayPal](https://paypal.me/MarcelDopita) | [Bitcoin](bitcoin:BC1Q9U2EZGSNUG995FV0M4VAXA90UJJWLUCP78W4N0) | [Litecoin](litecoin:LLZ3fULGwxbs6W9Vf7gtu1EjZvviCka7zP)
 
 ## Download
