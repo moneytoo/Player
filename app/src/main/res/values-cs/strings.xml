@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Prostě přehrávač</string>
+
+    <string name="video_resize_fit">Přizpůsobení</string>
+    <string name="video_resize_crop">Oříznutí</string>
+
+    <string name="video_orientation_video">Orientace videa</string>
+    <string name="video_orientation_sensor">Automatické otáčení</string>
+
+    <string name="onboarding_open_title">Vyber video k přehrání</string>
+    <string name="onboarding_open_description">Klepni pro otevření souboru s videem. Dlouze podrž pro načtení externích titulků.</string>
+
+    <string name="open_subtitles">Načíst titulky</string>
+</resources>
