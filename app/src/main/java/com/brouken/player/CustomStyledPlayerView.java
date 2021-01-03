@@ -169,7 +169,6 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
                     exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_brightness_medium_24, 0, 0, 0);
                     setCustomErrorMessage(" " + PlayerActivity.mBrightnessControl.currentBrightnessLevel);
                 } else {
-                    exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_volume_up_24dp, 0, 0, 0);
                     Utils.adjustVolume(mAudioManager, this, gestureScrollY > 0);
                 }
 
@@ -191,5 +190,9 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     private enum Orientation {
         HORIZONTAL, VERTICAL, UNKNOWN
+    }
+
+    public void setIconVolume() {
+        exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_volume_up_24dp, 0, 0, 0);
     }
 }

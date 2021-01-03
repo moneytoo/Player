@@ -124,6 +124,7 @@ class Utils {
 
     public static void adjustVolume(final AudioManager audioManager, final CustomStyledPlayerView playerView, final boolean raise) {
         audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, raise ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
+        playerView.setIconVolume();
         playerView.setCustomErrorMessage(" " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
     }
 
