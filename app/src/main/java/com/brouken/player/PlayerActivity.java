@@ -381,7 +381,7 @@ public class PlayerActivity extends Activity {
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
-                playerView.postDelayed(playerView.textClearRunnable, 400);
+                playerView.postDelayed(playerView.textClearRunnable, CustomStyledPlayerView.MESSAGE_TIMEOUT_KEY);
                 return true;
         }
         return super.onKeyUp(keyCode, event);

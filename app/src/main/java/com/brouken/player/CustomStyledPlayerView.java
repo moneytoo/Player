@@ -23,6 +23,8 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     private final float IGNORE_BORDER = Utils.dpToPx(24);
     private final float SCROLL_STEP = Utils.dpToPx(16);
     private final long SEEK_STEP = 1000;
+    public static final int MESSAGE_TIMEOUT_TOUCH = 400;
+    public static final int MESSAGE_TIMEOUT_KEY = 800;
 
     private boolean restorePlayState;
 
@@ -63,7 +65,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
                 removeCallbacks(textClearRunnable);
                 break;
             case MotionEvent.ACTION_UP:
-                postDelayed(textClearRunnable, 400);
+                postDelayed(textClearRunnable, MESSAGE_TIMEOUT_TOUCH);
 
                 // Reset timeout as it could be disabled during seek
                 if (PlayerActivity.haveMedia)
