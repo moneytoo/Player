@@ -25,6 +25,7 @@ import android.provider.DocumentsContract;
 import android.provider.Settings;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Rational;
 import android.util.TypedValue;
 import android.view.KeyEvent;
@@ -37,6 +38,8 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
@@ -152,23 +155,6 @@ public class PlayerActivity extends Activity {
             return windowInsets;
         });
 
-
-        /*
-        final FrameLayout bottomBar = playerView.findViewById(R.id.exo_bottom_bar);
-        final SubtitleView subtitleView = playerView.findViewById(R.id.exo_subtitles);
-        subtitleView.setOnApplyWindowInsetsListener(new View.OnApplyWindowInsetsListener() {
-            @Override
-            public WindowInsets onApplyWindowInsets(View view, WindowInsets windowInsets) {
-                if (windowInsets != null) {
-                    view.setPadding(windowInsets.getSystemWindowInsetLeft(), windowInsets.getSystemWindowInsetTop(),
-                            windowInsets.getSystemWindowInsetRight(), windowInsets.getSystemWindowInsetBottom() + bottomBar.getHeight());
-                    windowInsets.consumeSystemWindowInsets();
-                }
-                return windowInsets;
-            }
-        });
-        */
-
         buttonOpen = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
         buttonOpen.setImageResource(R.drawable.ic_folder_open_24dp);
         buttonOpen.setId(View.generateViewId());
@@ -273,7 +259,7 @@ public class PlayerActivity extends Activity {
                 playerView.getSubtitleView().setStyle(captionStyle);
         }
 
-        setSubtitleTextSizeNormal();
+        setSubtitleTextSize();
 
         final LinearLayout exoBasicControls = playerView.findViewById(R.id.exo_basic_controls);
         final LinearLayout exoExtraControls = playerView.findViewById(R.id.exo_extra_controls);
@@ -343,8 +329,6 @@ public class PlayerActivity extends Activity {
         });
     }
 
-
-
     @Override
     public void onStart() {
         super.onStart();
@@ -412,7 +396,7 @@ public class PlayerActivity extends Activity {
             };
             registerReceiver(mReceiver, new IntentFilter(ACTION_MEDIA_CONTROL));
         } else {
-            setSubtitleTextSizeNormal();
+            setSubtitleTextSize();
             unregisterReceiver(mReceiver);
             mReceiver = null;
         }
@@ -691,17 +675,33 @@ public class PlayerActivity extends Activity {
         return -1;
     }
 
-    void setSubtitleTextSizeNormal() {
-        // Set universal text size as fraction size doesn't work well in portrait
+    void setSubtitleTextSize() {
+        setSubtitleTextSize(getResources().getConfiguration().orientation);
+    }
+
+    void setSubtitleTextSize(final int orientation) {
+        // Tweak text size as fraction size doesn't work well in portrait
         final SubtitleView subtitleView = playerView.getSubtitleView();
-        if (subtitleView != null)
-            playerView.getSubtitleView().setFixedTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+        if (subtitleView != null) {
+            final float size;
+            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                size = SubtitleView.DEFAULT_TEXT_SIZE_FRACTION;
+            } else {
+                DisplayMetrics metrics = getResources().getDisplayMetrics();
+                float ratio = ((float)metrics.heightPixels / (float)metrics.widthPixels);
+                if (ratio < 1)
+                    ratio = 1 / ratio;
+                size = SubtitleView.DEFAULT_TEXT_SIZE_FRACTION / ratio;
+            }
+
+            subtitleView.setFractionalTextSize(size);
+        }
     }
 
     void setSubtitleTextSizePiP() {
         final SubtitleView subtitleView = playerView.getSubtitleView();
         if (subtitleView != null)
-            playerView.getSubtitleView().setFractionalTextSize(SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * 2);
+            subtitleView.setFractionalTextSize(SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * 2);
     }
 
     boolean isPiPSupported() {
@@ -719,4 +719,17 @@ public class PlayerActivity extends Activity {
         setPictureInPictureParams(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
     }
 
+    private boolean isInPip() {
+        if (!isPiPSupported())
+            return false;
+        return isInPictureInPictureMode();
+    }
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+
+        if (!isInPip())
+            setSubtitleTextSize(newConfig.orientation);
+    }
 }
