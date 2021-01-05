@@ -478,7 +478,7 @@ public class PlayerActivity extends Activity {
 
         playerView.setPlayer(player);
 
-        mediaSession = new MediaSessionCompat(this, "Just Player");
+        mediaSession = new MediaSessionCompat(this, getString(R.string.app_name));
         mediaSessionConnector = new MediaSessionConnector(mediaSession);
         mediaSessionConnector.setPlayer(player);
 
