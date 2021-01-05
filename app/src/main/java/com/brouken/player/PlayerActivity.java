@@ -105,15 +105,16 @@ public class PlayerActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // Rotate ASAP, before super/inflating to avoid glitches with activity launch animation
+        mPrefs = new Prefs(this);
+        Utils.setOrientation(this, mPrefs.orientation);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
 
-        mPrefs = new Prefs(this);
         if (getIntent().getData() != null) {
             mPrefs.updateMedia(getIntent().getData(), getIntent().getType());
         }
-
-        Utils.setOrientation(this, mPrefs.orientation);
 
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         playerView = findViewById(R.id.video_view);
