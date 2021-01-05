@@ -84,6 +84,8 @@ public class PlayerActivity extends Activity {
     private boolean setTracks;
     public static boolean controllerVisible;
 
+    private static final int REQUEST_CHOOSER_VIDEO = 1;
+    private static final int REQUEST_CHOOSER_SUBTITLE = 2;
     public static final int CONTROLLER_TIMEOUT = 3500;
     private static final String ACTION_MEDIA_CONTROL = "media_control";
     private static final String EXTRA_CONTROL_TYPE = "control_type";
@@ -416,7 +418,7 @@ public class PlayerActivity extends Activity {
             e.printStackTrace();
         }
 
-        if (requestCode == 0) {
+        if (requestCode == REQUEST_CHOOSER_VIDEO) {
             if (resultCode == RESULT_OK) {
                 final Uri uri = data.getData();
                 boolean uriAlreadyTaken = false;
@@ -442,7 +444,7 @@ public class PlayerActivity extends Activity {
                 mPrefs.updateMedia(uri, data.getType());
                 initializePlayer();
             }
-        } else if (requestCode == 1) {
+        } else if (requestCode == REQUEST_CHOOSER_SUBTITLE) {
             if (resultCode == RESULT_OK) {
                 final Uri uri = data.getData();
 
@@ -490,9 +492,10 @@ public class PlayerActivity extends Activity {
                     .setMimeType(mPrefs.mediaType);
             if (mPrefs.subtitleUri != null && Utils.fileExists(this, mPrefs.subtitleUri)) {
                 final String subtitleMime = Utils.getSubtitleMime(mPrefs.subtitleUri);
-                final String subtitleLanguage = Utils.getSubtitleLanguage(this, mPrefs.subtitleUri);
+                final String subtitleLanguage = Utils.getSubtitleLanguage(mPrefs.subtitleUri);
+                final String subtitleName = Utils.getFileName(this, mPrefs.subtitleUri);
 
-                MediaItem.Subtitle subtitle = new MediaItem.Subtitle(mPrefs.subtitleUri, subtitleMime, subtitleLanguage);
+                MediaItem.Subtitle subtitle = new MediaItem.Subtitle(mPrefs.subtitleUri, subtitleMime, subtitleLanguage, 0, C.ROLE_FLAG_SUBTITLE, subtitleName);
                 mediaItemBuilder.setSubtitles(Collections.singletonList(subtitle));
             }
             player.setMediaItem(mediaItemBuilder.build());
@@ -615,7 +618,7 @@ public class PlayerActivity extends Activity {
         if (Build.VERSION.SDK_INT >= 26)
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
 
-        startActivityForResult(intent, 0);
+        startActivityForResult(intent, REQUEST_CHOOSER_VIDEO);
     }
 
     private void loadSubtitleFile(Uri pickerInitialUri) {
@@ -641,7 +644,7 @@ public class PlayerActivity extends Activity {
         if (Build.VERSION.SDK_INT >= 26)
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
 
-        startActivityForResult(intent, 1);
+        startActivityForResult(intent, REQUEST_CHOOSER_SUBTITLE);
     }
 
     public void setSelectedTrack(final int trackType, final int trackIndex) {

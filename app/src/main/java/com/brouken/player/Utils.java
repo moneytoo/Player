@@ -98,7 +98,7 @@ class Utils {
         }
     }
 
-    public static String getSubtitleLanguage(Context context, Uri uri) {
+    public static String getSubtitleLanguage(Uri uri) {
         final String path = uri.getPath();
 
         if (path.endsWith(".srt")) {
@@ -119,7 +119,7 @@ class Utils {
             }
         }
 
-        return getFileName(context, uri);
+        return null;
     }
 
     public static void adjustVolume(final AudioManager audioManager, final CustomStyledPlayerView playerView, final boolean raise) {
