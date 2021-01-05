@@ -398,8 +398,10 @@ public class PlayerActivity extends Activity {
             registerReceiver(mReceiver, new IntentFilter(ACTION_MEDIA_CONTROL));
         } else {
             setSubtitleTextSize();
-            unregisterReceiver(mReceiver);
-            mReceiver = null;
+            if (mReceiver != null) {
+                unregisterReceiver(mReceiver);
+                mReceiver = null;
+            }
         }
     }
 
