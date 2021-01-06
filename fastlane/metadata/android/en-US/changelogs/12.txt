@@ -1,1 +1,1 @@
-Add AV1 decoder, main play and pause buttons with shadow, play and pause buttons in PiP and other fixes and small improvements.
+Add AV1 decoder, brightness/volume icons and lots of other small fixes and improvements.
