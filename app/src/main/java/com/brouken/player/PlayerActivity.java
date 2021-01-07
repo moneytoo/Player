@@ -14,6 +14,7 @@ import android.content.UriPermission;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Icon;
@@ -31,6 +32,8 @@ import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.accessibility.CaptioningManager;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -330,6 +333,8 @@ public class PlayerActivity extends Activity {
                 }
             }
         });
+
+        compatTranslucency();
     }
 
     @Override
@@ -737,5 +742,32 @@ public class PlayerActivity extends Activity {
 
         if (!isInPip())
             setSubtitleTextSize(newConfig.orientation);
+    }
+
+    void compatTranslucency() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+            try {
+                final Resources resources = getResources();
+                final boolean enableTranslucentDecor = resources.getBoolean(resources.getIdentifier("config_enableTranslucentDecor", "bool", "android"));
+                if (enableTranslucentDecor) {
+                    // Samsung devices running L show transparent status bar instead of translucent one
+                    // https://stackoverflow.com/questions/31024072/android-translucent-status-bar-differs-in-different-devices
+                    // https://stackoverflow.com/questions/39061975/android-translucent-status-bar-on-samsung-devices
+                    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.M && Build.MANUFACTURER.toLowerCase().equals("samsung")) {
+                        final Window window = getWindow();
+                        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                        window.setStatusBarColor(resources.getColor(R.color.exo_bottom_bar_background));
+                    }
+                } else {
+                    // Nexus 10 disables translucent bars
+                    // https://forum.xda-developers.com/showthread.php?t=2510252
+                    final Window window = getWindow();
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+                    window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
+                }
+            } catch (Resources.NotFoundException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
