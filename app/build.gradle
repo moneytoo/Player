@@ -31,5 +31,7 @@ dependencies {
     implementation 'com.google.android.exoplayer:exoplayer-ui:2.12.2'
     implementation 'com.google.android.exoplayer:extension-mediasession:2.12.2'
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     implementation fileTree(dir: "libs", include: ["*.aar"])
 }

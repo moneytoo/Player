@@ -19,6 +19,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     private Orientation gestureOrientation = Orientation.UNKNOWN;
     private float gestureScrollY = 0f;
     private float gestureScrollX = 0f;
+    private boolean handleTouch;
 
     private final float IGNORE_BORDER = Utils.dpToPx(24);
     private final float SCROLL_STEP = Utils.dpToPx(16);
@@ -62,23 +63,32 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     public boolean onTouchEvent(MotionEvent ev) {
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                removeCallbacks(textClearRunnable);
-                break;
-            case MotionEvent.ACTION_UP:
-                postDelayed(textClearRunnable, MESSAGE_TIMEOUT_TOUCH);
-
-                // Reset timeout as it could be disabled during seek
-                if (PlayerActivity.haveMedia)
-                    setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
-
-                if (restorePlayState) {
-                    restorePlayState = false;
-                    PlayerActivity.player.play();
+                if (PlayerActivity.snackbar != null && PlayerActivity.snackbar.isShown()) {
+                    PlayerActivity.snackbar.dismiss();
+                    handleTouch = false;
+                } else {
+                    removeCallbacks(textClearRunnable);
+                    handleTouch = true;
                 }
                 break;
+            case MotionEvent.ACTION_UP:
+                if (handleTouch) {
+                    postDelayed(textClearRunnable, MESSAGE_TIMEOUT_TOUCH);
+
+                    // Reset timeout as it could be disabled during seek
+                    if (PlayerActivity.haveMedia)
+                        setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+
+                    if (restorePlayState) {
+                        restorePlayState = false;
+                        PlayerActivity.player.play();
+                    }
+                    break;
+                }
         }
 
-        mDetector.onTouchEvent(ev);
+        if (handleTouch)
+            mDetector.onTouchEvent(ev);
 
         // Handle all events to avoid conflict with internal handlers
         return true;

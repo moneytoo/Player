@@ -11,4 +11,6 @@
     <string name="onboarding_open_description">Tap to open a video file. Long tap to load external subtitles.</string>
 
     <string name="open_subtitles">Load subtitles</string>
+
+    <string name="error_details">Details</string>
 </resources>

@@ -11,4 +11,6 @@
     <string name="onboarding_open_description">Klepni pro otevření souboru s videem. Dlouze podrž pro načtení externích titulků.</string>
 
     <string name="open_subtitles">Načíst titulky</string>
+
+    <string name="error_details">Podrobnosti</string>
 </resources>

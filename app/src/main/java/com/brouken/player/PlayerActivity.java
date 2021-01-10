@@ -2,6 +2,7 @@ package com.brouken.player;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
 import android.app.RemoteAction;
@@ -43,11 +44,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
+import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
@@ -63,6 +66,7 @@ import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.util.MimeTypes;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,6 +90,9 @@ public class PlayerActivity extends Activity {
     public static boolean haveMedia;
     private boolean setTracks;
     public static boolean controllerVisible;
+    public static boolean controllerVisibleFully;
+    public static Snackbar snackbar;
+    private ExoPlaybackException errorToShow;
 
     private static final int REQUEST_CHOOSER_VIDEO = 1;
     private static final int REQUEST_CHOOSER_SUBTITLE = 2;
@@ -97,6 +104,7 @@ public class PlayerActivity extends Activity {
     private static final int CONTROL_TYPE_PLAY = 1;
     private static final int CONTROL_TYPE_PAUSE = 2;
 
+    private CoordinatorLayout coordinatorLayout;
     private TextView titleView;
     private ImageButton buttonOpen;
     private ImageButton buttonPiP;
@@ -104,6 +112,7 @@ public class PlayerActivity extends Activity {
 
     private boolean restoreOrientationLock;
     private boolean restorePlayState;
+    private boolean play;
 
     final Rational rationalLimitWide = new Rational(239, 100);
     final Rational rationalLimitTall = new Rational(100, 239);
@@ -121,6 +130,7 @@ public class PlayerActivity extends Activity {
             mPrefs.updateMedia(getIntent().getData(), getIntent().getType());
         }
 
+        coordinatorLayout = findViewById(R.id.coordinatorLayout);
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         playerView = findViewById(R.id.video_view);
 
@@ -301,6 +311,7 @@ public class PlayerActivity extends Activity {
             @Override
             public void onVisibilityChange(int visibility) {
                 controllerVisible = visibility == View.VISIBLE;
+                controllerVisibleFully = playerView.isControllerFullyVisible();
 
                 // https://developer.android.com/training/system-ui/immersive
                 if (visibility == View.VISIBLE) {
@@ -329,6 +340,10 @@ public class PlayerActivity extends Activity {
                         // TODO: Explain gestures?
                         //  "Use vertical and horizontal gestures to change brightness, volume and seek in video"
                         mPrefs.markFirstRun();
+                    }
+                    if (errorToShow != null) {
+                        showError(errorToShow);
+                        errorToShow = null;
                     }
                 }
             }
@@ -507,11 +522,8 @@ public class PlayerActivity extends Activity {
 
             setTracks = true;
 
-            final boolean play = mPrefs.getPosition() == 0L;
+            play = mPrefs.getPosition() == 0L;
             player.setPlayWhenReady(play);
-            if (play) {
-                playerView.hideController();
-            }
 
             player.seekTo(mPrefs.getPosition());
 
@@ -587,6 +599,11 @@ public class PlayerActivity extends Activity {
                         }
                     }
                 }
+
+                if (play) {
+                    play = false;
+                    playerView.hideController();
+                }
             }
 
             if (setTracks && state == Player.STATE_READY) {
@@ -595,6 +612,15 @@ public class PlayerActivity extends Activity {
                     setSelectedTrack(C.TRACK_TYPE_AUDIO, mPrefs.audioTrack);
                 if (mPrefs.subtitleTrack >= 0)
                     setSelectedTrack(C.TRACK_TYPE_TEXT, mPrefs.subtitleTrack);
+            }
+        }
+
+        @Override
+        public void onPlayerError(ExoPlaybackException error) {
+            if (controllerVisible && controllerVisibleFully) {
+                showError(error);
+            } else {
+                errorToShow = error;
             }
         }
     }
@@ -769,5 +795,43 @@ public class PlayerActivity extends Activity {
                 e.printStackTrace();
             }
         }
+    }
+
+    void showError(ExoPlaybackException error) {
+        final String errorGeneral = error.getLocalizedMessage();
+        String errorDetailed;
+
+        switch (error.type) {
+            case ExoPlaybackException.TYPE_SOURCE:
+                errorDetailed = error.getSourceException().getLocalizedMessage();
+                break;
+            case ExoPlaybackException.TYPE_RENDERER:
+                errorDetailed = error.getRendererException().getLocalizedMessage();
+                break;
+            case ExoPlaybackException.TYPE_UNEXPECTED:
+                errorDetailed = error.getUnexpectedException().getLocalizedMessage();
+                break;
+            case ExoPlaybackException.TYPE_OUT_OF_MEMORY:
+                errorDetailed = error.getOutOfMemoryError().getLocalizedMessage();
+                break;
+            case ExoPlaybackException.TYPE_TIMEOUT:
+                errorDetailed = error.getTimeoutException().getLocalizedMessage();
+                break;
+            case ExoPlaybackException.TYPE_REMOTE:
+            default:
+                errorDetailed = errorGeneral;
+                break;
+        }
+
+        snackbar = Snackbar.make(coordinatorLayout, errorGeneral, Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.error_details, v -> {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(PlayerActivity.this);
+            builder.setMessage(errorDetailed);
+            builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss());
+            final AlertDialog dialog = builder.create();
+            dialog.show();
+        });
+        snackbar.setAnchorView(R.id.exo_bottom_bar);
+        snackbar.show();
     }
 }
