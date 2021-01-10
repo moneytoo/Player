@@ -22,7 +22,7 @@
         <activity
             android:name=".PlayerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
-            android:launchMode="singleInstance"
+            android:launchMode="singleTop"
             android:supportsPictureInPicture="true"
             tools:targetApi="n">
             <intent-filter>
