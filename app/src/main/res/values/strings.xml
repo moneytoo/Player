@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Just Player</string>
 
     <string name="video_resize_fit">Fit</string>
@@ -12,5 +12,5 @@
 
     <string name="open_subtitles">Load subtitles</string>
 
-    <string name="error_details">Details</string>
+    <string name="error_details" tools:ignore="MissingTranslation">Details</string>
 </resources>
