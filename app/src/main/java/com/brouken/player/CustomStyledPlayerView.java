@@ -23,6 +23,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     private final float IGNORE_BORDER = Utils.dpToPx(24);
     private final float SCROLL_STEP = Utils.dpToPx(16);
+    @SuppressWarnings("FieldCanBeLocal")
     private final long SEEK_STEP = 1000;
     public static final int MESSAGE_TIMEOUT_TOUCH = 400;
     public static final int MESSAGE_TIMEOUT_KEY = 800;
@@ -36,7 +37,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     private final AudioManager mAudioManager;
 
-    private TextView exoErrorMessage;
+    private final TextView exoErrorMessage;
 
     public CustomStyledPlayerView(Context context) {
         this(context, null);

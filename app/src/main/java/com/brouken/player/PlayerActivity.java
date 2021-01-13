@@ -77,7 +77,6 @@ public class PlayerActivity extends Activity {
     private BroadcastReceiver mReceiver;
     private AudioManager mAudioManager;
     private MediaSessionCompat mediaSession;
-    private MediaSessionConnector mediaSessionConnector;
     private DefaultTrackSelector trackSelector;
 
     private CustomStyledPlayerView playerView;
@@ -143,7 +142,7 @@ public class PlayerActivity extends Activity {
         playerView.setControllerAutoShow(true);
 
         // https://github.com/google/ExoPlayer/issues/5765
-        DefaultTimeBar timeBar = (DefaultTimeBar) playerView.findViewById(R.id.exo_progress);
+        DefaultTimeBar timeBar = playerView.findViewById(R.id.exo_progress);
         timeBar.setBufferedColor(0x33FFFFFF);
 
         final StyledPlayerControlView controlView = playerView.findViewById(R.id.exo_controller);
@@ -499,7 +498,7 @@ public class PlayerActivity extends Activity {
         playerView.setPlayer(player);
 
         mediaSession = new MediaSessionCompat(this, getString(R.string.app_name));
-        mediaSessionConnector = new MediaSessionConnector(mediaSession);
+        MediaSessionConnector mediaSessionConnector = new MediaSessionConnector(mediaSession);
         mediaSessionConnector.setPlayer(player);
 
         if (haveMedia) {
@@ -696,16 +695,18 @@ public class PlayerActivity extends Activity {
     }
 
     public int getSelectedTrack(final int trackType) {
-        final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
-        if (mappedTrackInfo != null) {
-            for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
-                if (mappedTrackInfo.getRendererType(rendererIndex) == trackType) {
-                    final TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
-                    final DefaultTrackSelector.SelectionOverride selectionOverride = trackSelector.getParameters().getSelectionOverride(rendererIndex, trackGroups);
-                    if (selectionOverride == null || selectionOverride.length <= 0) {
-                        break;
+        if (trackSelector != null) {
+            final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
+            if (mappedTrackInfo != null) {
+                for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
+                    if (mappedTrackInfo.getRendererType(rendererIndex) == trackType) {
+                        final TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
+                        final DefaultTrackSelector.SelectionOverride selectionOverride = trackSelector.getParameters().getSelectionOverride(rendererIndex, trackGroups);
+                        if (selectionOverride == null || selectionOverride.length <= 0) {
+                            break;
+                        }
+                        return selectionOverride.groupIndex;
                     }
-                    return selectionOverride.groupIndex;
                 }
             }
         }
