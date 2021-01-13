@@ -299,10 +299,7 @@ public class PlayerActivity extends Activity {
             controls.addView(buttonPiP);
         }
         controls.addView(buttonRotation);
-        // Temporarily disable buggy controls on Lollipop: https://github.com/google/ExoPlayer/issues/8272
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            controls.addView(exoSettings);
-        }
+        controls.addView(exoSettings);
 
         exoBottomBar.addView(horizontalScrollView);
 
