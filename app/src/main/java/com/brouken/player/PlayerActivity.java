@@ -67,7 +67,14 @@ import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.material.snackbar.Snackbar;
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -87,7 +94,8 @@ public class PlayerActivity extends Activity {
     private Prefs mPrefs;
     public static BrightnessControl mBrightnessControl;
     public static boolean haveMedia;
-    private boolean setTracks;
+    private boolean setTrackAudio;
+    private boolean setTrackSubtitles;
     public static boolean controllerVisible;
     public static boolean controllerVisibleFully;
     public static Snackbar snackbar;
@@ -112,6 +120,7 @@ public class PlayerActivity extends Activity {
     private boolean restoreOrientationLock;
     private boolean restorePlayState;
     private boolean play;
+    private float subtitlesScale = 1.0f;
 
     final Rational rationalLimitWide = new Rational(239, 100);
     final Rational rationalLimitTall = new Rational(100, 239);
@@ -268,10 +277,11 @@ public class PlayerActivity extends Activity {
         final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
         if (!captioningManager.isEnabled()) {
             final CaptionStyleCompat captionStyle = new CaptionStyleCompat(Color.WHITE, Color.TRANSPARENT, Color.TRANSPARENT, CaptionStyleCompat.EDGE_TYPE_OUTLINE, Color.BLACK, Typeface.DEFAULT_BOLD);
-
             final SubtitleView subtitleView = playerView.getSubtitleView();
             if (subtitleView != null)
-                playerView.getSubtitleView().setStyle(captionStyle);
+                subtitleView.setStyle(captionStyle);
+        } else {
+            subtitlesScale = captioningManager.getFontScale();
         }
 
         setSubtitleTextSize();
@@ -462,11 +472,34 @@ public class PlayerActivity extends Activity {
             }
         } else if (requestCode == REQUEST_CHOOSER_SUBTITLE) {
             if (resultCode == RESULT_OK) {
-                final Uri uri = data.getData();
+                Uri uri = data.getData();
 
                 try {
                     getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
+
+                // Convert subtitles to UTF-8 if necessary
+                try {
+                    final CharsetDetector detector = new CharsetDetector();
+                    final BufferedInputStream bufferedInputStream = new BufferedInputStream(getContentResolver().openInputStream(uri));
+                    detector.setText(bufferedInputStream);
+                    final CharsetMatch charsetMatch = detector.detect();
+
+                    if (!StandardCharsets.ISO_8859_1.displayName().equals(charsetMatch.getName()) &&
+                            !StandardCharsets.UTF_8.displayName().equals(charsetMatch.getName())) {
+                        String filename = uri.getPath();
+                        filename = filename.substring(filename.lastIndexOf("/") + 1);
+                        final File file = new File(getCacheDir(), filename);
+                        try (FileOutputStream stream = new FileOutputStream(file)) {
+                            stream.write(charsetMatch.getString().getBytes());
+                            uri = Uri.fromFile(file);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
 
@@ -513,10 +546,11 @@ public class PlayerActivity extends Activity {
 
                 MediaItem.Subtitle subtitle = new MediaItem.Subtitle(mPrefs.subtitleUri, subtitleMime, subtitleLanguage, 0, C.ROLE_FLAG_SUBTITLE, subtitleName);
                 mediaItemBuilder.setSubtitles(Collections.singletonList(subtitle));
+                setTrackSubtitles = true;
             }
             player.setMediaItem(mediaItemBuilder.build());
 
-            setTracks = true;
+            setTrackAudio = true;
 
             play = mPrefs.getPosition() == 0L;
             player.setPlayWhenReady(play);
@@ -602,12 +636,15 @@ public class PlayerActivity extends Activity {
                 }
             }
 
-            if (setTracks && state == Player.STATE_READY) {
-                setTracks = false;
-                if (mPrefs.audioTrack >= 0)
+            if (state == Player.STATE_READY) {
+                if (setTrackAudio && mPrefs.audioTrack >= 0) {
+                    setTrackAudio = false;
                     setSelectedTrack(C.TRACK_TYPE_AUDIO, mPrefs.audioTrack);
-                if (mPrefs.subtitleTrack >= 0)
+                }
+                if (setTrackSubtitles && mPrefs.subtitleTrack >= 0) {
+                    setTrackSubtitles = false;
                     setSelectedTrack(C.TRACK_TYPE_TEXT, mPrefs.subtitleTrack);
+                }
             }
         }
 
@@ -720,13 +757,13 @@ public class PlayerActivity extends Activity {
         if (subtitleView != null) {
             final float size;
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                size = SubtitleView.DEFAULT_TEXT_SIZE_FRACTION;
+                size = SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * subtitlesScale;
             } else {
                 DisplayMetrics metrics = getResources().getDisplayMetrics();
                 float ratio = ((float)metrics.heightPixels / (float)metrics.widthPixels);
                 if (ratio < 1)
                     ratio = 1 / ratio;
-                size = SubtitleView.DEFAULT_TEXT_SIZE_FRACTION / ratio;
+                size = SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * subtitlesScale / ratio;
             }
 
             subtitleView.setFractionalTextSize(size);
