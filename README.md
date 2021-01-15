@@ -49,6 +49,36 @@ Donate: [PayPal](https://paypal.me/MarcelDopita) | [Bitcoin](https://live.blockc
 
 Other communication channels to get in touch: application thread on [XDA Developers](https://forum.xda-developers.com/t/app-5-0-just-video-player-no-bluetooth-lag-exoplayer-ffmpeg-audio-codecs.4189183/), subreddit on [reddit](https://www.reddit.com/r/JustPlayer/), entry on [AlternativeTo](https://alternativeto.net/software/just-video-player/)
 
+## FAQ
+
+### What to do if Bluetooth audio is not in sync with video?
+
+Just pause and again resume playback.
+
+### How do I change subtitle font, size or color?
+
+If you enable [Caption preferences](https://support.google.com/accessibility/android/answer/6006554) on your device, you will be able to override the default subtitle style of the Player and fully customize subtitle style.
+
+### Are there any media formats it CANNOT play?
+
+Unfortunately, upstream ExoPlayer doesn't handle some older formats like [AVI container](https://github.com/google/ExoPlayer/issues/2092), WMV or [Theora](https://github.com/google/ExoPlayer/issues/4970).
+
+Just Player focuses on playing videos so audio only playback isn't officialy supported. 
+
+### Can I play videos that are not stored on the device?
+
+#### Video streams on the Internet - NO/NOT YET
+
+Support for streaming playback is being [considered/tested](https://github.com/moneytoo/Player/issues/11).
+
+#### Videos in cloud storages - YES
+
+Official cloud storage clients (like [Dropbox](https://play.google.com/store/apps/details?id=com.dropbox.android) or [Google Drive](https://play.google.com/store/apps/details?id=com.google.android.apps.docs)) usually implement all the technical requirements so they can be browsed when opening video in Just Player.
+
+#### Videos in network storages (Samba, WebDAV, SCP etc.) - YES (since v0.14)
+
+You can open videos on network storages using file managers such as [Solid Explorer](https://play.google.com/store/apps/details?id=pl.solidexplorer2), [Total Commander](https://play.google.com/store/apps/details?id=com.ghisler.android.TotalCommander) or [Ghost Commander](https://play.google.com/store/apps/details?id=com.ghostsq.commander).
+
 ## Other open source Android video players
 
 Here's a comparison table presenting all available and significant open source video players for Android I was able to find. Just Player is something like 80% feature complete. It will probably never have dozens of options or some rich media library UI. It will never truly compete with feature rich VLC. It just attempts to provide functional feature set and motive others to create greater players based on amazing ExoPlayer.
