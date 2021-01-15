@@ -53,7 +53,7 @@ Other communication channels to get in touch: application thread on [XDA Develop
 
 ### What to do if Bluetooth audio is not in sync with video?
 
-Just pause and again resume playback.
+Just pause and resume playback once again.
 
 ### How do I change subtitle font, size or color?
 
@@ -73,7 +73,7 @@ Support for streaming playback is being [considered/tested](https://github.com/m
 
 #### Videos in cloud storages - YES
 
-Official cloud storage clients (like [Dropbox](https://play.google.com/store/apps/details?id=com.dropbox.android) or [Google Drive](https://play.google.com/store/apps/details?id=com.google.android.apps.docs)) usually implement all the technical requirements so they can be browsed when opening video in Just Player.
+Official cloud storage clients (like [Dropbox](https://play.google.com/store/apps/details?id=com.dropbox.android) or [Google Drive](https://play.google.com/store/apps/details?id=com.google.android.apps.docs)) usually implement all the technical requirements so storage can be browsed when opening video in Just Player.
 
 #### Videos in network storages (Samba, WebDAV, SCP etc.) - YES (since v0.14)
 
