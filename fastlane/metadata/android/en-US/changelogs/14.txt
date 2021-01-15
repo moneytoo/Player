@@ -1,0 +1,1 @@
+Support non UTF-8 subtitles, report playback errors, update ExoPlayer, other improvements and bug fixes.
