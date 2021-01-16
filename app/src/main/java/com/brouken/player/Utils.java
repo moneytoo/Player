@@ -124,8 +124,10 @@ class Utils {
 
     public static void adjustVolume(final AudioManager audioManager, final CustomStyledPlayerView playerView, final boolean raise) {
         audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, raise ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-        playerView.setIconVolume();
-        playerView.setCustomErrorMessage(" " + audioManager.getStreamVolume(AudioManager.STREAM_MUSIC));
+        final int volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        final boolean volumeActive = volume != 0;
+        playerView.setIconVolume(volumeActive);
+        playerView.setCustomErrorMessage(volumeActive ? " " + volume : "");
     }
 
     public static void setButtonEnabled(final Context context, final ImageButton button, final boolean enabled) {
@@ -203,5 +205,12 @@ class Utils {
         } else {
             return format.height > format.width;
         }
+    }
+
+    public static String formatMilis(long time) {
+        final int totalSeconds = Math.abs((int) time / 1000);
+        final int seconds = totalSeconds % 60;
+        final int minutes = totalSeconds / 60;
+        return " " + (time < 0 ? "−" : "+") + String.format("%02d:%02d", minutes, seconds);
     }
 }

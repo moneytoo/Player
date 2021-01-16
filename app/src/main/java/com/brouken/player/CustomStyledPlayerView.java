@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.core.view.GestureDetectorCompat;
 
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.SeekParameters;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
 
@@ -20,9 +21,13 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     private float gestureScrollY = 0f;
     private float gestureScrollX = 0f;
     private boolean handleTouch;
+    private long seekStart;
+    private long seekChange;
+    private long seekMax;
 
     private final float IGNORE_BORDER = Utils.dpToPx(24);
     private final float SCROLL_STEP = Utils.dpToPx(16);
+    private final float SCROLL_STEP_SEEK = Utils.dpToPx(8);
     @SuppressWarnings("FieldCanBeLocal")
     private final long SEEK_STEP = 1000;
     public static final int MESSAGE_TIMEOUT_TOUCH = 400;
@@ -74,7 +79,11 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
                 break;
             case MotionEvent.ACTION_UP:
                 if (handleTouch) {
-                    postDelayed(textClearRunnable, MESSAGE_TIMEOUT_TOUCH);
+                    if (gestureOrientation == Orientation.HORIZONTAL) {
+                        setCustomErrorMessage(null);
+                    } else {
+                        postDelayed(textClearRunnable, MESSAGE_TIMEOUT_TOUCH);
+                    }
 
                     // Reset timeout as it could be disabled during seek
                     if (PlayerActivity.haveMedia)
@@ -137,8 +146,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
         if (gestureOrientation == Orientation.HORIZONTAL || gestureOrientation == Orientation.UNKNOWN) {
             gestureScrollX += distanceX;
-            if (Math.abs(gestureScrollX) > SCROLL_STEP) {
-
+            if (Math.abs(gestureScrollX) > SCROLL_STEP || (gestureOrientation == Orientation.HORIZONTAL && Math.abs(gestureScrollX) > SCROLL_STEP_SEEK)) {
                 // Make controller always visible and not hiding during seek
                 if (!PlayerActivity.controllerVisible)
                     showController();
@@ -149,6 +157,10 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
                         restorePlayState = true;
                         PlayerActivity.player.pause();
                     }
+                    clearIcon();
+                    seekStart = PlayerActivity.player.getCurrentPosition();
+                    seekChange = 0L;
+                    seekMax = PlayerActivity.player.getDuration();
                 }
 
                 gestureOrientation = Orientation.HORIZONTAL;
@@ -156,16 +168,25 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
                 if (PlayerActivity.haveMedia) {
                     if (gestureScrollX > 0) {
-                        PlayerActivity.player.setSeekParameters(SeekParameters.PREVIOUS_SYNC);
-                        if (PlayerActivity.player.getCurrentPosition() - SEEK_STEP < 0)
-                            position = 0;
-                        else
-                            position = PlayerActivity.player.getCurrentPosition() - SEEK_STEP;
-                        PlayerActivity.player.seekTo(position);
+                        if (seekStart + seekChange - SEEK_STEP >= 0) {
+                            PlayerActivity.player.setSeekParameters(SeekParameters.PREVIOUS_SYNC);
+                            seekChange -= SEEK_STEP;
+                            position = seekStart + seekChange;
+                            PlayerActivity.player.seekTo(position);
+                        }
                     } else {
                         PlayerActivity.player.setSeekParameters(SeekParameters.NEXT_SYNC);
-                        PlayerActivity.player.seekTo(PlayerActivity.player.getCurrentPosition() + SEEK_STEP);
+                        if (seekMax == C.TIME_UNSET) {
+                            seekChange += SEEK_STEP;
+                            position = seekStart + seekChange;
+                            PlayerActivity.player.seekTo(position);
+                        } else if (seekStart + seekChange + SEEK_STEP < seekMax) {
+                            seekChange += SEEK_STEP;
+                            position = seekStart + seekChange;
+                            PlayerActivity.player.seekTo(position);
+                        }
                     }
+                    setCustomErrorMessage(Utils.formatMilis(seekChange));
                     gestureScrollX = 0.0001f;
                 }
             }
@@ -205,7 +226,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
         HORIZONTAL, VERTICAL, UNKNOWN
     }
 
-    public void setIconVolume() {
-        exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_volume_up_24dp, 0, 0, 0);
+    public void setIconVolume(boolean volumeActive) {
+        exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(volumeActive ? R.drawable.ic_volume_up_24dp : R.drawable.ic_volume_off_24dp, 0, 0, 0);
     }
 }
