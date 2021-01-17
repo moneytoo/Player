@@ -20,6 +20,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Icon;
 import android.media.AudioManager;
+import android.media.audiofx.LoudnessEnhancer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -56,6 +57,7 @@ import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.audio.AudioListener;
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.text.CaptionStyleCompat;
@@ -85,6 +87,7 @@ public class PlayerActivity extends Activity {
     private AudioManager mAudioManager;
     private MediaSessionCompat mediaSession;
     private DefaultTrackSelector trackSelector;
+    public static LoudnessEnhancer loudnessEnhancer;
 
     private CustomStyledPlayerView playerView;
     public static SimpleExoPlayer player;
@@ -100,6 +103,7 @@ public class PlayerActivity extends Activity {
     public static boolean controllerVisibleFully;
     public static Snackbar snackbar;
     private ExoPlaybackException errorToShow;
+    public static int boostLevel = 0;
 
     private static final int REQUEST_CHOOSER_VIDEO = 1;
     private static final int REQUEST_CHOOSER_SUBTITLE = 2;
@@ -382,7 +386,7 @@ public class PlayerActivity extends Activity {
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
                 playerView.removeCallbacks(playerView.textClearRunnable);
-                Utils.adjustVolume(mAudioManager, playerView, keyCode == KeyEvent.KEYCODE_VOLUME_UP);
+                Utils.adjustVolume(mAudioManager, playerView, keyCode == KeyEvent.KEYCODE_VOLUME_UP, event.getRepeatCount() == 0);
                 return true;
             default:
                 return super.onKeyDown(keyCode, event);
@@ -549,6 +553,16 @@ public class PlayerActivity extends Activity {
                 setTrackSubtitles = true;
             }
             player.setMediaItem(mediaItemBuilder.build());
+
+            player.addAudioListener(new AudioListener() {
+                @Override
+                public void onAudioSessionId(int audioSessionId) {
+                    if (loudnessEnhancer != null) {
+                        loudnessEnhancer.release();
+                    }
+                    loudnessEnhancer = new LoudnessEnhancer(audioSessionId);
+                }
+            });
 
             setTrackAudio = true;
 

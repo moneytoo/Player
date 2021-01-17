@@ -1,6 +1,7 @@
 package com.brouken.player;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
@@ -24,6 +25,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     private long seekStart;
     private long seekChange;
     private long seekMax;
+    private boolean canBoostVolume = false;
 
     private final float IGNORE_BORDER = Utils.dpToPx(24);
     private final float SCROLL_STEP = Utils.dpToPx(16);
@@ -63,6 +65,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     public void clearIcon() {
         exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+        setHighlight(false);
     }
 
     @Override
@@ -196,6 +199,9 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
         if (gestureOrientation == Orientation.VERTICAL || gestureOrientation == Orientation.UNKNOWN) {
             gestureScrollY += distanceY;
             if (Math.abs(gestureScrollY) > SCROLL_STEP) {
+                if (gestureOrientation == Orientation.UNKNOWN) {
+                    canBoostVolume = Utils.isVolumeMax(mAudioManager);
+                }
                 gestureOrientation = Orientation.VERTICAL;
 
                 if (motionEvent.getX() < (float)(getWidth() / 2)) {
@@ -203,7 +209,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
                     exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_brightness_medium_24, 0, 0, 0);
                     setCustomErrorMessage(" " + PlayerActivity.mBrightnessControl.currentBrightnessLevel);
                 } else {
-                    Utils.adjustVolume(mAudioManager, this, gestureScrollY > 0);
+                    Utils.adjustVolume(mAudioManager, this, gestureScrollY > 0, canBoostVolume);
                 }
 
                 gestureScrollY = 0.0001f;
@@ -228,5 +234,9 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     public void setIconVolume(boolean volumeActive) {
         exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(volumeActive ? R.drawable.ic_volume_up_24dp : R.drawable.ic_volume_off_24dp, 0, 0, 0);
+    }
+
+    public void setHighlight(boolean active) {
+        exoErrorMessage.getBackground().setTint(active ? Color.RED : Color.parseColor("#80808080"));
     }
 }
