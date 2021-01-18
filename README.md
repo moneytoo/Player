@@ -33,6 +33,7 @@ HDR and HDR10+ video playback on compatible/supported hardware.
  * Vertical swipe to change brightness (left) / volume (right)
  * PiP (Picture in Picture) on Android 8 or higher
  * Resize (fit/crop)
+ * Volume boost
  * No ads, tracking or even the Internet permission
 
 To load an external (non-embedded) subtitles, long press the file open action in the bottom bar.

@@ -1,1 +1,4 @@
-Support non UTF-8 subtitles, report playback errors, update ExoPlayer, other improvements and bug fixes.
+- Volume: add volume boost; volume off icon; allow safe volume dialog to appear
+- Subtitles: handle non UTF-8 subtitles; fix user font scale
+- ExoPlayer: update to 2.12.3
+- Other small improvements and fixes
