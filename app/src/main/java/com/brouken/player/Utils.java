@@ -7,6 +7,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.OpenableColumns;
 import android.view.View;
 import android.widget.ImageButton;
@@ -126,17 +127,26 @@ class Utils {
         return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
     }
 
+    public static boolean isVolumeMin(final AudioManager audioManager) {
+        int min = Build.VERSION.SDK_INT >= 28 ? audioManager.getStreamMinVolume(AudioManager.STREAM_MUSIC) : 0;
+        return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == min;
+    }
+
     public static void adjustVolume(final AudioManager audioManager, final CustomStyledPlayerView playerView, final boolean raise, final boolean canBoost) {
-        int volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        final int volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         final int volumeMax = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         boolean volumeActive = volume != 0;
 
         if (volume != volumeMax || (PlayerActivity.boostLevel == 0 && !raise)) {
             PlayerActivity.loudnessEnhancer.setEnabled(false);
             audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, raise ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-            volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-            volumeActive = volume != 0;
-            playerView.setCustomErrorMessage(volumeActive ? " " + volume : "");
+            final int volumeNew = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            if (raise && volume == volumeNew && !isVolumeMin(audioManager)) {
+                audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE | AudioManager.FLAG_SHOW_UI);
+            } else {
+                volumeActive = volumeNew != 0;
+                playerView.setCustomErrorMessage(volumeActive ? " " + volumeNew : "");
+            }
         } else {
             if (canBoost && raise && PlayerActivity.boostLevel < 10)
                 PlayerActivity.boostLevel++;
