@@ -97,8 +97,7 @@ public class PlayerActivity extends Activity {
     private Prefs mPrefs;
     public static BrightnessControl mBrightnessControl;
     public static boolean haveMedia;
-    private boolean setTrackAudio;
-    private boolean setTrackSubtitles;
+    private boolean setTracks;
     public static boolean controllerVisible;
     public static boolean controllerVisibleFully;
     public static Snackbar snackbar;
@@ -550,7 +549,6 @@ public class PlayerActivity extends Activity {
 
                 MediaItem.Subtitle subtitle = new MediaItem.Subtitle(mPrefs.subtitleUri, subtitleMime, subtitleLanguage, 0, C.ROLE_FLAG_SUBTITLE, subtitleName);
                 mediaItemBuilder.setSubtitles(Collections.singletonList(subtitle));
-                setTrackSubtitles = true;
             }
             player.setMediaItem(mediaItemBuilder.build());
 
@@ -564,7 +562,7 @@ public class PlayerActivity extends Activity {
                 }
             });
 
-            setTrackAudio = true;
+            setTracks = true;
 
             play = mPrefs.getPosition() == 0L;
             player.setPlayWhenReady(play);
@@ -650,15 +648,11 @@ public class PlayerActivity extends Activity {
                 }
             }
 
-            if (state == Player.STATE_READY) {
-                if (setTrackAudio && mPrefs.audioTrack >= 0) {
-                    setTrackAudio = false;
+            if (setTracks && state == Player.STATE_READY) {
+                if (mPrefs.audioTrack >= 0)
                     setSelectedTrack(C.TRACK_TYPE_AUDIO, mPrefs.audioTrack);
-                }
-                if (setTrackSubtitles && mPrefs.subtitleTrack >= 0) {
-                    setTrackSubtitles = false;
+                if (mPrefs.subtitleTrack >= 0 && mPrefs.subtitleTrack < getTrackCount(C.TRACK_TYPE_TEXT))
                     setSelectedTrack(C.TRACK_TYPE_TEXT, mPrefs.subtitleTrack);
-                }
             }
         }
 
@@ -759,6 +753,21 @@ public class PlayerActivity extends Activity {
             }
         }
         return -1;
+    }
+
+    public int getTrackCount(final int trackType) {
+        if (trackSelector != null) {
+            final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
+            if (mappedTrackInfo != null) {
+                for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
+                    if (mappedTrackInfo.getRendererType(rendererIndex) == trackType) {
+                        final TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
+                        return trackGroups.length;
+                    }
+                }
+            }
+        }
+        return 0;
     }
 
     void setSubtitleTextSize() {
