@@ -109,7 +109,7 @@ class Prefs {
     }
 
     public void updateBrightness(final int brightness) {
-        if (brightness >= 0) {
+        if (brightness >= -1) {
             this.brightness = brightness;
             final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
             sharedPreferencesEditor.putInt(PREF_KEY_BRIGHTNESS, brightness);

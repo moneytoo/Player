@@ -26,6 +26,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     private long seekChange;
     private long seekMax;
     private boolean canBoostVolume = false;
+    private boolean canSetAutoBrightness = false;
 
     private final float IGNORE_BORDER = Utils.dpToPx(24);
     private final float SCROLL_STEP = Utils.dpToPx(16);
@@ -201,13 +202,12 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
             if (Math.abs(gestureScrollY) > SCROLL_STEP) {
                 if (gestureOrientation == Orientation.UNKNOWN) {
                     canBoostVolume = Utils.isVolumeMax(mAudioManager);
+                    canSetAutoBrightness = PlayerActivity.mBrightnessControl.currentBrightnessLevel <= 0;
                 }
                 gestureOrientation = Orientation.VERTICAL;
 
                 if (motionEvent.getX() < (float)(getWidth() / 2)) {
-                    PlayerActivity.mBrightnessControl.changeBrightness(gestureScrollY > 0);
-                    exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_brightness_medium_24, 0, 0, 0);
-                    setCustomErrorMessage(" " + PlayerActivity.mBrightnessControl.currentBrightnessLevel);
+                    PlayerActivity.mBrightnessControl.changeBrightness(this, gestureScrollY > 0, canSetAutoBrightness);
                 } else {
                     Utils.adjustVolume(mAudioManager, this, gestureScrollY > 0, canBoostVolume);
                 }
@@ -238,5 +238,13 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     public void setHighlight(boolean active) {
         exoErrorMessage.getBackground().setTint(active ? Color.RED : Color.parseColor("#80808080"));
+    }
+
+    public void setIconBrightness() {
+        exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_brightness_medium_24, 0, 0, 0);
+    }
+
+    public void setIconBrightnessAuto() {
+        exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_brightness_auto_24dp, 0, 0, 0);
     }
 }

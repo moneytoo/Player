@@ -23,18 +23,26 @@ class BrightnessControl {
         activity.getWindow().setAttributes(lp);
     }
 
-    public void changeBrightness(final boolean increase) {
-        if (currentBrightnessLevel < 0) {
-            currentBrightnessLevel = 20;
+    public void changeBrightness(final CustomStyledPlayerView playerView, final boolean increase, final boolean canSetAuto) {
+        int newBrightnessLevel = (increase ? currentBrightnessLevel + 1 : currentBrightnessLevel - 1);
+
+        if (canSetAuto && newBrightnessLevel < 0)
+            currentBrightnessLevel = -1;
+        else if (newBrightnessLevel >= 0 && newBrightnessLevel <= 30)
+            currentBrightnessLevel = newBrightnessLevel;
+
+        if (currentBrightnessLevel == -1 && canSetAuto)
+            setScreenBrightness(WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE);
+        else if (currentBrightnessLevel != -1)
+            setScreenBrightness(levelToBrightness(currentBrightnessLevel));
+
+        if (currentBrightnessLevel == -1 && canSetAuto) {
+            playerView.setIconBrightnessAuto();
+            playerView.setCustomErrorMessage("");
+        } else {
+            playerView.setIconBrightness();
+            playerView.setCustomErrorMessage(" " + PlayerActivity.mBrightnessControl.currentBrightnessLevel);
         }
-
-        final int newBrightnessLevel = (increase ? currentBrightnessLevel + 1 : currentBrightnessLevel - 1);
-
-        if (newBrightnessLevel < 0 || newBrightnessLevel > 30)
-            return;
-
-        currentBrightnessLevel = newBrightnessLevel;
-        setScreenBrightness(levelToBrightness(newBrightnessLevel));
     }
 
     float levelToBrightness(final int level) {
