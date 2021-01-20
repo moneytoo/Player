@@ -10,8 +10,8 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 14
-        versionName "0.14"
+        versionCode 15
+        versionName "0.15"
     }
 
     buildTypes {

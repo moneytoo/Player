@@ -132,13 +132,17 @@ class Utils {
         return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == min;
     }
 
-    public static void adjustVolume(final AudioManager audioManager, final CustomStyledPlayerView playerView, final boolean raise, final boolean canBoost) {
+    public static void adjustVolume(final AudioManager audioManager, final CustomStyledPlayerView playerView, final boolean raise, boolean canBoost) {
         final int volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         final int volumeMax = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         boolean volumeActive = volume != 0;
 
+        if (PlayerActivity.loudnessEnhancer == null)
+            canBoost = false;
+
         if (volume != volumeMax || (PlayerActivity.boostLevel == 0 && !raise)) {
-            PlayerActivity.loudnessEnhancer.setEnabled(false);
+            if (PlayerActivity.loudnessEnhancer != null)
+                PlayerActivity.loudnessEnhancer.setEnabled(false);
             audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, raise ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
             final int volumeNew = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
             if (raise && volume == volumeNew && !isVolumeMin(audioManager)) {
@@ -153,14 +157,16 @@ class Utils {
             else if (!raise && PlayerActivity.boostLevel > 0)
                 PlayerActivity.boostLevel--;
 
-            PlayerActivity.loudnessEnhancer.setTargetGain(PlayerActivity.boostLevel * 200);
+            if (PlayerActivity.loudnessEnhancer != null)
+                PlayerActivity.loudnessEnhancer.setTargetGain(PlayerActivity.boostLevel * 200);
             playerView.setCustomErrorMessage(" " + (volumeMax + PlayerActivity.boostLevel));
         }
 
         // TODO: Handle volume changes outside the app (lose boost if volume is not maxed out)
 
         playerView.setIconVolume(volumeActive);
-        PlayerActivity.loudnessEnhancer.setEnabled(PlayerActivity.boostLevel > 0);
+        if (PlayerActivity.loudnessEnhancer != null)
+            PlayerActivity.loudnessEnhancer.setEnabled(PlayerActivity.boostLevel > 0);
         playerView.setHighlight(PlayerActivity.boostLevel > 0);
     }
 
