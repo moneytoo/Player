@@ -9,7 +9,7 @@ Podporované formáty
  * Kontejnery (soubory): MP4, MOV, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV
  * Titulky: SRT, SSA, ASS, TTML, VTT
 
-Přehrávání HDR a HDR10+ na kompatibilních/podporovaných zařízení.
+Přehrávání HDR (HDR10+ a Dolby Vision) na kompatibilních/podporovaných zařízení.
 
 Funkce
 
@@ -19,6 +19,7 @@ Funkce
  * Vertikální swipe pro změnu jasu (vlevo) / hlasitosti (vpravo)
  * Obraz v obraze (plovoucí okno) na Androidu 8 a výš
  * Změna velikosti (přizpůsobení/oříznutí)
+ * Zvýšení hlasitosti
  * Bez reklam, sledování či povolení k přístupu na internet
 
 Pro načteních externích titulků dlouze podržte tlačítko pro otevření souboru ve spodním panelu.
