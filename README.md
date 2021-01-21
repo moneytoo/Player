@@ -76,9 +76,9 @@ Support for streaming playback is being [considered/tested](https://github.com/m
 
 Official cloud storage clients (like [Dropbox](https://play.google.com/store/apps/details?id=com.dropbox.android) or [Google Drive](https://play.google.com/store/apps/details?id=com.google.android.apps.docs)) usually implement all the technical requirements so storage can be browsed when opening video in Just Player.
 
-#### Videos in network storages (Samba, WebDAV, SCP etc.) - YES (since v0.14)
+#### Videos in network storages (Samba, WebDAV, SCP etc.) - ~~YES (since v0.14)~~ NO ([issue](https://github.com/moneytoo/Player/issues/31))
 
-You can open videos on network storages using file managers such as [Solid Explorer](https://play.google.com/store/apps/details?id=pl.solidexplorer2), [Total Commander](https://play.google.com/store/apps/details?id=com.ghisler.android.TotalCommander) or [Ghost Commander](https://play.google.com/store/apps/details?id=com.ghostsq.commander).
+~~You can open videos on network storages using file managers such as [Solid Explorer](https://play.google.com/store/apps/details?id=pl.solidexplorer2), [Total Commander](https://play.google.com/store/apps/details?id=com.ghisler.android.TotalCommander) or [Ghost Commander](https://play.google.com/store/apps/details?id=com.ghostsq.commander).~~
 
 ## Other open source Android video players
 
