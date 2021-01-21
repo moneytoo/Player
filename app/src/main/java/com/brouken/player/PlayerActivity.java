@@ -690,7 +690,7 @@ public class PlayerActivity extends Activity {
         if (Build.VERSION.SDK_INT >= 26)
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
 
-        startActivityForResult(intent, REQUEST_CHOOSER_VIDEO);
+        safelyStartActivityForResult(intent, REQUEST_CHOOSER_VIDEO);
     }
 
     private void loadSubtitleFile(Uri pickerInitialUri) {
@@ -716,7 +716,14 @@ public class PlayerActivity extends Activity {
         if (Build.VERSION.SDK_INT >= 26)
             intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
 
-        startActivityForResult(intent, REQUEST_CHOOSER_SUBTITLE);
+        safelyStartActivityForResult(intent, REQUEST_CHOOSER_SUBTITLE);
+    }
+
+    void safelyStartActivityForResult(final Intent intent, final int code) {
+        if (intent.resolveActivity(getPackageManager()) == null)
+            showSnack(getText(R.string.error_files_missing).toString(), intent.toString());
+        else
+            startActivityForResult(intent, code);
     }
 
     public void setSelectedTrack(final int trackType, final int trackIndex) {
@@ -881,14 +888,20 @@ public class PlayerActivity extends Activity {
                 break;
         }
 
-        snackbar = Snackbar.make(coordinatorLayout, errorGeneral, Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.error_details, v -> {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(PlayerActivity.this);
-            builder.setMessage(errorDetailed);
-            builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss());
-            final AlertDialog dialog = builder.create();
-            dialog.show();
-        });
+        showSnack(errorGeneral, errorDetailed);
+    }
+
+    void showSnack(final String textPrimary, final String textSecondary) {
+        snackbar = Snackbar.make(coordinatorLayout, textPrimary, Snackbar.LENGTH_LONG);
+        if (textSecondary != null) {
+            snackbar.setAction(R.string.error_details, v -> {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(PlayerActivity.this);
+                builder.setMessage(textSecondary);
+                builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> dialogInterface.dismiss());
+                final AlertDialog dialog = builder.create();
+                dialog.show();
+            });
+        }
         snackbar.setAnchorView(R.id.exo_bottom_bar);
         snackbar.show();
     }
