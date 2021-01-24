@@ -20,6 +20,15 @@ android {
             //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    flavorDimensions "default"
+    productFlavors {
+        offline {
+            //versionNameSuffix "-offline"
+        }
+        online {
+            versionNameSuffix "-online"
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -27,9 +36,13 @@ android {
 }
 
 dependencies {
-    implementation 'com.google.android.exoplayer:exoplayer-core:2.12.3'
-    implementation 'com.google.android.exoplayer:exoplayer-ui:2.12.3'
-    implementation 'com.google.android.exoplayer:extension-mediasession:2.12.3'
+    def exoplayerVersion = '2.12.3'
+    implementation "com.google.android.exoplayer:exoplayer-core:$exoplayerVersion"
+    implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion"
+    implementation "com.google.android.exoplayer:extension-mediasession:$exoplayerVersion"
+    onlineImplementation "com.google.android.exoplayer:exoplayer-dash:$exoplayerVersion"
+    onlineImplementation "com.google.android.exoplayer:exoplayer-hls:$exoplayerVersion"
+    onlineImplementation "com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayerVersion"
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0'
     implementation 'com.google.android.material:material:1.2.1'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
