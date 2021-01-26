@@ -68,17 +68,17 @@ Just Player focuses on playing videos so audio only playback isn't officialy sup
 
 ### Can I play videos that are not stored on the device?
 
-#### Video streams on the Internet - NO/NOT YET
-
-Support for streaming playback is being [considered/tested](https://github.com/moneytoo/Player/issues/11).
-
 #### Videos in cloud storages - YES
 
 Official cloud storage clients (like [Dropbox](https://play.google.com/store/apps/details?id=com.dropbox.android) or [Google Drive](https://play.google.com/store/apps/details?id=com.google.android.apps.docs)) usually implement all the technical requirements so storage can be browsed when opening video in Just Player.
 
-#### Videos in network storages (Samba, WebDAV, SCP etc.) - ~~YES (since v0.14)~~ NO ([issue](https://github.com/moneytoo/Player/issues/31))
+#### Video streams on the Internet - Yes (since v0.16-online)
 
-~~You can open videos on network storages using file managers such as [Solid Explorer](https://play.google.com/store/apps/details?id=pl.solidexplorer2), [Total Commander](https://play.google.com/store/apps/details?id=com.ghisler.android.TotalCommander) or [Ghost Commander](https://play.google.com/store/apps/details?id=com.ghostsq.commander).~~
+Basic support for playing streaming videos is in the `-online` version, available only in [releases on Github](https://github.com/moneytoo/Player/releases/latest) (F-Droid and Google Play are staying on the `-offline` build).
+
+#### Videos in network storages (Samba, WebDAV, SCP etc.) - YES (since v0.16-online)
+
+You can open videos on network storages using file managers such as [Solid Explorer](https://play.google.com/store/apps/details?id=pl.solidexplorer2), [Total Commander](https://play.google.com/store/apps/details?id=com.ghisler.android.TotalCommander) or [Ghost Commander](https://play.google.com/store/apps/details?id=com.ghostsq.commander).
 
 ## Other open source Android video players
 
