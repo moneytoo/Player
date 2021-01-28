@@ -57,6 +57,7 @@ import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.audio.AudioListener;
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
 import com.google.android.exoplayer2.source.TrackGroupArray;
@@ -526,6 +527,11 @@ public class PlayerActivity extends Activity {
             player = new SimpleExoPlayer.Builder(this, renderersFactory)
                     .setTrackSelector(trackSelector)
                     .build();
+            final AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                    .setUsage(C.USAGE_MEDIA)
+                    .setContentType(C.CONTENT_TYPE_MOVIE)
+                    .build();
+            player.setAudioAttributes(audioAttributes, true);
         }
 
         playerView.setPlayer(player);
