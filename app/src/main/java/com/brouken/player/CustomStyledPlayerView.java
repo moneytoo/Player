@@ -237,7 +237,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     }
 
     public void setHighlight(boolean active) {
-        exoErrorMessage.getBackground().setTint(active ? Color.RED : Color.parseColor("#80808080"));
+        exoErrorMessage.getBackground().setTint(active ? Color.RED : getResources().getColor(R.color.exo_bottom_bar_background));
     }
 
     public void setIconBrightness() {
