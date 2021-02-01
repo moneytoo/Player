@@ -190,7 +190,6 @@ public class PlayerActivity extends Activity {
         buttonOpen.setOnClickListener(view -> openFile(mPrefs.mediaUri));
 
         buttonOpen.setOnLongClickListener(view -> {
-            Toast.makeText(PlayerActivity.this, R.string.open_subtitles, Toast.LENGTH_SHORT).show();
             loadSubtitleFile(mPrefs.mediaUri);
             return true;
         });
@@ -295,6 +294,11 @@ public class PlayerActivity extends Activity {
 
         final ImageButton exoSubtitle = exoBasicControls.findViewById(R.id.exo_subtitle);
         exoBasicControls.removeView(exoSubtitle);
+
+        exoSubtitle.setOnLongClickListener(view -> {
+            loadSubtitleFile(mPrefs.mediaUri);
+            return true;
+        });
 
         final ImageButton exoSettings = exoExtraControls.findViewById(R.id.exo_settings);
         exoExtraControls.removeView(exoSettings);
@@ -700,6 +704,7 @@ public class PlayerActivity extends Activity {
     }
 
     private void loadSubtitleFile(Uri pickerInitialUri) {
+        Toast.makeText(PlayerActivity.this, R.string.open_subtitles, Toast.LENGTH_SHORT).show();
         enableRotation();
 
         final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
