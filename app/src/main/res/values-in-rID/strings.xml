@@ -1,0 +1,14 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Just Player</string>
+
+    <string name="video_resize_fit">Kecocokan</string>
+    <string name="video_resize_crop">Pangkas</string>
+
+    <string name="video_orientation_video">Orientasi video</string>
+    <string name="video_orientation_sensor">Rotasi otomatis</string>
+
+    <string name="onboarding_open_title">Pilih video untuk diputar</string>
+    <string name="onboarding_open_description">Ketuk untuk membuka file video. Ketuk panjang untuk memuat subtitle eksternal.</string>
+
+    <string name="open_subtitles">Muat subtitle</string>
+</resources>
