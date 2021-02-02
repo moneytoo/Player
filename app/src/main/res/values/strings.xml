@@ -1,4 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <string name="app_name">Just Player</string>
 
     <string name="video_resize_fit">Fit</string>
@@ -12,6 +12,6 @@
 
     <string name="open_subtitles">Load subtitles</string>
 
-    <string name="error_details" tools:ignore="MissingTranslation">Details</string>
-    <string name="error_files_missing" tools:ignore="MissingTranslation">Files app is disabled or missing</string>
+    <string name="error_details">Details</string>
+    <string name="error_files_missing">Files app is disabled or missing</string>
 </resources>

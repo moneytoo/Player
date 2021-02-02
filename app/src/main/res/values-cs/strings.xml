@@ -13,4 +13,5 @@
     <string name="open_subtitles">Načíst titulky</string>
 
     <string name="error_details">Podrobnosti</string>
+    <string name="error_files_missing">Aplikace Soubory je deaktivována nebo chybí</string>
 </resources>
