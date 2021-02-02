@@ -321,6 +321,13 @@ public class PlayerActivity extends Activity {
 
         exoBottomBar.addView(horizontalScrollView);
 
+        if (Build.VERSION.SDK_INT > 23) {
+            horizontalScrollView.setOnScrollChangeListener((view, i, i1, i2, i3) -> {
+                // Keep controller UI visible - alternative to resetHideCallbacks()
+                playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+            });
+        }
+
         playerView.setControllerVisibilityListener(new StyledPlayerControlView.VisibilityListener() {
             @Override
             public void onVisibilityChange(int visibility) {
