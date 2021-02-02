@@ -575,7 +575,11 @@ public class PlayerActivity extends Activity {
                     if (loudnessEnhancer != null) {
                         loudnessEnhancer.release();
                     }
-                    loudnessEnhancer = new LoudnessEnhancer(audioSessionId);
+                    try {
+                        loudnessEnhancer = new LoudnessEnhancer(audioSessionId);
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
 
