@@ -12,9 +12,6 @@
 
     <string name="open_subtitles">Muat subtitle</string>
 
-
-    <string name="open_subtitles">Load subtitles</string>
-
     <string name="error_details">Detail</string>
     <string name="error_files_missing">Aplikasi file dinonaktifkan atau hilang</string>
 </resources>
