@@ -250,7 +250,10 @@ class Utils {
     public static String formatMilis(long time) {
         final int totalSeconds = Math.abs((int) time / 1000);
         final int seconds = totalSeconds % 60;
-        final int minutes = totalSeconds / 60;
-        return " " + (time < 0 ? "−" : "+") + String.format("%02d:%02d", minutes, seconds);
+        final int minutes = totalSeconds % 3600 / 60;
+        final int hours = totalSeconds / 3600;
+
+        return " " + (time < 0 ? "−" : "+") + (hours > 0 ? String.format("%d:%02d:%02d", hours, minutes, seconds)
+                : String.format("%02d:%02d", minutes, seconds));
     }
 }

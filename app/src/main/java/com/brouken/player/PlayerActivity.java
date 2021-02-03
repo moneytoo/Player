@@ -68,6 +68,7 @@ import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 import com.google.android.exoplayer2.ui.SubtitleView;
+import com.google.android.exoplayer2.ui.TimeBar;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.material.snackbar.Snackbar;
 import com.ibm.icu.text.CharsetDetector;
@@ -125,6 +126,7 @@ public class PlayerActivity extends Activity {
     private boolean restorePlayState;
     private boolean play;
     private float subtitlesScale = 1.0f;
+    private boolean scrubbing;
 
     final Rational rationalLimitWide = new Rational(239, 100);
     final Rational rationalLimitTall = new Rational(100, 239);
@@ -157,6 +159,24 @@ public class PlayerActivity extends Activity {
         // https://github.com/google/ExoPlayer/issues/5765
         DefaultTimeBar timeBar = playerView.findViewById(R.id.exo_progress);
         timeBar.setBufferedColor(0x33FFFFFF);
+
+        timeBar.addListener(new TimeBar.OnScrubListener() {
+            @Override
+            public void onScrubStart(TimeBar timeBar, long position) {
+                scrubbing = false;
+                reportScrubbing(position);
+            }
+
+            @Override
+            public void onScrubMove(TimeBar timeBar, long position) {
+                reportScrubbing(position);
+            }
+
+            @Override
+            public void onScrubStop(TimeBar timeBar, long position, boolean canceled) {
+                playerView.setCustomErrorMessage(null);
+            }
+        });
 
         final StyledPlayerControlView controlView = playerView.findViewById(R.id.exo_controller);
         controlView.setOnApplyWindowInsetsListener((view, windowInsets) -> {
@@ -926,5 +946,16 @@ public class PlayerActivity extends Activity {
         }
         snackbar.setAnchorView(R.id.exo_bottom_bar);
         snackbar.show();
+    }
+
+    void reportScrubbing(long position) {
+        final long diff = position - PlayerActivity.player.getCurrentPosition();
+        if (Math.abs(diff) > 1000) {
+            scrubbing = true;
+        }
+        if (scrubbing) {
+            playerView.clearIcon();
+            playerView.setCustomErrorMessage(Utils.formatMilis(diff));
+        }
     }
 }
