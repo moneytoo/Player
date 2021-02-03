@@ -24,6 +24,7 @@ class Prefs {
     private static final String PREF_KEY_SUBTITLE_TRACK = "subtitleTrack";
     private static final String PREF_KEY_RESIZE_MODE = "resizeMode";
     private static final String PREF_KEY_ORIENTATION = "orientation";
+    private static final String PREF_KEY_SCALE = "scale";
 
     final Context mContext;
     final SharedPreferences mSharedPreferences;
@@ -33,6 +34,7 @@ class Prefs {
     public String mediaType;
     public int resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT;
     public Utils.Orientation orientation = Utils.Orientation.VIDEO;
+    public float scale = 1.f;
 
     public int subtitleTrack = -1;
     public int audioTrack = -1;
@@ -65,6 +67,7 @@ class Prefs {
         if (mSharedPreferences.contains(PREF_KEY_RESIZE_MODE))
             resizeMode = mSharedPreferences.getInt(PREF_KEY_RESIZE_MODE, resizeMode);
         orientation = Utils.Orientation.values()[mSharedPreferences.getInt(PREF_KEY_ORIENTATION, 1)];
+        scale = mSharedPreferences.getFloat(PREF_KEY_SCALE, scale);
     }
 
     public void updateMedia(final Uri uri, final String type) {
@@ -74,6 +77,7 @@ class Prefs {
         updateAudioTrack(-1);
         updateSubtitleTrack(-1);
         updateResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+        updateScale(1.f);
 
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         if (uri == null)
@@ -187,6 +191,13 @@ class Prefs {
     public void updateOrientation() {
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         sharedPreferencesEditor.putInt(PREF_KEY_ORIENTATION, orientation.value);
+        sharedPreferencesEditor.commit();
+    }
+
+    public void updateScale(final float scale) {
+        this.scale = scale;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        sharedPreferencesEditor.putFloat(PREF_KEY_SCALE, scale);
         sharedPreferencesEditor.commit();
     }
 }

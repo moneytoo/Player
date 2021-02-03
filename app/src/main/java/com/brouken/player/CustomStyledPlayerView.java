@@ -6,15 +6,18 @@ import android.media.AudioManager;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
+import android.view.ScaleGestureDetector;
+import android.view.View;
 import android.widget.TextView;
 
 import androidx.core.view.GestureDetectorCompat;
 
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.SeekParameters;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
 
-public final class CustomStyledPlayerView extends StyledPlayerView implements GestureDetector.OnGestureListener {
+public final class CustomStyledPlayerView extends StyledPlayerView implements GestureDetector.OnGestureListener, ScaleGestureDetector.OnScaleGestureListener {
 
     private final GestureDetectorCompat mDetector;
 
@@ -37,6 +40,9 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     public static final int MESSAGE_TIMEOUT_KEY = 800;
 
     private boolean restorePlayState;
+
+    private ScaleGestureDetector mScaleDetector;
+    private float mScaleFactor = 1.f;
 
     public final Runnable textClearRunnable = () -> {
         setCustomErrorMessage(null);
@@ -62,6 +68,8 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
         mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
         exoErrorMessage = findViewById(R.id.exo_error_message);
+
+        mScaleDetector = new ScaleGestureDetector(context, this);
     }
 
     public void clearIcon() {
@@ -71,6 +79,8 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        mScaleDetector.onTouchEvent(ev);
+
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
                 if (PlayerActivity.snackbar != null && PlayerActivity.snackbar.isShown()) {
@@ -137,6 +147,9 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float distanceX, float distanceY) {
+        if (mScaleDetector.isInProgress())
+            return false;
+
         // Exclude edge areas
         if (motionEvent.getY() < IGNORE_BORDER || motionEvent.getX() < IGNORE_BORDER ||
                 motionEvent.getY() > getHeight() - IGNORE_BORDER || motionEvent.getX() > getWidth() - IGNORE_BORDER)
@@ -228,6 +241,27 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
         return false;
     }
 
+    @Override
+    public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
+        mScaleFactor *= scaleGestureDetector.getScaleFactor();
+        mScaleFactor = Math.max(0.25f, Math.min(mScaleFactor, 2.0f));
+        setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
+        setScale(mScaleFactor);
+        clearIcon();
+        setCustomErrorMessage((int)(mScaleFactor * 100) + "%");
+        return true;
+    }
+
+    @Override
+    public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
+        mScaleFactor = getVideoSurfaceView().getScaleX();
+        return true;
+    }
+
+    @Override
+    public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
+    }
+
     private enum Orientation {
         HORIZONTAL, VERTICAL, UNKNOWN
     }
@@ -246,5 +280,12 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     public void setIconBrightnessAuto() {
         exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_brightness_auto_24dp, 0, 0, 0);
+    }
+
+    public void setScale(final float scale) {
+        final View videoSurfaceView = getVideoSurfaceView();
+        videoSurfaceView.setScaleX(scale);
+        videoSurfaceView.setScaleY(scale);
+        //videoSurfaceView.animate().setStartDelay(0).setDuration(0).scaleX(scale).scaleY(scale).start();
     }
 }

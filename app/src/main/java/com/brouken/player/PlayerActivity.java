@@ -251,6 +251,7 @@ public class PlayerActivity extends Activity {
         buttonAspectRatio = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
         buttonAspectRatio.setImageResource(R.drawable.ic_aspect_ratio_24dp);
         buttonAspectRatio.setOnClickListener(view -> {
+            playerView.setScale(1.f);
             if (playerView.getResizeMode() == AspectRatioFrameLayout.RESIZE_MODE_FIT) {
                 playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
                 Utils.showText(playerView, getString(R.string.video_resize_crop));
@@ -441,6 +442,7 @@ public class PlayerActivity extends Activity {
 
         if (isInPictureInPictureMode) {
             setSubtitleTextSizePiP();
+            playerView.setScale(1.f);
             mReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
@@ -461,6 +463,9 @@ public class PlayerActivity extends Activity {
             registerReceiver(mReceiver, new IntentFilter(ACTION_MEDIA_CONTROL));
         } else {
             setSubtitleTextSize();
+            if (mPrefs.resizeMode == AspectRatioFrameLayout.RESIZE_MODE_ZOOM) {
+                playerView.setScale(mPrefs.scale);
+            }
             if (mReceiver != null) {
                 unregisterReceiver(mReceiver);
                 mReceiver = null;
@@ -576,6 +581,12 @@ public class PlayerActivity extends Activity {
 
             playerView.setResizeMode(mPrefs.resizeMode);
 
+            if (mPrefs.resizeMode == AspectRatioFrameLayout.RESIZE_MODE_ZOOM) {
+                playerView.setScale(mPrefs.scale);
+            } else {
+                playerView.setScale(1.f);
+            }
+
             MediaItem.Builder mediaItemBuilder = new MediaItem.Builder()
                     .setUri(mPrefs.mediaUri)
                     .setMimeType(mPrefs.mediaType);
@@ -645,6 +656,7 @@ public class PlayerActivity extends Activity {
             mPrefs.updateAudioTrack(getSelectedTrack(C.TRACK_TYPE_AUDIO));
             mPrefs.updateResizeMode(playerView.getResizeMode());
             mPrefs.updateOrientation();
+            mPrefs.updateScale(playerView.getVideoSurfaceView().getScaleX());
 
             if (player.isPlaying()) {
                 restorePlayState = true;
