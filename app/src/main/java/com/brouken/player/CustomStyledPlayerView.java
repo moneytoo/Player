@@ -3,6 +3,7 @@ package com.brouken.player;
 import android.content.Context;
 import android.graphics.Color;
 import android.media.AudioManager;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
@@ -79,7 +80,8 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        mScaleDetector.onTouchEvent(ev);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            mScaleDetector.onTouchEvent(ev);
 
         switch (ev.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -283,9 +285,11 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     }
 
     public void setScale(final float scale) {
-        final View videoSurfaceView = getVideoSurfaceView();
-        videoSurfaceView.setScaleX(scale);
-        videoSurfaceView.setScaleY(scale);
-        //videoSurfaceView.animate().setStartDelay(0).setDuration(0).scaleX(scale).scaleY(scale).start();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            final View videoSurfaceView = getVideoSurfaceView();
+            videoSurfaceView.setScaleX(scale);
+            videoSurfaceView.setScaleY(scale);
+            //videoSurfaceView.animate().setStartDelay(0).setDuration(0).scaleX(scale).scaleY(scale).start();
+        }
     }
 }
