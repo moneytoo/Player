@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Just Player</string>
+    <string name="video_resize_fit">Dopasuj</string>
+    <string name="video_orientation_video">Orientacja wideo</string>
+    <string name="error_details">Szczegóły</string>
+    <string name="open_subtitles">Wczytaj napisy</string>
+    <string name="onboarding_open_description">Dotknij aby otworzyć plik wideo. Przytrzymaj aby załadować zewnętrzne napisy.</string>
+    <string name="video_resize_crop">Przytnij</string>
+    <string name="video_orientation_sensor">Obrót automatyczny</string>
+    <string name="onboarding_open_title">Wybierz wideo do odtworzenia</string>
+    <string name="error_files_missing">Aplikacja Pliki jest wyłączona lub jej brakuje</string>
+</resources>
