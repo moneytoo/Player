@@ -9,4 +9,5 @@
     <string name="video_orientation_video">Skjermretning</string>
     <string name="video_resize_crop">Beskjør</string>
     <string name="video_resize_fit">Tilpass</string>
+    <string name="app_name" translatable="false"></string>
 </resources>
