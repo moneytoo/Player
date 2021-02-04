@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="error_files_missing">Filutforsker avskrudd eller manglende</string>
+    <string name="error_details">Detaljer</string>
+    <string name="open_subtitles">Last inn undertekster</string>
+    <string name="onboarding_open_description">Trykk for å åpne videofil. Trykk lenge for å laste eksterne undertekster.</string>
+    <string name="onboarding_open_title">Velg en video å spille</string>
+    <string name="video_orientation_sensor">Roter automatisk</string>
+    <string name="video_orientation_video">Skjermretning</string>
+    <string name="video_resize_crop">Beskjør</string>
+    <string name="video_resize_fit">Tilpass</string>
+    <string name="app_name">Just Player</string>
+</resources>
