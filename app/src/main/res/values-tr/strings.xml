@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="video_orientation_video">Video yönü</string>
+    <string name="error_files_missing">Dosyalar uygulaması devre dışı veya yok</string>
+    <string name="error_details">Ayrıntılar</string>
+    <string name="open_subtitles">Alt yazıları yükle</string>
+    <string name="onboarding_open_description">Bir video dosyası açmak için dokunun. Harici alt yazıları yüklemek için uzun dokunun.</string>
+    <string name="onboarding_open_title">Oynatmak için bir video seçin</string>
+    <string name="video_orientation_sensor">Otomatik döndür</string>
+    <string name="video_resize_crop">Kırp</string>
+    <string name="video_resize_fit">Sığdır</string>
+    <string name="app_name">Just Player</string>
+</resources>
