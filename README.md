@@ -32,6 +32,7 @@ HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
  * Playback speed control
  * Horizontal swipe to quickly seek
  * Vertical swipe to change brightness (left) / volume (right)
+ * Pinch to zoom (Android 7 or higher), since v0.19
  * PiP (Picture in Picture) on Android 8 or higher
  * Resize (fit/crop)
  * Volume boost

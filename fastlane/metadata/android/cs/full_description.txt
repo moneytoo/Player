@@ -17,6 +17,7 @@ Funkce
  * Nastavení rychlosti přehrávání
  * Horizontální swipe pro rychlý posun v čase
  * Vertikální swipe pro změnu jasu (vlevo) / hlasitosti (vpravo)
+ * Zoom/přiblížení dvěma prsty (Android 7 a výš)
  * Obraz v obraze (plovoucí okno) na Androidu 8 a výš
  * Změna velikosti (přizpůsobení/oříznutí)
  * Zvýšení hlasitosti

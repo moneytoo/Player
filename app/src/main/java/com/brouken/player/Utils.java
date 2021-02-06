@@ -23,9 +23,9 @@ class Utils {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 
-//    public static int pxToDp(int px) {
-//        return (int) (px / Resources.getSystem().getDisplayMetrics().density);
-//    }
+    public static float pxToDp(float px) {
+        return px / Resources.getSystem().getDisplayMetrics().density;
+    }
 
     public static boolean fileExists(final Context context, final Uri uri) {
         if ("file".equals(uri.getScheme())) {

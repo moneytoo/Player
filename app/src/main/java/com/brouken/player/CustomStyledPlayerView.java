@@ -42,7 +42,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     private boolean restorePlayState;
 
-    private ScaleGestureDetector mScaleDetector;
+    private final  ScaleGestureDetector mScaleDetector;
     private float mScaleFactor = 1.f;
 
     public final Runnable textClearRunnable = () -> {
@@ -80,7 +80,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && gestureOrientation == Orientation.UNKNOWN)
             mScaleDetector.onTouchEvent(ev);
 
         switch (ev.getActionMasked()) {
@@ -184,23 +184,24 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
                 gestureOrientation = Orientation.HORIZONTAL;
                 final long position;
+                float distanceDiff = Math.max(0.5f, Math.min(Math.abs(Utils.pxToDp(distanceX) / 4), 10.f));
 
                 if (PlayerActivity.haveMedia) {
                     if (gestureScrollX > 0) {
-                        if (seekStart + seekChange - SEEK_STEP >= 0) {
+                        if (seekStart + seekChange - SEEK_STEP  * distanceDiff >= 0) {
                             PlayerActivity.player.setSeekParameters(SeekParameters.PREVIOUS_SYNC);
-                            seekChange -= SEEK_STEP;
+                            seekChange -= SEEK_STEP * distanceDiff;
                             position = seekStart + seekChange;
                             PlayerActivity.player.seekTo(position);
                         }
                     } else {
                         PlayerActivity.player.setSeekParameters(SeekParameters.NEXT_SYNC);
                         if (seekMax == C.TIME_UNSET) {
-                            seekChange += SEEK_STEP;
+                            seekChange += SEEK_STEP * distanceDiff;
                             position = seekStart + seekChange;
                             PlayerActivity.player.seekTo(position);
                         } else if (seekStart + seekChange + SEEK_STEP < seekMax) {
-                            seekChange += SEEK_STEP;
+                            seekChange += SEEK_STEP  * distanceDiff;
                             position = seekStart + seekChange;
                             PlayerActivity.player.seekTo(position);
                         }

@@ -127,6 +127,7 @@ public class PlayerActivity extends Activity {
     private boolean play;
     private float subtitlesScale = 1.0f;
     private boolean scrubbing;
+    private long scrubbingStart;
 
     final Rational rationalLimitWide = new Rational(239, 100);
     final Rational rationalLimitTall = new Rational(100, 239);
@@ -164,6 +165,7 @@ public class PlayerActivity extends Activity {
             @Override
             public void onScrubStart(TimeBar timeBar, long position) {
                 scrubbing = false;
+                scrubbingStart = player.getCurrentPosition();
                 reportScrubbing(position);
             }
 
@@ -961,7 +963,7 @@ public class PlayerActivity extends Activity {
     }
 
     void reportScrubbing(long position) {
-        final long diff = position - PlayerActivity.player.getCurrentPosition();
+        final long diff = position - scrubbingStart;
         if (Math.abs(diff) > 1000) {
             scrubbing = true;
         }
@@ -969,5 +971,6 @@ public class PlayerActivity extends Activity {
             playerView.clearIcon();
             playerView.setCustomErrorMessage(Utils.formatMilis(diff));
         }
+        player.seekTo(position);
     }
 }
