@@ -597,6 +597,18 @@ public class PlayerActivity extends Activity {
             }
             player.setMediaItem(mediaItemBuilder.build());
 
+            if (loudnessEnhancer != null) {
+                loudnessEnhancer.release();
+            }
+            try {
+                int audioSessionId = C.generateAudioSessionIdV21(this);
+                loudnessEnhancer = new LoudnessEnhancer(audioSessionId);
+                player.setAudioSessionId(audioSessionId);
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
+
+            // When audio session id changes?
             player.addAudioListener(new AudioListener() {
                 @Override
                 public void onAudioSessionIdChanged(int audioSessionId) {
