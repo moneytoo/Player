@@ -3,9 +3,12 @@
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/moneytoo/Player.svg?logo=github&label=GitHub)](https://github.com/moneytoo/Player/releases/latest)
 [![Google Play](https://img.shields.io/endpoint?label=Google%20Play&logo=google-play&color=green&cacheSeconds=65536&url=https%3A%2F%2Fplayshields.herokuapp.com%2Fplay%3Fi%3Dcom.brouken.player%26l%3DGoogle%2520Play%26m%3Dv%24version)](https://play.google.com/store/apps/details?id=com.brouken.player)
 [![F-Droid](https://img.shields.io/f-droid/v/com.brouken.player.svg?logo=f-droid&label=F-Droid)](https://f-droid.org/packages/com.brouken.player/)
-![Lines of code](https://img.shields.io/tokei/lines/github/moneytoo/Player)
-![Code quality](https://img.shields.io/badge/code%20quality-%F0%9F%8D%9D-blue)
-[![ExoPlayer](https://img.shields.io/badge/ExoPlayer-v2.12.3-007ec6)](https://github.com/google/ExoPlayer)
+[![GitHub all releases](https://img.shields.io/github/downloads/moneytoo/Player/total)](https://github.com/moneytoo/Player/releases/latest)
+[![GitHub release (latest by date)](https://img.shields.io/github/downloads/moneytoo/Player/latest/total)](https://github.com/moneytoo/Player/releases/latest)
+[![Lines of code](https://img.shields.io/tokei/lines/github/moneytoo/Player)](https://github.com/moneytoo/Player)
+[![Code quality](https://img.shields.io/badge/code%20quality-%F0%9F%8D%9D-blue)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+[![ExoPlayer](https://img.shields.io/badge/ExoPlayer-v2.13.0-007ec6)](https://github.com/google/ExoPlayer)
+[![Translation Status](https://hosted.weblate.org/widgets/just-player/-/svg-badge.svg)](https://hosted.weblate.org/engage/just-player/)
 
 Android video player based on [ExoPlayer](https://github.com/google/ExoPlayer)
 
