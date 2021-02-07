@@ -3,4 +3,6 @@
     <dimen name="exo_error_message_height" tools:keep="@dimen/exo_error_message_height">40dp</dimen>
     <dimen name="exo_error_message_text_size" tools:keep="@dimen/exo_error_message_text_size">20sp</dimen>
     <dimen name="exo_settings_offset" tools:keep="@dimen/exo_settings_offset">30dp</dimen>
+    <dimen name="exo_icon_size">90dp</dimen>
+    <dimen name="controls_padding">170sp</dimen>
 </resources>

@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="bottom|end"
-    android:paddingStart="@dimen/exo_time_view_width"
+    android:paddingStart="@dimen/controls_padding"
     android:scrollbars="none">
 
     <LinearLayout

@@ -278,8 +278,8 @@ public class PlayerActivity extends Activity {
             playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
         });
 
-        int padding = getResources().getDimensionPixelOffset(R.dimen.exo_time_view_padding);
-        FrameLayout centerView = playerView.findViewById(R.id.exo_center_view);
+        int padding = getResources().getDimensionPixelOffset(R.dimen.exo_styled_bottom_bar_time_padding);
+        FrameLayout centerView = playerView.findViewById(R.id.exo_controls_background);
         titleView = new TextView(this);
         titleView.setBackgroundResource(R.color.exo_bottom_bar_background);
         titleView.setTextColor(Color.WHITE);
@@ -313,8 +313,6 @@ public class PlayerActivity extends Activity {
         setSubtitleTextSize();
 
         final LinearLayout exoBasicControls = playerView.findViewById(R.id.exo_basic_controls);
-        final LinearLayout exoExtraControls = playerView.findViewById(R.id.exo_extra_controls);
-
         final ImageButton exoSubtitle = exoBasicControls.findViewById(R.id.exo_subtitle);
         exoBasicControls.removeView(exoSubtitle);
 
@@ -323,13 +321,10 @@ public class PlayerActivity extends Activity {
             return true;
         });
 
-        final ImageButton exoSettings = exoExtraControls.findViewById(R.id.exo_settings);
-        exoExtraControls.removeView(exoSettings);
+        final ImageButton exoSettings = exoBasicControls.findViewById(R.id.exo_settings);
+        exoBasicControls.removeView(exoSettings);
+        //exoBasicControls.setVisibility(View.GONE);
 
-        exoBasicControls.setVisibility(View.GONE);
-        exoExtraControls.setVisibility(View.GONE);
-
-        final FrameLayout exoBottomBar = playerView.findViewById(R.id.exo_bottom_bar);
         final HorizontalScrollView horizontalScrollView = (HorizontalScrollView) getLayoutInflater().inflate(R.layout.controls, null);
         final LinearLayout controls = horizontalScrollView.findViewById(R.id.controls);
 
@@ -342,7 +337,7 @@ public class PlayerActivity extends Activity {
         controls.addView(buttonRotation);
         controls.addView(exoSettings);
 
-        exoBottomBar.addView(horizontalScrollView);
+        exoBasicControls.addView(horizontalScrollView);
 
         if (Build.VERSION.SDK_INT > 23) {
             horizontalScrollView.setOnScrollChangeListener((view, i, i1, i2, i3) -> {
@@ -604,7 +599,7 @@ public class PlayerActivity extends Activity {
 
             player.addAudioListener(new AudioListener() {
                 @Override
-                public void onAudioSessionId(int audioSessionId) {
+                public void onAudioSessionIdChanged(int audioSessionId) {
                     if (loudnessEnhancer != null) {
                         loudnessEnhancer.release();
                     }
@@ -931,12 +926,6 @@ public class PlayerActivity extends Activity {
                 break;
             case ExoPlaybackException.TYPE_UNEXPECTED:
                 errorDetailed = error.getUnexpectedException().getLocalizedMessage();
-                break;
-            case ExoPlaybackException.TYPE_OUT_OF_MEMORY:
-                errorDetailed = error.getOutOfMemoryError().getLocalizedMessage();
-                break;
-            case ExoPlaybackException.TYPE_TIMEOUT:
-                errorDetailed = error.getTimeoutException().getLocalizedMessage();
                 break;
             case ExoPlaybackException.TYPE_REMOTE:
             default:
