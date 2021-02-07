@@ -10,8 +10,8 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 19
-        versionName "0.19"
+        versionCode 20
+        versionName "0.20"
     }
 
     buildTypes {
@@ -47,7 +47,7 @@ dependencies {
     onlineImplementation "com.google.android.exoplayer:exoplayer-hls:$exoplayerVersion"
     onlineImplementation "com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayerVersion"
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0'
-    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'com.google.android.material:material:1.3.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     implementation 'com.ibm.icu:icu4j:68.2'
     implementation fileTree(dir: "libs", include: ["*.aar"])
