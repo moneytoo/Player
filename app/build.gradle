@@ -12,6 +12,7 @@ android {
         targetSdkVersion 30
         versionCode 20
         versionName "0.20"
+        archivesBaseName = "Just.Player.v${versionName}"
     }
 
     buildTypes {
@@ -20,12 +21,14 @@ android {
             //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    flavorDimensions "default"
+    flavorDimensions "connectivity"
     productFlavors {
         offline {
+            dimension "connectivity"
             //versionNameSuffix "-offline"
         }
         online {
+            dimension "connectivity"
             versionNameSuffix "-online"
         }
     }
