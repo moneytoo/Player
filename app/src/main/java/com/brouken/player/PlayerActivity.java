@@ -71,14 +71,7 @@ import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.ui.TimeBar;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.material.snackbar.Snackbar;
-import com.ibm.icu.text.CharsetDetector;
-import com.ibm.icu.text.CharsetMatch;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -518,27 +511,7 @@ public class PlayerActivity extends Activity {
                 }
 
                 // Convert subtitles to UTF-8 if necessary
-                try {
-                    final CharsetDetector detector = new CharsetDetector();
-                    final BufferedInputStream bufferedInputStream = new BufferedInputStream(getContentResolver().openInputStream(uri));
-                    detector.setText(bufferedInputStream);
-                    final CharsetMatch charsetMatch = detector.detect();
-
-                    if (!StandardCharsets.ISO_8859_1.displayName().equals(charsetMatch.getName()) &&
-                            !StandardCharsets.UTF_8.displayName().equals(charsetMatch.getName())) {
-                        String filename = uri.getPath();
-                        filename = filename.substring(filename.lastIndexOf("/") + 1);
-                        final File file = new File(getCacheDir(), filename);
-                        try (FileOutputStream stream = new FileOutputStream(file)) {
-                            stream.write(charsetMatch.getString().getBytes());
-                            uri = Uri.fromFile(file);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                uri = UtilsSubtitles.convertSubtitlesIfNecessary(this, uri);
 
                 mPrefs.updateSubtitle(uri);
                 initializePlayer();
