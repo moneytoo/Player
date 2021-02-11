@@ -311,6 +311,9 @@ public class PlayerActivity extends Activity {
                 subtitleView.setStyle(captionStyle);
         } else {
             subtitlesScale = captioningManager.getFontScale();
+            final SubtitleView subtitleView = playerView.getSubtitleView();
+            if (subtitleView != null)
+                subtitleView.setApplyEmbeddedStyles(false);
         }
 
         setSubtitleTextSize();
