@@ -60,6 +60,9 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.audio.AudioListener;
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
+import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.extractor.ts.TsExtractor;
+import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
 import com.google.android.exoplayer2.source.TrackGroupArray;
 import com.google.android.exoplayer2.text.CaptionStyleCompat;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
@@ -557,8 +560,12 @@ public class PlayerActivity extends Activity {
                     trackSelector.buildUponParameters().setMaxVideoSizeSd());*/
             RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
                     .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
+            // https://github.com/google/ExoPlayer/issues/8571
+            final DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory()
+                    .setTsExtractorTimestampSearchBytes(1500 * TsExtractor.TS_PACKET_SIZE);
             player = new SimpleExoPlayer.Builder(this, renderersFactory)
                     .setTrackSelector(trackSelector)
+                    .setMediaSourceFactory(new DefaultMediaSourceFactory(this, extractorsFactory))
                     .build();
             final AudioAttributes audioAttributes = new AudioAttributes.Builder()
                     .setUsage(C.USAGE_MEDIA)
