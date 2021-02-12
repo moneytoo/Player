@@ -671,11 +671,8 @@ public class PlayerActivity extends Activity {
 
             mPrefs.updatePosition(player.getCurrentPosition());
             mPrefs.updateBrightness(mBrightnessControl.currentBrightnessLevel);
-            mPrefs.updateSubtitleTrack(getSelectedTrack(C.TRACK_TYPE_TEXT));
-            mPrefs.updateAudioTrack(getSelectedTrack(C.TRACK_TYPE_AUDIO));
-            mPrefs.updateResizeMode(playerView.getResizeMode());
             mPrefs.updateOrientation();
-            mPrefs.updateScale(playerView.getVideoSurfaceView().getScaleX());
+            mPrefs.updateMeta(getSelectedTrack(C.TRACK_TYPE_AUDIO), getSelectedTrack(C.TRACK_TYPE_TEXT), playerView.getResizeMode(), playerView.getVideoSurfaceView().getScaleX());
 
             if (player.isPlaying()) {
                 restorePlayState = true;

@@ -74,10 +74,7 @@ class Prefs {
         mediaUri = uri;
         mediaType = type;
         updateSubtitle(null);
-        updateAudioTrack(-1);
-        updateSubtitleTrack(-1);
-        updateResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
-        updateScale(1.f);
+        updateMeta(-1, -1, AspectRatioFrameLayout.RESIZE_MODE_FIT, 1.f);
 
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         if (uri == null)
@@ -161,42 +158,27 @@ class Prefs {
             return (long) val;
     }
 
-    public void updateAudioTrack(final int track) {
-        this.audioTrack = track;
-        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        if (track < 0)
-            sharedPreferencesEditor.remove(PREF_KEY_AUDIO_TRACK);
-        else
-            sharedPreferencesEditor.putInt(PREF_KEY_AUDIO_TRACK, track);
-        sharedPreferencesEditor.commit();
-    }
-
-    public void updateSubtitleTrack(final int track) {
-        this.subtitleTrack = track;
-        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        if (track < 0)
-            sharedPreferencesEditor.remove(PREF_KEY_SUBTITLE_TRACK);
-        else
-            sharedPreferencesEditor.putInt(PREF_KEY_SUBTITLE_TRACK, track);
-        sharedPreferencesEditor.commit();
-    }
-
-    public void updateResizeMode(final int mode) {
-        this.resizeMode = mode;
-        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        sharedPreferencesEditor.putInt(PREF_KEY_RESIZE_MODE, resizeMode);
-        sharedPreferencesEditor.commit();
-    }
-
     public void updateOrientation() {
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         sharedPreferencesEditor.putInt(PREF_KEY_ORIENTATION, orientation.value);
         sharedPreferencesEditor.commit();
     }
 
-    public void updateScale(final float scale) {
+    public void updateMeta(final int audioTrack, final int subtitleTrack, final int resizeMode, final float scale) {
+        this.audioTrack = audioTrack;
+        this.subtitleTrack = subtitleTrack;
+        this.resizeMode = resizeMode;
         this.scale = scale;
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        if (audioTrack < 0)
+            sharedPreferencesEditor.remove(PREF_KEY_AUDIO_TRACK);
+        else
+            sharedPreferencesEditor.putInt(PREF_KEY_AUDIO_TRACK, audioTrack);
+        if (subtitleTrack < 0)
+            sharedPreferencesEditor.remove(PREF_KEY_SUBTITLE_TRACK);
+        else
+            sharedPreferencesEditor.putInt(PREF_KEY_SUBTITLE_TRACK, subtitleTrack);
+        sharedPreferencesEditor.putInt(PREF_KEY_RESIZE_MODE, resizeMode);
         sharedPreferencesEditor.putFloat(PREF_KEY_SCALE, scale);
         sharedPreferencesEditor.commit();
     }
