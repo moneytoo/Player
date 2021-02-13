@@ -362,6 +362,8 @@ public class PlayerActivity extends Activity {
                 // https://developer.android.com/training/system-ui/immersive
                 if (visibility == View.VISIBLE) {
                     Utils.showSystemUi(playerView);
+                    // Because when using dpad controls, focus resets to first item in bottom controls bar
+                    findViewById(R.id.exo_play_pause).requestFocus();
                 } else {
                     Utils.hideSystemUi(playerView);
                 }
@@ -434,8 +436,10 @@ public class PlayerActivity extends Activity {
                 if (!controllerVisibleFully) {
                     if (player.isPlaying()) {
                         player.pause();
-                        return true;
+                    } else {
+                        player.play();
                     }
+                    return true;
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_LEFT:
@@ -462,6 +466,12 @@ public class PlayerActivity extends Activity {
                     PlayerActivity.player.setSeekParameters(SeekParameters.NEXT_SYNC);
                     player.seekTo(seekTo);
                     playerView.setCustomErrorMessage(Utils.formatMilis(seekTo));
+                    return true;
+                }
+                break;
+            default:
+                if (!controllerVisibleFully) {
+                    playerView.showController();
                     return true;
                 }
                 break;
