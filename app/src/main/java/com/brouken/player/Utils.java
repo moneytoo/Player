@@ -253,7 +253,10 @@ class Utils {
         final int minutes = totalSeconds % 3600 / 60;
         final int hours = totalSeconds / 3600;
 
-        return " " + (time < 0 ? "−" : "+") + (hours > 0 ? String.format("%d:%02d:%02d", hours, minutes, seconds)
-                : String.format("%02d:%02d", minutes, seconds));
+        return (hours > 0 ? String.format("%d:%02d:%02d", hours, minutes, seconds) : String.format("%02d:%02d", minutes, seconds));
+    }
+
+    public static String formatMilisSign(long time) {
+        return (time < 0 ? "−" : "+") + formatMilis(time);
     }
 }

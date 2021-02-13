@@ -206,7 +206,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
                             PlayerActivity.player.seekTo(position);
                         }
                     }
-                    setCustomErrorMessage(Utils.formatMilis(seekChange));
+                    setCustomErrorMessage(Utils.formatMilisSign(seekChange));
                     gestureScrollX = 0.0001f;
                 }
             }

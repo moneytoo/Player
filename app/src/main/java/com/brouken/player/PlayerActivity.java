@@ -56,6 +56,7 @@ import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
+import com.google.android.exoplayer2.SeekParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.audio.AudioListener;
@@ -423,9 +424,49 @@ public class PlayerActivity extends Activity {
                 playerView.removeCallbacks(playerView.textClearRunnable);
                 Utils.adjustVolume(mAudioManager, playerView, keyCode == KeyEvent.KEYCODE_VOLUME_UP, event.getRepeatCount() == 0);
                 return true;
-            default:
-                return super.onKeyDown(keyCode, event);
+            case KeyEvent.KEYCODE_BUTTON_SELECT:
+            case KeyEvent.KEYCODE_BUTTON_START:
+            case KeyEvent.KEYCODE_BUTTON_A:
+            case KeyEvent.KEYCODE_ENTER:
+            case KeyEvent.KEYCODE_DPAD_CENTER:
+            case KeyEvent.KEYCODE_NUMPAD_ENTER:
+            case KeyEvent.KEYCODE_SPACE:
+                if (!controllerVisibleFully) {
+                    if (player.isPlaying()) {
+                        player.pause();
+                        return true;
+                    }
+                }
+                break;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+            case KeyEvent.KEYCODE_BUTTON_L2:
+                if (!controllerVisibleFully) {
+                    playerView.removeCallbacks(playerView.textClearRunnable);
+                    long seekTo = player.getCurrentPosition() - 10_000;
+                    if (seekTo < 0)
+                        seekTo = 0;
+                    player.setSeekParameters(SeekParameters.PREVIOUS_SYNC);
+                    player.seekTo(seekTo);
+                    playerView.setCustomErrorMessage(Utils.formatMilis(seekTo));
+                    return true;
+                }
+                break;
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+            case KeyEvent.KEYCODE_BUTTON_R2:
+                if (!controllerVisibleFully) {
+                    playerView.removeCallbacks(playerView.textClearRunnable);
+                    long seekTo = player.getCurrentPosition() + 10_000;
+                    long seekMax = player.getDuration();
+                    if (seekMax != C.TIME_UNSET && seekTo > seekMax)
+                        seekTo = seekMax;
+                    PlayerActivity.player.setSeekParameters(SeekParameters.NEXT_SYNC);
+                    player.seekTo(seekTo);
+                    playerView.setCustomErrorMessage(Utils.formatMilis(seekTo));
+                    return true;
+                }
+                break;
         }
+        return super.onKeyDown(keyCode, event);
     }
 
     @Override
@@ -435,6 +476,12 @@ public class PlayerActivity extends Activity {
             case KeyEvent.KEYCODE_VOLUME_DOWN:
                 playerView.postDelayed(playerView.textClearRunnable, CustomStyledPlayerView.MESSAGE_TIMEOUT_KEY);
                 return true;
+            case KeyEvent.KEYCODE_DPAD_LEFT:
+            case KeyEvent.KEYCODE_BUTTON_L2:
+            case KeyEvent.KEYCODE_DPAD_RIGHT:
+            case KeyEvent.KEYCODE_BUTTON_R2:
+                playerView.postDelayed(playerView.textClearRunnable, CustomStyledPlayerView.MESSAGE_TIMEOUT_KEY);
+                break;
         }
         return super.onKeyUp(keyCode, event);
     }
@@ -977,7 +1024,7 @@ public class PlayerActivity extends Activity {
         }
         if (scrubbing) {
             playerView.clearIcon();
-            playerView.setCustomErrorMessage(Utils.formatMilis(diff));
+            playerView.setCustomErrorMessage(Utils.formatMilisSign(diff));
         }
         player.seekTo(position);
     }
