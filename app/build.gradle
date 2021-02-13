@@ -42,7 +42,7 @@ android {
 }
 
 dependencies {
-    def exoplayerVersion = '2.13.0'
+    def exoplayerVersion = '2.13.1'
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayerVersion"
     implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion"
     implementation "com.google.android.exoplayer:extension-mediasession:$exoplayerVersion"

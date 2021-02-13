@@ -187,7 +187,7 @@ Builds:
     gradle:
       - offline
     srclibs:
-      - ExoPlayer@r2.13.0
+      - ExoPlayer@r2.13.1
       - FFmpeg@release/4.2
       - cpu_features@v0.6.0
       - abseil-cpp@20200923.3
