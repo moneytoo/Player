@@ -469,6 +469,8 @@ public class PlayerActivity extends Activity {
                     return true;
                 }
                 break;
+            case KeyEvent.KEYCODE_BACK:
+                break;
             default:
                 if (!controllerVisibleFully) {
                     playerView.showController();
