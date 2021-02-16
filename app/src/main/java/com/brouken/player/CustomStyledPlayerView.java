@@ -2,6 +2,7 @@ package com.brouken.player;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Rect;
 import android.media.AudioManager;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -17,6 +18,8 @@ import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.SeekParameters;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
+
+import java.util.Collections;
 
 public final class CustomStyledPlayerView extends StyledPlayerView implements GestureDetector.OnGestureListener, ScaleGestureDetector.OnScaleGestureListener {
 
@@ -44,6 +47,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     private final  ScaleGestureDetector mScaleDetector;
     private float mScaleFactor = 1.f;
+    Rect systemGestureExclusionRect = new Rect();
 
     public final Runnable textClearRunnable = () -> {
         setCustomErrorMessage(null);
@@ -53,6 +57,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     private final AudioManager mAudioManager;
 
     private final TextView exoErrorMessage;
+    private final View exoProgress;
 
     public CustomStyledPlayerView(Context context) {
         this(context, null);
@@ -69,6 +74,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
         mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
 
         exoErrorMessage = findViewById(R.id.exo_error_message);
+        exoProgress = findViewById(R.id.exo_progress);
 
         mScaleDetector = new ScaleGestureDetector(context, this);
     }
@@ -291,6 +297,17 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
             videoSurfaceView.setScaleX(scale);
             videoSurfaceView.setScaleY(scale);
             //videoSurfaceView.animate().setStartDelay(0).setDuration(0).scaleX(scale).scaleY(scale).start();
+        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        if (Build.VERSION.SDK_INT >= 29) {
+            exoProgress.getGlobalVisibleRect(systemGestureExclusionRect);
+            systemGestureExclusionRect.left = left;
+            systemGestureExclusionRect.right = right;
+            setSystemGestureExclusionRects(Collections.singletonList(systemGestureExclusionRect));
         }
     }
 }

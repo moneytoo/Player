@@ -69,7 +69,6 @@ import com.google.android.exoplayer2.text.CaptionStyleCompat;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
-import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.ui.TimeBar;
@@ -162,7 +161,7 @@ public class PlayerActivity extends Activity {
         playerView.setControllerAutoShow(true);
 
         // https://github.com/google/ExoPlayer/issues/5765
-        DefaultTimeBar timeBar = playerView.findViewById(R.id.exo_progress);
+        CustomDefaultTimeBar timeBar = playerView.findViewById(R.id.exo_progress);
         timeBar.setBufferedColor(0x33FFFFFF);
 
         timeBar.addListener(new TimeBar.OnScrubListener() {

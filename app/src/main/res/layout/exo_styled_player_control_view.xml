@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merge xmlns:android="http://schemas.android.com/apk/res/android">
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
   <FrameLayout android:id="@+id/exo_controls_background"
       android:layout_width="match_parent"
@@ -86,11 +87,16 @@
 
   </FrameLayout>
 
-  <View android:id="@+id/exo_progress_placeholder"
+  <com.brouken.player.CustomDefaultTimeBar android:id="@+id/exo_progress"
       android:layout_width="match_parent"
       android:layout_height="@dimen/exo_styled_progress_layout_height"
       android:layout_gravity="bottom"
-      android:layout_marginBottom="@dimen/exo_styled_progress_margin_bottom"/>
+      android:layout_marginBottom="@dimen/exo_styled_progress_margin_bottom"
+      app:bar_height="@dimen/exo_styled_progress_bar_height"
+      app:bar_gravity="bottom"
+      app:touch_target_height="@dimen/exo_styled_progress_touch_target_height"
+      app:scrubber_enabled_size="@dimen/exo_styled_progress_enabled_thumb_size"
+      app:scrubber_dragged_size="@dimen/exo_styled_progress_dragged_thumb_size"/>
 
   <LinearLayout android:id="@+id/exo_minimal_controls"
       android:layout_width="wrap_content"
