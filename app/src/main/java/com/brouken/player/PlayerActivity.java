@@ -128,7 +128,7 @@ public class PlayerActivity extends Activity {
     private boolean restoreOrientationLock;
     private boolean restorePlayState;
     private boolean play;
-    private float subtitlesScale = 1.0f;
+    private float subtitlesScale = 1.05f;
     private boolean scrubbing;
     private long scrubbingStart;
 
@@ -304,17 +304,18 @@ public class PlayerActivity extends Activity {
         }
 
         final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
+        final SubtitleView subtitleView = playerView.getSubtitleView();
         if (!captioningManager.isEnabled()) {
-            final CaptionStyleCompat captionStyle = new CaptionStyleCompat(Color.WHITE, Color.TRANSPARENT, Color.TRANSPARENT, CaptionStyleCompat.EDGE_TYPE_OUTLINE, Color.BLACK, Typeface.DEFAULT_BOLD);
-            final SubtitleView subtitleView = playerView.getSubtitleView();
+            final CaptionStyleCompat captionStyle = new CaptionStyleCompat(Color.WHITE, Color.TRANSPARENT, Color.TRANSPARENT, CaptionStyleCompat.EDGE_TYPE_DROP_SHADOW, Color.BLACK, Typeface.DEFAULT_BOLD);
             if (subtitleView != null)
                 subtitleView.setStyle(captionStyle);
         } else {
             subtitlesScale = captioningManager.getFontScale();
-            final SubtitleView subtitleView = playerView.getSubtitleView();
             if (subtitleView != null)
                 subtitleView.setApplyEmbeddedStyles(false);
         }
+        if (subtitleView != null)
+            subtitleView.setBottomPaddingFraction(SubtitleView.DEFAULT_BOTTOM_PADDING_FRACTION * 2f / 3f);
 
         setSubtitleTextSize();
 
