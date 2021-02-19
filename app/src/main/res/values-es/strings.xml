@@ -13,5 +13,5 @@
     <string name="open_subtitles">Cargar subtítulos</string>
     
     <string name="error_details">Detalles</string>
-     <string name="error_files_missing">Hay archivos que faltan</string>
+    <string name="error_files_missing">Hay archivos que faltan</string>
 </resources>
