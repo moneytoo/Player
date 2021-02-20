@@ -34,6 +34,7 @@
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
             android:launchMode="singleTop"
             android:supportsPictureInPicture="true"
+            android:exported="true"
             tools:targetApi="n">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

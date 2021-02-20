@@ -943,7 +943,7 @@ public class PlayerActivity extends Activity {
     void updatePictureInPictureActions(final int iconId, final String title, final int controlType, final int requestCode) {
         final ArrayList<RemoteAction> actions = new ArrayList<>();
         final PendingIntent intent = PendingIntent.getBroadcast(PlayerActivity.this, requestCode,
-                        new Intent(ACTION_MEDIA_CONTROL).putExtra(EXTRA_CONTROL_TYPE, controlType), 0);
+                        new Intent(ACTION_MEDIA_CONTROL).putExtra(EXTRA_CONTROL_TYPE, controlType), PendingIntent.FLAG_IMMUTABLE);
         final Icon icon = Icon.createWithResource(PlayerActivity.this, iconId);
         actions.add(new RemoteAction(icon, title, title, intent));
         ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setActions(actions);
