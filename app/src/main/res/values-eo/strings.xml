@@ -1,2 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="error_details">Detaloj</string>
+    <string name="open_subtitles">Ŝarĝi subtekstojn</string>
+    <string name="onboarding_open_title">Elekti filmeton por ludi</string>
+    <string name="video_orientation_sensor">Aŭtomata orientiĝo</string>
+    <string name="video_orientation_video">Filmeta orientiĝo</string>
+    <string name="video_resize_crop">Stuci</string>
+    <string name="video_resize_fit">Adapti</string>
+    <string name="app_name">Ĵus Ludilo</string>
+</resources>
