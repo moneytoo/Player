@@ -55,7 +55,7 @@ Translate: [Weblate](https://hosted.weblate.org/engage/just-player/)
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="75">](https://f-droid.org/packages/com.brouken.player/)
 [<img src="https://raw.githubusercontent.com/andOTP/andOTP/master/assets/badges/get-it-on-github.png" alt="Get it on GitHub" height="75">](https://github.com/moneytoo/Player/releases/latest)
 
-Other communication channels to get in touch: application thread on [XDA Developers](https://forum.xda-developers.com/t/app-5-0-just-video-player-no-bluetooth-lag-exoplayer-ffmpeg-audio-codecs.4189183/), subreddit on [reddit](https://www.reddit.com/r/JustPlayer/), entry on [AlternativeTo](https://alternativeto.net/software/just-video-player/)
+Other communication channels to get in touch: application thread on [XDA Developers](https://forum.xda-developers.com/t/app-5-0-just-video-player-no-bluetooth-lag-exoplayer-ffmpeg-audio-codecs.4189183/), subreddit on [reddit](https://www.reddit.com/r/JustPlayer/), entry on [AlternativeTo](https://alternativeto.net/software/just-video-player/about/)
 
 ## FAQ
 
@@ -86,6 +86,10 @@ Basic support for playing streaming videos is in the `-online` version, availabl
 #### Videos in network storages (Samba, WebDAV, SCP etc.) - YES (since v0.16-online)
 
 You can open videos on network storages using file managers such as [Solid Explorer](https://play.google.com/store/apps/details?id=pl.solidexplorer2), [Total Commander](https://play.google.com/store/apps/details?id=com.ghisler.android.TotalCommander) or [Ghost Commander](https://play.google.com/store/apps/details?id=com.ghostsq.commander).
+
+### Android TV support?
+
+Notes on partial, [experimental support](https://github.com/moneytoo/Player/issues/26#issuecomment-778677387).
 
 ## Other open source Android video players
 
