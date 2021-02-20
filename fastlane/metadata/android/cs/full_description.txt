@@ -18,9 +18,9 @@ Funkce
  * Horizontální swipe pro rychlý posun v čase
  * Vertikální swipe pro změnu jasu (vlevo) / hlasitosti (vpravo)
  * Zoom/přiblížení dvěma prsty (Android 7 a výš)
- * Obraz v obraze (plovoucí okno) na Androidu 8 a výš
+ * Obraz v obraze (plovoucí okno) na Androidu 8 a výš (zvětšovatelné na Androidu 11 a výš)
  * Změna velikosti (přizpůsobení/oříznutí)
  * Zvýšení hlasitosti
- * Bez reklam, sledování či povolení k přístupu na internet
+ * Bez reklam, sledování nebo povolení k přístupu na internet (či čtení úložiště)
 
 Pro načteních externích titulků dlouze podržte tlačítko pro otevření souboru ve spodním panelu.
