@@ -141,11 +141,11 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     @Override
     public boolean onSingleTapUp(MotionEvent motionEvent) {
-        if (!PlayerActivity.controllerVisible) {
+        if (!PlayerActivity.controllerVisibleFully) {
             showController();
             return true;
         } else if (getControllerHideOnTouch()) {
-            if (PlayerActivity.haveMedia)
+            if (PlayerActivity.haveMedia && PlayerActivity.player.isPlaying())
                 hideController();
             return true;
         }

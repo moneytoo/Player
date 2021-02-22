@@ -228,7 +228,6 @@ public class PlayerActivity extends Activity {
 
             buttonPiP.setOnClickListener(view -> {
                 playerView.setControllerAutoShow(false);
-                playerView.setControllerShowTimeoutMs(0);
                 playerView.hideController();
 
                 final Format format = player.getVideoFormat();
@@ -532,6 +531,7 @@ public class PlayerActivity extends Activity {
                 unregisterReceiver(mReceiver);
                 mReceiver = null;
             }
+            playerView.setControllerAutoShow(true);
         }
     }
 
@@ -719,6 +719,7 @@ public class PlayerActivity extends Activity {
 
         if (restorePlayState) {
             restorePlayState = false;
+            playerView.showController();
             player.play();
         }
     }
