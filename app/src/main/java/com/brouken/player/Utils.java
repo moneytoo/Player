@@ -9,6 +9,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.OpenableColumns;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -260,5 +261,11 @@ class Utils {
 
     public static String formatMilisSign(long time) {
         return (time < 0 ? "−" : "+") + formatMilis(time);
+    }
+
+    public static void log(final String text) {
+        if (BuildConfig.DEBUG) {
+            Log.d("JustPlayer", text);
+        }
     }
 }
