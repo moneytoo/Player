@@ -44,6 +44,7 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     public static final int MESSAGE_TIMEOUT_KEY = 800;
 
     private boolean restorePlayState;
+    private boolean canScale = true;
 
     private final  ScaleGestureDetector mScaleDetector;
     private float mScaleFactor = 1.f;
@@ -252,23 +253,46 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
 
     @Override
     public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
-        mScaleFactor *= scaleGestureDetector.getScaleFactor();
-        mScaleFactor = Math.max(0.25f, Math.min(mScaleFactor, 2.0f));
-        setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
-        setScale(mScaleFactor);
-        clearIcon();
-        setCustomErrorMessage((int)(mScaleFactor * 100) + "%");
-        return true;
+        if (canScale) {
+            mScaleFactor *= scaleGestureDetector.getScaleFactor();
+            mScaleFactor = Math.max(0.25f, Math.min(mScaleFactor, 2.0f));
+            setScale(mScaleFactor);
+            restoreSurfaceView();
+            clearIcon();
+            setCustomErrorMessage((int)(mScaleFactor * 100) + "%");
+            return true;
+        }
+        return false;
     }
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
         mScaleFactor = getVideoSurfaceView().getScaleX();
+        if (getResizeMode() != AspectRatioFrameLayout.RESIZE_MODE_ZOOM) {
+            canScale = false;
+            setAspectRatioListener((targetAspectRatio, naturalAspectRatio, aspectRatioMismatch) -> {
+                setAspectRatioListener(null);
+                mScaleFactor = Math.min((float)getHeight() / (float)getVideoSurfaceView().getHeight(),
+                        (float)getWidth() / (float)getVideoSurfaceView().getWidth());
+                canScale = true;
+            });
+            getVideoSurfaceView().setAlpha(0);
+            setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
+        } else {
+            canScale = true;
+        }
         return true;
     }
 
     @Override
     public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
+        restoreSurfaceView();
+    }
+
+    private void restoreSurfaceView() {
+        if (getVideoSurfaceView().getAlpha() != 1) {
+            getVideoSurfaceView().setAlpha(1);
+        }
     }
 
     private enum Orientation {
