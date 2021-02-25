@@ -7,7 +7,7 @@
 [![GitHub release (latest by date)](https://img.shields.io/github/downloads/moneytoo/Player/latest/total)](https://github.com/moneytoo/Player/releases/latest)
 [![Lines of code](https://img.shields.io/tokei/lines/github/moneytoo/Player)](https://github.com/moneytoo/Player)
 [![Code quality](https://img.shields.io/badge/code%20quality-%F0%9F%8D%9D-blue)](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
-[![ExoPlayer](https://img.shields.io/badge/ExoPlayer-v2.13.1-007ec6)](https://github.com/google/ExoPlayer)
+[![ExoPlayer](https://img.shields.io/badge/ExoPlayer-v2.13.2-007ec6)](https://github.com/google/ExoPlayer)
 [![Translation Status](https://hosted.weblate.org/widgets/just-player/-/svg-badge.svg)](https://hosted.weblate.org/engage/just-player/)
 
 Android video player based on [ExoPlayer](https://github.com/google/ExoPlayer)
