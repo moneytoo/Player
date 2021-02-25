@@ -128,7 +128,7 @@ public class PlayerActivity extends Activity {
     private boolean restoreOrientationLock;
     private boolean restorePlayState;
     private boolean play;
-    private float subtitlesScale = 1.05f;
+    private float subtitlesScale;
     private boolean scrubbing;
     private long scrubbingStart;
 
@@ -302,22 +302,6 @@ public class PlayerActivity extends Activity {
             mBrightnessControl.setScreenBrightness(mBrightnessControl.levelToBrightness(mBrightnessControl.currentBrightnessLevel));
         }
 
-        final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
-        final SubtitleView subtitleView = playerView.getSubtitleView();
-        if (!captioningManager.isEnabled()) {
-            final CaptionStyleCompat captionStyle = new CaptionStyleCompat(Color.WHITE, Color.TRANSPARENT, Color.TRANSPARENT, CaptionStyleCompat.EDGE_TYPE_DROP_SHADOW, Color.BLACK, Typeface.DEFAULT_BOLD);
-            if (subtitleView != null)
-                subtitleView.setStyle(captionStyle);
-        } else {
-            subtitlesScale = captioningManager.getFontScale();
-            if (subtitleView != null)
-                subtitleView.setApplyEmbeddedStyles(false);
-        }
-        if (subtitleView != null)
-            subtitleView.setBottomPaddingFraction(SubtitleView.DEFAULT_BOTTOM_PADDING_FRACTION * 2f / 3f);
-
-        setSubtitleTextSize();
-
         final LinearLayout exoBasicControls = playerView.findViewById(R.id.exo_basic_controls);
         final ImageButton exoSubtitle = exoBasicControls.findViewById(R.id.exo_subtitle);
         exoBasicControls.removeView(exoSubtitle);
@@ -402,6 +386,8 @@ public class PlayerActivity extends Activity {
     @Override
     public void onStart() {
         super.onStart();
+
+        updateSubtitleStyle();
 
         initializePlayer();
     }
@@ -1050,5 +1036,29 @@ public class PlayerActivity extends Activity {
             playerView.setCustomErrorMessage(Utils.formatMilisSign(diff));
         }
         player.seekTo(position);
+    }
+
+    void updateSubtitleStyle() {
+        final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
+        final SubtitleView subtitleView = playerView.getSubtitleView();
+        if (!captioningManager.isEnabled()) {
+            subtitlesScale = 1.05f;
+            final CaptionStyleCompat captionStyle = new CaptionStyleCompat(Color.WHITE, Color.TRANSPARENT, Color.TRANSPARENT, CaptionStyleCompat.EDGE_TYPE_DROP_SHADOW, Color.BLACK, Typeface.DEFAULT_BOLD);
+            if (subtitleView != null) {
+                subtitleView.setStyle(captionStyle);
+                subtitleView.setApplyEmbeddedStyles(true);
+            }
+        } else {
+            subtitlesScale = captioningManager.getFontScale();
+            if (subtitleView != null) {
+                subtitleView.setUserDefaultStyle();
+                subtitleView.setApplyEmbeddedStyles(false);
+            }
+        }
+
+        if (subtitleView != null)
+            subtitleView.setBottomPaddingFraction(SubtitleView.DEFAULT_BOTTOM_PADDING_FRACTION * 2f / 3f);
+
+        setSubtitleTextSize();
     }
 }
