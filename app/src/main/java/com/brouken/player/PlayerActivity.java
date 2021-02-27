@@ -26,6 +26,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
 import android.provider.Settings;
+import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
@@ -638,6 +639,17 @@ public class PlayerActivity extends Activity {
         MediaSessionConnector mediaSessionConnector = new MediaSessionConnector(mediaSession);
         mediaSessionConnector.setPlayer(player);
 
+        mediaSessionConnector.setMediaMetadataProvider(player -> {
+            final String title = Utils.getFileName(PlayerActivity.this, mPrefs.mediaUri);
+            if (title == null)
+                return null;
+            else
+                return new MediaMetadataCompat.Builder()
+                        .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
+                        .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
+                        .build();
+        });
+
         if (haveMedia) {
             playerView.setControllerShowTimeoutMs(CONTROLLER_TIMEOUT);
 
@@ -774,6 +786,7 @@ public class PlayerActivity extends Activity {
             }
 
             if (setTracks && state == Player.STATE_READY) {
+                setTracks = false;
                 if (mPrefs.audioTrack >= 0)
                     setSelectedTrackAudio(mPrefs.audioTrack, false);
                 if (mPrefs.audioTrackFfmpeg >= 0)

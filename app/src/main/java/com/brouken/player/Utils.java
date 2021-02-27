@@ -68,24 +68,28 @@ class Utils {
 
     public static String getFileName(Context context, Uri uri) {
         String result = null;
-        if (uri.getScheme().equals("content")) {
-            try (Cursor cursor = context.getContentResolver().query(uri, new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null)) {
-                if (cursor != null && cursor.moveToFirst()) {
-                    final int columnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                    if (columnIndex > -1)
-                        result = cursor.getString(columnIndex);
+        try {
+            if (uri.getScheme().equals("content")) {
+                try (Cursor cursor = context.getContentResolver().query(uri, new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        final int columnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
+                        if (columnIndex > -1)
+                            result = cursor.getString(columnIndex);
+                    }
                 }
             }
-        }
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
+            if (result == null) {
+                result = uri.getPath();
+                int cut = result.lastIndexOf('/');
+                if (cut != -1) {
+                    result = result.substring(cut + 1);
+                }
             }
+            if (result.indexOf(".") > 0)
+                result = result.substring(0, result.lastIndexOf("."));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        if (result.indexOf(".") > 0)
-            result = result.substring(0, result.lastIndexOf("."));
         return result;
     }
 
