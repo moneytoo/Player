@@ -21,6 +21,7 @@ class Prefs {
     private static final String PREF_KEY_FIRST_RUN = "firstRun";
     private static final String PREF_KEY_SUBTITLE_URI = "subtitleUri";
     private static final String PREF_KEY_AUDIO_TRACK = "audioTrack";
+    private static final String PREF_KEY_AUDIO_TRACK_FFMPEG = "audioTrackFfmpeg";
     private static final String PREF_KEY_SUBTITLE_TRACK = "subtitleTrack";
     private static final String PREF_KEY_RESIZE_MODE = "resizeMode";
     private static final String PREF_KEY_ORIENTATION = "orientation";
@@ -38,6 +39,7 @@ class Prefs {
 
     public int subtitleTrack = -1;
     public int audioTrack = -1;
+    public int audioTrackFfmpeg = -1;
 
     public int brightness = -1;
     public boolean firstRun = true;
@@ -62,6 +64,8 @@ class Prefs {
             subtitleUri = Uri.parse(mSharedPreferences.getString(PREF_KEY_SUBTITLE_URI, null));
         if (mSharedPreferences.contains(PREF_KEY_AUDIO_TRACK))
             audioTrack = mSharedPreferences.getInt(PREF_KEY_AUDIO_TRACK, audioTrack);
+        if (mSharedPreferences.contains(PREF_KEY_AUDIO_TRACK_FFMPEG))
+            audioTrackFfmpeg = mSharedPreferences.getInt(PREF_KEY_AUDIO_TRACK_FFMPEG, audioTrackFfmpeg);
         if (mSharedPreferences.contains(PREF_KEY_SUBTITLE_TRACK))
             subtitleTrack = mSharedPreferences.getInt(PREF_KEY_SUBTITLE_TRACK, subtitleTrack);
         if (mSharedPreferences.contains(PREF_KEY_RESIZE_MODE))
@@ -74,7 +78,7 @@ class Prefs {
         mediaUri = uri;
         mediaType = type;
         updateSubtitle(null);
-        updateMeta(-1, -1, AspectRatioFrameLayout.RESIZE_MODE_FIT, 1.f);
+        updateMeta(-1, -1, -1, AspectRatioFrameLayout.RESIZE_MODE_FIT, 1.f);
 
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         if (uri == null)
@@ -164,8 +168,9 @@ class Prefs {
         sharedPreferencesEditor.commit();
     }
 
-    public void updateMeta(final int audioTrack, final int subtitleTrack, final int resizeMode, final float scale) {
+    public void updateMeta(final int audioTrack, final int audioTrackFfmpeg, final int subtitleTrack, final int resizeMode, final float scale) {
         this.audioTrack = audioTrack;
+        this.audioTrackFfmpeg = audioTrackFfmpeg;
         this.subtitleTrack = subtitleTrack;
         this.resizeMode = resizeMode;
         this.scale = scale;
@@ -174,6 +179,10 @@ class Prefs {
             sharedPreferencesEditor.remove(PREF_KEY_AUDIO_TRACK);
         else
             sharedPreferencesEditor.putInt(PREF_KEY_AUDIO_TRACK, audioTrack);
+        if (audioTrackFfmpeg < 0)
+            sharedPreferencesEditor.remove(PREF_KEY_AUDIO_TRACK_FFMPEG);
+        else
+            sharedPreferencesEditor.putInt(PREF_KEY_AUDIO_TRACK_FFMPEG, audioTrackFfmpeg);
         if (subtitleTrack < 0)
             sharedPreferencesEditor.remove(PREF_KEY_SUBTITLE_TRACK);
         else

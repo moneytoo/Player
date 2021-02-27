@@ -728,7 +728,7 @@ public class PlayerActivity extends Activity {
             mPrefs.updatePosition(player.getCurrentPosition());
             mPrefs.updateBrightness(mBrightnessControl.currentBrightnessLevel);
             mPrefs.updateOrientation();
-            mPrefs.updateMeta(getSelectedTrack(C.TRACK_TYPE_AUDIO), getSelectedTrack(C.TRACK_TYPE_TEXT), playerView.getResizeMode(), playerView.getVideoSurfaceView().getScaleX());
+            mPrefs.updateMeta(getSelectedTrackAudio(false), getSelectedTrackAudio(true), getSelectedTrackSubtitle(), playerView.getResizeMode(), playerView.getVideoSurfaceView().getScaleX());
 
             if (player.isPlaying()) {
                 restorePlayState = true;
@@ -775,9 +775,11 @@ public class PlayerActivity extends Activity {
 
             if (setTracks && state == Player.STATE_READY) {
                 if (mPrefs.audioTrack >= 0)
-                    setSelectedTrack(C.TRACK_TYPE_AUDIO, mPrefs.audioTrack);
-                if (mPrefs.subtitleTrack >= 0 && mPrefs.subtitleTrack < getTrackCount(C.TRACK_TYPE_TEXT))
-                    setSelectedTrack(C.TRACK_TYPE_TEXT, mPrefs.subtitleTrack);
+                    setSelectedTrackAudio(mPrefs.audioTrack, false);
+                if (mPrefs.audioTrackFfmpeg >= 0)
+                    setSelectedTrackAudio(mPrefs.audioTrackFfmpeg, true);
+                if (mPrefs.subtitleTrack >= 0 && (mPrefs.subtitleTrack < getTrackCountSubtitle() || mPrefs.subtitleTrack == Integer.MAX_VALUE))
+                    setSelectedTrackSubtitle(mPrefs.subtitleTrack);
             }
         }
 
@@ -852,16 +854,18 @@ public class PlayerActivity extends Activity {
             startActivityForResult(intent, code);
     }
 
-    public void setSelectedTrack(final int trackType, final int trackIndex) {
+    public void setSelectedTrackSubtitle(final int trackIndex) {
         final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
         if (mappedTrackInfo != null) {
             final DefaultTrackSelector.Parameters parameters = trackSelector.getParameters();
             final DefaultTrackSelector.ParametersBuilder parametersBuilder = parameters.buildUpon();
             for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
-                if (mappedTrackInfo.getRendererType(rendererIndex) == trackType) {
+                if (mappedTrackInfo.getRendererType(rendererIndex) == C.TRACK_TYPE_TEXT) {
                     parametersBuilder.clearSelectionOverrides(rendererIndex).setRendererDisabled(rendererIndex, false);
                     final int [] tracks = {0};
-                    final DefaultTrackSelector.SelectionOverride selectionOverride = new DefaultTrackSelector.SelectionOverride(trackIndex, tracks);
+                    DefaultTrackSelector.SelectionOverride selectionOverride = new DefaultTrackSelector.SelectionOverride(trackIndex, tracks);
+                    if (trackIndex == Integer.MAX_VALUE)
+                        selectionOverride = null;
                     parametersBuilder.setSelectionOverride(rendererIndex, mappedTrackInfo.getTrackGroups(rendererIndex), selectionOverride);
                 }
             }
@@ -869,16 +873,16 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    public int getSelectedTrack(final int trackType) {
+    public int getSelectedTrackSubtitle() {
         if (trackSelector != null) {
             final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
             if (mappedTrackInfo != null) {
                 for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
-                    if (mappedTrackInfo.getRendererType(rendererIndex) == trackType) {
+                    if (mappedTrackInfo.getRendererType(rendererIndex) == C.TRACK_TYPE_TEXT) {
                         final TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
                         final DefaultTrackSelector.SelectionOverride selectionOverride = trackSelector.getParameters().getSelectionOverride(rendererIndex, trackGroups);
-                        if (selectionOverride == null || selectionOverride.length <= 0) {
-                            break;
+                        if (selectionOverride == null) {
+                            return Integer.MAX_VALUE;
                         }
                         return selectionOverride.groupIndex;
                     }
@@ -888,12 +892,58 @@ public class PlayerActivity extends Activity {
         return -1;
     }
 
-    public int getTrackCount(final int trackType) {
+    public int getSelectedTrackAudio(final boolean ffmpeg) {
         if (trackSelector != null) {
             final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
             if (mappedTrackInfo != null) {
                 for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
-                    if (mappedTrackInfo.getRendererType(rendererIndex) == trackType) {
+                    if (mappedTrackInfo.getRendererType(rendererIndex) == C.TRACK_TYPE_AUDIO) {
+                        final String rendererName = mappedTrackInfo.getRendererName(rendererIndex);
+                        if ((rendererName.toLowerCase().contains("ffmpeg") && !ffmpeg) ||
+                                (!rendererName.toLowerCase().contains("ffmpeg") && ffmpeg))
+                            continue;
+                        final TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
+                        final DefaultTrackSelector.SelectionOverride selectionOverride = trackSelector.getParameters().getSelectionOverride(rendererIndex, trackGroups);
+                        if (selectionOverride == null) {
+                            return -1;
+                        }
+                        return selectionOverride.groupIndex;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    public void setSelectedTrackAudio(final int trackIndex, final boolean ffmpeg) {
+        final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
+        if (mappedTrackInfo != null) {
+            final DefaultTrackSelector.Parameters parameters = trackSelector.getParameters();
+            final DefaultTrackSelector.ParametersBuilder parametersBuilder = parameters.buildUpon();
+            for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
+                if (mappedTrackInfo.getRendererType(rendererIndex) == C.TRACK_TYPE_AUDIO) {
+                    final String rendererName = mappedTrackInfo.getRendererName(rendererIndex);
+                    if ((rendererName.toLowerCase().contains("ffmpeg") && !ffmpeg) ||
+                            (!rendererName.toLowerCase().contains("ffmpeg") && ffmpeg))
+                        continue;
+                    parametersBuilder.clearSelectionOverrides(rendererIndex).setRendererDisabled(rendererIndex, false);
+                    final int [] tracks = {0};
+                    DefaultTrackSelector.SelectionOverride selectionOverride = null;
+                    if (trackIndex != Integer.MAX_VALUE)
+                        selectionOverride = new DefaultTrackSelector.SelectionOverride(trackIndex, tracks);
+                    parametersBuilder.setSelectionOverride(rendererIndex, mappedTrackInfo.getTrackGroups(rendererIndex), selectionOverride);
+                }
+            }
+            trackSelector.setParameters(parametersBuilder);
+        }
+    }
+
+    public int getTrackCountSubtitle() {
+        if (trackSelector != null) {
+            final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
+            if (mappedTrackInfo != null) {
+                for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
+                    if (mappedTrackInfo.getRendererType(rendererIndex) == C.TRACK_TYPE_TEXT) {
                         final TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
                         return trackGroups.length;
                     }
