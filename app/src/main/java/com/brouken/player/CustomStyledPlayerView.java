@@ -7,6 +7,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -46,8 +47,9 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     private boolean restorePlayState;
     private boolean canScale = true;
 
-    private final  ScaleGestureDetector mScaleDetector;
+    private final ScaleGestureDetector mScaleDetector;
     private float mScaleFactor = 1.f;
+    private float mScaleFactorFit;
     Rect systemGestureExclusionRect = new Rect();
 
     public final Runnable textClearRunnable = () -> {
@@ -254,8 +256,14 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     @Override
     public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
         if (canScale) {
+            final float previousScaleFactor = mScaleFactor;
             mScaleFactor *= scaleGestureDetector.getScaleFactor();
             mScaleFactor = Math.max(0.25f, Math.min(mScaleFactor, 2.0f));
+
+            if (isCrossingThreshold(previousScaleFactor, mScaleFactor, 1.0f) ||
+                    isCrossingThreshold(previousScaleFactor, mScaleFactor, mScaleFactorFit))
+                performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
+
             setScale(mScaleFactor);
             restoreSurfaceView();
             clearIcon();
@@ -265,6 +273,10 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
         return false;
     }
 
+    private boolean isCrossingThreshold(final float val1, final float val2, final float threshold) {
+        return (val1 < threshold && val2 >= threshold) || (val1 > threshold && val2 <= threshold);
+    }
+
     @Override
     public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
         mScaleFactor = getVideoSurfaceView().getScaleX();
@@ -272,13 +284,13 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
             canScale = false;
             setAspectRatioListener((targetAspectRatio, naturalAspectRatio, aspectRatioMismatch) -> {
                 setAspectRatioListener(null);
-                mScaleFactor = Math.min((float)getHeight() / (float)getVideoSurfaceView().getHeight(),
-                        (float)getWidth() / (float)getVideoSurfaceView().getWidth());
+                mScaleFactor = mScaleFactorFit = getScaleFit();
                 canScale = true;
             });
             getVideoSurfaceView().setAlpha(0);
             setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
         } else {
+            mScaleFactorFit = getScaleFit();
             canScale = true;
         }
         return true;
@@ -293,6 +305,11 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
         if (getVideoSurfaceView().getAlpha() != 1) {
             getVideoSurfaceView().setAlpha(1);
         }
+    }
+
+    private float getScaleFit() {
+        return Math.min((float)getHeight() / (float)getVideoSurfaceView().getHeight(),
+                (float)getWidth() / (float)getVideoSurfaceView().getWidth());
     }
 
     private enum Orientation {
