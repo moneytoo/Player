@@ -33,6 +33,7 @@ import android.util.DisplayMetrics;
 import android.util.Rational;
 import android.util.TypedValue;
 import android.view.KeyEvent;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -234,6 +235,13 @@ public class PlayerActivity extends Activity {
                 final Format format = player.getVideoFormat();
 
                 if (format != null) {
+                    // https://github.com/google/ExoPlayer/issues/8611
+                    // TODO: Test/disable on Android 11+
+                    final View videoSurfaceView = playerView.getVideoSurfaceView();
+                    if (videoSurfaceView instanceof SurfaceView) {
+                        ((SurfaceView)videoSurfaceView).getHolder().setFixedSize(format.width, format.height);
+                    }
+
                     Rational rational;
                     if (Utils.isRotated(format))
                         rational = new Rational(format.height, format.width);
