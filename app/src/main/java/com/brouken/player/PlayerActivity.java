@@ -594,8 +594,7 @@ public class PlayerActivity extends Activity {
                     detector.setText(bufferedInputStream);
                     final CharsetMatch charsetMatch = detector.detect();
 
-                    if (!StandardCharsets.ISO_8859_1.displayName().equals(charsetMatch.getName()) &&
-                            !StandardCharsets.UTF_8.displayName().equals(charsetMatch.getName())) {
+                    if (!StandardCharsets.UTF_8.displayName().equals(charsetMatch.getName())) {
                         String filename = uri.getPath();
                         filename = filename.substring(filename.lastIndexOf("/") + 1);
                         final File file = new File(getCacheDir(), filename);
