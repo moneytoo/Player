@@ -589,6 +589,12 @@ public class PlayerActivity extends Activity {
 
                 // Convert subtitles to UTF-8 if necessary
                 try {
+                    for (File file : getCacheDir().listFiles()) {
+                        if (file.isFile()) {
+                            file.delete();
+                        }
+                    }
+
                     final CharsetDetector detector = new CharsetDetector();
                     final BufferedInputStream bufferedInputStream = new BufferedInputStream(getContentResolver().openInputStream(uri));
                     detector.setText(bufferedInputStream);
