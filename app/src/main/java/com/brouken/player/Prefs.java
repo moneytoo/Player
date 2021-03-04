@@ -175,15 +175,15 @@ class Prefs {
         this.resizeMode = resizeMode;
         this.scale = scale;
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        if (audioTrack < 0)
+        if (audioTrack == -1)
             sharedPreferencesEditor.remove(PREF_KEY_AUDIO_TRACK);
         else
             sharedPreferencesEditor.putInt(PREF_KEY_AUDIO_TRACK, audioTrack);
-        if (audioTrackFfmpeg < 0)
+        if (audioTrackFfmpeg == -1)
             sharedPreferencesEditor.remove(PREF_KEY_AUDIO_TRACK_FFMPEG);
         else
             sharedPreferencesEditor.putInt(PREF_KEY_AUDIO_TRACK_FFMPEG, audioTrackFfmpeg);
-        if (subtitleTrack < 0)
+        if (subtitleTrack == -1)
             sharedPreferencesEditor.remove(PREF_KEY_SUBTITLE_TRACK);
         else
             sharedPreferencesEditor.putInt(PREF_KEY_SUBTITLE_TRACK, subtitleTrack);

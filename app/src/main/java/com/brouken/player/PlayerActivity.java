@@ -24,6 +24,7 @@ import android.media.audiofx.LoudnessEnhancer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.LocaleList;
 import android.provider.DocumentsContract;
 import android.provider.Settings;
 import android.support.v4.media.MediaMetadataCompat;
@@ -86,6 +87,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 public class PlayerActivity extends Activity {
 
@@ -628,8 +631,21 @@ public class PlayerActivity extends Activity {
 
         if (player == null) {
             trackSelector = new DefaultTrackSelector(this);
-            /*trackSelector.setParameters(
-                    trackSelector.buildUponParameters().setMaxVideoSizeSd());*/
+            if (Build.VERSION.SDK_INT >= 24) {
+                final LocaleList localeList = Resources.getSystem().getConfiguration().getLocales();
+                final List<String> locales = new ArrayList<>();
+                for (int i = 0; i < localeList.size(); i++) {
+                    locales.add(localeList.get(i).getISO3Language());
+                }
+                trackSelector.setParameters(trackSelector.buildUponParameters()
+                        .setPreferredAudioLanguages(locales.toArray(new String[0]))
+                );
+            } else {
+                final Locale locale = Resources.getSystem().getConfiguration().locale;
+                trackSelector.setParameters(trackSelector.buildUponParameters()
+                        .setPreferredAudioLanguage(locale.getISO3Language())
+                );
+            }
             RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
                     .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
             // https://github.com/google/ExoPlayer/issues/8571
@@ -800,11 +816,11 @@ public class PlayerActivity extends Activity {
 
             if (setTracks && state == Player.STATE_READY) {
                 setTracks = false;
-                if (mPrefs.audioTrack >= 0)
+                if (mPrefs.audioTrack != -1 && mPrefs.audioTrackFfmpeg != -1) {
                     setSelectedTrackAudio(mPrefs.audioTrack, false);
-                if (mPrefs.audioTrackFfmpeg >= 0)
                     setSelectedTrackAudio(mPrefs.audioTrackFfmpeg, true);
-                if (mPrefs.subtitleTrack >= 0 && (mPrefs.subtitleTrack < getTrackCountSubtitle() || mPrefs.subtitleTrack == Integer.MAX_VALUE))
+                }
+                if (mPrefs.subtitleTrack != -1 && (mPrefs.subtitleTrack < getTrackCountSubtitle() || mPrefs.subtitleTrack == Integer.MIN_VALUE))
                     setSelectedTrackSubtitle(mPrefs.subtitleTrack);
             }
         }
@@ -887,12 +903,18 @@ public class PlayerActivity extends Activity {
             final DefaultTrackSelector.ParametersBuilder parametersBuilder = parameters.buildUpon();
             for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
                 if (mappedTrackInfo.getRendererType(rendererIndex) == C.TRACK_TYPE_TEXT) {
-                    parametersBuilder.clearSelectionOverrides(rendererIndex).setRendererDisabled(rendererIndex, false);
-                    final int [] tracks = {0};
-                    DefaultTrackSelector.SelectionOverride selectionOverride = new DefaultTrackSelector.SelectionOverride(trackIndex, tracks);
-                    if (trackIndex == Integer.MAX_VALUE)
-                        selectionOverride = null;
-                    parametersBuilder.setSelectionOverride(rendererIndex, mappedTrackInfo.getTrackGroups(rendererIndex), selectionOverride);
+                    if (trackIndex == Integer.MIN_VALUE) {
+                        parametersBuilder.setRendererDisabled(rendererIndex, true);
+                    } else {
+                        parametersBuilder.setRendererDisabled(rendererIndex, false);
+                        if (trackIndex == -1) {
+                            parametersBuilder.clearSelectionOverrides(rendererIndex);
+                        } else {
+                            final int [] tracks = {0};
+                            final DefaultTrackSelector.SelectionOverride selectionOverride = new DefaultTrackSelector.SelectionOverride(trackIndex, tracks);
+                            parametersBuilder.setSelectionOverride(rendererIndex, mappedTrackInfo.getTrackGroups(rendererIndex), selectionOverride);
+                        }
+                    }
                 }
             }
             trackSelector.setParameters(parametersBuilder);
@@ -907,8 +929,12 @@ public class PlayerActivity extends Activity {
                     if (mappedTrackInfo.getRendererType(rendererIndex) == C.TRACK_TYPE_TEXT) {
                         final TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
                         final DefaultTrackSelector.SelectionOverride selectionOverride = trackSelector.getParameters().getSelectionOverride(rendererIndex, trackGroups);
+                        DefaultTrackSelector.Parameters parameters = trackSelector.getParameters();
+                        if (parameters.getRendererDisabled(rendererIndex)) {
+                            return Integer.MIN_VALUE;
+                        }
                         if (selectionOverride == null) {
-                            return Integer.MAX_VALUE;
+                            return -1;
                         }
                         return selectionOverride.groupIndex;
                     }
@@ -930,6 +956,10 @@ public class PlayerActivity extends Activity {
                             continue;
                         final TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
                         final DefaultTrackSelector.SelectionOverride selectionOverride = trackSelector.getParameters().getSelectionOverride(rendererIndex, trackGroups);
+                        DefaultTrackSelector.Parameters parameters = trackSelector.getParameters();
+                        if (parameters.getRendererDisabled(rendererIndex)) {
+                            return Integer.MIN_VALUE;
+                        }
                         if (selectionOverride == null) {
                             return -1;
                         }
@@ -952,12 +982,18 @@ public class PlayerActivity extends Activity {
                     if ((rendererName.toLowerCase().contains("ffmpeg") && !ffmpeg) ||
                             (!rendererName.toLowerCase().contains("ffmpeg") && ffmpeg))
                         continue;
-                    parametersBuilder.clearSelectionOverrides(rendererIndex).setRendererDisabled(rendererIndex, false);
-                    final int [] tracks = {0};
-                    DefaultTrackSelector.SelectionOverride selectionOverride = null;
-                    if (trackIndex != Integer.MAX_VALUE)
-                        selectionOverride = new DefaultTrackSelector.SelectionOverride(trackIndex, tracks);
-                    parametersBuilder.setSelectionOverride(rendererIndex, mappedTrackInfo.getTrackGroups(rendererIndex), selectionOverride);
+                    if (trackIndex == Integer.MIN_VALUE) {
+                        parametersBuilder.setRendererDisabled(rendererIndex, true);
+                    } else {
+                        parametersBuilder.setRendererDisabled(rendererIndex, false);
+                        if (trackIndex == -1) {
+                            parametersBuilder.clearSelectionOverrides(rendererIndex);
+                        } else {
+                            final int [] tracks = {0};
+                            final DefaultTrackSelector.SelectionOverride selectionOverride = new DefaultTrackSelector.SelectionOverride(trackIndex, tracks);
+                            parametersBuilder.setSelectionOverride(rendererIndex, mappedTrackInfo.getTrackGroups(rendererIndex), selectionOverride);
+                        }
+                    }
                 }
             }
             trackSelector.setParameters(parametersBuilder);
