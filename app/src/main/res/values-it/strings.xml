@@ -1,2 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="error_files_missing">L’applicazione File è disabilitata o mancante</string>
+    <string name="error_details">Dettagli</string>
+    <string name="open_subtitles">Carica i sottotitoli</string>
+    <string name="onboarding_open_description">Tocca per aprire un file video. Tocco lungo per caricare sottotitoli esterni.</string>
+    <string name="onboarding_open_title">Scegli un video da riprodurre</string>
+    <string name="video_orientation_sensor">Rotazione automatica</string>
+    <string name="video_orientation_video">Orientamento video</string>
+    <string name="video_resize_crop">Ritaglia</string>
+    <string name="video_resize_fit">Adatta</string>
+    <string name="app_name">Solo Lettore</string>
+</resources>
