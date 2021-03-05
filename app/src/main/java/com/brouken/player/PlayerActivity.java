@@ -698,7 +698,8 @@ public class PlayerActivity extends Activity {
                 final String subtitleLanguage = Utils.getSubtitleLanguage(mPrefs.subtitleUri);
                 final String subtitleName = Utils.getFileName(this, mPrefs.subtitleUri);
 
-                MediaItem.Subtitle subtitle = new MediaItem.Subtitle(mPrefs.subtitleUri, subtitleMime, subtitleLanguage, 0, C.ROLE_FLAG_SUBTITLE, subtitleName);
+                MediaItem.Subtitle subtitle = new MediaItem.Subtitle(mPrefs.subtitleUri, subtitleMime,
+                        subtitleLanguage, C.SELECTION_FLAG_DEFAULT, C.ROLE_FLAG_SUBTITLE, subtitleName);
                 mediaItemBuilder.setSubtitles(Collections.singletonList(subtitle));
             }
             player.setMediaItem(mediaItemBuilder.build());

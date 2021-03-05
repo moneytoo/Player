@@ -94,11 +94,13 @@ class Prefs {
 
     public void updateSubtitle(final Uri uri) {
         subtitleUri = uri;
+        subtitleTrack = -1;
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         if (uri == null)
             sharedPreferencesEditor.remove(PREF_KEY_SUBTITLE_URI);
         else
             sharedPreferencesEditor.putString(PREF_KEY_SUBTITLE_URI, uri.toString());
+        sharedPreferencesEditor.remove(PREF_KEY_SUBTITLE_TRACK);
         sharedPreferencesEditor.commit();
     }
 
