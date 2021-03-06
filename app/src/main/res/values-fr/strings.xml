@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_files_missing">L’application Fichiers est désactivée ou manquante</string>
+    <string name="error_details">Détails</string>
+    <string name="open_subtitles">Charger les sous-titres</string>
+    <string name="onboarding_open_description">Appuyez pour ouvrir un fichier vidéo. Appui long pour charger les sous-titres externes.</string>
+    <string name="onboarding_open_title">Choisissez une vidéo à lire</string>
+    <string name="video_orientation_sensor">Auto-rotation</string>
+    <string name="video_orientation_video">Orientation vidéo</string>
+    <string name="video_resize_crop">Rogner</string>
+    <string name="video_resize_fit">Ajuster</string>
+    <string name="app_name">Juste Lecteur</string>
+</resources>
