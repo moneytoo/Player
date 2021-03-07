@@ -1,0 +1,196 @@
+package com.brouken.player;
+
+import android.content.Context;
+import android.net.Uri;
+
+import androidx.documentfile.provider.DocumentFile;
+
+import com.google.android.exoplayer2.util.MimeTypes;
+import com.ibm.icu.text.CharsetDetector;
+import com.ibm.icu.text.CharsetMatch;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
+
+class SubtitleUtils {
+
+    public static String getSubtitleMime(Uri uri) {
+        final String path = uri.getPath();
+        if (path.endsWith(".ssa") || path.endsWith(".ass")) {
+            return MimeTypes.TEXT_SSA;
+        } else if (path.endsWith(".vtt")) {
+            return MimeTypes.TEXT_VTT;
+        } else if (path.endsWith(".ttml") ||  path.endsWith(".xml") || path.endsWith(".dfxp")) {
+            return MimeTypes.APPLICATION_TTML;
+        } else {
+            return MimeTypes.APPLICATION_SUBRIP;
+        }
+    }
+
+    public static String getSubtitleLanguage(Uri uri) {
+        final String path = uri.getPath();
+
+        if (path.endsWith(".srt")) {
+            int last = path.lastIndexOf(".");
+            int prev = last;
+
+            for (int i = last; i >= 0; i--) {
+                prev = path.indexOf(".", i);
+                if (prev != last)
+                    break;
+            }
+
+            int len = last - prev;
+
+            if (len >= 2 && len <= 6) {
+                // TODO: Validate lang
+                return path.substring(prev + 1, last);
+            }
+        }
+
+        return null;
+    }
+
+    /*
+    public static DocumentFile findUriInScope(DocumentFile documentFileTree, Uri uri) {
+        for (DocumentFile file : documentFileTree.listFiles()) {
+            if (file.isDirectory()) {
+                final DocumentFile ret = findUriInScope(file, uri);
+                if (ret != null)
+                    return ret;
+            } else {
+                final Uri fileUri = file.getUri();
+                if (fileUri.toString().equals(uri.toString())) {
+                    return file;
+                }
+            }
+        }
+        return null;
+    }
+    */
+
+    public static DocumentFile findUriInScope(Context context, Uri scope, Uri uri) {
+        DocumentFile treeUri = DocumentFile.fromTreeUri(context, scope);
+        String[] trailScope = getTrailFromUri(scope);
+        String[] trailVideo = getTrailFromUri(uri);
+
+        for (int i = 0; i < trailVideo.length; i++) {
+            if (i < trailScope.length) {
+                if (!trailScope[i].equals(trailVideo[i]))
+                    break;
+            } else {
+                treeUri = treeUri.findFile(trailVideo[i]);
+                if (treeUri == null)
+                    break;
+            }
+            if (i + 1 == trailVideo.length)
+                return treeUri;
+        }
+        return null;
+    }
+
+    public static DocumentFile findDocInScope(DocumentFile scope, DocumentFile doc) {
+        for (DocumentFile file : scope.listFiles()) {
+            if (file.isDirectory()) {
+                final DocumentFile ret = findDocInScope(file, doc);
+                if (ret != null)
+                    return ret;
+            } else {
+                //if (doc.length() == file.length() && doc.lastModified() == file.lastModified() && doc.getName().equals(file.getName())) {
+                // lastModified is zero when opened from Solid Explorer
+                if (doc.length() == file.length() && doc.getName().equals(file.getName())) {
+                    return file;
+                }
+            }
+        }
+        return null;
+    }
+
+    public static String[] getTrailFromUri(Uri uri) {
+        String path = uri.getPath();
+        String[] array = path.split(":");
+        if (array.length > 1) {
+            path = array[1];
+            return path.split("/");
+        }
+        return new String[]{};
+    }
+
+    public static DocumentFile findSubtitle(DocumentFile video) {
+        DocumentFile dir = video.getParentFile();
+        String videoName = video.getName();
+        if (videoName.indexOf(".") > 0)
+            videoName = videoName.substring(0, videoName.lastIndexOf("."));
+
+        if (dir == null || !dir.isDirectory())
+            return null;
+
+        List<DocumentFile> candidates = new ArrayList<>();
+
+        for (DocumentFile file : dir.listFiles()) {
+            if (isSubtitleFile(file))
+                candidates.add(file);
+        }
+
+        if (candidates.size() > 1) {
+            for (DocumentFile candidate : candidates) {
+                if (candidate.getName().startsWith(videoName)) {
+                    return candidate;
+                }
+            }
+        }
+
+        if (candidates.size() >= 1) {
+            return candidates.get(0);
+        }
+
+        return null;
+    }
+
+    public static boolean isSubtitleFile(DocumentFile file) {
+        final String name = file.getName();
+        return name.endsWith(".srt") || name.endsWith(".ssa") || name.endsWith(".ass")
+                || name.endsWith(".vtt") || name.endsWith(".ttml");
+    }
+
+    public static void clearCache(Context context) {
+        try {
+            for (File file : context.getCacheDir().listFiles()) {
+                if (file.isFile()) {
+                    file.delete();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static Uri convertToUTF(Context context, Uri subtitleUri) {
+        try {
+            final CharsetDetector detector = new CharsetDetector();
+            final BufferedInputStream bufferedInputStream = new BufferedInputStream(context.getContentResolver().openInputStream(subtitleUri));
+            detector.setText(bufferedInputStream);
+            final CharsetMatch charsetMatch = detector.detect();
+
+            if (!StandardCharsets.UTF_8.displayName().equals(charsetMatch.getName())) {
+                String filename = subtitleUri.getPath();
+                filename = filename.substring(filename.lastIndexOf("/") + 1);
+                final File file = new File(context.getCacheDir(), filename);
+                try (FileOutputStream stream = new FileOutputStream(file)) {
+                    stream.write(charsetMatch.getString().getBytes());
+                    subtitleUri = Uri.fromFile(file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return subtitleUri;
+    }
+}

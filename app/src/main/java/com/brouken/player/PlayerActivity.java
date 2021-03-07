@@ -24,6 +24,7 @@ import android.media.audiofx.LoudnessEnhancer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.LocaleList;
 import android.provider.DocumentsContract;
 import android.provider.Settings;
@@ -49,6 +50,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
@@ -77,14 +79,7 @@ import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.ui.TimeBar;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.material.snackbar.Snackbar;
-import com.ibm.icu.text.CharsetDetector;
-import com.ibm.icu.text.CharsetMatch;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -116,6 +111,7 @@ public class PlayerActivity extends Activity {
 
     private static final int REQUEST_CHOOSER_VIDEO = 1;
     private static final int REQUEST_CHOOSER_SUBTITLE = 2;
+    private static final int REQUEST_CHOOSER_SCOPE_DIR = 10;
     public static final int CONTROLLER_TIMEOUT = 3500;
     private static final String ACTION_MEDIA_CONTROL = "media_control";
     private static final String EXTRA_CONTROL_TYPE = "control_type";
@@ -151,6 +147,7 @@ public class PlayerActivity extends Activity {
 
         if (getIntent().getData() != null) {
             mPrefs.updateMedia(getIntent().getData(), getIntent().getType());
+            searchSubtitles();
         }
 
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
@@ -220,7 +217,11 @@ public class PlayerActivity extends Activity {
         buttonOpen.setOnClickListener(view -> openFile(mPrefs.mediaUri));
 
         buttonOpen.setOnLongClickListener(view -> {
-            loadSubtitleFile(mPrefs.mediaUri);
+            if (mPrefs.askScope) {
+                askForScope();
+            } else {
+                loadSubtitleFile(mPrefs.mediaUri);
+            }
             return true;
         });
 
@@ -319,7 +320,7 @@ public class PlayerActivity extends Activity {
         exoBasicControls.removeView(exoSubtitle);
 
         exoSubtitle.setOnLongClickListener(view -> {
-            loadSubtitleFile(mPrefs.mediaUri);
+            askForScope();
             return true;
         });
 
@@ -421,6 +422,7 @@ public class PlayerActivity extends Activity {
 
         if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null) {
             mPrefs.updateMedia(intent.getData(), intent.getType());
+            searchSubtitles();
             initializePlayer();
         }
     }
@@ -562,7 +564,9 @@ public class PlayerActivity extends Activity {
                 // https://commonsware.com/blog/2020/06/13/count-your-saf-uri-permission-grants.html
                 final ContentResolver contentResolver = getContentResolver();
                 for (UriPermission persistedUri : contentResolver.getPersistedUriPermissions()) {
-                    if (persistedUri.getUri().equals(uri)) {
+                    if (persistedUri.getUri().equals(mPrefs.scopeUri)) {
+                        continue;
+                    } else if (persistedUri.getUri().equals(uri)) {
                         uriAlreadyTaken = true;
                     } else {
                         contentResolver.releasePersistableUriPermission(persistedUri.getUri(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -578,7 +582,7 @@ public class PlayerActivity extends Activity {
                 }
 
                 mPrefs.updateMedia(uri, data.getType());
-                initializePlayer();
+                searchSubtitles();
             }
         } else if (requestCode == REQUEST_CHOOSER_SUBTITLE) {
             if (resultCode == RESULT_OK) {
@@ -591,35 +595,22 @@ public class PlayerActivity extends Activity {
                 }
 
                 // Convert subtitles to UTF-8 if necessary
-                try {
-                    for (File file : getCacheDir().listFiles()) {
-                        if (file.isFile()) {
-                            file.delete();
-                        }
-                    }
-
-                    final CharsetDetector detector = new CharsetDetector();
-                    final BufferedInputStream bufferedInputStream = new BufferedInputStream(getContentResolver().openInputStream(uri));
-                    detector.setText(bufferedInputStream);
-                    final CharsetMatch charsetMatch = detector.detect();
-
-                    if (!StandardCharsets.UTF_8.displayName().equals(charsetMatch.getName())) {
-                        String filename = uri.getPath();
-                        filename = filename.substring(filename.lastIndexOf("/") + 1);
-                        final File file = new File(getCacheDir(), filename);
-                        try (FileOutputStream stream = new FileOutputStream(file)) {
-                            stream.write(charsetMatch.getString().getBytes());
-                            uri = Uri.fromFile(file);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                SubtitleUtils.clearCache(this);
+                uri = SubtitleUtils.convertToUTF(this, uri);
 
                 mPrefs.updateSubtitle(uri);
-                initializePlayer();
+            }
+        } else if (requestCode == REQUEST_CHOOSER_SCOPE_DIR) {
+            if (resultCode == RESULT_OK) {
+                final Uri uri = data.getData();
+                try {
+                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    mPrefs.updateScope(uri);
+                    mPrefs.markScopeAsked();
+                    searchSubtitles();
+                } catch (SecurityException e) {
+                    e.printStackTrace();
+                }
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
@@ -694,8 +685,8 @@ public class PlayerActivity extends Activity {
                     .setUri(mPrefs.mediaUri)
                     .setMimeType(mPrefs.mediaType);
             if (mPrefs.subtitleUri != null && Utils.fileExists(this, mPrefs.subtitleUri)) {
-                final String subtitleMime = Utils.getSubtitleMime(mPrefs.subtitleUri);
-                final String subtitleLanguage = Utils.getSubtitleLanguage(mPrefs.subtitleUri);
+                final String subtitleMime = SubtitleUtils.getSubtitleMime(mPrefs.subtitleUri);
+                final String subtitleLanguage = SubtitleUtils.getSubtitleLanguage(mPrefs.subtitleUri);
                 final String subtitleName = Utils.getFileName(this, mPrefs.subtitleUri);
 
                 MediaItem.Subtitle subtitle = new MediaItem.Subtitle(mPrefs.subtitleUri, subtitleMime,
@@ -850,15 +841,9 @@ public class PlayerActivity extends Activity {
     private void openFile(Uri pickerInitialUri) {
         enableRotation();
 
-        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT, pickerInitialUri);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("video/*");
-
-        // http://stackoverflow.com/a/31334967/1615876
-        intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
-
-        if (Build.VERSION.SDK_INT >= 26)
-            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
 
         safelyStartActivityForResult(intent, REQUEST_CHOOSER_VIDEO);
     }
@@ -867,12 +852,9 @@ public class PlayerActivity extends Activity {
         Toast.makeText(PlayerActivity.this, R.string.open_subtitles, Toast.LENGTH_SHORT).show();
         enableRotation();
 
-        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT, pickerInitialUri);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
-
-        // http://stackoverflow.com/a/31334967/1615876
-        intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
 
         final String[] supportedMimeTypes = {
                 MimeTypes.APPLICATION_SUBRIP,
@@ -884,10 +866,36 @@ public class PlayerActivity extends Activity {
         };
         intent.putExtra(Intent.EXTRA_MIME_TYPES, supportedMimeTypes);
 
-        if (Build.VERSION.SDK_INT >= 26)
-            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, pickerInitialUri);
-
         safelyStartActivityForResult(intent, REQUEST_CHOOSER_SUBTITLE);
+    }
+
+    private void requestDirectoryAccess() {
+        enableRotation();
+
+        Uri initialUri = null;
+
+        if (Build.VERSION.SDK_INT >= 26) {
+            final String authority = "com.android.externalstorage.documents";
+            final String documentId = "primary:" + Environment.DIRECTORY_MOVIES;
+            initialUri = DocumentsContract.buildDocumentUri(authority, documentId);
+        }
+
+        final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT_TREE, initialUri);
+
+        safelyStartActivityForResult(intent, REQUEST_CHOOSER_SCOPE_DIR);
+    }
+
+    private Intent createBaseFileIntent(final String action, final Uri initialUri) {
+        final Intent intent = new Intent(action);
+
+        // http://stackoverflow.com/a/31334967/1615876
+        intent.putExtra("android.content.extra.SHOW_ADVANCED", true);
+
+        if (Build.VERSION.SDK_INT >= 26 && initialUri != null) {
+            intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, initialUri);
+        }
+
+        return intent;
     }
 
     void safelyStartActivityForResult(final Intent intent, final int code) {
@@ -1173,5 +1181,42 @@ public class PlayerActivity extends Activity {
             subtitleView.setBottomPaddingFraction(SubtitleView.DEFAULT_BOTTOM_PADDING_FRACTION * 2f / 3f);
 
         setSubtitleTextSize();
+    }
+
+    void searchSubtitles() {
+        if (mPrefs.scopeUri != null) {
+            DocumentFile video;
+            if ("com.android.externalstorage.documents".equals(mPrefs.mediaUri.getHost())) {
+                // Fast search based on path in uri
+                video = SubtitleUtils.findUriInScope(this, mPrefs.scopeUri, mPrefs.mediaUri);
+            } else {
+                // Slow search based on matching metadata, no path in uri
+                // Provider "com.android.providers.media.documents" when using "Videos" tab in file picker
+                DocumentFile fileScope = DocumentFile.fromTreeUri(this, mPrefs.scopeUri);
+                DocumentFile fileMedia = DocumentFile.fromSingleUri(this, mPrefs.mediaUri);
+                video = SubtitleUtils.findDocInScope(fileScope, fileMedia);
+            }
+            if (video != null) {
+                DocumentFile subtitle = SubtitleUtils.findSubtitle(video);
+                if (subtitle != null) {
+                    Uri subtitleUri = subtitle.getUri();
+                    SubtitleUtils.clearCache(this);
+                    subtitleUri = SubtitleUtils.convertToUTF(this, subtitleUri);
+                    mPrefs.updateSubtitle(subtitleUri);
+                }
+            }
+        }
+    }
+
+    void askForScope() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(PlayerActivity.this);
+        builder.setMessage(String.format(getString(R.string.subtitles_scope), getString(R.string.app_name)));
+        builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+                    requestDirectoryAccess();
+                }
+        );
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> mPrefs.markScopeAsked());
+        final AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }

@@ -93,43 +93,6 @@ class Utils {
         return result;
     }
 
-    public static String getSubtitleMime(Uri uri) {
-        final String path = uri.getPath();
-        if (path.endsWith(".ssa") || path.endsWith(".ass")) {
-            return MimeTypes.TEXT_SSA;
-        } else if (path.endsWith(".vtt")) {
-            return MimeTypes.TEXT_VTT;
-        } else if (path.endsWith(".ttml") ||  path.endsWith(".xml") || path.endsWith(".dfxp")) {
-            return MimeTypes.APPLICATION_TTML;
-        } else {
-            return MimeTypes.APPLICATION_SUBRIP;
-        }
-    }
-
-    public static String getSubtitleLanguage(Uri uri) {
-        final String path = uri.getPath();
-
-        if (path.endsWith(".srt")) {
-            int last = path.lastIndexOf(".");
-            int prev = last;
-
-            for (int i = last; i >= 0; i--) {
-                prev = path.indexOf(".", i);
-                if (prev != last)
-                    break;
-            }
-
-            int len = last - prev;
-
-            if (len >= 2 && len <= 6) {
-                // TODO: Validate lang
-                return path.substring(prev + 1, last);
-            }
-        }
-
-        return null;
-    }
-
     public static boolean isVolumeMax(final AudioManager audioManager) {
         return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
     }

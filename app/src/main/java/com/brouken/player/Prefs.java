@@ -26,12 +26,15 @@ class Prefs {
     private static final String PREF_KEY_RESIZE_MODE = "resizeMode";
     private static final String PREF_KEY_ORIENTATION = "orientation";
     private static final String PREF_KEY_SCALE = "scale";
+    private static final String PREF_KEY_SCOPE_URI = "scopeUri";
+    private static final String PREF_KEY_ASK_SCOPE = "askScope";
 
     final Context mContext;
     final SharedPreferences mSharedPreferences;
 
     public Uri mediaUri;
     public Uri subtitleUri;
+    public Uri scopeUri;
     public String mediaType;
     public int resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT;
     public Utils.Orientation orientation = Utils.Orientation.VIDEO;
@@ -43,6 +46,7 @@ class Prefs {
 
     public int brightness = -1;
     public boolean firstRun = true;
+    public boolean askScope = true;
 
     private LinkedHashMap positions;
 
@@ -72,6 +76,9 @@ class Prefs {
             resizeMode = mSharedPreferences.getInt(PREF_KEY_RESIZE_MODE, resizeMode);
         orientation = Utils.Orientation.values()[mSharedPreferences.getInt(PREF_KEY_ORIENTATION, 1)];
         scale = mSharedPreferences.getFloat(PREF_KEY_SCALE, scale);
+        if (mSharedPreferences.contains(PREF_KEY_SCOPE_URI))
+            scopeUri = Uri.parse(mSharedPreferences.getString(PREF_KEY_SCOPE_URI, null));
+        askScope = mSharedPreferences.getBoolean(PREF_KEY_ASK_SCOPE, askScope);
     }
 
     public void updateMedia(final Uri uri, final String type) {
@@ -128,6 +135,13 @@ class Prefs {
         this.firstRun = false;
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         sharedPreferencesEditor.putBoolean(PREF_KEY_FIRST_RUN, false);
+        sharedPreferencesEditor.commit();
+    }
+
+    public void markScopeAsked() {
+        this.askScope = false;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        sharedPreferencesEditor.putBoolean(PREF_KEY_ASK_SCOPE, false);
         sharedPreferencesEditor.commit();
     }
 
@@ -191,6 +205,16 @@ class Prefs {
             sharedPreferencesEditor.putInt(PREF_KEY_SUBTITLE_TRACK, subtitleTrack);
         sharedPreferencesEditor.putInt(PREF_KEY_RESIZE_MODE, resizeMode);
         sharedPreferencesEditor.putFloat(PREF_KEY_SCALE, scale);
+        sharedPreferencesEditor.commit();
+    }
+
+    public void updateScope(final Uri uri) {
+        scopeUri = uri;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        if (uri == null)
+            sharedPreferencesEditor.remove(PREF_KEY_SCOPE_URI);
+        else
+            sharedPreferencesEditor.putString(PREF_KEY_SCOPE_URI, uri.toString());
         sharedPreferencesEditor.commit();
     }
 }
