@@ -130,6 +130,12 @@
     <ImageButton android:id="@+id/exo_play_pause"
         style="@style/ExoStyledControls.Button.Center.PlayPause"/>
 
+    <ProgressBar android:id="@+id/loading"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"/>
+
     <include layout="@layout/exo_styled_player_control_ffwd_button" />
 
     <ImageButton android:id="@+id/exo_next"

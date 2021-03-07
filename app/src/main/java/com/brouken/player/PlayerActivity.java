@@ -45,6 +45,7 @@ import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -125,6 +126,8 @@ public class PlayerActivity extends Activity {
     private ImageButton buttonOpen;
     private ImageButton buttonPiP;
     private ImageButton buttonAspectRatio;
+    private ImageButton exoPlayPause;
+    private ProgressBar loadingProgressBar;
 
     private boolean restoreOrientationLock;
     private boolean restorePlayState;
@@ -153,6 +156,8 @@ public class PlayerActivity extends Activity {
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         playerView = findViewById(R.id.video_view);
+        exoPlayPause = findViewById(R.id.exo_play_pause);
+        loadingProgressBar = findViewById(R.id.loading);
 
         playerView.setShowNextButton(false);
         playerView.setShowPreviousButton(false);
@@ -723,6 +728,9 @@ public class PlayerActivity extends Activity {
 
             setTracks = true;
 
+            exoPlayPause.setVisibility(View.GONE);
+            loadingProgressBar.setVisibility(View.VISIBLE);
+
             play = mPrefs.getPosition() == 0L;
             player.setPlayWhenReady(play);
 
@@ -808,6 +816,8 @@ public class PlayerActivity extends Activity {
 
             if (setTracks && state == Player.STATE_READY) {
                 setTracks = false;
+                loadingProgressBar.setVisibility(View.GONE);
+                exoPlayPause.setVisibility(View.VISIBLE);
                 if (mPrefs.audioTrack != -1 && mPrefs.audioTrackFfmpeg != -1) {
                     setSelectedTrackAudio(mPrefs.audioTrack, false);
                     setSelectedTrackAudio(mPrefs.audioTrackFfmpeg, true);
