@@ -10,4 +10,5 @@
     <string name="video_resize_crop">Kırp</string>
     <string name="video_resize_fit">Sığdır</string>
     <string name="app_name">Just Player</string>
+    <string name="subtitles_scope">Harici alt yazıları otomatik olarak yüklemek için videolarınızı içeren en üstteki klasöre (örneğin Filmler) %s erişimi verin.</string>
 </resources>
