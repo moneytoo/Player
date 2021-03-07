@@ -11,11 +11,14 @@ import androidx.annotation.Nullable;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 class CustomDefaultTimeBar extends DefaultTimeBar {
 
     private final Point touchPosition;
     Rect scrubberBar;
+    private boolean scrubbing;
 
     public CustomDefaultTimeBar(Context context) {
         this(context, null);
@@ -52,12 +55,23 @@ class CustomDefaultTimeBar extends DefaultTimeBar {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        final Point touchPosition = resolveRelativeTouchPosition(event);
-        final int x = touchPosition.x;
         if (event.getAction() == MotionEvent.ACTION_DOWN && scrubberBar != null) {
+            scrubbing = false;
+            final Point touchPosition = resolveRelativeTouchPosition(event);
+            final int x = touchPosition.x;
             final int distanceFromScrubber = Math.abs(scrubberBar.right - x);
             if (distanceFromScrubber > Utils.dpToPx(24))
-                return false;
+                return true;
+        }
+        if (!scrubbing && event.getAction() == MotionEvent.ACTION_MOVE && scrubberBar != null) {
+            scrubbing = true;
+            try {
+                final Method method = DefaultTimeBar.class.getDeclaredMethod("startScrubbing", long.class);
+                method.setAccessible(true);
+                method.invoke(this, (long) 0);
+            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                e.printStackTrace();
+            }
         }
         return super.onTouchEvent(event);
     }
