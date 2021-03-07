@@ -29,6 +29,7 @@ android {
         }
         online {
             dimension "connectivity"
+            applicationIdSuffix ".online"
             versionNameSuffix "-online"
         }
     }
