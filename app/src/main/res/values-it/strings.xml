@@ -10,4 +10,5 @@
     <string name="video_resize_crop">Ritaglia</string>
     <string name="video_resize_fit">Adatta</string>
     <string name="app_name">Solo Lettore</string>
+    <string name="subtitles_scope">Per caricare automaticamente i sottotitoli esterni, concedi %s l’accesso alla cartella più in alto contenente i tuoi video (ad es. Film).</string>
 </resources>
