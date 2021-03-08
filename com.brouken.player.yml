@@ -180,9 +180,9 @@ Builds:
       - cp $$ExoPlayer$$/extensions/{ffmpeg,av1}/buildout/outputs/aar/*.aar libs/
     ndk: r20b
 
-  - versionName: '0.22'
-    versionCode: 22
-    commit: v0.22
+  - versionName: '0.24'
+    versionCode: 24
+    commit: v0.24-wip5
     subdir: app
     gradle:
       - offline
@@ -192,6 +192,7 @@ Builds:
       - cpu_features@v0.6.0
       - abseil-cpp@20200923.3
       - libgav1@6921186e850c3685bdee67caac1e019ab991b9ba
+    prebuild: sed -i -e "s/ndkVersion .*$/ndkVersion '21.3.6528147'/" build.gradle
     scandelete:
       - app/libs/
     build:
@@ -215,12 +216,12 @@ Builds:
       - ./gradlew :extension-{ffmpeg,av1}:bundleReleaseAar
       - popd
       - cp $$ExoPlayer$$/extensions/{ffmpeg,av1}/buildout/outputs/aar/*.aar libs/
-    ndk: r21e
+    ndk: r21d
 
 MaintainerNotes: 'Extensions build instructions: https://github.com/google/ExoPlayer/blob/r2.13.2/extensions/ffmpeg/README.md
     https://github.com/google/ExoPlayer/blob/r2.13.2/extensions/av1/README.md'
 
 AutoUpdateMode: None
 UpdateCheckMode: None
-CurrentVersion: '0.22'
-CurrentVersionCode: 22
+CurrentVersion: '0.24'
+CurrentVersionCode: 24
