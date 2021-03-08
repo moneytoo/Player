@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Just Player</string>
+    <string name="subtitles_scope">要自动加载外部字幕，授予 %s 访问包含你视频的最顶层文件夹的权限 (如 Movies)。</string>
+    <string name="error_files_missing">文件应用处于禁用或缺失状态</string>
+    <string name="error_details">详情</string>
+    <string name="open_subtitles">加载字幕</string>
+    <string name="onboarding_open_description">轻按打开一个视频文件。长按加载外部视频。</string>
+    <string name="onboarding_open_title">选择要播放的文件</string>
+    <string name="video_orientation_sensor">自动旋转</string>
+    <string name="video_orientation_video">视频方向</string>
+    <string name="video_resize_crop">裁剪</string>
+    <string name="video_resize_fit">适应</string>
+</resources>
