@@ -107,6 +107,11 @@ class Utils {
         final int volumeMax = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         boolean volumeActive = volume != 0;
 
+        // Handle volume changes outside the app (lose boost if volume is not maxed out)
+        if (volume != volumeMax) {
+            PlayerActivity.boostLevel = 0;
+        }
+
         if (PlayerActivity.loudnessEnhancer == null)
             canBoost = false;
 
@@ -131,8 +136,6 @@ class Utils {
                 PlayerActivity.loudnessEnhancer.setTargetGain(PlayerActivity.boostLevel * 200);
             playerView.setCustomErrorMessage(" " + (volumeMax + PlayerActivity.boostLevel));
         }
-
-        // TODO: Handle volume changes outside the app (lose boost if volume is not maxed out)
 
         playerView.setIconVolume(volumeActive);
         if (PlayerActivity.loudnessEnhancer != null)
