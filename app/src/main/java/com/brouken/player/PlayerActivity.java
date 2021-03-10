@@ -282,8 +282,7 @@ public class PlayerActivity extends Activity {
                 playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
                 Utils.showText(playerView, getString(R.string.video_resize_fit));
             }
-            // Keep controller UI visible - alternative to resetHideCallbacks()
-            playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+            resetHideCallbacks();
         });
         Utils.setButtonEnabled(this, buttonAspectRatio, false);
 
@@ -293,9 +292,7 @@ public class PlayerActivity extends Activity {
             mPrefs.orientation = Utils.getNextOrientation(mPrefs.orientation);
             Utils.setOrientation(PlayerActivity.this, mPrefs.orientation);
             Utils.showText(playerView, getString(mPrefs.orientation.description), 2500);
-
-            // Keep controller UI visible - alternative to resetHideCallbacks()
-            playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+            resetHideCallbacks();
         });
 
         int padding = getResources().getDimensionPixelOffset(R.dimen.exo_styled_bottom_bar_time_padding);
@@ -349,8 +346,7 @@ public class PlayerActivity extends Activity {
 
         if (Build.VERSION.SDK_INT > 23) {
             horizontalScrollView.setOnScrollChangeListener((view, i, i1, i2, i3) -> {
-                // Keep controller UI visible - alternative to resetHideCallbacks()
-                playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+                resetHideCallbacks();
             });
         }
 
@@ -1232,5 +1228,12 @@ public class PlayerActivity extends Activity {
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> mPrefs.markScopeAsked());
         final AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    void resetHideCallbacks() {
+        if (haveMedia) {
+            // Keep controller UI visible - alternative to resetHideCallbacks()
+            playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+        }
     }
 }
