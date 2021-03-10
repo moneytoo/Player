@@ -547,6 +547,10 @@ public class PlayerActivity extends Activity {
                 mReceiver = null;
             }
             playerView.setControllerAutoShow(true);
+
+            // Workaround https://github.com/google/ExoPlayer/issues/8646
+            // TODO: Remove with the next ExoPlayer version update
+            ((CustomDefaultTimeBar)playerView.findViewById(R.id.exo_progress)).showScrubber();
         }
     }
 
