@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Einfaches Abspielen</string>
+    <string name="app_name">Einfach Player</string>
     <string name="subtitles_scope">Um externe Untertitel automatisch zu laden, gewähren Sie %s Zugriff auf den obersten Ordner, der Ihre Videos enthält (z. B. Filme).</string>
     <string name="error_files_missing">Dateien-Anwendung ist deaktiviert oder fehlt</string>
     <string name="error_details">Einzelheiten</string>
