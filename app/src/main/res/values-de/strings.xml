@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Einfaches Abspielen</string>
+    <string name="subtitles_scope">Um externe Untertitel automatisch zu laden, gewähren Sie %s Zugriff auf den obersten Ordner, der Ihre Videos enthält (z. B. Filme).</string>
+    <string name="error_files_missing">Dateien-Anwendung ist deaktiviert oder fehlt</string>
+    <string name="error_details">Einzelheiten</string>
+    <string name="open_subtitles">Untertitel laden</string>
+    <string name="onboarding_open_description">Tippen Sie hier, um eine Videodatei zu öffnen. Langes Tippen, um externe Untertitel zu laden.</string>
+    <string name="onboarding_open_title">Wählen Sie ein Video zum Abspielen</string>
+    <string name="video_orientation_sensor">Automatisch drehen</string>
+    <string name="video_orientation_video">Videoorientierung</string>
+    <string name="video_resize_crop">Zuschneiden</string>
+    <string name="video_resize_fit">Anpassen</string>
+</resources>
