@@ -17,6 +17,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.xdrop.fuzzywuzzy.FuzzySearch;
+
 class SubtitleUtils {
 
     public static String getSubtitleMime(Uri uri) {
@@ -121,11 +123,16 @@ class SubtitleUtils {
         return new String[]{};
     }
 
+    private static String getFileBaseName(String name) {
+        if (name.indexOf(".") > 0)
+            return name.substring(0, name.lastIndexOf("."));
+        return name;
+    }
+
     public static DocumentFile findSubtitle(DocumentFile video) {
         DocumentFile dir = video.getParentFile();
-        String videoName = video.getName();
-        if (videoName.indexOf(".") > 0)
-            videoName = videoName.substring(0, videoName.lastIndexOf("."));
+        String videoName = getFileBaseName(video.getName());
+        int videoFiles = 0;
 
         if (dir == null || !dir.isDirectory())
             return null;
@@ -135,6 +142,12 @@ class SubtitleUtils {
         for (DocumentFile file : dir.listFiles()) {
             if (isSubtitleFile(file))
                 candidates.add(file);
+            if (isVideoFile(file))
+                videoFiles++;
+        }
+
+        if (videoFiles == 1 && candidates.size() == 1) {
+            return candidates.get(0);
         }
 
         if (candidates.size() > 1) {
@@ -145,14 +158,25 @@ class SubtitleUtils {
             }
         }
 
-        if (candidates.size() >= 1) {
-            return candidates.get(0);
+        DocumentFile scoringCandidate = null;
+        int bestScore = 50;
+        for (DocumentFile candidate : candidates) {
+            int score = FuzzySearch.partialRatio(videoName, getFileBaseName(candidate.getName()));
+            if (score > bestScore) {
+                scoringCandidate = candidate;
+                bestScore = score;
+            }
         }
+        return scoringCandidate;
+    }
 
-        return null;
+    public static boolean isVideoFile(DocumentFile file) {
+        return file.isFile() && file.getType().startsWith("video/");
     }
 
     public static boolean isSubtitleFile(DocumentFile file) {
+        if (!file.isFile())
+            return false;
         final String name = file.getName();
         return name.endsWith(".srt") || name.endsWith(".ssa") || name.endsWith(".ass")
                 || name.endsWith(".vtt") || name.endsWith(".ttml");
