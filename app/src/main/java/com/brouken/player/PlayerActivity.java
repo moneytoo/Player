@@ -395,6 +395,8 @@ public class PlayerActivity extends Activity {
         });
 
         compatTranslucency();
+
+        UtilsFlavor.onAppLaunch(this);
     }
 
     @Override

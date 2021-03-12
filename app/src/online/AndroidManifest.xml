@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Required only for poorly written (usually 1st party) apps that do not grant read permission in intents -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:networkSecurityConfig="@xml/network_security_config"
@@ -41,6 +42,9 @@
                 <data android:pathPattern=".*\\.webm" />
             </intent-filter>
         </activity>
+        <service android:name="com.brouken.player.UpdateCheckJobService"
+            android:exported="true"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
     </application>
 
 </manifest>
