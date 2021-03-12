@@ -1176,7 +1176,7 @@ public class PlayerActivity extends Activity {
         final SubtitleView subtitleView = playerView.getSubtitleView();
         if (!captioningManager.isEnabled()) {
             subtitlesScale = 1.05f;
-            final CaptionStyleCompat captionStyle = new CaptionStyleCompat(Color.WHITE, Color.TRANSPARENT, Color.TRANSPARENT, CaptionStyleCompat.EDGE_TYPE_DROP_SHADOW, Color.BLACK, Typeface.DEFAULT_BOLD);
+            final CaptionStyleCompat captionStyle = new CaptionStyleCompat(Color.WHITE, Color.TRANSPARENT, Color.TRANSPARENT, CaptionStyleCompat.EDGE_TYPE_OUTLINE, Color.BLACK, Typeface.DEFAULT_BOLD);
             if (subtitleView != null) {
                 subtitleView.setStyle(captionStyle);
                 subtitleView.setApplyEmbeddedStyles(true);
