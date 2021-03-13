@@ -730,8 +730,7 @@ public class PlayerActivity extends Activity {
 
             setTracks = true;
 
-            exoPlayPause.setVisibility(View.GONE);
-            loadingProgressBar.setVisibility(View.VISIBLE);
+            updateLoading(true);
 
             play = mPrefs.getPosition() == 0L;
             player.setPlayWhenReady(play);
@@ -818,8 +817,7 @@ public class PlayerActivity extends Activity {
 
             if (setTracks && state == Player.STATE_READY) {
                 setTracks = false;
-                loadingProgressBar.setVisibility(View.GONE);
-                exoPlayPause.setVisibility(View.VISIBLE);
+                updateLoading(false);
                 if (mPrefs.audioTrack != -1 && mPrefs.audioTrackFfmpeg != -1) {
                     setSelectedTrackAudio(mPrefs.audioTrack, false);
                     setSelectedTrackAudio(mPrefs.audioTrackFfmpeg, true);
@@ -831,6 +829,7 @@ public class PlayerActivity extends Activity {
 
         @Override
         public void onPlayerError(ExoPlaybackException error) {
+            updateLoading(false);
             if (controllerVisible && controllerVisibleFully) {
                 showError(error);
             } else {
@@ -1237,5 +1236,16 @@ public class PlayerActivity extends Activity {
             // Keep controller UI visible - alternative to resetHideCallbacks()
             playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
         }
+    }
+
+    private void updateLoading(final boolean enableLoading) {
+        if (enableLoading) {
+            exoPlayPause.setVisibility(View.GONE);
+            loadingProgressBar.setVisibility(View.VISIBLE);
+        } else {
+            loadingProgressBar.setVisibility(View.GONE);
+            exoPlayPause.setVisibility(View.VISIBLE);
+        }
+
     }
 }
