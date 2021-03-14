@@ -59,8 +59,8 @@
         android:id="@+id/youtube_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#77000000"
         android:visibility="invisible"
+        app:yt_backgroundCircleColor="@color/exo_bottom_bar_background"
         app:yt_playerView="@id/video_view" />
 
     <View android:id="@id/exo_controller_placeholder"
