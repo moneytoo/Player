@@ -18,7 +18,7 @@
     <color name="dtpv_yt_background_circle_color">#20EEEEEE</color>
     <dimen name="dtpv_yt_arc_size">40dp</dimen>
 
-    <style name="YTOSecondsTextAppearance" parent="TextAppearance.AppCompat">
+    <style name="YTOSecondsTextAppearance">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@android:color/white</item>
     </style>
