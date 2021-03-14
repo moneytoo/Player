@@ -185,7 +185,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
             if (Math.abs(gestureScrollX) > SCROLL_STEP || (gestureOrientation == Orientation.HORIZONTAL && Math.abs(gestureScrollX) > SCROLL_STEP_SEEK)) {
                 // Keep controller visible during seek if UI is already visible
                 if (PlayerActivity.controllerVisible)
-                    setControllerShowTimeoutMs(0);
+                    setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
                 setControllerAutoShow(false);
 
                 if (gestureOrientation == Orientation.UNKNOWN) {
