@@ -194,23 +194,6 @@ public class PlayerActivity extends Activity {
             }
         });
 
-        final StyledPlayerControlView controlView = playerView.findViewById(R.id.exo_controller);
-        controlView.setOnApplyWindowInsetsListener((view, windowInsets) -> {
-            if (windowInsets != null) {
-                view.setPadding(windowInsets.getSystemWindowInsetLeft(), windowInsets.getSystemWindowInsetTop(),
-                        windowInsets.getSystemWindowInsetRight(), windowInsets.getSystemWindowInsetBottom());
-
-                final View exoCenterControls = playerView.findViewById(R.id.exo_center_controls);
-                final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) exoCenterControls.getLayoutParams();
-                layoutParams.setMargins(windowInsets.getSystemWindowInsetLeft() / -2, 0,
-                        windowInsets.getSystemWindowInsetRight() / -2, 0);
-                exoCenterControls.setLayoutParams(layoutParams);
-
-                windowInsets.consumeSystemWindowInsets();
-            }
-            return windowInsets;
-        });
-
         buttonOpen = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
         buttonOpen.setImageResource(R.drawable.ic_folder_open_24dp);
         buttonOpen.setId(View.generateViewId());
@@ -291,19 +274,40 @@ public class PlayerActivity extends Activity {
             resetHideCallbacks();
         });
 
-        int padding = getResources().getDimensionPixelOffset(R.dimen.exo_styled_bottom_bar_time_padding);
+        int titleViewPadding = getResources().getDimensionPixelOffset(R.dimen.exo_styled_bottom_bar_time_padding);
         FrameLayout centerView = playerView.findViewById(R.id.exo_controls_background);
         titleView = new TextView(this);
         titleView.setBackgroundResource(R.color.exo_bottom_bar_background);
         titleView.setTextColor(Color.WHITE);
         titleView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        titleView.setPadding(padding, padding, padding, padding);
+        titleView.setPadding(titleViewPadding, titleViewPadding, titleViewPadding, titleViewPadding);
         titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
         titleView.setVisibility(View.GONE);
         titleView.setMaxLines(1);
         titleView.setEllipsize(TextUtils.TruncateAt.END);
         titleView.setTextDirection(View.TEXT_DIRECTION_LOCALE);
         centerView.addView(titleView);
+
+        final StyledPlayerControlView controlView = playerView.findViewById(R.id.exo_controller);
+        controlView.setOnApplyWindowInsetsListener((view, windowInsets) -> {
+            if (windowInsets != null) {
+                view.setPadding(0, windowInsets.getSystemWindowInsetTop(),
+                        0, windowInsets.getSystemWindowInsetBottom());
+
+                titleView.setPadding(windowInsets.getSystemWindowInsetLeft() + titleViewPadding, titleViewPadding,
+                        windowInsets.getSystemWindowInsetRight() + titleViewPadding, titleViewPadding);
+
+                // TODO: Improve bottom bar with bottom notch / "Double cutout"
+                findViewById(R.id.exo_bottom_bar).setPadding(windowInsets.getSystemWindowInsetLeft(), 0,
+                        windowInsets.getSystemWindowInsetRight(), 0);
+
+                findViewById(R.id.exo_progress).setPadding(windowInsets.getSystemWindowInsetLeft(), 0,
+                        windowInsets.getSystemWindowInsetRight(), 0);
+
+                windowInsets.consumeSystemWindowInsets();
+            }
+            return windowInsets;
+        });
 
         // Prevent double tap actions in controller
         findViewById(R.id.exo_bottom_bar).setOnTouchListener((v, event) -> true);
