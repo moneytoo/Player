@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.core.view.GestureDetectorCompat;
 
+import com.brouken.player.dtpv.youtube.YouTubeOverlay;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.SeekParameters;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
@@ -22,7 +23,7 @@ import com.google.android.exoplayer2.ui.StyledPlayerView;
 
 import java.util.Collections;
 
-public final class CustomStyledPlayerView extends StyledPlayerView implements GestureDetector.OnGestureListener, ScaleGestureDetector.OnScaleGestureListener {
+public class CustomStyledPlayerView extends StyledPlayerView implements GestureDetector.OnGestureListener, ScaleGestureDetector.OnScaleGestureListener {
 
     private final GestureDetectorCompat mDetector;
 
@@ -142,8 +143,14 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
     public void onShowPress(MotionEvent motionEvent) {
     }
 
+
+
     @Override
     public boolean onSingleTapUp(MotionEvent motionEvent) {
+        return false;
+    }
+
+    public boolean tap() {
         if (!PlayerActivity.controllerVisibleFully) {
             showController();
             return true;
@@ -152,7 +159,6 @@ public final class CustomStyledPlayerView extends StyledPlayerView implements Ge
                 hideController();
             return true;
         }
-
         return false;
     }
 

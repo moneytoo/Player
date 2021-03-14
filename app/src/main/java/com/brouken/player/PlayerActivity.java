@@ -53,6 +53,7 @@ import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.documentfile.provider.DocumentFile;
 
+import com.brouken.player.dtpv.youtube.YouTubeOverlay;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.exoplayer2.C;
@@ -658,6 +659,23 @@ public class PlayerActivity extends Activity {
                     .setContentType(C.CONTENT_TYPE_MOVIE)
                     .build();
             player.setAudioAttributes(audioAttributes, true);
+
+            final YouTubeOverlay youTubeOverlay = findViewById(R.id.youtube_overlay);
+
+            youTubeOverlay.performListener(new YouTubeOverlay.PerformListener() {
+                @Override
+                public void onAnimationStart() {
+                    youTubeOverlay.setVisibility(View.VISIBLE);
+                }
+
+                @Override
+                public void onAnimationEnd() {
+                    youTubeOverlay.setVisibility(View.GONE);
+                }
+            });
+
+            youTubeOverlay.player(player);
+
         }
 
         playerView.setPlayer(player);

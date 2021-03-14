@@ -1,6 +1,8 @@
 plugins {
     id 'com.android.application'
 }
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 30
@@ -40,6 +42,14 @@ android {
     lintOptions {
         disable 'MissingTranslation'
     }
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
 }
 
 dependencies {
@@ -57,5 +67,11 @@ dependencies {
     onlineImplementation 'com.github.javiersantos:AppUpdater:2.7'
     onlineImplementation 'com.g00fy2:versioncompare:1.3.7'
     implementation 'me.xdrop:fuzzywuzzy:1.3.1'
+    implementation 'com.github.vkay94:DoubleTapPlayerView:1.0.0'
     implementation fileTree(dir: "libs", include: ["*.aar"])
+    implementation "androidx.core:core-ktx:1.3.2"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }
