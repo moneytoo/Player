@@ -53,6 +53,7 @@ import androidx.annotation.NonNull;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.documentfile.provider.DocumentFile;
 
+import com.brouken.player.dtpv.DoubleTapPlayerView;
 import com.brouken.player.dtpv.youtube.YouTubeOverlay;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
@@ -167,6 +168,8 @@ public class PlayerActivity extends Activity {
 
         playerView.setControllerHideOnTouch(true);
         playerView.setControllerAutoShow(true);
+
+        ((DoubleTapPlayerView)playerView).setDoubleTapEnabled(false);
 
         // https://github.com/google/ExoPlayer/issues/5765
         CustomDefaultTimeBar timeBar = playerView.findViewById(R.id.exo_progress);
@@ -667,7 +670,6 @@ public class PlayerActivity extends Activity {
             });
 
             youTubeOverlay.player(player);
-
         }
 
         playerView.setPlayer(player);
@@ -754,6 +756,8 @@ public class PlayerActivity extends Activity {
                 Utils.setButtonEnabled(this, buttonPiP, true);
 
             Utils.setButtonEnabled(this, buttonAspectRatio, true);
+
+            ((DoubleTapPlayerView)playerView).setDoubleTapEnabled(true);
 
             player.setHandleAudioBecomingNoisy(true);
             mediaSession.setActive(true);
