@@ -17,8 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.xdrop.fuzzywuzzy.FuzzySearch;
-
 class SubtitleUtils {
 
     public static String getSubtitleMime(Uri uri) {
@@ -152,22 +150,13 @@ class SubtitleUtils {
 
         if (candidates.size() > 1) {
             for (DocumentFile candidate : candidates) {
-                if (candidate.getName().startsWith(videoName)) {
+                if (candidate.getName().startsWith(videoName + '.')) {
                     return candidate;
                 }
             }
         }
 
-        DocumentFile scoringCandidate = null;
-        int bestScore = 50;
-        for (DocumentFile candidate : candidates) {
-            int score = FuzzySearch.partialRatio(videoName, getFileBaseName(candidate.getName()));
-            if (score > bestScore) {
-                scoringCandidate = candidate;
-                bestScore = score;
-            }
-        }
-        return scoringCandidate;
+        return null;
     }
 
     public static boolean isVideoFile(DocumentFile file) {
