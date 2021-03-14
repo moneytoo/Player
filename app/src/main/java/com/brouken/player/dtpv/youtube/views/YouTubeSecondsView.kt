@@ -9,7 +9,7 @@ import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.animation.doOnEnd
 import androidx.core.animation.doOnStart
-import com.github.vkay94.dtpv.R
+import com.brouken.player.R
 import kotlinx.android.synthetic.main.yt_seconds_view.view.*
 
 /**

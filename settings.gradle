@@ -1,3 +1,2 @@
-include ':extension-ffmpeg-release'
-include ':app'
+include ':app', ':doubletapplayerview'
 rootProject.name = "Player"
