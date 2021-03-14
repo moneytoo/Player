@@ -320,6 +320,16 @@ class YouTubeOverlay(context: Context?, private val attrs: AttributeSet?) :
                 return
         }
 
+        if (posX >= playerView?.width!! * 0.35 && posX <= playerView?.width!! * 0.65) {
+            if (player?.isPlaying!!) {
+                player?.pause()
+            } else {
+                player?.play()
+                if (playerView?.isControllerFullyVisible!!)
+                    playerView?.hideController()
+            }
+        }
+
         // YouTube behavior: show overlay on MOTION_UP
         // But check whether the first double tap is in invalid area
         if (this.visibility != View.VISIBLE) {
