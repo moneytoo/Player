@@ -119,6 +119,8 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
                         restorePlayState = false;
                         PlayerActivity.player.play();
                     }
+
+                    setControllerAutoShow(true);
                     break;
                 }
         }
@@ -181,10 +183,10 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
         if (gestureOrientation == Orientation.HORIZONTAL || gestureOrientation == Orientation.UNKNOWN) {
             gestureScrollX += distanceX;
             if (Math.abs(gestureScrollX) > SCROLL_STEP || (gestureOrientation == Orientation.HORIZONTAL && Math.abs(gestureScrollX) > SCROLL_STEP_SEEK)) {
-                // Make controller always visible and not hiding during seek
-                if (!PlayerActivity.controllerVisible)
-                    showController();
-                setControllerShowTimeoutMs(0);
+                // Keep controller visible during seek if UI is already visible
+                if (PlayerActivity.controllerVisible)
+                    setControllerShowTimeoutMs(0);
+                setControllerAutoShow(false);
 
                 if (gestureOrientation == Orientation.UNKNOWN) {
                     if (PlayerActivity.player.isPlaying()) {

@@ -14,7 +14,8 @@ import com.brouken.player.R
 import com.brouken.player.dtpv.DoubleTapPlayerView
 import com.brouken.player.dtpv.PlayerDoubleTapListener
 import com.brouken.player.dtpv.SeekListener
-import com.google.android.exoplayer2.Player
+import com.google.android.exoplayer2.SeekParameters
+import com.google.android.exoplayer2.SimpleExoPlayer
 import kotlinx.android.synthetic.main.yt_overlay.view.*
 
 
@@ -38,7 +39,7 @@ class YouTubeOverlay(context: Context?, private val attrs: AttributeSet?) :
 
     // Player behaviors
     private var playerView: DoubleTapPlayerView? = null
-    private var player: Player? = null
+    private var player: SimpleExoPlayer? = null
 
     init {
         LayoutInflater.from(context).inflate(R.layout.yt_overlay, this, true)
@@ -146,7 +147,7 @@ class YouTubeOverlay(context: Context?, private val attrs: AttributeSet?) :
      *
      * @param player PlayerView which triggers the event
      */
-    fun player(player: Player) = apply {
+    fun player(player: SimpleExoPlayer) = apply {
         this.player = player
     }
 
@@ -386,6 +387,8 @@ class YouTubeOverlay(context: Context?, private val attrs: AttributeSet?) :
      */
     private fun seekToPosition(newPosition: Long?) {
         if (newPosition == null) return
+
+        player?.setSeekParameters(SeekParameters.EXACT);
 
         // Start of the video reached
         if (newPosition <= 0) {

@@ -191,9 +191,8 @@ open class DoubleTapPlayerView @JvmOverloads constructor(
             // to hide and show on single tap
             if (isDoubleTapping) return true
             if (DEBUG) Log.d(TAG, "onSingleTapConfirmed: isDoubleTap = false")
-            return rootView.tap();
             //return rootView.performClick()
-            //return true
+            return rootView.tap();
         }
 
         override fun onDoubleTap(e: MotionEvent): Boolean {
