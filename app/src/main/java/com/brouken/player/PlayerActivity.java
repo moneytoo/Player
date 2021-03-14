@@ -196,20 +196,12 @@ public class PlayerActivity extends Activity {
             if (windowInsets != null) {
                 view.setPadding(windowInsets.getSystemWindowInsetLeft(), windowInsets.getSystemWindowInsetTop(),
                         windowInsets.getSystemWindowInsetRight(), windowInsets.getSystemWindowInsetBottom());
-                windowInsets.consumeSystemWindowInsets();
-            }
-            return windowInsets;
-        });
 
-        final View exoErrorMessage = playerView.findViewById(R.id.exo_error_message);
-        exoErrorMessage.setOnApplyWindowInsetsListener((view, windowInsets) -> {
-            if (windowInsets != null) {
-                final int bottom = (int) getResources().getDimension(R.dimen.exo_error_message_margin_bottom);
-
-                final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
-                layoutParams.setMargins(windowInsets.getSystemWindowInsetLeft() / 2, 0,
-                        windowInsets.getSystemWindowInsetRight() / 2, bottom);
-                view.setLayoutParams(layoutParams);
+                final View exoCenterControls = playerView.findViewById(R.id.exo_center_controls);
+                final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) exoCenterControls.getLayoutParams();
+                layoutParams.setMargins(windowInsets.getSystemWindowInsetLeft() / -2, 0,
+                        windowInsets.getSystemWindowInsetRight() / -2, 0);
+                exoCenterControls.setLayoutParams(layoutParams);
 
                 windowInsets.consumeSystemWindowInsets();
             }
