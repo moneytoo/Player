@@ -13,12 +13,4 @@
         android:animateLayoutChanges="true"
         app:dtpv_controller="@id/youtube_overlay" />
 
-    <com.brouken.player.dtpv.youtube.YouTubeOverlay
-        android:id="@+id/youtube_overlay"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#77000000"
-        android:visibility="invisible"
-        app:yt_playerView="@id/video_view" />
-
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

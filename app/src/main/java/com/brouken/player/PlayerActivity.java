@@ -305,6 +305,10 @@ public class PlayerActivity extends Activity {
         titleView.setTextDirection(View.TEXT_DIRECTION_LOCALE);
         centerView.addView(titleView);
 
+        // Prevent double tap actions in controller
+        findViewById(R.id.exo_bottom_bar).setOnTouchListener((v, event) -> true);
+        titleView.setOnTouchListener((v, event) -> true);
+
         playbackStateListener = new PlaybackStateListener();
 
         mBrightnessControl = new BrightnessControl(this);

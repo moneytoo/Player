@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:keep="@layout/exo_styled_player_view">
 
     <com.google.android.exoplayer2.ui.AspectRatioFrameLayout android:id="@id/exo_content_frame"
@@ -53,6 +54,14 @@
     <FrameLayout android:id="@id/exo_overlay"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
+
+    <com.brouken.player.dtpv.youtube.YouTubeOverlay
+        android:id="@+id/youtube_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#77000000"
+        android:visibility="invisible"
+        app:yt_playerView="@id/video_view" />
 
     <View android:id="@id/exo_controller_placeholder"
         android:layout_width="match_parent"
