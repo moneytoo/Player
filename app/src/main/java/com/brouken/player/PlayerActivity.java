@@ -194,7 +194,8 @@ public class PlayerActivity extends Activity {
             @Override
             public void onScrubStop(TimeBar timeBar, long position, boolean canceled) {
                 playerView.setCustomErrorMessage(null);
-                playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+                if (player.isPlaying())
+                    playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
                 isScrubbing = false;
             }
         });
