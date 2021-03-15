@@ -111,10 +111,6 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
                         postDelayed(textClearRunnable, MESSAGE_TIMEOUT_TOUCH);
                     }
 
-                    // Reset timeout as it could be disabled during seek
-                    if (PlayerActivity.haveMedia)
-                        setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
-
                     if (restorePlayState) {
                         restorePlayState = false;
                         PlayerActivity.player.play();
@@ -156,9 +152,8 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
         if (!PlayerActivity.controllerVisibleFully) {
             showController();
             return true;
-        } else if (getControllerHideOnTouch()) {
-            if (PlayerActivity.haveMedia && PlayerActivity.player.isPlaying())
-                hideController();
+        } else if (PlayerActivity.haveMedia && PlayerActivity.player.isPlaying()) {
+            hideController();
             return true;
         }
         return false;
@@ -183,9 +178,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
         if (gestureOrientation == Orientation.HORIZONTAL || gestureOrientation == Orientation.UNKNOWN) {
             gestureScrollX += distanceX;
             if (Math.abs(gestureScrollX) > SCROLL_STEP || (gestureOrientation == Orientation.HORIZONTAL && Math.abs(gestureScrollX) > SCROLL_STEP_SEEK)) {
-                // Keep controller visible during seek if UI is already visible
-                if (PlayerActivity.controllerVisible)
-                    setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+                // Do not show controller if not already visible
                 setControllerAutoShow(false);
 
                 if (gestureOrientation == Orientation.UNKNOWN) {

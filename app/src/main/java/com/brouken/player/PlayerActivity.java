@@ -135,7 +135,8 @@ public class PlayerActivity extends Activity {
     private boolean restorePlayState;
     private boolean play;
     private float subtitlesScale;
-    private boolean scrubbing;
+    private boolean isScrubbing;
+    private boolean scrubbingNoticeable;
     private long scrubbingStart;
 
     final Rational rationalLimitWide = new Rational(239, 100);
@@ -166,7 +167,7 @@ public class PlayerActivity extends Activity {
         playerView.setShowFastForwardButton(false);
         playerView.setShowRewindButton(false);
 
-        playerView.setControllerHideOnTouch(true);
+        playerView.setControllerHideOnTouch(false);
         playerView.setControllerAutoShow(true);
 
         ((DoubleTapPlayerView)playerView).setDoubleTapEnabled(false);
@@ -178,7 +179,9 @@ public class PlayerActivity extends Activity {
         timeBar.addListener(new TimeBar.OnScrubListener() {
             @Override
             public void onScrubStart(TimeBar timeBar, long position) {
-                scrubbing = false;
+                scrubbingNoticeable = false;
+                isScrubbing = true;
+                playerView.setControllerShowTimeoutMs(-1);
                 scrubbingStart = player.getCurrentPosition();
                 reportScrubbing(position);
             }
@@ -191,6 +194,8 @@ public class PlayerActivity extends Activity {
             @Override
             public void onScrubStop(TimeBar timeBar, long position, boolean canceled) {
                 playerView.setCustomErrorMessage(null);
+                playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+                isScrubbing = false;
             }
         });
 
@@ -699,9 +704,9 @@ public class PlayerActivity extends Activity {
                         .build();
         });
 
-        if (haveMedia) {
-            playerView.setControllerShowTimeoutMs(CONTROLLER_TIMEOUT);
+        playerView.setControllerShowTimeoutMs(-1);
 
+        if (haveMedia) {
             playerView.setResizeMode(mPrefs.resizeMode);
 
             if (mPrefs.resizeMode == AspectRatioFrameLayout.RESIZE_MODE_ZOOM) {
@@ -772,7 +777,6 @@ public class PlayerActivity extends Activity {
             player.setHandleAudioBecomingNoisy(true);
             mediaSession.setActive(true);
         } else {
-            playerView.setControllerShowTimeoutMs(-1);
             playerView.showController();
         }
 
@@ -815,6 +819,14 @@ public class PlayerActivity extends Activity {
                     updatePictureInPictureActions(R.drawable.ic_pause_24dp, "Pause", CONTROL_TYPE_PAUSE, REQUEST_PAUSE);
                 } else {
                     updatePictureInPictureActions(R.drawable.ic_play_arrow_24dp, "Play", CONTROL_TYPE_PLAY, REQUEST_PLAY);
+                }
+            }
+
+            if (!isScrubbing) {
+                if (isPlaying) {
+                    playerView.setControllerShowTimeoutMs(CONTROLLER_TIMEOUT);
+                } else {
+                    playerView.setControllerShowTimeoutMs(-1);
                 }
             }
         }
@@ -1185,9 +1197,9 @@ public class PlayerActivity extends Activity {
     void reportScrubbing(long position) {
         final long diff = position - scrubbingStart;
         if (Math.abs(diff) > 1000) {
-            scrubbing = true;
+            scrubbingNoticeable = true;
         }
-        if (scrubbing) {
+        if (scrubbingNoticeable) {
             playerView.clearIcon();
             playerView.setCustomErrorMessage(Utils.formatMilisSign(diff));
         }
@@ -1256,7 +1268,7 @@ public class PlayerActivity extends Activity {
     }
 
     void resetHideCallbacks() {
-        if (haveMedia) {
+        if (haveMedia && player.isPlaying()) {
             // Keep controller UI visible - alternative to resetHideCallbacks()
             playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
         }
