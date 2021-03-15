@@ -230,7 +230,10 @@ class Utils {
     }
 
     public static String formatMilisSign(long time) {
-        return (time < 0 ? "−" : "+") + formatMilis(time);
+        if (time > -1000 && time < 1000)
+            return formatMilis(time);
+        else
+            return (time < 0 ? "−" : "+") + formatMilis(time);
     }
 
     public static void log(final String text) {
