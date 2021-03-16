@@ -306,6 +306,24 @@ class YouTubeOverlay(context: Context?, private val attrs: AttributeSet?) :
     val secondsTextView: TextView
         get() = seconds_view.textView
 
+    override fun onDoubleTapStarted(posX: Float, posY: Float) {
+
+        if (player?.currentPosition != null && playerView?.width != null) {
+            if (posX >= playerView?.width!! * 0.35 && posX <= playerView?.width!! * 0.65) {
+                if (player?.isPlaying!!) {
+                    player?.pause()
+                } else {
+                    player?.play()
+                    if (playerView?.isControllerFullyVisible!!)
+                        playerView?.hideController()
+                }
+                return
+            }
+        }
+
+        super.onDoubleTapStarted(posX, posY)
+    }
+
     override fun onDoubleTapProgressUp(posX: Float, posY: Float) {
 
         // Check first whether forwarding/rewinding is "valid"
@@ -318,16 +336,6 @@ class YouTubeOverlay(context: Context?, private val attrs: AttributeSet?) :
             // Forward and end of the video (- 0.5 sec tolerance)
             if (posX > playerView?.width!! * 0.65 && current >= player?.duration!!.minus(500))
                 return
-        }
-
-        if (posX >= playerView?.width!! * 0.35 && posX <= playerView?.width!! * 0.65) {
-            if (player?.isPlaying!!) {
-                player?.pause()
-            } else {
-                player?.play()
-                if (playerView?.isControllerFullyVisible!!)
-                    playerView?.hideController()
-            }
         }
 
         // YouTube behavior: show overlay on MOTION_UP
