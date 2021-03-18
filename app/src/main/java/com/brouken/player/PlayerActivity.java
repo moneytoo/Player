@@ -34,6 +34,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Rational;
 import android.util.TypedValue;
+import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
@@ -50,6 +51,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.documentfile.provider.DocumentFile;
 
@@ -216,6 +218,8 @@ public class PlayerActivity extends Activity {
         });
 
         if (isPiPSupported()) {
+            // TODO: Android 12 improvements:
+            // https://developer.android.com/about/versions/12/features/pip-improvements
             mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
             updatePictureInPictureActions(R.drawable.ic_play_arrow_24dp, "Play", CONTROL_TYPE_PLAY, REQUEST_PLAY);
 
@@ -223,33 +227,14 @@ public class PlayerActivity extends Activity {
             buttonPiP.setImageResource(R.drawable.ic_picture_in_picture_alt_24dp);
 
             buttonPiP.setOnClickListener(view -> {
-                playerView.setControllerAutoShow(false);
-                playerView.hideController();
+                enterPiP();
+            });
 
-                final Format format = player.getVideoFormat();
-
-                if (format != null) {
-                    // https://github.com/google/ExoPlayer/issues/8611
-                    // TODO: Test/disable on Android 11+
-                    final View videoSurfaceView = playerView.getVideoSurfaceView();
-                    if (videoSurfaceView instanceof SurfaceView) {
-                        ((SurfaceView)videoSurfaceView).getHolder().setFixedSize(format.width, format.height);
-                    }
-
-                    Rational rational;
-                    if (Utils.isRotated(format))
-                        rational = new Rational(format.height, format.width);
-                    else
-                        rational = new Rational(format.width, format.height);
-
-                    if (rational.floatValue() > rationalLimitWide.floatValue())
-                        rational = rationalLimitWide;
-                    else if (rational.floatValue() < rationalLimitTall.floatValue())
-                        rational = rationalLimitTall;
-
-                    ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setAspectRatio(rational);
-                }
-                enterPictureInPictureMode(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
+            buttonPiP.setOnLongClickListener(v -> {
+                buttonPiP.performHapticFeedback(mPrefs.toggleAutoPiP() ?
+                        HapticFeedbackConstants.VIRTUAL_KEY : HapticFeedbackConstants.LONG_PRESS);
+                resetHideCallbacks();
+                return true;
             });
 
             Utils.setButtonEnabled(this, buttonPiP, false);
@@ -1283,6 +1268,45 @@ public class PlayerActivity extends Activity {
             loadingProgressBar.setVisibility(View.GONE);
             exoPlayPause.setVisibility(View.VISIBLE);
         }
+    }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    protected void onUserLeaveHint() {
+        if (mPrefs!= null && mPrefs.autoPiP && player != null && player.isPlaying() && isPiPSupported())
+            enterPiP();
+        else
+            super.onUserLeaveHint();
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    private void enterPiP() {
+        playerView.setControllerAutoShow(false);
+        playerView.hideController();
+
+        final Format format = player.getVideoFormat();
+
+        if (format != null) {
+            // https://github.com/google/ExoPlayer/issues/8611
+            // TODO: Test/disable on Android 11+
+            final View videoSurfaceView = playerView.getVideoSurfaceView();
+            if (videoSurfaceView instanceof SurfaceView) {
+                ((SurfaceView)videoSurfaceView).getHolder().setFixedSize(format.width, format.height);
+            }
+
+            Rational rational;
+            if (Utils.isRotated(format))
+                rational = new Rational(format.height, format.width);
+            else
+                rational = new Rational(format.width, format.height);
+
+            if (rational.floatValue() > rationalLimitWide.floatValue())
+                rational = rationalLimitWide;
+            else if (rational.floatValue() < rationalLimitTall.floatValue())
+                rational = rationalLimitTall;
+
+            ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setAspectRatio(rational);
+        }
+        enterPictureInPictureMode(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
     }
 }
