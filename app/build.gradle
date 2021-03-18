@@ -1,8 +1,6 @@
 plugins {
     id 'com.android.application'
 }
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-android-extensions'
 
 android {
     compileSdkVersion 30
@@ -12,8 +10,8 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 25
-        versionName "0.25"
+        versionCode 26
+        versionName "0.26"
         archivesBaseName = "Just.Player.v${versionName}"
     }
 
@@ -42,14 +40,6 @@ android {
     lintOptions {
         disable 'MissingTranslation'
     }
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-        kotlinOptions {
-            jvmTarget = "1.8"
-        }
-    }
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
 }
 
 dependencies {
@@ -66,11 +56,6 @@ dependencies {
     implementation 'com.ibm.icu:icu4j:68.2'
     onlineImplementation 'com.github.javiersantos:AppUpdater:2.7'
     onlineImplementation 'com.g00fy2:versioncompare:1.3.7'
-    implementation 'androidx.core:core-ktx:1.3.2'
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.4.31'
     implementation project(path: ':doubletapplayerview')
     implementation fileTree(dir: "libs", include: ["*.aar"])
-}
-repositories {
-    mavenCentral()
 }

@@ -1,13 +1,13 @@
-package com.brouken.player.dtpv
+package com.brouken.player.dtpv;
 
-interface SeekListener {
+public interface SeekListener {
     /**
      * Called when video start reached during rewinding
      */
-    fun onVideoStartReached() {}
+    void onVideoStartReached();
 
     /**
      * Called when video end reached during forwarding
      */
-    fun onVideoEndReached() {}
+    void onVideoEndReached();
 }
