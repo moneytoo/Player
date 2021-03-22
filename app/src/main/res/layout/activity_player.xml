@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:show_subtitle_button="true"
-        android:animateLayoutChanges="true"
         app:dtpv_controller="@id/youtube_overlay" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -1,5 +1,7 @@
 package com.brouken.player;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -661,12 +663,22 @@ public class PlayerActivity extends Activity {
             youTubeOverlay.performListener(new YouTubeOverlay.PerformListener() {
                 @Override
                 public void onAnimationStart() {
+                    youTubeOverlay.setAlpha(1.0f);
                     youTubeOverlay.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onAnimationEnd() {
-                    youTubeOverlay.setVisibility(View.GONE);
+                    youTubeOverlay.animate()
+                            .alpha(0.0f)
+                            .setDuration(300)
+                            .setListener(new AnimatorListenerAdapter() {
+                                @Override
+                                public void onAnimationEnd(Animator animation) {
+                                    youTubeOverlay.setVisibility(View.GONE);
+                                    youTubeOverlay.setAlpha(1.0f);
+                                }
+                            });
                 }
             });
 
