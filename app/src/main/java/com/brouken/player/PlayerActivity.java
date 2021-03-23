@@ -143,6 +143,7 @@ public class PlayerActivity extends Activity {
     private boolean scrubbingNoticeable;
     private long scrubbingStart;
     public boolean frameRendered;
+    private boolean alive;
 
     final Rational rationalLimitWide = new Rational(239, 100);
     final Rational rationalLimitTall = new Rational(100, 239);
@@ -402,9 +403,8 @@ public class PlayerActivity extends Activity {
     @Override
     public void onStart() {
         super.onStart();
-
+        alive = true;
         updateSubtitleStyle();
-
         initializePlayer();
     }
 
@@ -416,6 +416,7 @@ public class PlayerActivity extends Activity {
     @Override
     public void onStop() {
         super.onStop();
+        alive = false;
         releasePlayer();
     }
 
@@ -565,6 +566,10 @@ public class PlayerActivity extends Activity {
             e.printStackTrace();
         }
 
+        if (resultCode == RESULT_OK && alive) {
+            releasePlayer();
+        }
+
         if (requestCode == REQUEST_CHOOSER_VIDEO) {
             if (resultCode == RESULT_OK) {
                 final Uri uri = data.getData();
@@ -623,6 +628,12 @@ public class PlayerActivity extends Activity {
             }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
+        }
+
+        // Init here because onStart won't follow when app was only paused when file chooser was shown
+        // (for example pop-up file chooser on tablets)
+        if (resultCode == RESULT_OK && alive) {
+            initializePlayer();
         }
     }
 
