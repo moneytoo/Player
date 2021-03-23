@@ -142,6 +142,7 @@ public class PlayerActivity extends Activity {
     private boolean isScrubbing;
     private boolean scrubbingNoticeable;
     private long scrubbingStart;
+    public boolean frameRendered;
 
     final Rational rationalLimitWide = new Rational(239, 100);
     final Rational rationalLimitTall = new Rational(100, 239);
@@ -185,8 +186,10 @@ public class PlayerActivity extends Activity {
             public void onScrubStart(TimeBar timeBar, long position) {
                 scrubbingNoticeable = false;
                 isScrubbing = true;
+                frameRendered = true;
                 playerView.setControllerShowTimeoutMs(-1);
                 scrubbingStart = player.getCurrentPosition();
+                player.setSeekParameters(SeekParameters.CLOSEST_SYNC);
                 reportScrubbing(position);
             }
 
@@ -832,6 +835,7 @@ public class PlayerActivity extends Activity {
         @Override
         public void onPlaybackStateChanged(int state) {
             if (state == Player.STATE_READY) {
+                frameRendered = true;
                 final Format format = player.getVideoFormat();
                 if (format != null) {
                     if (mPrefs.orientation == Utils.Orientation.VIDEO) {
@@ -1201,7 +1205,10 @@ public class PlayerActivity extends Activity {
             playerView.clearIcon();
             playerView.setCustomErrorMessage(Utils.formatMilisSign(diff));
         }
-        player.seekTo(position);
+        if (frameRendered) {
+            frameRendered = false;
+            player.seekTo(position);
+        }
     }
 
     void updateSubtitleStyle() {
