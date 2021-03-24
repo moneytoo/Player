@@ -185,6 +185,10 @@ public class PlayerActivity extends Activity {
         timeBar.addListener(new TimeBar.OnScrubListener() {
             @Override
             public void onScrubStart(TimeBar timeBar, long position) {
+                restorePlayState = player.isPlaying();
+                if (restorePlayState) {
+                    player.pause();
+                }
                 scrubbingNoticeable = false;
                 isScrubbing = true;
                 frameRendered = true;
@@ -202,9 +206,12 @@ public class PlayerActivity extends Activity {
             @Override
             public void onScrubStop(TimeBar timeBar, long position, boolean canceled) {
                 playerView.setCustomErrorMessage(null);
-                if (player.isPlaying())
-                    playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
                 isScrubbing = false;
+                if (restorePlayState) {
+                    restorePlayState = false;
+                    playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+                    player.setPlayWhenReady(true);
+                }
             }
         });
 

@@ -62,6 +62,8 @@ class CustomDefaultTimeBar extends DefaultTimeBar {
             final int distanceFromScrubber = Math.abs(scrubberBar.right - x);
             if (distanceFromScrubber > Utils.dpToPx(24))
                 return true;
+            else
+                scrubbing = true;
         }
         if (!scrubbing && event.getAction() == MotionEvent.ACTION_MOVE && scrubberBar != null) {
             scrubbing = true;
