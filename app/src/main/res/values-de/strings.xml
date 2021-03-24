@@ -12,4 +12,5 @@
     <string name="delete_confirmation">Löschen</string>
     <string name="delete_query">Diese Datei löschen\?</string>
     <string name="request_scope">Um automatisch externe Untertitel zu laden oder das Springen zur nächsten Datei in einem Verzeichnis zu aktivieren, gewähren Sie %s Zugriff auf den obersten Ordner, der Ihre Videos enthält (z. B. Filme).</string>
+    <string name="app_name" translatable="false"></string>
 </resources>
