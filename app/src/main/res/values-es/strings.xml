@@ -12,4 +12,5 @@
     <string name="delete_confirmation">Borrar</string>
     <string name="delete_query">¿Borrar este archivo\?</string>
     <string name="request_scope">Para cargar automáticamente los subtítulos externos o activar el salto al siguiente archivo de un directorio, concede el acceso a %s a la carpeta superior que contiene tus vídeos (por ejemplo: Películas).</string>
+    <string name="app_name" translatable="false"></string>
 </resources>
