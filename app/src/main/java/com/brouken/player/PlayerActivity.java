@@ -1254,7 +1254,7 @@ public class PlayerActivity extends Activity {
     }
 
     void searchSubtitles() {
-        if (mPrefs.scopeUri != null) {
+        if (mPrefs.scopeUri != null && mPrefs.mediaUri != null) {
             DocumentFile video;
             if ("com.android.externalstorage.documents".equals(mPrefs.mediaUri.getHost())) {
                 // Fast search based on path in uri
