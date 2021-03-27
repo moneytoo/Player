@@ -9,4 +9,5 @@
     <string name="onboarding_open_description">Toca para abrir un archivo de vídeo. Mantén presionado para cargar subtítulos externos.</string>
     <string name="open_subtitles">Cargar subtítulos</string>
     <string name="error_details">Detalles</string>
+    <string name="error_files_missing">La aplicación de archivos está desactivada o no existe</string>
 </resources>
