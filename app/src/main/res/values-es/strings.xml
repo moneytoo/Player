@@ -1,16 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Just Player</string>
-
+    <string name="app_name">Sólo Reproductor</string>
     <string name="video_resize_fit">Ajustar</string>
     <string name="video_resize_crop">Recortar</string>
-
     <string name="video_orientation_video">Orientación del vídeo</string>
     <string name="video_orientation_sensor">Rotación automática</string>
-
     <string name="onboarding_open_title">Escoge un vídeo para reproducir</string>
     <string name="onboarding_open_description">Toca para abrir un archivo de vídeo. Mantén presionado para cargar subtítulos externos.</string>
-
     <string name="open_subtitles">Cargar subtítulos</string>
-    
     <string name="error_details">Detalles</string>
+    <string name="error_files_missing">La aplicación de archivos está desactivada o no existe</string>
+    <string name="subtitles_scope">Para cargar automáticamente los subtítulos externos, conceda a %s acceso a la carpeta superior que contiene sus vídeos (por ejemplo, Movies).</string>
 </resources>
