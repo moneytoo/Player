@@ -298,12 +298,31 @@ public class PlayerActivity extends Activity {
                 view.setPadding(0, windowInsets.getSystemWindowInsetTop(),
                         0, windowInsets.getSystemWindowInsetBottom());
 
-                titleView.setPadding(windowInsets.getSystemWindowInsetLeft() + titleViewPadding, titleViewPadding,
-                        windowInsets.getSystemWindowInsetRight() + titleViewPadding, titleViewPadding);
+                int insetLeft = windowInsets.getSystemWindowInsetLeft();
+                int insetRight = windowInsets.getSystemWindowInsetRight();
 
-                // TODO: Improve bottom bar with bottom notch / "Double cutout"
-                findViewById(R.id.exo_bottom_bar).setPadding(windowInsets.getSystemWindowInsetLeft(), 0,
-                        windowInsets.getSystemWindowInsetRight(), 0);
+                int paddingLeft = 0;
+                int marginLeft = insetLeft;
+
+                int paddingRight = 0;
+                int marginRight = insetRight;
+
+                if (Build.VERSION.SDK_INT >= 28 && windowInsets.getDisplayCutout() != null) {
+                    if (windowInsets.getDisplayCutout().getSafeInsetLeft() == insetLeft) {
+                        paddingLeft = insetLeft;
+                        marginLeft = 0;
+                    }
+                    if (windowInsets.getDisplayCutout().getSafeInsetRight() == insetRight) {
+                        paddingRight = insetRight;
+                        marginRight = 0;
+                    }
+                }
+
+                Utils.setViewParams(titleView, paddingLeft + titleViewPadding, titleViewPadding, paddingRight + titleViewPadding, titleViewPadding,
+                        marginLeft, marginRight);
+
+                Utils.setViewParams(findViewById(R.id.exo_bottom_bar), paddingLeft, 0, paddingRight, 0,
+                        marginLeft, marginRight);
 
                 findViewById(R.id.exo_progress).setPadding(windowInsets.getSystemWindowInsetLeft(), 0,
                         windowInsets.getSystemWindowInsetRight(), 0);

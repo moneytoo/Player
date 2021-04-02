@@ -11,6 +11,7 @@ import android.os.Build;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.google.android.exoplayer2.Format;
@@ -240,5 +241,13 @@ class Utils {
         if (BuildConfig.DEBUG) {
             Log.d("JustPlayer", text);
         }
+    }
+
+    public static void setViewParams(final View view, int paddingLeft, int paddingTop, int paddingRight, int paddingBottom, int marginLeft, int marginRight) {
+        view.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+
+        final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
+        layoutParams.setMargins(marginLeft, 0, marginRight, 0);
+        view.setLayoutParams(layoutParams);
     }
 }
