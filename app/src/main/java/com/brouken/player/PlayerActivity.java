@@ -176,6 +176,8 @@ public class PlayerActivity extends Activity {
 
         ((DoubleTapPlayerView)playerView).setDoubleTapEnabled(false);
 
+        playerView.setIsGestureLocked(mPrefs.isGestureLocked);
+
         // https://github.com/google/ExoPlayer/issues/5765
         CustomDefaultTimeBar timeBar = playerView.findViewById(R.id.exo_progress);
         timeBar.setBufferedColor(0x33FFFFFF);
@@ -276,6 +278,15 @@ public class PlayerActivity extends Activity {
             resetHideCallbacks();
         });
 
+        ImageButton buttonPadlock = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
+        updateGestureLockedButtonIcon(buttonPadlock, mPrefs.isGestureLocked);
+        buttonPadlock.setOnClickListener(view -> {
+            boolean isGestureLocked = mPrefs.toggleIsGestureLocked();
+            playerView.setIsGestureLocked(isGestureLocked);
+            updateGestureLockedButtonIcon(buttonPadlock, isGestureLocked);
+            resetHideCallbacks();
+        });
+
         int titleViewPadding = getResources().getDimensionPixelOffset(R.dimen.exo_styled_bottom_bar_time_padding);
         FrameLayout centerView = playerView.findViewById(R.id.exo_controls_background);
         titleView = new TextView(this);
@@ -365,6 +376,7 @@ public class PlayerActivity extends Activity {
             controls.addView(buttonPiP);
         }
         controls.addView(buttonRotation);
+        controls.addView(buttonPadlock);
         controls.addView(exoSettings);
 
         exoBasicControls.addView(horizontalScrollView);
@@ -1333,5 +1345,14 @@ public class PlayerActivity extends Activity {
             ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setAspectRatio(rational);
         }
         enterPictureInPictureMode(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
+    }
+
+    private void updateGestureLockedButtonIcon(ImageButton buttonPadlock, boolean isGestureLocked) {
+        if (isGestureLocked){
+            buttonPadlock.setImageResource(R.drawable.ic_locked_padlock_24dp);
+        }
+        else {
+            buttonPadlock.setImageResource(R.drawable.ic_unlocked_padlock_24dp);
+        }
     }
 }

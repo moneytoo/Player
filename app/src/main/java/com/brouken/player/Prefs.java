@@ -29,6 +29,7 @@ class Prefs {
     private static final String PREF_KEY_SCOPE_URI = "scopeUri";
     private static final String PREF_KEY_ASK_SCOPE = "askScope";
     private static final String PREF_KEY_AUTO_PIP = "autoPiP";
+    private static final String PREF_KEY_GESTURE_LOCKED = "isGestureLocked";
 
     final Context mContext;
     final SharedPreferences mSharedPreferences;
@@ -49,6 +50,7 @@ class Prefs {
     public boolean firstRun = true;
     public boolean askScope = true;
     public boolean autoPiP = false;
+    public boolean isGestureLocked = false;
 
     private LinkedHashMap positions;
 
@@ -82,6 +84,7 @@ class Prefs {
             scopeUri = Uri.parse(mSharedPreferences.getString(PREF_KEY_SCOPE_URI, null));
         askScope = mSharedPreferences.getBoolean(PREF_KEY_ASK_SCOPE, askScope);
         autoPiP = mSharedPreferences.getBoolean(PREF_KEY_AUTO_PIP, autoPiP);
+        isGestureLocked = mSharedPreferences.getBoolean(PREF_KEY_GESTURE_LOCKED, isGestureLocked);
     }
 
     public void updateMedia(final Uri uri, final String type) {
@@ -227,5 +230,13 @@ class Prefs {
         sharedPreferencesEditor.putBoolean(PREF_KEY_AUTO_PIP, autoPiP);
         sharedPreferencesEditor.commit();
         return autoPiP;
+    }
+
+    public boolean toggleIsGestureLocked() {
+        isGestureLocked = !isGestureLocked;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        sharedPreferencesEditor.putBoolean(PREF_KEY_GESTURE_LOCKED, isGestureLocked);
+        sharedPreferencesEditor.commit();
+        return isGestureLocked;
     }
 }
