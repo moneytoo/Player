@@ -1348,7 +1348,7 @@ public class PlayerActivity extends Activity {
     }
 
     private void updateGestureLockedButtonIcon(ImageButton buttonPadlock, boolean isGestureLocked) {
-        if (isGestureLocked){
+        if (isGestureLocked) {
             buttonPadlock.setImageResource(R.drawable.ic_locked_padlock_24dp);
         }
         else {
