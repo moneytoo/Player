@@ -287,6 +287,9 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
+        if (isGestureLocked)
+            return false;
+
         mScaleFactor = getVideoSurfaceView().getScaleX();
         if (getResizeMode() != AspectRatioFrameLayout.RESIZE_MODE_ZOOM) {
             canScale = false;
