@@ -16,9 +16,9 @@ import java.lang.reflect.Method;
 
 class CustomDefaultTimeBar extends DefaultTimeBar {
 
-    private final Point touchPosition;
     Rect scrubberBar;
     private boolean scrubbing;
+    private int scrubbingStartX;
 
     public CustomDefaultTimeBar(Context context) {
         this(context, null);
@@ -38,7 +38,6 @@ class CustomDefaultTimeBar extends DefaultTimeBar {
 
     public CustomDefaultTimeBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr, @Nullable AttributeSet timebarAttrs, int defStyleRes) {
         super(context, attrs, defStyleAttr, timebarAttrs, defStyleRes);
-        touchPosition = new Point();
         try {
             Field field = DefaultTimeBar.class.getDeclaredField("scrubberBar");
             field.setAccessible(true);
@@ -48,31 +47,30 @@ class CustomDefaultTimeBar extends DefaultTimeBar {
         }
     }
 
-    private Point resolveRelativeTouchPosition(MotionEvent motionEvent) {
-        touchPosition.set((int) motionEvent.getX(), (int) motionEvent.getY());
-        return touchPosition;
-    }
-
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN && scrubberBar != null) {
             scrubbing = false;
-            final Point touchPosition = resolveRelativeTouchPosition(event);
-            final int x = touchPosition.x;
-            final int distanceFromScrubber = Math.abs(scrubberBar.right - x);
+            scrubbingStartX = (int)event.getX();
+            final int distanceFromScrubber = Math.abs(scrubberBar.right - scrubbingStartX);
             if (distanceFromScrubber > Utils.dpToPx(24))
                 return true;
             else
                 scrubbing = true;
         }
         if (!scrubbing && event.getAction() == MotionEvent.ACTION_MOVE && scrubberBar != null) {
-            scrubbing = true;
-            try {
-                final Method method = DefaultTimeBar.class.getDeclaredMethod("startScrubbing", long.class);
-                method.setAccessible(true);
-                method.invoke(this, (long) 0);
-            } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                e.printStackTrace();
+            final int distanceFromStart = Math.abs(((int)event.getX()) - scrubbingStartX);
+            if (distanceFromStart > Utils.dpToPx(6)) {
+                scrubbing = true;
+                try {
+                    final Method method = DefaultTimeBar.class.getDeclaredMethod("startScrubbing", long.class);
+                    method.setAccessible(true);
+                    method.invoke(this, (long) 0);
+                } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                return true;
             }
         }
         return super.onTouchEvent(event);
