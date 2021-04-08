@@ -23,9 +23,9 @@ It properly synces audio with video track when using Bluetooth earphones/speaker
 
 HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
 
-## Screenshot
+## Screenshots
 
-<img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="540">
+<img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="470"> <img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="470">
 
 ## Features
 
