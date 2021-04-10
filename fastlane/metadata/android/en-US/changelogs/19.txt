@@ -1,1 +1,0 @@
-Add pinch to zoom (Android 7+) and other small fixes and improvements

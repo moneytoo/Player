@@ -1,4 +1,0 @@
-* Update ExoPlayer to 2.13.2
-* Add pinch to zoom
-* Automatic loading of subtitles
-* Lots of other improvements and fixes

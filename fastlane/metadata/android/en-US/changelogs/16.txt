@@ -1,5 +1,0 @@
-- Volume: add volume boost; volume off icon; allow safe volume dialog to appear
-- Subtitles: handle non UTF-8 subtitles; fix user font scale
-- ExoPlayer: update to 2.12.3
-- Allow using system brightness
-- Other small improvements and fixes

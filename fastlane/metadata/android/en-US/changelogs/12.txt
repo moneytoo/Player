@@ -1,1 +1,0 @@
-Add AV1 decoder, brightness/volume icons and lots of other small fixes and improvements.
