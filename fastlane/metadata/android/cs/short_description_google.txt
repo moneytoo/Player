@@ -1,0 +1,1 @@
+Open source přehrávač videa, bez zpoždění Bluetooth a podpory různých kodeků
