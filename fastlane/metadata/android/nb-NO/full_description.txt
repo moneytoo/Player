@@ -1,0 +1,26 @@
+Android-videospiller basert på ExoPlayer-biblioteket. Bruker ExoPlayer sin FFmpeg-utvidelse med alle dens lydformater påskrudd (også spesialformater som AC3, EAC3, DTS, DTS HD, TrueHD osv.).
+
+Den synkroniserer lyd med videospor når det brukes Blåtannshodesett eller -høyttaler.
+
+Støttede formater
+
+ * Audio: Vorbis, Opus, FLAC, ALAC, PCM/WAVE (μ-law, A-law), MP1, MP2, MP3, AMR (NB, WB), AAC (LC, ELD, HE; xHE på Android 9+), AC-3, E-AC-3, DTS, DTS-HD, TrueHD
+ * Video: H.263, H.264 AVC (grunnprofil; hovedprofil på Android 6+), H.265 HEVC, MPEG-4 SP, VP8, VP9, AV1
+ * Beholdere: MP4, MOV, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV
+ * Undertekster: SRT, SSA, ASS, TTML, VTT
+
+HDR (HDR10+ og Dolby Vision)-videoavspilling på kompatibel/støttet maskinvare.
+
+Funksjoner
+
+ * Valg av lyd/undertekstspor
+ * Justering av avspillingshastighet
+ * Vannrett dragning og dobbelttrykk for rask blafring
+ * Vannrett dragning for å endre lysstyrke (←) / lydstyrke (→)
+ * Knip for å forstørre (Android 7+)
+ * BiB (bilde-i-bilde) på Android 8+ (endring av størrelse på Android 11+)
+ * Endre størrelse (tilpass/beskjær)
+ * Lydstyrke forbi 100%
+ * Ingen reklame, sporing, eller Internett-tilgang (ingen lagringstilgang heller)
+
+For å laste inn eksterne (ikke-innebygde) undertekster, kan du trykke lenge på filåpningshandlingen i bunnfeltet.
