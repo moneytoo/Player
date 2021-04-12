@@ -12,7 +12,7 @@ Android video player based on [ExoPlayer](https://github.com/google/ExoPlayer)
 
 It uses ExoPlayer's ``extension-ffmpeg`` with [all its audio formats](https://exoplayer.dev/supported-formats.html#ffmpeg-extension) enabled (it can handle even special formats like AC3, EAC3, DTS, DTS HD, TrueHD etc.).
 
-It properly synces audio with video track when using Bluetooth earphones/speaker. (I was not able to find any other nice ExoPlayer based video player so I created this one.)
+It properly syncs audio with video track when using Bluetooth earphones/speaker. (I was not able to find any other nice ExoPlayer based video player so I created this one.)
 
 ## Supported formats
 
@@ -33,13 +33,13 @@ HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
  * Playback speed control
  * Horizontal swipe and double tap to quickly seek
  * Vertical swipe to change brightness (left) / volume (right)
- * Pinch to zoom (Android 7 or higher)
- * PiP (Picture in Picture) on Android 8 or higher (resizable on Android 11 or higher)
+ * Pinch to zoom (Android 7+)
+ * PiP (Picture in Picture) on Android 8+ (resizable on Android 11+)
  * Resize (fit/crop)
  * Volume boost
  * No ads, tracking or even the Internet permission (no storage permission either)
 
-To load an external (non-embedded) subtitles, long press the file open action in the bottom bar.
+To load external (non-embedded) subtitles, long press the file open action in the bottom bar.
 
 **`WRITE_SETTINGS` ("Modify system settings") permission**: When the system file chooser is opened, it will always use current system orientation, even if the Player app sets its own. Granting this permission via adb (`adb shell pm grant com.brouken.player android.permission.WRITE_SETTINGS`) or App info screen will allow this app to temporarily enable Auto-rotate to at least partially mitigate [this imperfection](https://issuetracker.google.com/issues/141968218).
 
