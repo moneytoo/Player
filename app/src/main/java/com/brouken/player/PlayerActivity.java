@@ -1227,6 +1227,10 @@ public class PlayerActivity extends Activity {
             subtitlesScale = captioningManager.getFontScale();
             if (subtitleView != null) {
                 subtitleView.setUserDefaultStyle();
+                // Do not apply embedded style as currently the only supported color style is PrimaryColour
+                // https://github.com/google/ExoPlayer/issues/8435#issuecomment-762449001
+                // This may result in poorly visible text (depending on user's selected edgeColor)
+                // The same can happen with style provided using setStyle but enabling CaptioningManager should be a way to change the behavior
                 subtitleView.setApplyEmbeddedStyles(false);
             }
         }
