@@ -570,10 +570,6 @@ public class PlayerActivity extends Activity {
             playerView.setControllerAutoShow(true);
             if (player != null && !player.isPlaying())
                 playerView.showController();
-
-            // Workaround https://github.com/google/ExoPlayer/issues/8646
-            // TODO: Remove with the next ExoPlayer version update
-            ((CustomDefaultTimeBar)playerView.findViewById(R.id.exo_progress)).showScrubber();
         }
     }
 
