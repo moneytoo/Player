@@ -133,8 +133,13 @@ class Utils {
             else if (!raise && PlayerActivity.boostLevel > 0)
                 PlayerActivity.boostLevel--;
 
-            if (PlayerActivity.loudnessEnhancer != null)
-                PlayerActivity.loudnessEnhancer.setTargetGain(PlayerActivity.boostLevel * 200);
+            if (PlayerActivity.loudnessEnhancer != null) {
+                try {
+                    PlayerActivity.loudnessEnhancer.setTargetGain(PlayerActivity.boostLevel * 200);
+                } catch (RuntimeException e) {
+                    e.printStackTrace();
+                }
+            }
             playerView.setCustomErrorMessage(" " + (volumeMax + PlayerActivity.boostLevel));
         }
 
