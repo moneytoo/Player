@@ -243,11 +243,11 @@ class Utils {
         }
     }
 
-    public static void setViewParams(final View view, int paddingLeft, int paddingTop, int paddingRight, int paddingBottom, int marginLeft, int marginRight) {
+    public static void setViewParams(final View view, int paddingLeft, int paddingTop, int paddingRight, int paddingBottom, int marginLeft, int marginTop, int marginRight, int marginBottom) {
         view.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
 
         final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
-        layoutParams.setMargins(marginLeft, 0, marginRight, 0);
+        layoutParams.setMargins(marginLeft, marginTop, marginRight, marginBottom);
         view.setLayoutParams(layoutParams);
     }
 }

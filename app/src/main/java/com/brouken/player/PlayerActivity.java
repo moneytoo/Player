@@ -317,10 +317,10 @@ public class PlayerActivity extends Activity {
                 }
 
                 Utils.setViewParams(titleView, paddingLeft + titleViewPadding, titleViewPadding, paddingRight + titleViewPadding, titleViewPadding,
-                        marginLeft, marginRight);
+                        marginLeft, windowInsets.getSystemWindowInsetTop(), marginRight, 0);
 
                 Utils.setViewParams(findViewById(R.id.exo_bottom_bar), paddingLeft, 0, paddingRight, 0,
-                        marginLeft, marginRight);
+                        marginLeft, 0, marginRight, 0);
 
                 findViewById(R.id.exo_progress).setPadding(windowInsets.getSystemWindowInsetLeft(), 0,
                         windowInsets.getSystemWindowInsetRight(), 0);
