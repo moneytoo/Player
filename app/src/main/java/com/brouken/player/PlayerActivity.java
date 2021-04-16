@@ -568,8 +568,12 @@ public class PlayerActivity extends Activity {
                 mReceiver = null;
             }
             playerView.setControllerAutoShow(true);
-            if (player != null && !player.isPlaying())
-                playerView.showController();
+            if (player != null) {
+                if (player.isPlaying())
+                    Utils.hideSystemUi(playerView);
+                else
+                    playerView.showController();
+            }
         }
     }
 
