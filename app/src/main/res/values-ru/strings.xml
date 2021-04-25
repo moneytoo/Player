@@ -12,4 +12,5 @@
     <string name="request_scope"></string>
     <string name="delete_confirmation"></string>
     <string name="delete_query"></string>
+    <string name="app_name" translatable="false"></string>
 </resources>
