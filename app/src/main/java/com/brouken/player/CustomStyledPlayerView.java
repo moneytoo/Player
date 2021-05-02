@@ -36,6 +36,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     private long seekMax;
     private boolean canBoostVolume = false;
     private boolean canSetAutoBrightness = false;
+    private boolean isGestureLocked = false;
 
     private final float IGNORE_BORDER = Utils.dpToPx(24);
     private final float SCROLL_STEP = Utils.dpToPx(16);
@@ -161,6 +162,9 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float distanceX, float distanceY) {
+        if (isGestureLocked)
+            return false;
+
         if (mScaleDetector.isInProgress())
             return false;
 
@@ -256,6 +260,9 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
     @Override
     public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
+        if (isGestureLocked)
+            return false;
+
         if (canScale) {
             final float previousScaleFactor = mScaleFactor;
             mScaleFactor *= scaleGestureDetector.getScaleFactor();
@@ -280,6 +287,9 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
+        if (isGestureLocked)
+            return false;
+
         mScaleFactor = getVideoSurfaceView().getScaleX();
         if (getResizeMode() != AspectRatioFrameLayout.RESIZE_MODE_ZOOM) {
             canScale = false;
@@ -340,6 +350,10 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
             videoSurfaceView.setScaleY(scale);
             //videoSurfaceView.animate().setStartDelay(0).setDuration(0).scaleX(scale).scaleY(scale).start();
         }
+    }
+
+    public void setIsGestureLocked(boolean isGestureLocked) {
+        this.isGestureLocked = isGestureLocked;
     }
 
     @Override
