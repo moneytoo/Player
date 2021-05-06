@@ -330,6 +330,13 @@ public class PlayerActivity extends Activity {
             return windowInsets;
         });
 
+        findViewById(R.id.delete).setOnClickListener(view -> {
+            releasePlayer();
+            deleteMedia();
+            haveMedia = false;
+            setDeleteVisible(false);
+        });
+
         // Prevent double tap actions in controller
         findViewById(R.id.exo_bottom_bar).setOnTouchListener((v, event) -> true);
         titleView.setOnTouchListener((v, event) -> true);
@@ -838,9 +845,11 @@ public class PlayerActivity extends Activity {
                 restorePlayState = true;
             }
             player.removeListener(playbackStateListener);
+            player.clearMediaItems();
             player.release();
             player = null;
         }
+        titleView.setVisibility(View.GONE);
     }
 
     private class PlaybackStateListener implements Player.EventListener{
@@ -867,6 +876,8 @@ public class PlayerActivity extends Activity {
 
         @Override
         public void onPlaybackStateChanged(int state) {
+            setDeleteVisible(haveMedia && state == Player.STATE_ENDED);
+
             if (state == Player.STATE_READY) {
                 frameRendered = true;
                 final Format format = player.getVideoFormat();
@@ -1337,5 +1348,19 @@ public class PlayerActivity extends Activity {
             ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setAspectRatio(rational);
         }
         enterPictureInPictureMode(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
+    }
+
+    void setDeleteVisible(boolean visible) {
+        final int visibility = (visible && haveMedia && Utils.isDeletable(this, mPrefs.mediaUri)) ? View.VISIBLE : View.GONE;
+        findViewById(R.id.delete).setVisibility(visibility);
+        findViewById(R.id.dummy).setVisibility(visibility);
+    }
+
+    void deleteMedia() {
+        try {
+            DocumentsContract.deleteDocument(getContentResolver(), mPrefs.mediaUri);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
