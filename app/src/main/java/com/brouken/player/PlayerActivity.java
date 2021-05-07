@@ -876,7 +876,15 @@ public class PlayerActivity extends Activity {
 
         @Override
         public void onPlaybackStateChanged(int state) {
-            setDeleteVisible(haveMedia && state == Player.STATE_ENDED);
+            boolean isNearEnd = false;
+            final long duration = player.getDuration();
+            if (duration != C.TIME_UNSET) {
+                final long position = player.getCurrentPosition();
+                if (position + 4000 >= duration) {
+                    isNearEnd = true;
+                }
+            }
+            setDeleteVisible(haveMedia && (state == Player.STATE_ENDED || isNearEnd));
 
             if (state == Player.STATE_READY) {
                 frameRendered = true;
