@@ -39,7 +39,7 @@ HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
  * Volume boost
  * No ads, tracking or even the Internet permission (no storage permission either)
 
-To load external (non-embedded) subtitles, long press the file open action in the bottom bar.
+To load external (non-embedded) subtitles, long press the file open action in the bottom bar. The first time you do that, you will be offered to select root video folder to enable automatic loading of external subtitles.
 
 **`WRITE_SETTINGS` ("Modify system settings") permission**: When the system file chooser is opened, it will always use current system orientation, even if the Player app sets its own. Granting this permission via adb (`adb shell pm grant com.brouken.player android.permission.WRITE_SETTINGS`) or App info screen will allow this app to temporarily enable Auto-rotate to at least partially mitigate [this imperfection](https://issuetracker.google.com/issues/141968218).
 
