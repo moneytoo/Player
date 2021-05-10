@@ -90,6 +90,10 @@ class Prefs {
         updateSubtitle(null);
         updateMeta(-1, -1, -1, AspectRatioFrameLayout.RESIZE_MODE_FIT, 1.f);
 
+        if (mediaType != null && mediaType.endsWith("/*")) {
+            mediaType = null;
+        }
+
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         if (uri == null)
             sharedPreferencesEditor.remove(PREF_KEY_MEDIA_URI);
