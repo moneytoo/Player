@@ -254,8 +254,8 @@ Builds:
       - cp $$ExoPlayer$$/extensions/{ffmpeg,av1}/buildout/outputs/aar/*.aar libs/
     ndk: r21e
 
-MaintainerNotes: 'Extensions build instructions: https://github.com/google/ExoPlayer/blob/r2.13.3/extensions/ffmpeg/README.md
-    https://github.com/google/ExoPlayer/blob/r2.13.3/extensions/av1/README.md'
+MaintainerNotes: 'Extensions build instructions: https://github.com/google/ExoPlayer/blob/r2.14.0/extensions/ffmpeg/README.md
+    https://github.com/google/ExoPlayer/blob/r2.14.0/extensions/av1/README.md'
 
 AutoUpdateMode: None
 UpdateCheckMode: None
