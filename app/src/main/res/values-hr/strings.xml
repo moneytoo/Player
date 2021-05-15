@@ -12,4 +12,5 @@
     <string name="request_scope">Za automatsko učitavanje vanjskih titlova ili za omogućavanje preskakanja na sljedeću datoteku u mapi, odobri %s pristup najvišoj mapi koja sadrži tvoja videa (npr. Filmovi).</string>
     <string name="delete_confirmation">Izbriši</string>
     <string name="delete_query">Izbrisati ovu datoteku\?</string>
+    <string name="app_name" translatable="false"></string>
 </resources>
