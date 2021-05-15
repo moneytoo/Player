@@ -1,0 +1,26 @@
+Android video player zasnovan na biblioteci ExoPlayera. Koristi ExoPlayer-ovo FFmpeg proširenje sa svim audio formatima aktiviranima (može obrađivati čak i posebne formate poput AC3, EAC3, DTS, DTS HD, TrueHD itd.).
+
+Pri korištenju Bluetooth slušalica / zvučnika pravilno sinkronizira zvuk s video snimkom.
+
+Podržani formati
+
+* Audio: Vorbis, Opus, FLAC, ALAC, PCM / WAVE (μ-zakon, A-zakon), MP1, MP2, MP3, AMR (NB, WB), AAC (LC, ELD, HE; xHE na Androidu 9+) ), AC-3, E-AC-3, DTS, DTS-HD, TrueHD
+* Video: H.263, H.264 AVC (osnovni profil; glavni profil na Androidu 6+), H.265 HEVC, MPEG-4 SP, VP8, VP9, AV1
+* Spremnici: MP4, MOV, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV
+* Titlovi: SRT, SSA, ASS, TTML, VTT
+
+Reprodukcija HDR (HDR10 + i Dolby Vision) videa na kompatibilnom / podržanom hardveru.
+
+Značajke
+
+* Odabir audio zapisa / titla
+* Kontrola brzine reprodukcije
+* Vodoravno potezanje prstom i dvostruki dodir za brzo traženje
+* Okomito potezanje prstom za mijenjanje svjetlosti (lijevo) / glasnoće (desno)
+* Štipanje za zumiranje (Android 7+)
+* PiP (Slika u slici) na Androidu 8+ (promjenjiva veličina na Androidu 11+)
+* Mijenjanje veličine (prilagodi/obreži)
+* Pojačanje glasnoće
+* Bez oglasa, praćenja ili dopuštenja za Internet (niti dopuštenje za spremanje)
+
+Za učitavanje vanjskih (neugrađenih) titlova, dugo dodirni gumb za otvaranje datoteke u donjoj traci.

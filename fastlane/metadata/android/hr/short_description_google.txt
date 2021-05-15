@@ -1,0 +1,1 @@
+Video player s otvorenim kodom bez Bluetooth zaostajanja i s podrškom za razne kodeke
