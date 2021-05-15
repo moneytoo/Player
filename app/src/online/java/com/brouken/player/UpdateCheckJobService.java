@@ -4,11 +4,12 @@ import android.app.job.JobParameters;
 import android.app.job.JobService;
 import android.content.Context;
 
-import com.g00fy2.versioncompare.Version;
 import com.github.javiersantos.appupdater.AppUpdaterUtils;
 import com.github.javiersantos.appupdater.enums.AppUpdaterError;
 import com.github.javiersantos.appupdater.enums.UpdateFrom;
 import com.github.javiersantos.appupdater.objects.Update;
+
+import io.github.g00fy2.versioncompare.Version;
 
 public class UpdateCheckJobService extends JobService {
 
