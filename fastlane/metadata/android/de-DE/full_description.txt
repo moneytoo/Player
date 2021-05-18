@@ -21,6 +21,6 @@ Funktionen
  * PiP (Bild im Bild) auf Android 8+ (Größenänderung auf Android 11+)
  * Größe ändern (einpassen/ausschneiden)
  * Lautstärke erhöhen
- * Keine Werbung, Tracking oder gar Internet-Erlaubnis (auch keine Speichererlaubnis)
+ * Keine Werbung, Verfolgung oder gar Internet-Erlaubnis (auch keine Speichererlaubnis)
 
 Um externe (nicht eingebettete) Untertitel zu laden, drücken Sie lange auf die Datei-Öffnen-Aktion in der unteren Leiste.
