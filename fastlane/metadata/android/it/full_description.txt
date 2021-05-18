@@ -1,0 +1,26 @@
+Lettore video per Android basato sulla libreria ExoPlayer. Utilizza l'estensione FFmpeg di ExoPlayer con tutti i suoi formati audio abilitati (può gestire anche formati speciali come AC3, EAC3, DTS, DTS HD, TrueHD ecc.)
+
+Sincronizza correttamente l'audio con la traccia video quando si usano cuffie/altoparlanti Bluetooth.
+
+Formati supportati
+
+ * Audio: Vorbis, Opus, FLAC, ALAC, PCM/WAVE (μ-law, A-law), MP1, MP2, MP3, AMR (NB, WB), AAC (LC, ELD, HE; xHE su Android 9+), AC-3, E-AC-3, DTS, DTS-HD, TrueHD
+ * Video: H.263, H.264 AVC (profilo base; profilo principale su Android 6+), H.265 HEVC, MPEG-4 SP, VP8, VP9, AV1
+ * Contenitori: MP4, MOV, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV
+ * Sottotitoli: SRT, SSA, ASS, TTML, VTT
+
+Riproduzione video HDR (HDR10+ e Dolby Vision) su hardware compatibile/supportato.
+
+Caratteristiche
+
+ * Selezione di tracce audio/sottotitoli
+ * Controllo della velocità di riproduzione
+ * Scorrimento orizzontale e doppio tocco per cercare rapidamente
+ * Scorrimento verticale per cambiare la luminosità (sinistra) / volume (destra)
+ * Pinch to zoom (Android 7+)
+ * PiP (Picture in Picture) su Android 8+ (ridimensionabile su Android 11+)
+ * Ridimensionamento (fit/crop)
+ * Aumento del volume
+ * Nessuna pubblicità, tracciamento o anche il permesso di Internet (nemmeno il permesso di archiviazione)
+
+Per caricare sottotitoli esterni (non incorporati), premere a lungo l'azione di apertura del file nella barra inferiore.

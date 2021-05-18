@@ -1,0 +1,1 @@
+Lettore video con codice sorgente aperto senza latenza Bluetooth e supporto per vari codec
