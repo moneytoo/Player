@@ -667,7 +667,7 @@ public class PlayerActivity extends Activity {
     }
 
     private void initializePlayer() {
-        haveMedia = mPrefs.mediaUri != null && (Utils.fileExists(this, mPrefs.mediaUri) || mPrefs.mediaUri.getScheme().startsWith("http"));
+        haveMedia = mPrefs.mediaUri != null && (Utils.fileExists(this, mPrefs.mediaUri) || Utils.isSupportedUri(mPrefs.mediaUri));
 
         if (player == null) {
             trackSelector = new DefaultTrackSelector(this);
