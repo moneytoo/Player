@@ -1,0 +1,1 @@
+Lecteur vidéo à code source ouvert sans décalage Bluetooth et prenant en charge différents codecs

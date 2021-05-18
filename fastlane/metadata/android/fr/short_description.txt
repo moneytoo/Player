@@ -1,0 +1,1 @@
+Lecteur vidéo simple basé sur la bibliothèque ExoPlayer
