@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
+import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
 import android.util.Log;
 import android.view.View;
@@ -15,7 +16,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.util.MimeTypes;
 
 import java.io.File;
 import java.io.InputStream;
@@ -254,5 +254,29 @@ class Utils {
         final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
         layoutParams.setMargins(marginLeft, marginTop, marginRight, marginBottom);
         view.setLayoutParams(layoutParams);
+    }
+
+    public static boolean isDeletable(final Context context, final Uri uri) {
+        try {
+            if (uri.getScheme().equals("content")) {
+                try (Cursor cursor = context.getContentResolver().query(uri, new String[]{DocumentsContract.Document.COLUMN_FLAGS}, null, null, null)) {
+                    if (cursor != null && cursor.moveToFirst()) {
+                        final int columnIndex = cursor.getColumnIndex(DocumentsContract.Document.COLUMN_FLAGS);
+                        if (columnIndex > -1) {
+                            int flags = cursor.getInt(columnIndex);
+                            return (flags & DocumentsContract.Document.FLAG_SUPPORTS_DELETE) == DocumentsContract.Document.FLAG_SUPPORTS_DELETE;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean isSupportedUri(final Uri uri) {
+        final String scheme = uri.getScheme();
+        return scheme.startsWith("http") || scheme.equals("rtsp");
     }
 }

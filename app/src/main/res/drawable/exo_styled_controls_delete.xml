@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    tools:keep="@drawable/exo_styled_controls_pause">
+    <item>
+        <shape android:shape="oval">
+            <size
+                android:width="40dp"
+                android:height="40dp" />
+            <gradient
+                android:centerColor="#22000000"
+                android:endColor="#00000000"
+                android:gradientRadius="50%p"
+                android:startColor="#00000000"
+                android:type="radial" />
+        </shape>
+    </item>
+    <item
+        android:drawable="@drawable/ic_delete_24dp"
+        android:top="3dp"
+        android:left="3dp"
+        android:right="3dp"
+        android:bottom="3dp">
+    </item>
+</layer-list>

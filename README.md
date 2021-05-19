@@ -5,7 +5,7 @@
 [![F-Droid](https://img.shields.io/f-droid/v/com.brouken.player.svg?logo=f-droid&label=F-Droid)](https://f-droid.org/packages/com.brouken.player/)
 [![GitHub all releases](https://img.shields.io/github/downloads/moneytoo/Player/total)](https://github.com/moneytoo/Player/releases/latest)
 [![GitHub release (latest by date)](https://img.shields.io/github/downloads/moneytoo/Player/latest/total)](https://github.com/moneytoo/Player/releases/latest)
-[![ExoPlayer](https://img.shields.io/badge/ExoPlayer-v2.13.3-007ec6)](https://github.com/google/ExoPlayer)
+[![ExoPlayer](https://img.shields.io/badge/ExoPlayer-v2.14.0-007ec6)](https://github.com/google/ExoPlayer)
 [![Translation Status](https://hosted.weblate.org/widgets/just-player/-/svg-badge.svg)](https://hosted.weblate.org/engage/just-player/)
 
 Android video player based on [ExoPlayer](https://github.com/google/ExoPlayer)
@@ -39,7 +39,7 @@ HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
  * Volume boost
  * No ads, tracking or even the Internet permission (no storage permission either)
 
-To load external (non-embedded) subtitles, long press the file open action in the bottom bar.
+To load external (non-embedded) subtitles, long press the file open action in the bottom bar. The first time you do that, you will be offered to select root video folder to enable automatic loading of external subtitles.
 
 **`WRITE_SETTINGS` ("Modify system settings") permission**: When the system file chooser is opened, it will always use current system orientation, even if the Player app sets its own. Granting this permission via adb (`adb shell pm grant com.brouken.player android.permission.WRITE_SETTINGS`) or App info screen will allow this app to temporarily enable Auto-rotate to at least partially mitigate [this imperfection](https://issuetracker.google.com/issues/141968218).
 

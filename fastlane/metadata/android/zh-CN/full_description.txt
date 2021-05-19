@@ -1,0 +1,26 @@
+基于ExoPlayer库的Android视频播放器。它使用ExoPlayer的FFmpeg扩展名并启用了所有音频格式（它甚至可以处理诸如AC3，EAC3，DTS，DTS HD，TrueHD等特殊格式）。
+
+使用蓝牙耳机/扬声器时，它可以正确地将音频与视频轨道同步。
+
+支持的格式
+
+* 音频：Vorbis，Opus，FLAC，ALAC，PCM / WAVE（μ律，A律），MP1，MP2，MP3，AMR（NB，WB），AAC（LC，ELD，HE; Android 9+上的xHE ），AC-3，E-AC-3，DTS，DTS-HD，TrueHD
+* 视频：H.263，H.264 AVC（基准配置文件； Android 6+上的主要配置文件），H.265 HEVC，MPEG-4 SP，VP8，VP9，AV1
+* 容器：MP4，MOV，WebM，MKV，Ogg，MPEG-TS，MPEG-PS，FLV
+* 字幕：SRT，SSA，ASS，TTML，VTT
+
+在兼容/支持的硬件上播放HDR（HDR10 +和Dolby Vision）视频。
+
+特征
+
+* 音频/字幕轨道选择
+* 播放速度控制
+* 水平滑动并双击以快速查找
+* 垂直滑动以更改亮度（左）/音量（右）
+* 捏放大（Android 7+）
+* Android 8+上的PiP（画中画）（在Android 11+上可调整大小）
+* 调整大小（适合/裁剪）
+* 音量提升
+* 没有广告，跟踪甚至Internet权限（也没有存储权限）
+
+要加载外部（非嵌入式）字幕，请长按底部栏中的文件打开操作。

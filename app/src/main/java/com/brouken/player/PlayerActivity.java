@@ -75,10 +75,10 @@ import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ts.TsExtractor;
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
 import com.google.android.exoplayer2.source.TrackGroupArray;
-import com.google.android.exoplayer2.text.CaptionStyleCompat;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
+import com.google.android.exoplayer2.ui.CaptionStyleCompat;
 import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.ui.TimeBar;
@@ -328,6 +328,13 @@ public class PlayerActivity extends Activity {
                 windowInsets.consumeSystemWindowInsets();
             }
             return windowInsets;
+        });
+
+        findViewById(R.id.delete).setOnClickListener(view -> {
+            releasePlayer();
+            deleteMedia();
+            haveMedia = false;
+            setDeleteVisible(false);
         });
 
         // Prevent double tap actions in controller
@@ -660,7 +667,7 @@ public class PlayerActivity extends Activity {
     }
 
     private void initializePlayer() {
-        haveMedia = mPrefs.mediaUri != null && (Utils.fileExists(this, mPrefs.mediaUri) || mPrefs.mediaUri.getScheme().startsWith("http"));
+        haveMedia = mPrefs.mediaUri != null && (Utils.fileExists(this, mPrefs.mediaUri) || Utils.isSupportedUri(mPrefs.mediaUri));
 
         if (player == null) {
             trackSelector = new DefaultTrackSelector(this);
@@ -838,9 +845,11 @@ public class PlayerActivity extends Activity {
                 restorePlayState = true;
             }
             player.removeListener(playbackStateListener);
+            player.clearMediaItems();
             player.release();
             player = null;
         }
+        titleView.setVisibility(View.GONE);
     }
 
     private class PlaybackStateListener implements Player.EventListener{
@@ -867,6 +876,16 @@ public class PlayerActivity extends Activity {
 
         @Override
         public void onPlaybackStateChanged(int state) {
+            boolean isNearEnd = false;
+            final long duration = player.getDuration();
+            if (duration != C.TIME_UNSET) {
+                final long position = player.getCurrentPosition();
+                if (position + 4000 >= duration) {
+                    isNearEnd = true;
+                }
+            }
+            setDeleteVisible(haveMedia && (state == Player.STATE_ENDED || isNearEnd));
+
             if (state == Player.STATE_READY) {
                 frameRendered = true;
                 final Format format = player.getVideoFormat();
@@ -1337,5 +1356,19 @@ public class PlayerActivity extends Activity {
             ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setAspectRatio(rational);
         }
         enterPictureInPictureMode(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
+    }
+
+    void setDeleteVisible(boolean visible) {
+        final int visibility = (visible && haveMedia && Utils.isDeletable(this, mPrefs.mediaUri)) ? View.VISIBLE : View.GONE;
+        findViewById(R.id.delete).setVisibility(visibility);
+        findViewById(R.id.dummy).setVisibility(visibility);
+    }
+
+    void deleteMedia() {
+        try {
+            DocumentsContract.deleteDocument(getContentResolver(), mPrefs.mediaUri);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

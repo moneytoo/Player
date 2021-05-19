@@ -8,4 +8,10 @@
         <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="27">shortEdges</item>
         <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
     </style>
+
+    <style name="ExoStyledControls.Button.Center.Secondary" parent="ExoStyledControls.Button.Center">
+        <item name="android:layout_width">60dp</item>
+        <item name="android:layout_height">60dp</item>
+        <item name="android:visibility">gone</item>
+    </style>
 </resources>
