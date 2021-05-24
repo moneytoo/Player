@@ -850,6 +850,9 @@ public class PlayerActivity extends Activity {
             player = null;
         }
         titleView.setVisibility(View.GONE);
+        if (buttonPiP != null)
+            Utils.setButtonEnabled(this, buttonPiP, false);
+        Utils.setButtonEnabled(this, buttonAspectRatio, false);
     }
 
     private class PlaybackStateListener implements Player.EventListener{

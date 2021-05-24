@@ -217,9 +217,9 @@ Builds:
       - cp $$ExoPlayer$$/extensions/{ffmpeg,av1}/buildout/outputs/aar/*.aar libs/
     ndk: r21e
 
-  - versionName: '0.31'
-    versionCode: 31
-    commit: v0.31
+  - versionName: '0.32'
+    versionCode: 32
+    commit: v0.32
     subdir: app
     gradle:
       - offline
@@ -259,5 +259,5 @@ MaintainerNotes: 'Extensions build instructions: https://github.com/google/ExoPl
 
 AutoUpdateMode: None
 UpdateCheckMode: None
-CurrentVersion: '0.31'
-CurrentVersionCode: 31
+CurrentVersion: '0.32'
+CurrentVersionCode: 32
