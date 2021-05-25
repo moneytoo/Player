@@ -161,7 +161,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float distanceX, float distanceY) {
-        if (mScaleDetector.isInProgress())
+        if (mScaleDetector.isInProgress() || PlayerActivity.player == null)
             return false;
 
         // Exclude edge areas
