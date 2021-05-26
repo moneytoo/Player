@@ -42,10 +42,37 @@ class UtilsFlavor {
     private static void checkScheduled(final Context context) {
         final JobScheduler jobScheduler = (JobScheduler) context.getSystemService(Context.JOB_SCHEDULER_SERVICE);
 
-        if ((Build.VERSION.SDK_INT >= 24 && jobScheduler.getPendingJob(0) == null) ||
-                jobScheduler.getAllPendingJobs().size() == 0) {
-            schedule(context);
+        if (Build.VERSION.SDK_INT >= 24) {
+            // User disable notification channel or all notifications for the app -
+            // created notification won't be visible so it doesn't make sense to run update check job
+            if (areUpdateNotificationsDisabled(context)) {
+                jobScheduler.cancelAll();
+                return;
+            }
+
+            // Job is not scheduled but it should be
+            if (jobScheduler.getPendingJob(0) == null || jobScheduler.getAllPendingJobs().size() == 0) {
+                schedule(context);
+            }
         }
+    }
+
+    private static boolean areUpdateNotificationsDisabled(Context context) {
+        final NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        // All notifications turned off for the app
+        if (Build.VERSION.SDK_INT >= 24 && !notificationManager.areNotificationsEnabled())
+            return true;
+
+        // No channels support - no possible optimization
+        if (Build.VERSION.SDK_INT <= 26)
+            return false;
+
+        // Updates notification channel turned off
+        NotificationChannel notificationChannel = notificationManager.getNotificationChannel(context.getString(R.string.appupdater_channel));
+        if (notificationChannel != null && notificationChannel.getImportance() == NotificationManager.IMPORTANCE_NONE)
+            return true;
+
+        return false;
     }
 
     // From https://github.com/javiersantos/AppUpdater
