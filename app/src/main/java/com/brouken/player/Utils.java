@@ -1,6 +1,7 @@
 package com.brouken.player;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
@@ -70,7 +71,7 @@ class Utils {
     public static String getFileName(Context context, Uri uri) {
         String result = null;
         try {
-            if (uri.getScheme().equals("content")) {
+            if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
                 try (Cursor cursor = context.getContentResolver().query(uri, new String[]{OpenableColumns.DISPLAY_NAME}, null, null, null)) {
                     if (cursor != null && cursor.moveToFirst()) {
                         final int columnIndex = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
@@ -258,7 +259,7 @@ class Utils {
 
     public static boolean isDeletable(final Context context, final Uri uri) {
         try {
-            if (uri.getScheme().equals("content")) {
+            if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
                 try (Cursor cursor = context.getContentResolver().query(uri, new String[]{DocumentsContract.Document.COLUMN_FLAGS}, null, null, null)) {
                     if (cursor != null && cursor.moveToFirst()) {
                         final int columnIndex = cursor.getColumnIndex(DocumentsContract.Document.COLUMN_FLAGS);

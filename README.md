@@ -58,9 +58,9 @@ Translate: [Weblate](https://hosted.weblate.org/engage/just-player/)
 [<img src="https://brouken.com/img/get-it-on-amazon.png" alt="available at amazon" height="75">](https://www.amazon.com/gp/product/B091N8TTJH)
 [<img src="https://brouken.com/img/get-it-on-aptoide.png" alt="Get it on Aptoide" height="75">](https://just-player-marcel-dopita.en.aptoide.com/app)
 
-Also available on **OPPO App Market** and [**Xiaomi GetApps**](http://app.xiaomi.com/detail/1351636) ([for now](https://www.reddit.com/r/JustPlayer/comments/mqvtve/just_player_app_is_too_simple_for_xiaomi_failed/)).
+Also available on **OPPO App Market**, [**Xiaomi GetApps**](http://app.xiaomi.com/detail/1351636) ([for now](https://www.reddit.com/r/JustPlayer/comments/mqvtve/just_player_app_is_too_simple_for_xiaomi_failed/)) or [Uptodown](https://just-video-player.en.uptodown.com/android).
 
-Other links/channels: application thread on [XDA Developers](https://forum.xda-developers.com/t/app-5-0-just-video-player-no-bluetooth-lag-exoplayer-ffmpeg-audio-codecs.4189183/), subreddit on [reddit](https://www.reddit.com/r/JustPlayer/), entry on [AlternativeTo](https://alternativeto.net/software/just-video-player/about/), git mirror on [GitLab](https://gitlab.com/moneytoo/Player)
+Other links/channels: application thread on [XDA Developers](https://forum.xda-developers.com/t/app-5-0-just-video-player-no-bluetooth-lag-exoplayer-ffmpeg-audio-codecs.4189183/), subreddit on [reddit](https://www.reddit.com/r/JustPlayer/), entry on [AlternativeTo](https://alternativeto.net/software/just-video-player/about/), git mirror on [GitLab](https://gitlab.com/moneytoo/Player), group on [Telegram](https://t.me/JustVideoPlayer)
 
 ## FAQ
 
@@ -76,25 +76,36 @@ If you enable [Caption preferences](https://support.google.com/accessibility/and
 
 Unfortunately, upstream ExoPlayer doesn't handle some older formats like [AVI container](https://github.com/google/ExoPlayer/issues/2092), WMV or [Theora](https://github.com/google/ExoPlayer/issues/4970).
 
-Just Player focuses on playing videos so audio only playback isn't officialy supported. 
+Just Player focuses on playing videos so audio only playback isn't officialy supported ([request](https://github.com/moneytoo/Player/issues/55)). 
 
-### Can I play videos that are not stored on the device?
+### What's the difference between `-offline` and `-online` builds?
 
-#### Videos in cloud storages - YES
+#### `-offline` (package id `com.brouken.player`)
 
-Official cloud storage clients (like [Dropbox](https://play.google.com/store/apps/details?id=com.dropbox.android) or [Google Drive](https://play.google.com/store/apps/details?id=com.google.android.apps.docs)) usually implement all the technical requirements so storage can be browsed when opening video in Just Player.
+* This is the version distributed using most channels (Google Play, F-Droid etc.)
+* Without `INTERNET` permission
 
-#### Video streams on the Internet - Yes (since v0.16-online)
+Even without Internet permission, this variant is still able to access and play some videos over the network (thanks to DocumentsProviders). This includes Official cloud storage clients (like [Dropbox](https://play.google.com/store/apps/details?id=com.dropbox.android), [Google Drive](https://play.google.com/store/apps/details?id=com.google.android.apps.docs) or [Microsoft OneDrive](https://play.google.com/store/apps/details?id=com.microsoft.skydrive)).
 
-Basic support for playing streaming videos is in the `-online` version, available only in [releases on Github](https://github.com/moneytoo/Player/releases/latest) (F-Droid and Google Play are staying on the `-offline` build).
+Ideally, you should also be able to use other proviers for [Samba](https://f-droid.org/en/packages/com.google.android.sambadocumentsprovider/), [WebDAV](https://github.com/alexbakker/webdav-provider) or [SFTP](https://github.com/RikyIsola/FileManagerUtils). However, at this time these providers may not be "production ready".
 
-#### Videos in network storages (Samba, WebDAV, SCP etc.) - YES (since v0.16-online)
+#### `-online` (package id `com.brouken.player.online`)
 
-You can open videos on network storages using file managers such as [Solid Explorer](https://play.google.com/store/apps/details?id=pl.solidexplorer2), [Total Commander](https://play.google.com/store/apps/details?id=com.ghisler.android.TotalCommander) or [Ghost Commander](https://play.google.com/store/apps/details?id=com.ghostsq.commander).
+* Currently available only from [releases on Github](https://github.com/moneytoo/Player/releases/latest)
+* With `INTERNET` permission
+* Optional `READ_EXTERNAL_STORAGE` permission (needed only with some [old apps](https://github.com/moneytoo/Player/issues/7))
+* Supports opening "streaming" links (including DASH, HLS, SmoothStreaming, RTSP etc.)
+* Auto [update checker](https://github.com/moneytoo/Player/issues/58)
+
+This variant is needed if you want to access videos on network storages using file managers such as [Solid Explorer](https://play.google.com/store/apps/details?id=pl.solidexplorer2), [Total Commander](https://play.google.com/store/apps/details?id=com.ghisler.android.TotalCommander) or [Ghost Commander](https://play.google.com/store/apps/details?id=com.ghostsq.commander).
 
 ### Android TV support?
 
 Notes on partial, [experimental support](https://github.com/moneytoo/Player/issues/26#issuecomment-778677387).
+
+### How to view detailed video information (like resolution, bitrate etc.)?
+
+Install app like [MediaInfo](https://play.google.com/store/apps/details?id=net.mediaarea.mediainfo) (or APK from [MediaArea.net](https://mediaarea.net/en/MediaInfo/Download/Android)). Then, to quickly open MediaInfo from Just Player, long press the video name/title.
 
 ## Other open source Android video players
 

@@ -1,5 +1,6 @@
 package com.brouken.player;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
@@ -84,7 +85,7 @@ class Prefs {
         autoPiP = mSharedPreferences.getBoolean(PREF_KEY_AUTO_PIP, autoPiP);
     }
 
-    public void updateMedia(final Uri uri, final String type) {
+    public void updateMedia(final Context context, final Uri uri, final String type) {
         mediaUri = uri;
         mediaType = type;
         updateSubtitle(null);
@@ -94,12 +95,18 @@ class Prefs {
             mediaType = null;
         }
 
+        if (mediaType == null) {
+            if (ContentResolver.SCHEME_CONTENT.equals(mediaUri.getScheme())) {
+                mediaType = context.getContentResolver().getType(mediaUri);
+            }
+        }
+
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        if (uri == null)
+        if (mediaUri == null)
             sharedPreferencesEditor.remove(PREF_KEY_MEDIA_URI);
         else
-            sharedPreferencesEditor.putString(PREF_KEY_MEDIA_URI, uri.toString());
-        if (type == null)
+            sharedPreferencesEditor.putString(PREF_KEY_MEDIA_URI, mediaUri.toString());
+        if (mediaType == null)
             sharedPreferencesEditor.remove(PREF_KEY_MEDIA_TYPE);
         else
             sharedPreferencesEditor.putString(PREF_KEY_MEDIA_TYPE, mediaType);
