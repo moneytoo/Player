@@ -85,7 +85,7 @@ Just Player focuses on playing videos so audio only playback isn't officialy sup
 * This is the version distributed using most channels (Google Play, F-Droid etc.)
 * Without `INTERNET` permission
 
-Even without Internet permission, this variant is still able to access and play some videos over the network (thanks to DocumentsProviders). This includes Official cloud storage clients (like [Dropbox](https://play.google.com/store/apps/details?id=com.dropbox.android), [Google Drive](https://play.google.com/store/apps/details?id=com.google.android.apps.docs) or [Microsoft OneDrive](https://play.google.com/store/apps/details?id=com.microsoft.skydrive)).
+Even without Internet permission, this variant is still able to access and play some videos over the network (thanks to DocumentsProviders). This includes official cloud storage clients (like [Dropbox](https://play.google.com/store/apps/details?id=com.dropbox.android), [Google Drive](https://play.google.com/store/apps/details?id=com.google.android.apps.docs) or [Microsoft OneDrive](https://play.google.com/store/apps/details?id=com.microsoft.skydrive)).
 
 Ideally, you should also be able to use other proviers for [Samba](https://f-droid.org/en/packages/com.google.android.sambadocumentsprovider/), [WebDAV](https://github.com/alexbakker/webdav-provider) or [SFTP](https://github.com/RikyIsola/FileManagerUtils). However, at this time these providers may not be "production ready".
 
@@ -105,7 +105,7 @@ Notes on partial, [experimental support](https://github.com/moneytoo/Player/issu
 
 ### How to view detailed video information (like resolution, bitrate etc.)?
 
-Install app like [MediaInfo](https://play.google.com/store/apps/details?id=net.mediaarea.mediainfo) (or APK from [MediaArea.net](https://mediaarea.net/en/MediaInfo/Download/Android)). Then, to quickly open MediaInfo from Just Player, long press the video name/title.
+Available since `v0.33`: Install app like [MediaInfo](https://play.google.com/store/apps/details?id=net.mediaarea.mediainfo) (or APK from [MediaArea.net](https://mediaarea.net/en/MediaInfo/Download/Android)). Then, to quickly open MediaInfo from Just Player, long press the video name/title.
 
 ## Other open source Android video players
 
