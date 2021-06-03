@@ -283,7 +283,7 @@ public class PlayerActivity extends Activity {
         int titleViewPadding = getResources().getDimensionPixelOffset(R.dimen.exo_styled_bottom_bar_time_padding);
         FrameLayout centerView = playerView.findViewById(R.id.exo_controls_background);
         titleView = new TextView(this);
-        titleView.setBackgroundResource(R.color.exo_bottom_bar_background);
+        titleView.setBackgroundResource(R.color.ui_controls_background);
         titleView.setTextColor(Color.WHITE);
         titleView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
         titleView.setPadding(titleViewPadding, titleViewPadding, titleViewPadding, titleViewPadding);

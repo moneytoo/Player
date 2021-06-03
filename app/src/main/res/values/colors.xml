@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="exo_bottom_bar_background">#88000000</color>
-    <color name="exo_black_opacity_30" tools:keep="@color/exo_black_opacity_30">#00000000</color>
     <color name="green">#3DDC84</color>
+
+    <color name="ui_controls_background">#98000000</color>
+    <color name="exo_bottom_bar_background">@color/ui_controls_background</color>
+    <color name="exo_black_opacity_70">@color/ui_controls_background</color>
 </resources>

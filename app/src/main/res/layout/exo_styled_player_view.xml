@@ -60,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"
-        app:yt_backgroundCircleColor="@color/exo_bottom_bar_background"
+        app:yt_backgroundCircleColor="@color/ui_controls_background"
         app:yt_playerView="@id/video_view" />
 
     <View android:id="@id/exo_controller_placeholder"

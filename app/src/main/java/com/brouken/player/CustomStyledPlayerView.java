@@ -322,7 +322,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     }
 
     public void setHighlight(boolean active) {
-        exoErrorMessage.getBackground().setTint(active ? Color.RED : getResources().getColor(R.color.exo_bottom_bar_background));
+        exoErrorMessage.getBackground().setTint(active ? Color.RED : getResources().getColor(R.color.ui_controls_background));
     }
 
     public void setIconBrightness() {

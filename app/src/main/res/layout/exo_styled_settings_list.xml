@@ -1,0 +1,8 @@
+<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/exo_settings_listview"
+    android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:layout_gravity="center_vertical"
+    android:background="@drawable/rounded_controls_background"
+    android:padding="4dp"
+    android:scrollbars="vertical" />
