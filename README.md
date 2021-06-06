@@ -87,7 +87,7 @@ Just Player focuses on playing videos so audio only playback isn't officialy sup
 
 Even without Internet permission, this variant is still able to access and play some videos over the network (thanks to DocumentsProviders). This includes official cloud storage clients (like [Dropbox](https://play.google.com/store/apps/details?id=com.dropbox.android), [Google Drive](https://play.google.com/store/apps/details?id=com.google.android.apps.docs) or [Microsoft OneDrive](https://play.google.com/store/apps/details?id=com.microsoft.skydrive)).
 
-Ideally, you should also be able to use other proviers for [Samba](https://f-droid.org/en/packages/com.google.android.sambadocumentsprovider/), [WebDAV](https://github.com/alexbakker/webdav-provider) or [SFTP](https://github.com/RikyIsola/FileManagerUtils). However, at this time these providers may not be "production ready".
+Ideally, you should also be able to use other proviers for [Samba](https://f-droid.org/en/packages/com.google.android.sambadocumentsprovider/), [WebDAV](https://github.com/alexbakker/webdav-provider) or [SFTP](https://github.com/RikyIsola/FileManagerUtils). Another promising multi protocol provider is [rcx](https://github.com/x0b/rcx). However, at this time these providers may not be "production ready".
 
 #### `-online` (package id `com.brouken.player.online`)
 
