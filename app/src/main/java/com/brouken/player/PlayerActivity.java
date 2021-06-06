@@ -157,7 +157,11 @@ public class PlayerActivity extends Activity {
         Utils.setOrientation(this, mPrefs.orientation);
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_player);
+        if (Build.VERSION.SDK_INT == 28 && Build.MANUFACTURER.toLowerCase().equals("xiaomi") && Build.DEVICE.toLowerCase().equals("oneday")) {
+            setContentView(R.layout.activity_player_textureview);
+        } else {
+            setContentView(R.layout.activity_player);
+        }
 
         if (getIntent().getData() != null) {
             mPrefs.updateMedia(this, getIntent().getData(), getIntent().getType());
