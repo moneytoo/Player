@@ -928,6 +928,7 @@ public class PlayerActivity extends Activity {
                     // ExoPlayer already uses Surface.setFrameRate() on Android 11+
                     if (Build.VERSION.SDK_INT > 23 && Build.VERSION.SDK_INT < 30) {
                         float frameRate = format.frameRate;
+                        Toast.makeText(PlayerActivity.this, "Video frameRate: " + frameRate, Toast.LENGTH_LONG).show();
                         if (frameRate != Format.NO_VALUE) {
                             Display display = getDisplay();
                             Display.Mode[] supportedModes = display.getSupportedModes();
@@ -976,6 +977,8 @@ public class PlayerActivity extends Activity {
                                         layoutParams.preferredDisplayModeId = modeHighest.getModeId();
                                     else
                                         layoutParams.preferredDisplayModeId = modeTop.getModeId();
+
+                                    Toast.makeText(PlayerActivity.this, "preferredDisplayModeId: " + layoutParams.preferredDisplayModeId, Toast.LENGTH_LONG).show();
 
                                     window.setAttributes(layoutParams);
                                 }
