@@ -38,12 +38,14 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Rational;
 import android.util.TypedValue;
+import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.accessibility.CaptioningManager;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -922,6 +924,65 @@ public class PlayerActivity extends Activity {
                             PlayerActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                         }
                     }
+
+                    // ExoPlayer already uses Surface.setFrameRate() on Android 11+
+                    if (Build.VERSION.SDK_INT > 23 && Build.VERSION.SDK_INT < 30) {
+                        float frameRate = format.frameRate;
+                        if (frameRate != Format.NO_VALUE) {
+                            Display display = getDisplay();
+                            Display.Mode[] supportedModes = display.getSupportedModes();
+                            Display.Mode activeMode = display.getMode();
+
+                            if (supportedModes.length > 1) {
+                                // Refresh rate >= video FPS
+                                List<Display.Mode> modesHigh = new ArrayList<>();
+                                // Max refresh rate
+                                Display.Mode modeTop = supportedModes[0];
+                                int modesResolutionCount = 0;
+
+                                // Resolution
+                                for (Display.Mode mode : supportedModes) {
+                                    if (mode.getPhysicalWidth() == activeMode.getPhysicalWidth() &&
+                                            mode.getPhysicalHeight() == activeMode.getPhysicalHeight()) {
+                                        modesResolutionCount++;
+
+                                        if (mode.getRefreshRate() >= frameRate)
+                                            modesHigh.add(mode);
+
+                                        if (mode.getRefreshRate() > modeTop.getRefreshRate())
+                                            modeTop = mode;
+                                    }
+                                }
+
+                                if (modesResolutionCount > 1) {
+                                    Display.Mode modeHighest = null;
+
+                                    for (Display.Mode mode : modesHigh) {
+                                        final float refreshRate = mode.getRefreshRate();
+
+                                        if (refreshRate % frameRate <= 0.0001f) {
+                                            if (modeHighest == null) {
+                                                modeHighest = mode;
+                                            } else if (mode.getRefreshRate() > modeHighest.getRefreshRate()) {
+                                                modeHighest = mode;
+                                            }
+                                        }
+                                    }
+
+                                    Window window = getWindow();
+                                    WindowManager.LayoutParams layoutParams = window.getAttributes();
+
+                                    if (modeHighest != null)
+                                        layoutParams.preferredDisplayModeId = modeHighest.getModeId();
+                                    else
+                                        layoutParams.preferredDisplayModeId = modeTop.getModeId();
+
+                                    window.setAttributes(layoutParams);
+                                }
+                            }
+                        }
+                    }
+
                 }
 
                 if (play) {
