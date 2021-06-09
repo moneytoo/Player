@@ -926,7 +926,7 @@ public class PlayerActivity extends Activity {
                     }
 
                     // ExoPlayer already uses Surface.setFrameRate() on Android 11+
-                    if (Build.VERSION.SDK_INT > 23 && Build.VERSION.SDK_INT < 30) {
+                    if (Build.VERSION.SDK_INT >= 23 && Build.VERSION.SDK_INT < 30) {
                         float frameRate = format.frameRate;
                         Toast.makeText(PlayerActivity.this, "Video frameRate: " + frameRate, Toast.LENGTH_LONG).show();
                         if (frameRate != Format.NO_VALUE) {
@@ -941,7 +941,7 @@ public class PlayerActivity extends Activity {
                                 Display.Mode modeTop = supportedModes[0];
                                 int modesResolutionCount = 0;
 
-                                // Resolution
+                                // Filter only resolutions same as current
                                 for (Display.Mode mode : supportedModes) {
                                     if (mode.getPhysicalWidth() == activeMode.getPhysicalWidth() &&
                                             mode.getPhysicalHeight() == activeMode.getPhysicalHeight()) {
@@ -956,16 +956,12 @@ public class PlayerActivity extends Activity {
                                 }
 
                                 if (modesResolutionCount > 1) {
-                                    Display.Mode modeHighest = null;
+                                    Display.Mode modeBest = null;
 
                                     for (Display.Mode mode : modesHigh) {
-                                        final float refreshRate = mode.getRefreshRate();
-
-                                        if (refreshRate % frameRate <= 0.0001f) {
-                                            if (modeHighest == null) {
-                                                modeHighest = mode;
-                                            } else if (mode.getRefreshRate() > modeHighest.getRefreshRate()) {
-                                                modeHighest = mode;
+                                        if (mode.getRefreshRate() % frameRate <= 0.0001f) {
+                                            if (modeBest == null || mode.getRefreshRate() > modeBest.getRefreshRate()) {
+                                                modeBest = mode;
                                             }
                                         }
                                     }
@@ -973,13 +969,11 @@ public class PlayerActivity extends Activity {
                                     Window window = getWindow();
                                     WindowManager.LayoutParams layoutParams = window.getAttributes();
 
-                                    if (modeHighest != null)
-                                        layoutParams.preferredDisplayModeId = modeHighest.getModeId();
-                                    else
-                                        layoutParams.preferredDisplayModeId = modeTop.getModeId();
+                                    if (modeBest == null)
+                                        modeBest = modeTop;
 
-                                    Toast.makeText(PlayerActivity.this, "preferredDisplayModeId: " + layoutParams.preferredDisplayModeId, Toast.LENGTH_LONG).show();
-
+                                    layoutParams.preferredDisplayModeId = modeBest.getModeId();
+                                    Toast.makeText(PlayerActivity.this, "Video frameRate: " + frameRate + "\nDisplay refreshRate: " + modeBest.getRefreshRate(), Toast.LENGTH_LONG).show();
                                     window.setAttributes(layoutParams);
                                 }
                             }
