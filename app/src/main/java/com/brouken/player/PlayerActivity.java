@@ -938,7 +938,7 @@ public class PlayerActivity extends Activity {
                                 // Refresh rate >= video FPS
                                 List<Display.Mode> modesHigh = new ArrayList<>();
                                 // Max refresh rate
-                                Display.Mode modeTop = supportedModes[0];
+                                Display.Mode modeTop = activeMode;
                                 int modesResolutionCount = 0;
 
                                 // Filter only resolutions same as current
