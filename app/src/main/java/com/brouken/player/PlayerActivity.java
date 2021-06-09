@@ -58,9 +58,13 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.app.ShareCompat;
 import androidx.documentfile.provider.DocumentFile;
 
+import com.arthenica.ffmpegkit.FFmpegKitConfig;
+import com.arthenica.ffmpegkit.FFprobeKit;
+import com.arthenica.ffmpegkit.MediaInformation;
+import com.arthenica.ffmpegkit.MediaInformationSession;
+import com.arthenica.ffmpegkit.StreamInformation;
 import com.brouken.player.dtpv.DoubleTapPlayerView;
 import com.brouken.player.dtpv.youtube.YouTubeOverlay;
 import com.getkeepsafe.taptargetview.TapTarget;
@@ -915,6 +919,22 @@ public class PlayerActivity extends Activity {
 
             if (state == Player.STATE_READY) {
                 frameRendered = true;
+                if (play) {
+                    play = false;
+                    playerView.hideController();
+                }
+            }
+
+            if (setTracks && state == Player.STATE_READY) {
+                setTracks = false;
+                updateLoading(false);
+                if (mPrefs.audioTrack != -1 && mPrefs.audioTrackFfmpeg != -1) {
+                    setSelectedTrackAudio(mPrefs.audioTrack, false);
+                    setSelectedTrackAudio(mPrefs.audioTrackFfmpeg, true);
+                }
+                if (mPrefs.subtitleTrack != -1 && (mPrefs.subtitleTrack < getTrackCountSubtitle() || mPrefs.subtitleTrack == Integer.MIN_VALUE))
+                    setSelectedTrackSubtitle(mPrefs.subtitleTrack);
+
                 final Format format = player.getVideoFormat();
                 if (format != null) {
                     if (mPrefs.orientation == Utils.Orientation.VIDEO) {
@@ -926,9 +946,28 @@ public class PlayerActivity extends Activity {
                     }
 
                     // ExoPlayer already uses Surface.setFrameRate() on Android 11+
+                    // TODO: Use on Android 11+ anyway when ExoPlayer doesn't detect frame rate by itself
                     if (Build.VERSION.SDK_INT >= 23 && Build.VERSION.SDK_INT < 30) {
                         float frameRate = format.frameRate;
+
+                        if (frameRate == Format.NO_VALUE) {
+                            MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(FFmpegKitConfig.getSafParameterForRead(PlayerActivity.this, mPrefs.mediaUri));
+                            MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
+                            List<StreamInformation> streamInformations = mediaInformation.getStreams();
+                            for (StreamInformation streamInformation : streamInformations) {
+                                if (streamInformation.getType().equals("video")) {
+                                    String averageFrameRate = streamInformation.getAverageFrameRate();
+                                    if (averageFrameRate.contains("/")) {
+                                        String[] vals = averageFrameRate.split("/");
+                                        frameRate = Float.parseFloat(vals[0]) / Float.parseFloat(vals[1]);
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
                         Toast.makeText(PlayerActivity.this, "Video frameRate: " + frameRate, Toast.LENGTH_LONG).show();
+
                         if (frameRate != Format.NO_VALUE) {
                             Display display = getDisplay();
                             Display.Mode[] supportedModes = display.getSupportedModes();
@@ -979,24 +1018,7 @@ public class PlayerActivity extends Activity {
                             }
                         }
                     }
-
                 }
-
-                if (play) {
-                    play = false;
-                    playerView.hideController();
-                }
-            }
-
-            if (setTracks && state == Player.STATE_READY) {
-                setTracks = false;
-                updateLoading(false);
-                if (mPrefs.audioTrack != -1 && mPrefs.audioTrackFfmpeg != -1) {
-                    setSelectedTrackAudio(mPrefs.audioTrack, false);
-                    setSelectedTrackAudio(mPrefs.audioTrackFfmpeg, true);
-                }
-                if (mPrefs.subtitleTrack != -1 && (mPrefs.subtitleTrack < getTrackCountSubtitle() || mPrefs.subtitleTrack == Integer.MIN_VALUE))
-                    setSelectedTrackSubtitle(mPrefs.subtitleTrack);
             }
         }
 
