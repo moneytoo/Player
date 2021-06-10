@@ -987,10 +987,10 @@ public class PlayerActivity extends Activity {
                                             mode.getPhysicalHeight() == activeMode.getPhysicalHeight()) {
                                         modesResolutionCount++;
 
-                                        if (mode.getRefreshRate() >= frameRate)
+                                        if (Math.round(mode.getRefreshRate()) >= Math.round(frameRate))
                                             modesHigh.add(mode);
 
-                                        if (mode.getRefreshRate() > modeTop.getRefreshRate())
+                                        if (Math.round(mode.getRefreshRate()) > Math.round(modeTop.getRefreshRate()))
                                             modeTop = mode;
                                     }
                                 }
@@ -999,8 +999,8 @@ public class PlayerActivity extends Activity {
                                     Display.Mode modeBest = null;
 
                                     for (Display.Mode mode : modesHigh) {
-                                        if (mode.getRefreshRate() % frameRate <= 0.0001f) {
-                                            if (modeBest == null || mode.getRefreshRate() > modeBest.getRefreshRate()) {
+                                        if (Math.round(mode.getRefreshRate()) % Math.round(frameRate) <= 0.0001f) {
+                                            if (modeBest == null || Math.round(mode.getRefreshRate()) > Math.round(modeBest.getRefreshRate())) {
                                                 modeBest = mode;
                                             }
                                         }
