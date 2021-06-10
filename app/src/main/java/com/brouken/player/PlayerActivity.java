@@ -30,7 +30,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.LocaleList;
 import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.provider.Settings;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
@@ -40,7 +39,6 @@ import android.util.Rational;
 import android.util.TypedValue;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,7 +54,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.core.app.ShareCompat;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.brouken.player.dtpv.DoubleTapPlayerView;
@@ -111,7 +108,7 @@ public class PlayerActivity extends Activity {
     private Prefs mPrefs;
     public static BrightnessControl mBrightnessControl;
     public static boolean haveMedia;
-    private boolean setTracks;
+    private boolean videoLoading;
     public static boolean controllerVisible;
     public static boolean controllerVisibleFully;
     public static Snackbar snackbar;
@@ -818,7 +815,7 @@ public class PlayerActivity extends Activity {
                 }
             });
 
-            setTracks = true;
+            videoLoading = true;
 
             updateLoading(true);
 
@@ -913,32 +910,35 @@ public class PlayerActivity extends Activity {
 
             if (state == Player.STATE_READY) {
                 frameRendered = true;
-                final Format format = player.getVideoFormat();
-                if (format != null) {
-                    if (mPrefs.orientation == Utils.Orientation.VIDEO) {
-                        if (Utils.isPortrait(format)) {
-                            PlayerActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-                        } else {
-                            PlayerActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+
+                if (videoLoading) {
+                    videoLoading = false;
+
+                    if (play) {
+                        play = false;
+                        playerView.hideController();
+                    }
+
+                    final Format format = player.getVideoFormat();
+                    if (format != null) {
+                        if (mPrefs.orientation == Utils.Orientation.VIDEO) {
+                            if (Utils.isPortrait(format)) {
+                                PlayerActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
+                            } else {
+                                PlayerActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+                            }
                         }
                     }
-                }
 
-                if (play) {
-                    play = false;
-                    playerView.hideController();
-                }
-            }
+                    updateLoading(false);
 
-            if (setTracks && state == Player.STATE_READY) {
-                setTracks = false;
-                updateLoading(false);
-                if (mPrefs.audioTrack != -1 && mPrefs.audioTrackFfmpeg != -1) {
-                    setSelectedTrackAudio(mPrefs.audioTrack, false);
-                    setSelectedTrackAudio(mPrefs.audioTrackFfmpeg, true);
+                    if (mPrefs.audioTrack != -1 && mPrefs.audioTrackFfmpeg != -1) {
+                        setSelectedTrackAudio(mPrefs.audioTrack, false);
+                        setSelectedTrackAudio(mPrefs.audioTrackFfmpeg, true);
+                    }
+                    if (mPrefs.subtitleTrack != -1 && (mPrefs.subtitleTrack < getTrackCountSubtitle() || mPrefs.subtitleTrack == Integer.MIN_VALUE))
+                        setSelectedTrackSubtitle(mPrefs.subtitleTrack);
                 }
-                if (mPrefs.subtitleTrack != -1 && (mPrefs.subtitleTrack < getTrackCountSubtitle() || mPrefs.subtitleTrack == Integer.MIN_VALUE))
-                    setSelectedTrackSubtitle(mPrefs.subtitleTrack);
             }
         }
 
