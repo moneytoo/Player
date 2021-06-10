@@ -943,7 +943,13 @@ public class PlayerActivity extends Activity {
                             float frameRate = format.frameRate;
 
                             if (frameRate == Format.NO_VALUE) {
-                                MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(FFmpegKitConfig.getSafParameterForRead(PlayerActivity.this, mPrefs.mediaUri));
+                                String path;
+                                if (ContentResolver.SCHEME_CONTENT.equals(mPrefs.mediaUri.getScheme())) {
+                                    path = FFmpegKitConfig.getSafParameterForRead(PlayerActivity.this, mPrefs.mediaUri);
+                                } else {
+                                    path = mPrefs.mediaUri.toString();
+                                }
+                                MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(path);
                                 MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
                                 List<StreamInformation> streamInformations = mediaInformation.getStreams();
                                 for (StreamInformation streamInformation : streamInformations) {
