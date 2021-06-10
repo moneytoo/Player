@@ -928,6 +928,8 @@ public class PlayerActivity extends Activity {
                     }
 
                     final Format format = player.getVideoFormat();
+                    float frameRate = Format.NO_VALUE;
+
                     if (format != null) {
                         if (mPrefs.orientation == Utils.Orientation.VIDEO) {
                             if (Utils.isPortrait(format)) {
@@ -936,83 +938,83 @@ public class PlayerActivity extends Activity {
                                 PlayerActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                             }
                         }
+                        frameRate = format.frameRate;
+                    }
 
-                        // ExoPlayer already uses Surface.setFrameRate() on Android 11+
-                        // TODO: Use on Android 11+ anyway when ExoPlayer doesn't detect frame rate by itself
-                        if (Build.VERSION.SDK_INT >= 23 && Build.VERSION.SDK_INT < 30) {
-                            float frameRate = format.frameRate;
-
-                            if (frameRate == Format.NO_VALUE) {
-                                String path;
-                                if (ContentResolver.SCHEME_CONTENT.equals(mPrefs.mediaUri.getScheme())) {
-                                    path = FFmpegKitConfig.getSafParameterForRead(PlayerActivity.this, mPrefs.mediaUri);
-                                } else {
-                                    path = mPrefs.mediaUri.toString();
-                                }
-                                MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(path);
-                                MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
-                                List<StreamInformation> streamInformations = mediaInformation.getStreams();
-                                for (StreamInformation streamInformation : streamInformations) {
-                                    if (streamInformation.getType().equals("video")) {
-                                        String averageFrameRate = streamInformation.getAverageFrameRate();
-                                        if (averageFrameRate.contains("/")) {
-                                            String[] vals = averageFrameRate.split("/");
-                                            frameRate = Float.parseFloat(vals[0]) / Float.parseFloat(vals[1]);
-                                            break;
-                                        }
+                    // preferredDisplayModeId only available on SDK 23+
+                    // ExoPlayer already uses Surface.setFrameRate() on Android 11+ but may not detect actual video frame rate
+                    if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT < 30 || frameRate == Format.NO_VALUE)) {
+                        if (frameRate == Format.NO_VALUE) {
+                            String path;
+                            if (ContentResolver.SCHEME_CONTENT.equals(mPrefs.mediaUri.getScheme())) {
+                                path = FFmpegKitConfig.getSafParameterForRead(PlayerActivity.this, mPrefs.mediaUri);
+                            } else {
+                                path = mPrefs.mediaUri.toString();
+                            }
+                            // Fallback to ffprobe as ExoPlayer doesn't detect video frame rate for lots of videos
+                            MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(path);
+                            MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
+                            List<StreamInformation> streamInformations = mediaInformation.getStreams();
+                            for (StreamInformation streamInformation : streamInformations) {
+                                if (streamInformation.getType().equals("video")) {
+                                    String averageFrameRate = streamInformation.getAverageFrameRate();
+                                    if (averageFrameRate.contains("/")) {
+                                        String[] vals = averageFrameRate.split("/");
+                                        frameRate = Float.parseFloat(vals[0]) / Float.parseFloat(vals[1]);
+                                        break;
                                     }
                                 }
                             }
+                        }
 
-                            Toast.makeText(PlayerActivity.this, "Video frameRate: " + frameRate, Toast.LENGTH_LONG).show();
+                        Toast.makeText(PlayerActivity.this, "Video frameRate: " + frameRate, Toast.LENGTH_LONG).show();
 
-                            if (frameRate != Format.NO_VALUE) {
-                                Display display = getDisplay();
-                                Display.Mode[] supportedModes = display.getSupportedModes();
-                                Display.Mode activeMode = display.getMode();
+                        if (frameRate != Format.NO_VALUE) {
+                            Display display = getDisplay();
+                            Display.Mode[] supportedModes = display.getSupportedModes();
+                            Display.Mode activeMode = display.getMode();
 
-                                if (supportedModes.length > 1) {
-                                    // Refresh rate >= video FPS
-                                    List<Display.Mode> modesHigh = new ArrayList<>();
-                                    // Max refresh rate
-                                    Display.Mode modeTop = activeMode;
-                                    int modesResolutionCount = 0;
+                            if (supportedModes.length > 1) {
+                                // Refresh rate >= video FPS
+                                List<Display.Mode> modesHigh = new ArrayList<>();
+                                // Max refresh rate
+                                Display.Mode modeTop = activeMode;
+                                int modesResolutionCount = 0;
 
-                                    // Filter only resolutions same as current
-                                    for (Display.Mode mode : supportedModes) {
-                                        if (mode.getPhysicalWidth() == activeMode.getPhysicalWidth() &&
-                                                mode.getPhysicalHeight() == activeMode.getPhysicalHeight()) {
-                                            modesResolutionCount++;
+                                // Filter only resolutions same as current
+                                for (Display.Mode mode : supportedModes) {
+                                    if (mode.getPhysicalWidth() == activeMode.getPhysicalWidth() &&
+                                            mode.getPhysicalHeight() == activeMode.getPhysicalHeight()) {
+                                        modesResolutionCount++;
 
-                                            if (mode.getRefreshRate() >= frameRate)
-                                                modesHigh.add(mode);
+                                        if (mode.getRefreshRate() >= frameRate)
+                                            modesHigh.add(mode);
 
-                                            if (mode.getRefreshRate() > modeTop.getRefreshRate())
-                                                modeTop = mode;
-                                        }
+                                        if (mode.getRefreshRate() > modeTop.getRefreshRate())
+                                            modeTop = mode;
                                     }
+                                }
 
-                                    if (modesResolutionCount > 1) {
-                                        Display.Mode modeBest = null;
+                                if (modesResolutionCount > 1) {
+                                    Display.Mode modeBest = null;
 
-                                        for (Display.Mode mode : modesHigh) {
-                                            if (mode.getRefreshRate() % frameRate <= 0.0001f) {
-                                                if (modeBest == null || mode.getRefreshRate() > modeBest.getRefreshRate()) {
-                                                    modeBest = mode;
-                                                }
+                                    for (Display.Mode mode : modesHigh) {
+                                        if (mode.getRefreshRate() % frameRate <= 0.0001f) {
+                                            if (modeBest == null || mode.getRefreshRate() > modeBest.getRefreshRate()) {
+                                                modeBest = mode;
                                             }
                                         }
-
-                                        Window window = getWindow();
-                                        WindowManager.LayoutParams layoutParams = window.getAttributes();
-
-                                        if (modeBest == null)
-                                            modeBest = modeTop;
-
-                                        layoutParams.preferredDisplayModeId = modeBest.getModeId();
-                                        Toast.makeText(PlayerActivity.this, "Video frameRate: " + frameRate + "\nDisplay refreshRate: " + modeBest.getRefreshRate(), Toast.LENGTH_LONG).show();
-                                        window.setAttributes(layoutParams);
                                     }
+
+                                    Window window = getWindow();
+                                    WindowManager.LayoutParams layoutParams = window.getAttributes();
+
+                                    if (modeBest == null)
+                                        modeBest = modeTop;
+
+                                    layoutParams.preferredDisplayModeId = modeBest.getModeId();
+                                    Toast.makeText(PlayerActivity.this, "Video frameRate: " + frameRate + "\nDisplay refreshRate: " + modeBest.getRefreshRate(), Toast.LENGTH_LONG).show();
+                                    window.setAttributes(layoutParams);
                                 }
                             }
                         }
