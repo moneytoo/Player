@@ -970,7 +970,7 @@ public class PlayerActivity extends Activity {
                         Toast.makeText(PlayerActivity.this, "Video frameRate: " + frameRate, Toast.LENGTH_LONG).show();
 
                         if (frameRate != Format.NO_VALUE) {
-                            Display display = getDisplay();
+                            Display display = getWindow().getDecorView().getDisplay();
                             Display.Mode[] supportedModes = display.getSupportedModes();
                             Display.Mode activeMode = display.getMode();
 
