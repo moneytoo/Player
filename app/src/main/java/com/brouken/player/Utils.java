@@ -280,4 +280,8 @@ class Utils {
         final String scheme = uri.getScheme();
         return scheme.startsWith("http") || scheme.equals("rtsp");
     }
+
+    public static int normRate(float rate) {
+        return (int)(rate * 100f);
+    }
 }

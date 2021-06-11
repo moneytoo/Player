@@ -99,6 +99,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static com.brouken.player.Utils.normRate;
+
 public class PlayerActivity extends Activity {
 
     private PlaybackStateListener playbackStateListener;
@@ -929,6 +931,7 @@ public class PlayerActivity extends Activity {
 
                     final Format format = player.getVideoFormat();
                     float frameRate = Format.NO_VALUE;
+                    float frameRateExo = Format.NO_VALUE;
 
                     if (format != null) {
                         if (mPrefs.orientation == Utils.Orientation.VIDEO) {
@@ -938,31 +941,29 @@ public class PlayerActivity extends Activity {
                                 PlayerActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                             }
                         }
-                        frameRate = format.frameRate;
+                        frameRateExo = format.frameRate;
                     }
 
                     // preferredDisplayModeId only available on SDK 23+
                     // ExoPlayer already uses Surface.setFrameRate() on Android 11+ but may not detect actual video frame rate
-                    if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT < 30 || frameRate == Format.NO_VALUE)) {
-                        if (frameRate == Format.NO_VALUE) {
-                            String path;
-                            if (ContentResolver.SCHEME_CONTENT.equals(mPrefs.mediaUri.getScheme())) {
-                                path = FFmpegKitConfig.getSafParameterForRead(PlayerActivity.this, mPrefs.mediaUri);
-                            } else {
-                                path = mPrefs.mediaUri.toString();
-                            }
-                            // Fallback to ffprobe as ExoPlayer doesn't detect video frame rate for lots of videos
-                            MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(path);
-                            MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
-                            List<StreamInformation> streamInformations = mediaInformation.getStreams();
-                            for (StreamInformation streamInformation : streamInformations) {
-                                if (streamInformation.getType().equals("video")) {
-                                    String averageFrameRate = streamInformation.getAverageFrameRate();
-                                    if (averageFrameRate.contains("/")) {
-                                        String[] vals = averageFrameRate.split("/");
-                                        frameRate = Float.parseFloat(vals[0]) / Float.parseFloat(vals[1]);
-                                        break;
-                                    }
+                    if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT < 30 || (frameRateExo == Format.NO_VALUE))) {
+                        String path;
+                        if (ContentResolver.SCHEME_CONTENT.equals(mPrefs.mediaUri.getScheme())) {
+                            path = FFmpegKitConfig.getSafParameterForRead(PlayerActivity.this, mPrefs.mediaUri);
+                        } else {
+                            path = mPrefs.mediaUri.toString();
+                        }
+                        // Fallback to ffprobe as ExoPlayer doesn't detect video frame rate for lots of videos
+                        MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(path);
+                        MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
+                        List<StreamInformation> streamInformations = mediaInformation.getStreams();
+                        for (StreamInformation streamInformation : streamInformations) {
+                            if (streamInformation.getType().equals("video")) {
+                                String averageFrameRate = streamInformation.getAverageFrameRate();
+                                if (averageFrameRate.contains("/")) {
+                                    String[] vals = averageFrameRate.split("/");
+                                    frameRate = Float.parseFloat(vals[0]) / Float.parseFloat(vals[1]);
+                                    break;
                                 }
                             }
                         }
@@ -987,10 +988,10 @@ public class PlayerActivity extends Activity {
                                             mode.getPhysicalHeight() == activeMode.getPhysicalHeight()) {
                                         modesResolutionCount++;
 
-                                        if (Math.round(mode.getRefreshRate()) >= Math.round(frameRate))
+                                        if (normRate(mode.getRefreshRate()) >= normRate(frameRate))
                                             modesHigh.add(mode);
 
-                                        if (Math.round(mode.getRefreshRate()) > Math.round(modeTop.getRefreshRate()))
+                                        if (normRate(mode.getRefreshRate()) > normRate(modeTop.getRefreshRate()))
                                             modeTop = mode;
                                     }
                                 }
@@ -999,8 +1000,8 @@ public class PlayerActivity extends Activity {
                                     Display.Mode modeBest = null;
 
                                     for (Display.Mode mode : modesHigh) {
-                                        if (Math.round(mode.getRefreshRate()) % Math.round(frameRate) <= 0.0001f) {
-                                            if (modeBest == null || Math.round(mode.getRefreshRate()) > Math.round(modeBest.getRefreshRate())) {
+                                        if (normRate(mode.getRefreshRate()) % normRate(frameRate) <= 0.0001f) {
+                                            if (modeBest == null || normRate(mode.getRefreshRate()) > normRate(modeBest.getRefreshRate())) {
                                                 modeBest = mode;
                                             }
                                         }
