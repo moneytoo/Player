@@ -1,19 +1,34 @@
 package com.brouken.player;
 
+import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.view.Display;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Toast;
 
 import androidx.core.app.NotificationCompat;
 
+import com.arthenica.ffmpegkit.FFmpegKitConfig;
+import com.arthenica.ffmpegkit.FFprobeKit;
+import com.arthenica.ffmpegkit.MediaInformation;
+import com.arthenica.ffmpegkit.MediaInformationSession;
+import com.arthenica.ffmpegkit.StreamInformation;
+import com.google.android.exoplayer2.Format;
+
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 class UtilsFlavor {
@@ -112,4 +127,96 @@ class UtilsFlavor {
         }
     }
 
+    public static int normRate(float rate) {
+        return (int)(rate * 100f);
+    }
+
+    public static boolean switchFrameRate(final Activity activity, final float frameRateExo, final Uri uri) {
+        if (!activity.getResources().getBoolean(R.bool.frame_rate_matching))
+            return false;
+
+        float frameRate = Format.NO_VALUE;
+
+        // preferredDisplayModeId only available on SDK 23+
+        // ExoPlayer already uses Surface.setFrameRate() on Android 11+ but may not detect actual video frame rate
+        if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT < 30 || (frameRateExo == Format.NO_VALUE))) {
+            String path;
+            if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+                path = FFmpegKitConfig.getSafParameterForRead(activity, uri);
+            } else {
+                path = uri.toString();
+            }
+            // Fallback to ffprobe as ExoPlayer doesn't detect video frame rate for lots of videos
+            MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(path);
+            MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
+            List<StreamInformation> streamInformations = mediaInformation.getStreams();
+            for (StreamInformation streamInformation : streamInformations) {
+                if (streamInformation.getType().equals("video")) {
+                    String averageFrameRate = streamInformation.getAverageFrameRate();
+                    if (averageFrameRate.contains("/")) {
+                        String[] vals = averageFrameRate.split("/");
+                        frameRate = Float.parseFloat(vals[0]) / Float.parseFloat(vals[1]);
+                        break;
+                    }
+                }
+            }
+
+            Toast.makeText(activity, "Video frameRate: " + frameRate, Toast.LENGTH_LONG).show();
+
+            if (frameRate != Format.NO_VALUE) {
+                Display display = activity.getWindow().getDecorView().getDisplay();
+                Display.Mode[] supportedModes = display.getSupportedModes();
+                Display.Mode activeMode = display.getMode();
+
+                if (supportedModes.length > 1) {
+                    // Refresh rate >= video FPS
+                    List<Display.Mode> modesHigh = new ArrayList<>();
+                    // Max refresh rate
+                    Display.Mode modeTop = activeMode;
+                    int modesResolutionCount = 0;
+
+                    // Filter only resolutions same as current
+                    for (Display.Mode mode : supportedModes) {
+                        if (mode.getPhysicalWidth() == activeMode.getPhysicalWidth() &&
+                                mode.getPhysicalHeight() == activeMode.getPhysicalHeight()) {
+                            modesResolutionCount++;
+
+                            if (normRate(mode.getRefreshRate()) >= normRate(frameRate))
+                                modesHigh.add(mode);
+
+                            if (normRate(mode.getRefreshRate()) > normRate(modeTop.getRefreshRate()))
+                                modeTop = mode;
+                        }
+                    }
+
+                    if (modesResolutionCount > 1) {
+                        Display.Mode modeBest = null;
+
+                        for (Display.Mode mode : modesHigh) {
+                            if (normRate(mode.getRefreshRate()) % normRate(frameRate) <= 0.0001f) {
+                                if (modeBest == null || normRate(mode.getRefreshRate()) > normRate(modeBest.getRefreshRate())) {
+                                    modeBest = mode;
+                                }
+                            }
+                        }
+
+                        Window window = activity.getWindow();
+                        WindowManager.LayoutParams layoutParams = window.getAttributes();
+
+                        if (modeBest == null)
+                            modeBest = modeTop;
+
+                        final boolean switchingModes = !(modeBest.getModeId() == activeMode.getModeId());
+                        if (switchingModes) {
+                            layoutParams.preferredDisplayModeId = modeBest.getModeId();
+                            window.setAttributes(layoutParams);
+                        }
+                        Toast.makeText(activity, "Video frameRate: " + frameRate + "\nDisplay refreshRate: " + modeBest.getRefreshRate(), Toast.LENGTH_LONG).show();
+                        return switchingModes;
+                    }
+                }
+            }
+        }
+        return false;
+    }
 }
