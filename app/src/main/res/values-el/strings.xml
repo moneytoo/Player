@@ -12,4 +12,5 @@
     <string name="request_scope">Για την αυτόματη φόρτωση εξωτερικών υποτίτλων ή την ενεργοποίηση της παράβλεψης στο επόμενο αρχείο σε έναν κατάλογο, παραχωρήστε στο %s πρόσβαση στον ριζικό φάκελο που περιέχει τα βίντεό σας (π.χ. Movies).</string>
     <string name="delete_confirmation">Διαγραφή</string>
     <string name="delete_query">Διαγραφή αυτού του αρχείου;</string>
+    <string name="app_name" translatable="false"></string>
 </resources>
