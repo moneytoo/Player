@@ -37,14 +37,11 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Rational;
 import android.util.TypedValue;
-import android.view.Display;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.accessibility.CaptioningManager;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -59,11 +56,6 @@ import androidx.annotation.RequiresApi;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.documentfile.provider.DocumentFile;
 
-import com.arthenica.ffmpegkit.FFmpegKitConfig;
-import com.arthenica.ffmpegkit.FFprobeKit;
-import com.arthenica.ffmpegkit.MediaInformation;
-import com.arthenica.ffmpegkit.MediaInformationSession;
-import com.arthenica.ffmpegkit.StreamInformation;
 import com.brouken.player.dtpv.DoubleTapPlayerView;
 import com.brouken.player.dtpv.youtube.YouTubeOverlay;
 import com.getkeepsafe.taptargetview.TapTarget;
@@ -98,8 +90,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
-
-import static com.brouken.player.Utils.normRate;
 
 public class PlayerActivity extends Activity {
 
@@ -930,7 +920,6 @@ public class PlayerActivity extends Activity {
                     }
 
                     final Format format = player.getVideoFormat();
-                    float frameRate = Format.NO_VALUE;
                     float frameRateExo = Format.NO_VALUE;
 
                     if (format != null) {
@@ -944,82 +933,7 @@ public class PlayerActivity extends Activity {
                         frameRateExo = format.frameRate;
                     }
 
-                    // preferredDisplayModeId only available on SDK 23+
-                    // ExoPlayer already uses Surface.setFrameRate() on Android 11+ but may not detect actual video frame rate
-                    if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT < 30 || (frameRateExo == Format.NO_VALUE))) {
-                        String path;
-                        if (ContentResolver.SCHEME_CONTENT.equals(mPrefs.mediaUri.getScheme())) {
-                            path = FFmpegKitConfig.getSafParameterForRead(PlayerActivity.this, mPrefs.mediaUri);
-                        } else {
-                            path = mPrefs.mediaUri.toString();
-                        }
-                        // Fallback to ffprobe as ExoPlayer doesn't detect video frame rate for lots of videos
-                        MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(path);
-                        MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
-                        List<StreamInformation> streamInformations = mediaInformation.getStreams();
-                        for (StreamInformation streamInformation : streamInformations) {
-                            if (streamInformation.getType().equals("video")) {
-                                String averageFrameRate = streamInformation.getAverageFrameRate();
-                                if (averageFrameRate.contains("/")) {
-                                    String[] vals = averageFrameRate.split("/");
-                                    frameRate = Float.parseFloat(vals[0]) / Float.parseFloat(vals[1]);
-                                    break;
-                                }
-                            }
-                        }
-
-                        Toast.makeText(PlayerActivity.this, "Video frameRate: " + frameRate, Toast.LENGTH_LONG).show();
-
-                        if (frameRate != Format.NO_VALUE) {
-                            Display display = getWindow().getDecorView().getDisplay();
-                            Display.Mode[] supportedModes = display.getSupportedModes();
-                            Display.Mode activeMode = display.getMode();
-
-                            if (supportedModes.length > 1) {
-                                // Refresh rate >= video FPS
-                                List<Display.Mode> modesHigh = new ArrayList<>();
-                                // Max refresh rate
-                                Display.Mode modeTop = activeMode;
-                                int modesResolutionCount = 0;
-
-                                // Filter only resolutions same as current
-                                for (Display.Mode mode : supportedModes) {
-                                    if (mode.getPhysicalWidth() == activeMode.getPhysicalWidth() &&
-                                            mode.getPhysicalHeight() == activeMode.getPhysicalHeight()) {
-                                        modesResolutionCount++;
-
-                                        if (normRate(mode.getRefreshRate()) >= normRate(frameRate))
-                                            modesHigh.add(mode);
-
-                                        if (normRate(mode.getRefreshRate()) > normRate(modeTop.getRefreshRate()))
-                                            modeTop = mode;
-                                    }
-                                }
-
-                                if (modesResolutionCount > 1) {
-                                    Display.Mode modeBest = null;
-
-                                    for (Display.Mode mode : modesHigh) {
-                                        if (normRate(mode.getRefreshRate()) % normRate(frameRate) <= 0.0001f) {
-                                            if (modeBest == null || normRate(mode.getRefreshRate()) > normRate(modeBest.getRefreshRate())) {
-                                                modeBest = mode;
-                                            }
-                                        }
-                                    }
-
-                                    Window window = getWindow();
-                                    WindowManager.LayoutParams layoutParams = window.getAttributes();
-
-                                    if (modeBest == null)
-                                        modeBest = modeTop;
-
-                                    layoutParams.preferredDisplayModeId = modeBest.getModeId();
-                                    Toast.makeText(PlayerActivity.this, "Video frameRate: " + frameRate + "\nDisplay refreshRate: " + modeBest.getRefreshRate(), Toast.LENGTH_LONG).show();
-                                    window.setAttributes(layoutParams);
-                                }
-                            }
-                        }
-                    }
+                    UtilsFlavor.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri);
 
                     updateLoading(false);
 

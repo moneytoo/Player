@@ -1,0 +1,3 @@
+<resources>
+    <bool name="frame_rate_matching">true</bool>
+</resources>
