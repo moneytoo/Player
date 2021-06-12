@@ -9,9 +9,11 @@ import android.app.job.JobScheduler;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.view.Display;
 import android.view.Window;
 import android.view.WindowManager;
@@ -25,7 +27,9 @@ import com.arthenica.ffmpegkit.MediaInformation;
 import com.arthenica.ffmpegkit.MediaInformationSession;
 import com.arthenica.ffmpegkit.StreamInformation;
 import com.google.android.exoplayer2.Format;
+import com.obsez.android.lib.filechooser.ChooserDialog;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -139,16 +143,22 @@ class UtilsFlavor {
 
         // preferredDisplayModeId only available on SDK 23+
         // ExoPlayer already uses Surface.setFrameRate() on Android 11+ but may not detect actual video frame rate
-        if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT < 30 || (frameRateExo == Format.NO_VALUE))) {
+        if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT < 30 /*|| (frameRateExo == Format.NO_VALUE)*/)) {
             String path;
             if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
                 path = FFmpegKitConfig.getSafParameterForRead(activity, uri);
+            } else if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
+                // TODO: FFprobeKit doesn't accept encoded uri (like %20) (?!)
+                path = uri.getSchemeSpecificPart();
             } else {
                 path = uri.toString();
             }
+            Utils.log(path);
             // Fallback to ffprobe as ExoPlayer doesn't detect video frame rate for lots of videos
             MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(path);
             MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
+            if (mediaInformation == null)
+                return false;
             List<StreamInformation> streamInformations = mediaInformation.getStreams();
             for (StreamInformation streamInformation : streamInformations) {
                 if (streamInformation.getType().equals("video")) {
@@ -218,5 +228,38 @@ class UtilsFlavor {
             }
         }
         return false;
+    }
+
+    public static boolean alternativeChooser(PlayerActivity activity, Uri initialUri) {
+        String startPath;
+        if (initialUri != null && (new File(initialUri.getSchemeSpecificPart())).exists()) {
+            startPath = initialUri.getSchemeSpecificPart();
+        } else {
+            startPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).getAbsolutePath();
+        }
+
+        ChooserDialog chooserDialog = new ChooserDialog(activity)
+                .withStartFile(startPath)
+                .withFilter(false, false, "3gp", "m4v", "mkv", "mov", "mp4", "webm")
+                .withChosenListener(new ChooserDialog.Result() {
+                    @Override
+                    public void onChoosePath(String path, File pathFile) {
+                        activity.releasePlayer();
+                        activity.mPrefs.updateMedia(activity, Uri.parse(pathFile.toURI().toString()), null);
+                        activity.initializePlayer();
+                    }
+                })
+                // to handle the back key pressed or clicked outside the dialog:
+                .withOnCancelListener(new DialogInterface.OnCancelListener() {
+                    public void onCancel(DialogInterface dialog) {
+                        dialog.cancel(); // MUST have
+                    }
+                });
+        chooserDialog
+                .withOnBackPressedListener(dialog -> chooserDialog.goBack())
+                .withOnLastBackPressedListener(dialog -> dialog.cancel());
+        chooserDialog.build().show();
+
+        return true;
     }
 }

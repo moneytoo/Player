@@ -58,6 +58,7 @@ dependencies {
     onlineImplementation 'com.github.javiersantos:AppUpdater:2.7'
     onlineImplementation 'io.github.g00fy2:versioncompare:1.4.1'
     onlineImplementation 'com.arthenica:ffmpeg-kit-min:4.4.LTS'
+    onlineImplementation 'com.github.hedzr:android-file-chooser:v1.2.0-final'
     implementation project(path: ':doubletapplayerview')
     implementation fileTree(dir: "libs", include: ["*.aar"])
 }
