@@ -820,7 +820,6 @@ public class PlayerActivity extends Activity {
             updateLoading(true);
 
             play = mPrefs.getPosition() == 0L;
-            player.setPlayWhenReady(play);
 
             player.seekTo(mPrefs.getPosition());
 
@@ -914,11 +913,6 @@ public class PlayerActivity extends Activity {
                 if (videoLoading) {
                     videoLoading = false;
 
-                    if (play) {
-                        play = false;
-                        playerView.hideController();
-                    }
-
                     final Format format = player.getVideoFormat();
                     float frameRateExo = Format.NO_VALUE;
 
@@ -933,7 +927,14 @@ public class PlayerActivity extends Activity {
                         frameRateExo = format.frameRate;
                     }
 
-                    UtilsFlavor.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri);
+                    boolean switched = UtilsFlavor.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri);
+                    if (play) {
+                        play = false;
+                        if (!switched) {
+                            player.play();
+                            playerView.hideController();
+                        }
+                    }
 
                     updateLoading(false);
 
