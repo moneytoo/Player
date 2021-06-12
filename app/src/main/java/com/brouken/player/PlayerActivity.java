@@ -10,6 +10,7 @@ import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
 import android.app.RemoteAction;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -105,7 +106,7 @@ public class PlayerActivity extends Activity {
 
     private Object mPictureInPictureParamsBuilder;
 
-    private Prefs mPrefs;
+    public Prefs mPrefs;
     public static BrightnessControl mBrightnessControl;
     public static boolean haveMedia;
     private boolean videoLoading;
@@ -685,7 +686,7 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    private void initializePlayer() {
+    public void initializePlayer() {
         haveMedia = mPrefs.mediaUri != null && (Utils.fileExists(this, mPrefs.mediaUri) || Utils.isSupportedUri(mPrefs.mediaUri));
 
         if (player == null) {
@@ -849,7 +850,7 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    private void releasePlayer() {
+    public void releasePlayer() {
         if (player != null) {
             mediaSession.setActive(false);
             mediaSession.release();
@@ -971,13 +972,15 @@ public class PlayerActivity extends Activity {
     }
 
     private void openFile(Uri pickerInitialUri) {
-        enableRotation();
+        if (saf() || !UtilsFlavor.alternativeChooser(this, pickerInitialUri)) {
+            enableRotation();
 
-        final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT, pickerInitialUri);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("video/*");
+            final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT, pickerInitialUri);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("video/*");
 
-        safelyStartActivityForResult(intent, REQUEST_CHOOSER_VIDEO);
+            safelyStartActivityForResult(intent, REQUEST_CHOOSER_VIDEO);
+        }
     }
 
     private void loadSubtitleFile(Uri pickerInitialUri) {
@@ -1028,6 +1031,16 @@ public class PlayerActivity extends Activity {
         }
 
         return intent;
+    }
+
+    boolean saf() {
+        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        ComponentName componentName = intent.resolveActivity(getPackageManager());
+        if (componentName == null)
+            return false;
+        return componentName.getPackageName().equals("com.google.android.documentsui");
     }
 
     void safelyStartActivityForResult(final Intent intent, final int code) {
