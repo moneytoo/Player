@@ -14,7 +14,7 @@ class UtilsFlavor {
         return false;
     }
 
-    public static boolean alternativeChooser(PlayerActivity activity, Uri initialUri) {
+    public static boolean alternativeChooser(PlayerActivity activity, Uri initialUri, boolean video) {
         // NOP
         return false;
     }
