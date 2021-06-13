@@ -129,6 +129,10 @@ class SubtitleUtils {
 
     public static DocumentFile findSubtitle(DocumentFile video) {
         DocumentFile dir = video.getParentFile();
+        return findSubtitle(video, dir);
+    }
+
+    public static DocumentFile findSubtitle(DocumentFile video, DocumentFile dir) {
         String videoName = getFileBaseName(video.getName());
         int videoFiles = 0;
 

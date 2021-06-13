@@ -136,14 +136,14 @@ class UtilsFlavor {
     }
 
     public static boolean switchFrameRate(final Activity activity, final float frameRateExo, final Uri uri) {
-        if (!activity.getResources().getBoolean(R.bool.frame_rate_matching))
+        if (!Utils.isTvBox(activity))
             return false;
 
         float frameRate = Format.NO_VALUE;
 
         // preferredDisplayModeId only available on SDK 23+
         // ExoPlayer already uses Surface.setFrameRate() on Android 11+ but may not detect actual video frame rate
-        if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT < 30 /*|| (frameRateExo == Format.NO_VALUE)*/)) {
+        if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT < 30 || (frameRateExo == Format.NO_VALUE))) {
             String path;
             if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
                 path = FFmpegKitConfig.getSafParameterForRead(activity, uri);
@@ -153,8 +153,8 @@ class UtilsFlavor {
             } else {
                 path = uri.toString();
             }
-            Utils.log(path);
-            // Fallback to ffprobe as ExoPlayer doesn't detect video frame rate for lots of videos
+            // Use ffprobe as ExoPlayer doesn't detect video frame rate for lots of videos
+            // and has different precision than ffprobe (so do not mix that)
             MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(path);
             MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
             if (mediaInformation == null)
@@ -230,7 +230,7 @@ class UtilsFlavor {
         return false;
     }
 
-    public static boolean alternativeChooser(PlayerActivity activity, Uri initialUri) {
+    public static boolean alternativeChooser(PlayerActivity activity, Uri initialUri, boolean video) {
         String startPath;
         if (initialUri != null && (new File(initialUri.getSchemeSpecificPart())).exists()) {
             startPath = initialUri.getSchemeSpecificPart();
@@ -238,14 +238,27 @@ class UtilsFlavor {
             startPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).getAbsolutePath();
         }
 
+        final String[] suffixes = (video ? new String[] { "3gp", "m4v", "mkv", "mov", "mp4", "webm" } :
+                new String[] { "srt", "ssa", "ass", "vtt", "ttml", "dfxp", "xml" });
+
         ChooserDialog chooserDialog = new ChooserDialog(activity)
                 .withStartFile(startPath)
-                .withFilter(false, false, "3gp", "m4v", "mkv", "mov", "mp4", "webm")
+                .withFilter(false, false, suffixes)
                 .withChosenListener(new ChooserDialog.Result() {
                     @Override
                     public void onChoosePath(String path, File pathFile) {
                         activity.releasePlayer();
-                        activity.mPrefs.updateMedia(activity, Uri.parse(pathFile.toURI().toString()), null);
+                        Uri uri = Uri.parse(pathFile.toURI().toString());
+                        if (video) {
+                            activity.mPrefs.updateMedia(activity, uri, null);
+                            activity.searchSubtitles();
+                        } else {
+                            // Convert subtitles to UTF-8 if necessary
+                            SubtitleUtils.clearCache(activity);
+                            uri = SubtitleUtils.convertToUTF(activity, uri);
+
+                            activity.mPrefs.updateSubtitle(uri);
+                        }
                         activity.initializePlayer();
                     }
                 })

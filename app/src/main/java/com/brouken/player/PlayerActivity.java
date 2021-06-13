@@ -87,6 +87,7 @@ import com.google.android.exoplayer2.ui.TimeBar;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -226,7 +227,7 @@ public class PlayerActivity extends Activity {
         buttonOpen.setOnClickListener(view -> openFile(mPrefs.mediaUri));
 
         buttonOpen.setOnLongClickListener(view -> {
-            if (mPrefs.askScope) {
+            if (saf() && mPrefs.askScope) {
                 askForScope();
             } else {
                 loadSubtitleFile(mPrefs.mediaUri);
@@ -532,6 +533,12 @@ public class PlayerActivity extends Activity {
                 }
                 break;
             case KeyEvent.KEYCODE_BACK:
+                if (Utils.isTvBox(this)) {
+                    if (controllerVisible && player.isPlaying()) {
+                        playerView.hideController();
+                        return true;
+                    }
+                }
                 break;
             default:
                 if (!controllerVisibleFully) {
@@ -972,7 +979,7 @@ public class PlayerActivity extends Activity {
     }
 
     private void openFile(Uri pickerInitialUri) {
-        if (saf() || !UtilsFlavor.alternativeChooser(this, pickerInitialUri)) {
+        if (saf() || !UtilsFlavor.alternativeChooser(this, pickerInitialUri, true)) {
             enableRotation();
 
             final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT, pickerInitialUri);
@@ -985,23 +992,26 @@ public class PlayerActivity extends Activity {
 
     private void loadSubtitleFile(Uri pickerInitialUri) {
         Toast.makeText(PlayerActivity.this, R.string.open_subtitles, Toast.LENGTH_SHORT).show();
-        enableRotation();
 
-        final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT, pickerInitialUri);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
+        if (saf() || !UtilsFlavor.alternativeChooser(this, pickerInitialUri, false)) {
+            enableRotation();
 
-        final String[] supportedMimeTypes = {
-                MimeTypes.APPLICATION_SUBRIP,
-                MimeTypes.TEXT_SSA,
-                MimeTypes.TEXT_VTT,
-                MimeTypes.APPLICATION_TTML,
-                "text/*",
-                "application/octet-stream"
-        };
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, supportedMimeTypes);
+            final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT, pickerInitialUri);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("*/*");
 
-        safelyStartActivityForResult(intent, REQUEST_CHOOSER_SUBTITLE);
+            final String[] supportedMimeTypes = {
+                    MimeTypes.APPLICATION_SUBRIP,
+                    MimeTypes.TEXT_SSA,
+                    MimeTypes.TEXT_VTT,
+                    MimeTypes.APPLICATION_TTML,
+                    "text/*",
+                    "application/octet-stream"
+            };
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, supportedMimeTypes);
+
+            safelyStartActivityForResult(intent, REQUEST_CHOOSER_SUBTITLE);
+        }
     }
 
     private void requestDirectoryAccess() {
@@ -1309,20 +1319,36 @@ public class PlayerActivity extends Activity {
     }
 
     void searchSubtitles() {
-        if (mPrefs.scopeUri != null && mPrefs.mediaUri != null) {
-            DocumentFile video;
-            if ("com.android.externalstorage.documents".equals(mPrefs.mediaUri.getHost())) {
-                // Fast search based on path in uri
-                video = SubtitleUtils.findUriInScope(this, mPrefs.scopeUri, mPrefs.mediaUri);
-            } else {
-                // Slow search based on matching metadata, no path in uri
-                // Provider "com.android.providers.media.documents" when using "Videos" tab in file picker
-                DocumentFile fileScope = DocumentFile.fromTreeUri(this, mPrefs.scopeUri);
-                DocumentFile fileMedia = DocumentFile.fromSingleUri(this, mPrefs.mediaUri);
-                video = SubtitleUtils.findDocInScope(fileScope, fileMedia);
+        if (mPrefs.scopeUri != null || !saf()) {
+            DocumentFile video = null;
+            File videoRaw = null;
+
+            if (saf() && mPrefs.scopeUri != null) {
+                if ("com.android.externalstorage.documents".equals(mPrefs.mediaUri.getHost())) {
+                    // Fast search based on path in uri
+                    video = SubtitleUtils.findUriInScope(this, mPrefs.scopeUri, mPrefs.mediaUri);
+                } else {
+                    // Slow search based on matching metadata, no path in uri
+                    // Provider "com.android.providers.media.documents" when using "Videos" tab in file picker
+                    DocumentFile fileScope = DocumentFile.fromTreeUri(this, mPrefs.scopeUri);
+                    DocumentFile fileMedia = DocumentFile.fromSingleUri(this, mPrefs.mediaUri);
+                    video = SubtitleUtils.findDocInScope(fileScope, fileMedia);
+                }
+            } else if (!saf()) {
+                videoRaw = new File(mPrefs.mediaUri.getSchemeSpecificPart());
+                video = DocumentFile.fromFile(videoRaw);
             }
+
             if (video != null) {
-                DocumentFile subtitle = SubtitleUtils.findSubtitle(video);
+                DocumentFile subtitle;
+                if (saf()) {
+                    subtitle = SubtitleUtils.findSubtitle(video);
+                } else {
+                    File parentRaw = videoRaw.getParentFile();
+                    DocumentFile dir = DocumentFile.fromFile(parentRaw);
+                    subtitle = SubtitleUtils.findSubtitle(video, dir);
+                }
+
                 if (subtitle != null) {
                     Uri subtitleUri = subtitle.getUri();
                     SubtitleUtils.clearCache(this);
