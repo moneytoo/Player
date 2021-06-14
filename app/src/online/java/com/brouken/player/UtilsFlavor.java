@@ -222,7 +222,7 @@ class UtilsFlavor {
                             layoutParams.preferredDisplayModeId = modeBest.getModeId();
                             window.setAttributes(layoutParams);
                         }
-                        if (BuildConfig.DEBUG) {
+                        if (BuildConfig.DEBUG)
                             Toast.makeText(activity, "Video frameRate: " + frameRate + "\nDisplay refreshRate: " + modeBest.getRefreshRate(), Toast.LENGTH_LONG).show();
                         return switchingModes;
                     }
