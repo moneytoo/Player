@@ -1057,7 +1057,7 @@ public class PlayerActivity extends Activity {
         if (componentName == null)
             return false;
         final String packageName = componentName.getPackageName();
-        return packageName.equals("android") || packageName.startsWith("android.") || packageName.startsWith("com.google.");
+        return packageName.equals("android") || packageName.startsWith("android.") || packageName.startsWith("com.android.") || packageName.startsWith("com.google.");
     }
 
     void safelyStartActivityForResult(final Intent intent, final int code) {
