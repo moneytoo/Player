@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="subtitles_scope">Για την αυτόματη φόρτωση εξωτερικών υπότιτλων, παραχωρήστε στο %s πρόσβαση στον ανώτατο φάκελο που περιέχει τα βίντεό σας (π.χ. Movies).</string>
+    <string name="app_name">Just Player</string>
+    <string name="error_files_missing">Η εφαρμογή Αρχεία είναι απενεργοποιημένη ή λείπει</string>
+    <string name="error_details">Λεπτομέρειες</string>
+    <string name="open_subtitles">Φόρτωση υποτίτλων</string>
+    <string name="onboarding_open_description">Πατήστε για να ανοίξετε ένα αρχείο βίντεο. Πατήστε παρατεταμένα για να φορτώσετε εξωτερικούς υπότιτλους.</string>
+    <string name="onboarding_open_title">Επιλογή βίντεο για αναπαραγωγή</string>
+    <string name="video_orientation_sensor">Αυτόματη περιστροφή</string>
+    <string name="video_orientation_video">Προσανατολισμός βίντεο</string>
+    <string name="video_resize_crop">Περικοπή</string>
+    <string name="video_resize_fit">Προσαρμογή</string>
+</resources>
