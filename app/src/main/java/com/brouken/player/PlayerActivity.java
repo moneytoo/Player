@@ -694,7 +694,7 @@ public class PlayerActivity extends Activity {
     }
 
     public void initializePlayer() {
-        haveMedia = mPrefs.mediaUri != null && (Utils.fileExists(this, mPrefs.mediaUri) || Utils.isSupportedUri(mPrefs.mediaUri));
+        haveMedia = mPrefs.mediaUri != null && (Utils.fileExists(this, mPrefs.mediaUri) || Utils.isSupportedNetworkUri(mPrefs.mediaUri));
 
         if (player == null) {
             trackSelector = new DefaultTrackSelector(this);
@@ -862,10 +862,16 @@ public class PlayerActivity extends Activity {
             mediaSession.setActive(false);
             mediaSession.release();
 
-            mPrefs.updatePosition(player.getCurrentPosition());
             mPrefs.updateBrightness(mBrightnessControl.currentBrightnessLevel);
             mPrefs.updateOrientation();
-            mPrefs.updateMeta(getSelectedTrackAudio(false), getSelectedTrackAudio(true), getSelectedTrackSubtitle(), playerView.getResizeMode(), playerView.getVideoSurfaceView().getScaleX());
+
+            if (haveMedia) {
+                // Prevent overwriting temporarily inaccessible media position
+                if (player.isCurrentWindowSeekable()) {
+                    mPrefs.updatePosition(player.getCurrentPosition());
+                }
+                mPrefs.updateMeta(getSelectedTrackAudio(false), getSelectedTrackAudio(true), getSelectedTrackSubtitle(), playerView.getResizeMode(), playerView.getVideoSurfaceView().getScaleX());
+            }
 
             if (player.isPlaying()) {
                 restorePlayState = true;
@@ -1050,7 +1056,8 @@ public class PlayerActivity extends Activity {
         ComponentName componentName = intent.resolveActivity(getPackageManager());
         if (componentName == null)
             return false;
-        return componentName.getPackageName().equals("com.google.android.documentsui");
+        final String packageName = componentName.getPackageName();
+        return packageName.equals("android") || packageName.startsWith("android.") || packageName.startsWith("com.google.");
     }
 
     void safelyStartActivityForResult(final Intent intent, final int code) {

@@ -276,7 +276,7 @@ class Utils {
         return false;
     }
 
-    public static boolean isSupportedUri(final Uri uri) {
+    public static boolean isSupportedNetworkUri(final Uri uri) {
         final String scheme = uri.getScheme();
         return scheme.startsWith("http") || scheme.equals("rtsp");
     }
