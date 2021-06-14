@@ -171,7 +171,8 @@ class UtilsFlavor {
                 }
             }
 
-            Toast.makeText(activity, "Video frameRate: " + frameRate, Toast.LENGTH_LONG).show();
+            if (BuildConfig.DEBUG)
+                Toast.makeText(activity, "Video frameRate: " + frameRate, Toast.LENGTH_LONG).show();
 
             if (frameRate != Format.NO_VALUE) {
                 Display display = activity.getWindow().getDecorView().getDisplay();
@@ -221,7 +222,8 @@ class UtilsFlavor {
                             layoutParams.preferredDisplayModeId = modeBest.getModeId();
                             window.setAttributes(layoutParams);
                         }
-                        Toast.makeText(activity, "Video frameRate: " + frameRate + "\nDisplay refreshRate: " + modeBest.getRefreshRate(), Toast.LENGTH_LONG).show();
+                        if (BuildConfig.DEBUG) {
+                            Toast.makeText(activity, "Video frameRate: " + frameRate + "\nDisplay refreshRate: " + modeBest.getRefreshRate(), Toast.LENGTH_LONG).show();
                         return switchingModes;
                     }
                 }
