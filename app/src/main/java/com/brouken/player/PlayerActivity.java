@@ -392,7 +392,9 @@ public class PlayerActivity extends Activity {
         if (isPiPSupported()) {
             controls.addView(buttonPiP);
         }
-        controls.addView(buttonRotation);
+        if (!Utils.isTvBox(this)) {
+            controls.addView(buttonRotation);
+        }
         controls.addView(exoSettings);
 
         exoBasicControls.addView(horizontalScrollView);
