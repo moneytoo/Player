@@ -145,6 +145,7 @@ public class PlayerActivity extends Activity {
     private long scrubbingStart;
     public boolean frameRendered;
     private boolean alive;
+    public static boolean focusPlay = false;
 
     final Rational rationalLimitWide = new Rational(239, 100);
     final Rational rationalLimitTall = new Rational(100, 239);
@@ -1056,6 +1057,12 @@ public class PlayerActivity extends Activity {
     }
 
     boolean saf() {
+        // Unusable SAF dialog on Geniatech ATV598Max
+        // DEVICE = enjoytv_hybrid
+        if (Build.MANUFACTURER.toLowerCase().equals("geniatech") && Build.VERSION.SDK_INT <= 25) {
+            return false;
+        }
+
         final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
         intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.setType("*/*");
@@ -1398,6 +1405,10 @@ public class PlayerActivity extends Activity {
         } else {
             loadingProgressBar.setVisibility(View.GONE);
             exoPlayPause.setVisibility(View.VISIBLE);
+            if (focusPlay) {
+                focusPlay = false;
+                exoPlayPause.requestFocus();
+            }
         }
     }
 

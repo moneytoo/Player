@@ -261,6 +261,7 @@ class UtilsFlavor {
 
                             activity.mPrefs.updateSubtitle(uri);
                         }
+                        PlayerActivity.focusPlay = true;
                         activity.initializePlayer();
                     }
                 })
