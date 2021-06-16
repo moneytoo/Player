@@ -90,6 +90,11 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
+        if (PlayerActivity.restoreControllerTimeout) {
+            setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+            PlayerActivity.restoreControllerTimeout = false;
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && gestureOrientation == Orientation.UNKNOWN)
             mScaleDetector.onTouchEvent(ev);
 

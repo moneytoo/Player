@@ -88,6 +88,8 @@ import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -135,6 +137,7 @@ public class PlayerActivity extends Activity {
     private ImageButton buttonAspectRatio;
     private ImageButton exoPlayPause;
     private ProgressBar loadingProgressBar;
+    private StyledPlayerControlView controlView;
 
     private boolean restoreOrientationLock;
     private boolean restorePlayState;
@@ -146,6 +149,9 @@ public class PlayerActivity extends Activity {
     public boolean frameRendered;
     private boolean alive;
     public static boolean focusPlay = false;
+
+    public static boolean restoreControllerTimeout = false;
+    public static boolean shortControllerTimeout = false;
 
     final Rational rationalLimitWide = new Rational(239, 100);
     final Rational rationalLimitTall = new Rational(100, 239);
@@ -312,7 +318,7 @@ public class PlayerActivity extends Activity {
             return true;
         });
 
-        final StyledPlayerControlView controlView = playerView.findViewById(R.id.exo_controller);
+        controlView = playerView.findViewById(R.id.exo_controller);
         controlView.setOnApplyWindowInsetsListener((view, windowInsets) -> {
             if (windowInsets != null) {
                 view.setPadding(0, windowInsets.getSystemWindowInsetTop(),
@@ -358,6 +364,8 @@ public class PlayerActivity extends Activity {
             haveMedia = false;
             setDeleteVisible(false);
         });
+
+        exoPlayPause.setOnClickListener(view -> dispatchPlayPause());
 
         // Prevent double tap actions in controller
         findViewById(R.id.exo_bottom_bar).setOnTouchListener((v, event) -> true);
@@ -411,6 +419,15 @@ public class PlayerActivity extends Activity {
             public void onVisibilityChange(int visibility) {
                 controllerVisible = visibility == View.VISIBLE;
                 controllerVisibleFully = playerView.isControllerFullyVisible();
+
+                if (PlayerActivity.restoreControllerTimeout) {
+                    restoreControllerTimeout = false;
+                    if (player.isPlaying())
+                        playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+                    else
+                        playerView.setControllerShowTimeoutMs(-1);
+                }
+
 
                 // https://developer.android.com/training/system-ui/immersive
                 if (visibility == View.VISIBLE) {
@@ -909,7 +926,13 @@ public class PlayerActivity extends Activity {
 
             if (!isScrubbing) {
                 if (isPlaying) {
-                    playerView.setControllerShowTimeoutMs(CONTROLLER_TIMEOUT);
+                    if (shortControllerTimeout) {
+                        playerView.setControllerShowTimeoutMs(CONTROLLER_TIMEOUT / 3);
+                        shortControllerTimeout = false;
+                        restoreControllerTimeout = true;
+                    } else {
+                        playerView.setControllerShowTimeoutMs(CONTROLLER_TIMEOUT);
+                    }
                 } else {
                     playerView.setControllerShowTimeoutMs(-1);
                 }
@@ -1468,6 +1491,24 @@ public class PlayerActivity extends Activity {
         try {
             DocumentsContract.deleteDocument(getContentResolver(), mPrefs.mediaUri);
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void dispatchPlayPause() {
+        @Player.State int state = player.getPlaybackState();
+        String methodName;
+        if (state == Player.STATE_IDLE || state == Player.STATE_ENDED || !player.getPlayWhenReady()) {
+            methodName = "dispatchPlay";
+            shortControllerTimeout = true;
+        } else {
+            methodName = "dispatchPause";
+        }
+        try {
+            final Method method = StyledPlayerControlView.class.getDeclaredMethod(methodName, Player.class);
+            method.setAccessible(true);
+            method.invoke(controlView, (Player) player);
+        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
