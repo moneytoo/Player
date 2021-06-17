@@ -19,6 +19,7 @@ It properly syncs audio with video track when using Bluetooth earphones/speaker.
  * **Audio**: Vorbis, Opus, FLAC, ALAC, PCM/WAVE (μ-law, A-law), MP1, MP2, MP3, AMR (NB, WB), AAC (LC, ELD, HE; xHE on Android 9+), AC-3, E-AC-3, DTS, DTS-HD, TrueHD
  * **Video**: H.263, H.264 AVC (Baseline Profile; Main Profile on Android 6+), H.265 HEVC, MPEG-4 SP, VP8, VP9, AV1
  * **Containers**: MP4, MOV, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV
+ * **Streaming**: DASH, HLS, SmoothStreaming, RTSP
  * **Subtitles**: SRT, SSA, ASS, TTML, VTT
 
 HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
@@ -37,7 +38,7 @@ HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
  * PiP (Picture in Picture) on Android 8+ (resizable on Android 11+)
  * Resize (fit/crop)
  * Volume boost
- * No ads, tracking or even the Internet permission (no storage permission either)
+ * No ads, tracking or excessive permissions
 
 To load external (non-embedded) subtitles, long press the file open action in the bottom bar. The first time you do that, you will be offered to select root video folder to enable automatic loading of external subtitles.
 
@@ -78,27 +79,6 @@ Unfortunately, upstream ExoPlayer doesn't handle some older formats like [AVI co
 
 Just Player focuses on playing videos so audio only playback isn't officialy supported ([request](https://github.com/moneytoo/Player/issues/55)). 
 
-### What's the difference between `-offline` and `-online` builds?
-
-#### `-offline` (package id `com.brouken.player`)
-
-* This is the version distributed using most channels (Google Play, F-Droid etc.)
-* Without `INTERNET` permission
-
-Even without Internet permission, this variant is still able to access and play some videos over the network (thanks to DocumentsProviders). This includes official cloud storage clients (like [Dropbox](https://play.google.com/store/apps/details?id=com.dropbox.android), [Google Drive](https://play.google.com/store/apps/details?id=com.google.android.apps.docs) or [Microsoft OneDrive](https://play.google.com/store/apps/details?id=com.microsoft.skydrive)).
-
-Ideally, you should also be able to use other proviers for [Samba](https://f-droid.org/en/packages/com.google.android.sambadocumentsprovider/), [WebDAV](https://github.com/alexbakker/webdav-provider) or [SFTP](https://github.com/RikyIsola/FileManagerUtils). Another promising multi protocol provider is [rcx](https://github.com/x0b/rcx). However, at this time these providers may not be "production ready".
-
-#### `-online` (package id `com.brouken.player.online`)
-
-* Currently available only from [releases on Github](https://github.com/moneytoo/Player/releases/latest)
-* With `INTERNET` permission
-* Optional `READ_EXTERNAL_STORAGE` permission (needed only with some [old apps](https://github.com/moneytoo/Player/issues/7))
-* Supports opening "streaming" links (including DASH, HLS, SmoothStreaming, RTSP etc.)
-* Auto [update checker](https://github.com/moneytoo/Player/issues/58)
-
-This variant is needed if you want to access videos on network storages using file managers such as [Solid Explorer](https://play.google.com/store/apps/details?id=pl.solidexplorer2), [Total Commander](https://play.google.com/store/apps/details?id=com.ghisler.android.TotalCommander) or [Ghost Commander](https://play.google.com/store/apps/details?id=com.ghostsq.commander).
-
 ### Android TV support?
 
 Notes on partial, [experimental support](https://github.com/moneytoo/Player/issues/26#issuecomment-778677387).
@@ -111,15 +91,15 @@ Available since `v0.33`: Install app like [MediaInfo](https://play.google.com/st
 
 Here's a comparison table presenting all available and significant open source video players for Android I was able to find. Just Player is something like 80% feature complete. It will probably never have dozens of options or some rich media library UI. It will never truly compete with feature rich VLC. It just attempts to provide functional feature set and motive others to create greater players based on amazing ExoPlayer.
 
-| App name (source)                                                           | Tested version        | Media engine                                                                                                                                                            | Internet access | Subtitles (embedded)                                  | DTS/AC3/E-AC3 decoders | PiP                      | Cutout (notch) | HDR (4K 60 FPS HEVC)        | HDR (4K 60 FPS VP9)         | Gestures                  |
-| --------------------------------------------------------------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- | ----------------------------------------------------- | ---------------------- | ------------------------ | -------------- | --------------------------- | --------------------------- | ------------------------- |
-| [Fermata Media Player](https://github.com/AndreyPavlenko/Fermata)           | 1.7.3                 | [MediaPlayer](https://developer.android.com/guide/topics/media/mediaplayer), [ExoPlayer](https://exoplayer.dev/) and [libVLC](https://www.videolan.org/vlc/libvlc.html) | Yes             | 🟢 Yes (libVLC only)                                  | 🟢 Yes (libVLC only)   | 🔴 No                    | 🔴 No          | 🟢 Yes                      | 🔴 No                       | 🟡 Seek/Volume            |
-| [Just (Video) Player](https://github.com/moneytoo/Player)                   | 0.11                  | [ExoPlayer](https://exoplayer.dev/)                                                                                                                                     | No              | 🟢 Yes                                                | 🟢 Yes                 | 🟢 Yes                   | 🟢 Yes         | 🟢 Yes                      | 🟢 Yes                      | 🟢 Seek/Volume/Brightness |
-| [Kodi](https://github.com/xbmc/xbmc)                                        | 18.9                  | ?                                                                                                                                                                       | Yes             | 🟢 Yes                                                | 🟢 Yes                 | 🔴 No                    | 🔴 No          | 🟢 Yes                      | 🔴 No                       | 🔴 No                     |
-| [mpv](https://github.com/mpv-android/mpv-android)                           | 2020-11-16-release    | [libmpv](https://github.com/mpv-player/mpv)                                                                                                                             | Yes             | 🟢 Yes                                                | 🟢 Yes                 | 🔴 No                    | 🟢 Yes         | 🟡 Yes (performance issues) | 🟡 Yes (performance issues) | 🟢 Seek/Volume/Brightness |
-| [Nova Video Player](https://github.com/nova-video-player/aos-AVP)           | 4.49.15-20201210.0809 | ?, ([ExoPlayer](https://exoplayer.dev/) in [nova v7](https://github.com/nova-video-player/aos-AVP/milestone/9))                                                         | Yes             | 🟢 Yes                                                | 🟢 Yes                 | 🟢 Yes                   | 🔴 No          | 🟢 Yes                      | 🔴 No                       | 🔴 No                     |
-| [VLC](https://code.videolan.org/videolan/vlc-android)                       | 3.3.2                 | [libVLC](https://www.videolan.org/vlc/libvlc.html)                                                                                                                      | Yes             | 🟡 Yes (may be cut off in some video display formats) | 🟢 Yes                 | 🟢 Yes                   | 🟢 Yes         | 🟢 Yes                      | 🔴 No                       | 🟢 Seek/Volume/Brightness |
-| [YetAnotherVideoPlayer](https://github.com/shadow578/YetAnotherVideoPlayer) | 1108                  | [ExoPlayer](https://exoplayer.dev/)                                                                                                                                     | Yes             | 🔴 No                                                 | 🔴 No                  | 🟡 Yes (with black bars) | 🔴 No          | 🔴 No                       | 🔴 No                       | 🟡 Volume/Brightness      |
+| App name (source)                                                           | Tested version        | Media engine                                                                                                                                                            | Subtitles (embedded)                                  | DTS/AC3/E-AC3 decoders | PiP                      | Cutout (notch) | HDR (4K 60 FPS HEVC)        | HDR (4K 60 FPS VP9)         | Gestures                  |
+| --------------------------------------------------------------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ---------------------- | ------------------------ | -------------- | --------------------------- | --------------------------- | ------------------------- |
+| [Fermata Media Player](https://github.com/AndreyPavlenko/Fermata)           | 1.7.3                 | [MediaPlayer](https://developer.android.com/guide/topics/media/mediaplayer), [ExoPlayer](https://exoplayer.dev/) and [libVLC](https://www.videolan.org/vlc/libvlc.html) | 🟢 Yes (libVLC only)                                  | 🟢 Yes (libVLC only)   | 🔴 No                    | 🔴 No          | 🟢 Yes                      | 🔴 No                       | 🟡 Seek/Volume            |
+| [Just (Video) Player](https://github.com/moneytoo/Player)                   | 0.11                  | [ExoPlayer](https://exoplayer.dev/)                                                                                                                                     | 🟢 Yes                                                | 🟢 Yes                 | 🟢 Yes                   | 🟢 Yes         | 🟢 Yes                      | 🟢 Yes                      | 🟢 Seek/Volume/Brightness |
+| [Kodi](https://github.com/xbmc/xbmc)                                        | 18.9                  | ?                                                                                                                                                                       | 🟢 Yes                                                | 🟢 Yes                 | 🔴 No                    | 🔴 No          | 🟢 Yes                      | 🔴 No                       | 🔴 No                     |
+| [mpv](https://github.com/mpv-android/mpv-android)                           | 2020-11-16-release    | [libmpv](https://github.com/mpv-player/mpv)                                                                                                                             | 🟢 Yes                                                | 🟢 Yes                 | 🔴 No                    | 🟢 Yes         | 🟡 Yes (performance issues) | 🟡 Yes (performance issues) | 🟢 Seek/Volume/Brightness |
+| [Nova Video Player](https://github.com/nova-video-player/aos-AVP)           | 4.49.15-20201210.0809 | ?, ([ExoPlayer](https://exoplayer.dev/) in [nova v7](https://github.com/nova-video-player/aos-AVP/milestone/9))                                                         | 🟢 Yes                                                | 🟢 Yes                 | 🟢 Yes                   | 🔴 No          | 🟢 Yes                      | 🔴 No                       | 🔴 No                     |
+| [VLC](https://code.videolan.org/videolan/vlc-android)                       | 3.3.2                 | [libVLC](https://www.videolan.org/vlc/libvlc.html)                                                                                                                      | 🟡 Yes (may be cut off in some video display formats) | 🟢 Yes                 | 🟢 Yes                   | 🟢 Yes         | 🟢 Yes                      | 🔴 No                       | 🟢 Seek/Volume/Brightness |
+| [YetAnotherVideoPlayer](https://github.com/shadow578/YetAnotherVideoPlayer) | 1108                  | [ExoPlayer](https://exoplayer.dev/)                                                                                                                                     | 🔴 No                                                 | 🔴 No                  | 🟡 Yes (with black bars) | 🔴 No          | 🔴 No                       | 🔴 No                       | 🟡 Volume/Brightness      |
 
 _The tested HDR VP9 video was "The World in HDR" from [Kodi Sample](https://kodi.wiki/view/Samples#4K_.28UltraHD.29), running on OnePlus 7 (Snapdragon 855)._
 

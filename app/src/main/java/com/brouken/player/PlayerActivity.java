@@ -466,8 +466,6 @@ public class PlayerActivity extends Activity {
                 }
             }
         });
-
-        UtilsFlavor.onAppLaunch(this);
     }
 
     @Override
@@ -971,7 +969,7 @@ public class PlayerActivity extends Activity {
                         frameRateExo = format.frameRate;
                     }
 
-                    boolean switched = UtilsFlavor.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri);
+                    boolean switched = Utils.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri);
                     if (play) {
                         play = false;
                         if (!switched) {
@@ -1015,7 +1013,7 @@ public class PlayerActivity extends Activity {
     }
 
     private void openFile(Uri pickerInitialUri) {
-        if (saf() || !UtilsFlavor.alternativeChooser(this, pickerInitialUri, true)) {
+        if (saf() || !Utils.alternativeChooser(this, pickerInitialUri, true)) {
             enableRotation();
 
             final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT, pickerInitialUri);
@@ -1029,7 +1027,7 @@ public class PlayerActivity extends Activity {
     private void loadSubtitleFile(Uri pickerInitialUri) {
         Toast.makeText(PlayerActivity.this, R.string.open_subtitles, Toast.LENGTH_SHORT).show();
 
-        if (saf() || !UtilsFlavor.alternativeChooser(this, pickerInitialUri, false)) {
+        if (saf() || !Utils.alternativeChooser(this, pickerInitialUri, false)) {
             enableRotation();
 
             final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT, pickerInitialUri);

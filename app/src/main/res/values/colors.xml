@@ -7,4 +7,7 @@
     <color name="ui_controls_background">#98000000</color>
     <color name="exo_bottom_bar_background">@color/ui_controls_background</color>
     <color name="exo_black_opacity_70">@color/ui_controls_background</color>
+
+    <color name="text_primary">#212121</color>
+    <color name="text_secondary">#5f6368</color>
 </resources>
