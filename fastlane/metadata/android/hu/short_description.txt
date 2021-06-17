@@ -1,0 +1,1 @@
+Egyszerű videólejátszó az ExoPlayer alapján

@@ -1,0 +1,26 @@
+Android videólejátszó az ExoPlayer alapján. Az ExoPlayer FFmpeg kiegészítőjét használja az összes audióformátum használatával. (Speciális formátumokat is le tud jásztszani mint a(z) AC3, EAC3, DTS, DTS HD, TrueHD stb.).
+
+It properly syncs audio with the video track when using Bluetooth earphones/speaker.
+
+Támogatott formátumok
+
+ * Hang: Vorbis, Opus, FLAC, ALAC, PCM/WAVE (μ-law, A-law), MP1, MP2, MP3, AMR (NB, WB), AAC (LC, ELD, HE; xHE csak Android 9+), AC-3, E-AC-3, DTS, DTS-HD, TrueHD
+ * Videó: H.263, H.264 AVC (Baseline Profile; Main Profile on Android 6+), H.265 HEVC, MPEG-4 SP, VP8, VP9, AV1
+ * Containers: MP4, MOV, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV
+ * Felirat: SRT, SSA, ASS, TTML, VTT
+
+HDR (HDR10+ és Dolby Vision) video playback on compatible/supported hardware.
+
+Tulajdonságok
+
+ * Audio/subtitle track selection
+ * Lejátszássebesség kezelő
+ * Horizontal swipe and double tap to quickly seek
+ * Vertical swipe to change brightness (left) / volume (right)
+ * Pinch to zoom (Android 7+)
+ * PiP (Picture in Picture) on Android 8+ (resizable on Android 11+)
+ * Átméretezés (Illesztés/Nyújtás)
+ * Hangerősítés
+ * Nincsenek reklámok, nyomkövetők és internet hozzáférés. (tárhely engedély sincsen)
+
+To load external (non-embedded) subtitles, long press the file open action in the bottom bar.
