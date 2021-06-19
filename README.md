@@ -38,6 +38,7 @@ HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
  * PiP (Picture in Picture) on Android 8+ (resizable on Android 11+)
  * Resize (fit/crop)
  * Volume boost
+ * Auto frame rate matching on Android TV/boxes (Android 6+)
  * No ads, tracking or excessive permissions
 
 To load external (non-embedded) subtitles, long press the file open action in the bottom bar. The first time you do that, you will be offered to select root video folder to enable automatic loading of external subtitles.
@@ -79,13 +80,17 @@ Unfortunately, upstream ExoPlayer doesn't handle some older formats like [AVI co
 
 Just Player focuses on playing videos so audio only playback isn't officialy supported ([request](https://github.com/moneytoo/Player/issues/55)). 
 
-### Android TV support?
+### How about Android TV support?
 
-Notes on partial, [experimental support](https://github.com/moneytoo/Player/issues/26#issuecomment-778677387).
+Since `v0.36`, Android TV is supported. Though, it is not available for installation on Android TV through Google Play yet.
 
 ### How to view detailed video information (like resolution, bitrate etc.)?
 
 Available since `v0.33`: Install app like [MediaInfo](https://play.google.com/store/apps/details?id=net.mediaarea.mediainfo) (or APK from [MediaArea.net](https://mediaarea.net/en/MediaInfo/Download/Android)). Then, to quickly open MediaInfo from Just Player, long press the video name/title.
+
+### I want to automatically activate PiP mode when leaving the player...
+
+There as a hidden feature - Auto PiP. Long press the PiP icon to activate this feature. Then, when you leave Just Player through the home button and video is playing, PiP will be activated automatically.
 
 ## Other open source Android video players
 
