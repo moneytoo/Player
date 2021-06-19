@@ -88,6 +88,7 @@ import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -357,6 +358,15 @@ public class PlayerActivity extends Activity {
             }
             return windowInsets;
         });
+
+        try {
+            CustomDefaultTrackNameProvider customDefaultTrackNameProvider = new CustomDefaultTrackNameProvider(getResources());
+            final Field field = StyledPlayerControlView.class.getDeclaredField("trackNameProvider");
+            field.setAccessible(true);
+            field.set(controlView, customDefaultTrackNameProvider);
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
 
         findViewById(R.id.delete).setOnClickListener(view -> {
             releasePlayer();
