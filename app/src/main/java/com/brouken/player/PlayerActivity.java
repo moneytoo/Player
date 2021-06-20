@@ -236,7 +236,7 @@ public class PlayerActivity extends Activity {
 
         buttonOpen.setOnLongClickListener(view -> {
             if (!Utils.isTvBox(this) && mPrefs.askScope) {
-                askForScope();
+                askForScope(true);
             } else {
                 loadSubtitleFile(mPrefs.mediaUri);
             }
@@ -394,7 +394,7 @@ public class PlayerActivity extends Activity {
         exoBasicControls.removeView(exoSubtitle);
 
         exoSubtitle.setOnLongClickListener(view -> {
-            askForScope();
+            askForScope(false);
             return true;
         });
 
@@ -1399,14 +1399,17 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    void askForScope() {
+    void askForScope(boolean loadSubtitlesOnCancel) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(PlayerActivity.this);
         builder.setMessage(String.format(getString(R.string.subtitles_scope), getString(R.string.app_name)));
-        builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
-                    requestDirectoryAccess();
-                }
+        builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> requestDirectoryAccess()
         );
-        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> mPrefs.markScopeAsked());
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+            mPrefs.markScopeAsked();
+            if (loadSubtitlesOnCancel) {
+                loadSubtitleFile(mPrefs.mediaUri);
+            }
+        });
         final AlertDialog dialog = builder.create();
         dialog.show();
     }
