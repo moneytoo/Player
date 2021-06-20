@@ -604,6 +604,8 @@ public class PlayerActivity extends Activity {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig);
 
         if (isInPictureInPictureMode) {
+            // On Android TV it is required to hide controller in this PIP change callback
+            playerView.hideController();
             setSubtitleTextSizePiP();
             playerView.setScale(1.f);
             mReceiver = new BroadcastReceiver() {
