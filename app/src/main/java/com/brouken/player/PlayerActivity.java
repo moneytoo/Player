@@ -235,7 +235,7 @@ public class PlayerActivity extends Activity {
         buttonOpen.setOnClickListener(view -> openFile(mPrefs.mediaUri));
 
         buttonOpen.setOnLongClickListener(view -> {
-            if (saf() && mPrefs.askScope) {
+            if (!Utils.isTvBox(this) && mPrefs.askScope) {
                 askForScope();
             } else {
                 loadSubtitleFile(mPrefs.mediaUri);
@@ -1023,7 +1023,9 @@ public class PlayerActivity extends Activity {
     }
 
     private void openFile(Uri pickerInitialUri) {
-        if (saf() || !Utils.alternativeChooser(this, pickerInitialUri, true)) {
+        if (Utils.isTvBox(this)) {
+            Utils.alternativeChooser(this, pickerInitialUri, true);
+        } else {
             enableRotation();
 
             final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT, pickerInitialUri);
@@ -1037,7 +1039,9 @@ public class PlayerActivity extends Activity {
     private void loadSubtitleFile(Uri pickerInitialUri) {
         Toast.makeText(PlayerActivity.this, R.string.open_subtitles, Toast.LENGTH_SHORT).show();
 
-        if (saf() || !Utils.alternativeChooser(this, pickerInitialUri, false)) {
+        if (Utils.isTvBox(this)) {
+            Utils.alternativeChooser(this, pickerInitialUri, false);
+        } else {
             enableRotation();
 
             final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT, pickerInitialUri);
@@ -1085,23 +1089,6 @@ public class PlayerActivity extends Activity {
         }
 
         return intent;
-    }
-
-    boolean saf() {
-        // Unusable SAF dialog on Geniatech ATV598Max
-        // DEVICE = enjoytv_hybrid
-        if (Build.MANUFACTURER.toLowerCase().equals("geniatech") && Build.VERSION.SDK_INT <= 25) {
-            return false;
-        }
-
-        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
-        ComponentName componentName = intent.resolveActivity(getPackageManager());
-        if (componentName == null)
-            return false;
-        final String packageName = componentName.getPackageName();
-        return packageName.equals("android") || packageName.startsWith("android.") || packageName.startsWith("com.android.") || packageName.startsWith("com.google.");
     }
 
     void safelyStartActivityForResult(final Intent intent, final int code) {
@@ -1370,11 +1357,11 @@ public class PlayerActivity extends Activity {
     }
 
     void searchSubtitles() {
-        if (mPrefs.scopeUri != null || !saf()) {
+        if (mPrefs.scopeUri != null || Utils.isTvBox(this)) {
             DocumentFile video = null;
             File videoRaw = null;
 
-            if (saf() && mPrefs.scopeUri != null) {
+            if (!Utils.isTvBox(this) && mPrefs.scopeUri != null) {
                 if ("com.android.externalstorage.documents".equals(mPrefs.mediaUri.getHost())) {
                     // Fast search based on path in uri
                     video = SubtitleUtils.findUriInScope(this, mPrefs.scopeUri, mPrefs.mediaUri);
@@ -1385,14 +1372,14 @@ public class PlayerActivity extends Activity {
                     DocumentFile fileMedia = DocumentFile.fromSingleUri(this, mPrefs.mediaUri);
                     video = SubtitleUtils.findDocInScope(fileScope, fileMedia);
                 }
-            } else if (!saf()) {
+            } else if (Utils.isTvBox(this)) {
                 videoRaw = new File(mPrefs.mediaUri.getSchemeSpecificPart());
                 video = DocumentFile.fromFile(videoRaw);
             }
 
             if (video != null) {
                 DocumentFile subtitle;
-                if (saf()) {
+                if (!Utils.isTvBox(this)) {
                     subtitle = SubtitleUtils.findSubtitle(video);
                 } else {
                     File parentRaw = videoRaw.getParentFile();
