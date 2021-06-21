@@ -44,7 +44,7 @@ dependencies {
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     implementation 'com.ibm.icu:icu4j:69.1'
     implementation 'com.arthenica:ffmpeg-kit-min:4.4.LTS'
-    implementation 'com.github.hedzr:android-file-chooser:v1.2.0-final'
     implementation project(path: ':doubletapplayerview')
+    implementation project(path: ':android-file-chooser')
     implementation fileTree(dir: "libs", include: ["*.aar"])
 }

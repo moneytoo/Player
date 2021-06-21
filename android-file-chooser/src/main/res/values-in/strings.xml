@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- Added by joielechong -->
+<resources>
+    <string name="empty_directory">Direktori Kosong</string>
+    <string name="storage_removed">Penyimpanan dilepaskan atau dicabut</string>
+    <string name="choose_file">Pilih file</string>
+    <string name="error_selecting_file">Gagal memilih File</string>
+    <string name="internal_storage">Penyimpanan internal</string>
+</resources>

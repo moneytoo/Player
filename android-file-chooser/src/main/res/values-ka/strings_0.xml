@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation,ResourceName">
+    <string name="title_choose">აირჩიეთ</string>
+    <string name="title_choose_dict_file">აირჩიეთ საქაღალდე</string>
+    <string name="dialog_ok">არჩევა</string>
+    <string name="dialog_cancel">გაუქმება</string>
+    <string name="option_create_folder">ახალი საქაღალდე</string>
+    <string name="options_delete">წაშლა</string>
+    <string name="new_folder_cancel">გაუქმება</string>
+    <string name="new_folder_ok">შენახვა</string>
+</resources>

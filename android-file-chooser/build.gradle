@@ -1,0 +1,58 @@
+apply plugin: 'com.android.library'
+
+def VERSION_NAME = project.VERSION_NAME
+def VERSION_CODE = Integer.parseInt(project.VERSION_CODE)
+
+def ANDROID_COMPILE_SDK_VERSION = Integer.parseInt(project.ANDROID_COMPILE_SDK_VERSION)
+def ANDROID_TARGET_SDK_VERSION = Integer.parseInt(project.ANDROID_TARGET_SDK_VERSION)
+//def ANDROID_BUILD_TOOLS_VERSION = project.ANDROID_BUILD_TOOLS_VERSION
+def ANDROID_MIN_SDK_VERSION = Integer.parseInt(project.ANDROID_MIN_SDK_VERSION)
+
+def JAVA_COMPATIBILITY =  JavaVersion.valueOf(project.JAVA_COMPATIBILITY)
+
+android {
+    compileSdkVersion ANDROID_COMPILE_SDK_VERSION
+    //buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
+    resourcePrefix "obsez_fc__"
+
+    defaultConfig {
+        minSdkVersion ANDROID_MIN_SDK_VERSION
+        targetSdkVersion ANDROID_TARGET_SDK_VERSION
+        versionCode VERSION_CODE
+        versionName VERSION_NAME
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+//        debug {
+//            buildConfig "public final static boolean HAS_PROTOTYPE_FEATURE = true;"
+//        }
+//        release {
+//            buildConfig "public final static boolean HAS_PROTOTYPE_FEATURE = false;"
+//        }
+    }
+
+    compileOptions {
+        sourceCompatibility JAVA_COMPATIBILITY
+        targetCompatibility JAVA_COMPATIBILITY
+    }
+    lintOptions {
+        lintConfig rootProject.file('lint.xml')
+        quiet true
+        abortOnError false
+        ignoreWarnings true
+        disable 'InvalidPackage'  // Some libraries have issues with this.
+        disable 'OldTargetApi'    // Lint gives this warning but SDK 20 would be Android L Beta.
+        disable 'IconDensities'   // For testing purpose. This is safe to remove.
+        disable 'deprecation'
+        checkReleaseBuilds false
+    }
+
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'androidx.appcompat:appcompat:1.0.0'
+}

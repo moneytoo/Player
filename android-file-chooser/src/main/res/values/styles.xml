@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+ * Copyright (C) 2013 Paul Burke
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+<resources xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="ResourceName,PrivateResource">
+
+    <!-- PermissionActivity style -->
+    <style name="Theme.Transparent" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <!-- ChooserDialog style -->
+    <public name="FileChooserStyle" type="style" />
+    <style name="FileChooserStyle">
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_primary</item>
+        <item name="colorPrimary">@color/text_primary</item>
+        <item name="colorPrimaryDark">@color/text_primary</item>
+        <item name="colorAccent">@color/text_secondary</item>
+        <item name="fileChooserDialogGravity">center</item>
+        <item name="fileChooserDialogStyle">@style/FileChooserDialogStyle</item>
+        <item name="fileChooserListItemStyle">@style/FileChooserListItemStyle</item>
+        <item name="fileChooserPathViewStyle">@style/FileChooserPathViewStyle</item>
+        <item name="fileChooserNewFolderStyle">@style/FileChooserNewFolderStyle</item>
+    </style>
+
+    <!-- Dialog -->
+    <public name="FileChooserDialogStyle" type="style" />
+    <style name="FileChooserDialogStyle" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!--<item name="android:windowBackground">@android:color/transparent</item>-->
+        <item name="android:windowTitleStyle">@style/FileChooserTitleStyle</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowMinWidthMajor">@android:dimen/dialog_min_width_major</item>
+        <item name="android:windowMinWidthMinor">@android:dimen/dialog_min_width_minor</item>
+        <item name="android:backgroundDimAmount">0.3</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:buttonBarStyle">@style/Widget.AppCompat.ButtonBar.AlertDialog</item>
+        <item name="buttonBarStyle">@style/Widget.AppCompat.ButtonBar.AlertDialog</item>
+        <item name="android:buttonBarButtonStyle">@style/FileChooserButtonStyle</item>
+        <item name="buttonBarButtonStyle">@style/FileChooserButtonStyle</item>
+    </style>
+
+    <public name="FileChooserTitleStyle" type="style" />
+    <style name="FileChooserTitleStyle">
+        <item name="android:maxLines">1</item>
+        <item name="android:scrollHorizontally">true</item>
+        <item name="android:textAppearance">@style/TextAppearance.AppCompat.Title</item>
+        <item name="android:textColor">#f000</item>
+    </style>
+
+    <public name="FileChooserButtonStyle" type="style" />
+    <style name="FileChooserButtonStyle" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textAppearanceButton">@style/TextAppearance.AppCompat.Button</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:background">@drawable/listview_item_selector</item>
+    </style>
+
+    <!-- List -->
+    <public name="FileChooserListItemStyle" type="style" />
+    <style name="FileChooserListItemStyle">
+        <item name="fileChooserTextNameStyle">@style/FileChooserTextNameStyle</item>
+        <item name="fileChooserTextSizeStyle">@style/FileChooserTextSizeStyle</item>
+        <item name="fileChooserTextDateStyle">@style/FileChooserTextDateStyle</item>
+        <item name="fileChooserFileIconStyle">@style/FileChooserFileIconStyle</item>
+        <item name="android:background">@color/li_row_background</item>
+        <item name="fileListItemSelectedTint">@color/li_row_background_tint</item>
+        <item name="fileListItemFocusedDrawable">@drawable/listview_item_selector</item>
+        <item name="android:descendantFocusability">beforeDescendants</item>
+        <item name="android:padding">10dp</item>
+    </style>
+
+    <public name="FileChooserTextNameStyle" type="style" />
+    <style name="FileChooserTextNameStyle">
+        <item name="android:paddingLeft">@dimen/list_item_padding</item>
+        <item name="android:paddingRight">@dimen/list_item_padding</item>
+        <item name="android:drawablePadding">@dimen/list_item_padding</item>
+        <item name="android:textColor">@color/text_primary</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
+    <public name="FileChooserTextSizeStyle" type="style" />
+    <style name="FileChooserTextSizeStyle">
+        <item name="android:paddingLeft">@dimen/list_item_padding</item>
+        <item name="android:paddingRight">@dimen/list_item_padding</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
+    <public name="FileChooserTextDateStyle" type="style" />
+    <style name="FileChooserTextDateStyle">
+        <item name="android:paddingLeft">@dimen/list_item_padding</item>
+        <item name="android:paddingRight">@dimen/list_item_padding</item>
+        <item name="android:textColor">@color/text_secondary</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
+    <public name="FileChooserFileIconStyle" type="style" />
+    <style name="FileChooserFileIconStyle">
+        <item name="android:layout_marginLeft">12dp</item>
+        <item name="android:layout_marginRight">6dp</item>
+        <item name="android:scaleType">fitCenter</item>
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:padding">0dp</item>
+    </style>
+
+    <!-- PathView -->
+    <public name="FileChooserPathViewStyle" type="style" />
+    <style name="FileChooserPathViewStyle">
+        <item name="android:background">#ffffffff</item>
+        <item name="android:textColor">#40000000</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">3dp</item>
+        <item name="android:paddingBottom">3dp</item>
+        <item name="android:lines">1</item>
+        <item name="android:maxLines">1</item>
+        <item name="fileChooserPathViewElevation">2</item>
+        <item name="fileChooserPathViewDisplayRoot">true</item>
+    </style>
+
+    <!-- New Folder -->
+    <public name="FileChooserNewFolderStyle" type="style" />
+    <style name="FileChooserNewFolderStyle">
+        <item name="fileChooserNewFolderOverlayColor">#60ffffff</item>
+        <item name="fileChooserNewFolderBackgroundColor">#ffffffff</item>
+        <item name="fileChooserNewFolderWidthWeight">0.56</item>
+        <item name="fileChooserNewFolderElevation">25</item>
+        <item name="fileChooserNewFolderTextColor">@color/text_primary</item>
+        <item name="fileChooserNewFolderSoftInputMode">adjustNothing</item>
+    </style>
+
+</resources>

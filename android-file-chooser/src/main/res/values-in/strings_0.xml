@@ -1,0 +1,10 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation,ResourceName">
+    <string name="title_choose">Pilih</string>
+    <string name="title_choose_dict_file">Pilih kamus</string>
+    <string name="dialog_ok">Pilih</string>
+    <string name="dialog_cancel">Batal</string>
+    <string name="option_create_folder">Folder baru</string>
+    <string name="options_delete">Hapus</string>
+    <string name="new_folder_cancel">Batal</string>
+    <string name="new_folder_ok">OK</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="empty_directory">ცარიელი საქაღალდე</string>
+    <string name="storage_removed">მეხსიერება მოხსნილია</string>
+    <string name="choose_file">აირჩიეთ ფაილი</string>
+    <string name="error_selecting_file">შეცდომა ფაილის არჩევისას</string>
+    <string name="internal_storage">შიდა მეხსიერება</string>
+</resources>

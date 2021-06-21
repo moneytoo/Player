@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="ResourceName">
+
+    <attr name="fileChooserStyle" format="reference" />
+
+    <declare-styleable name="FileChooser">
+        <attr name="fileChooserDialogGravity" format="flags">
+            <flag name="no_gravity" value="0" />
+            <flag name="left" value="3" />
+            <flag name="top" value="48" />
+            <flag name="right" value="5" />
+            <flag name="bottom" value="80" />
+            <flag name="center" value="17" />
+            <flag name="center_horizontal" value="1" />
+            <flag name="center_vertical" value="16" />
+            <flag name="start" value="8388611" />
+            <flag name="end" value="8388613" />
+        </attr>
+        <attr name="fileChooserDialogStyle" format="reference" />
+        <attr name="fileChooserListItemStyle" format="reference" />
+        <attr name="fileChooserTextNameStyle" format="reference" />
+        <attr name="fileChooserTextSizeStyle" format="reference" />
+        <attr name="fileChooserTextDateStyle" format="reference" />
+        <attr name="fileChooserFileIconStyle" format="reference" />
+        <attr name="fileListItemSelectedTint" format="color|reference" />
+        <attr name="fileListItemFocusedDrawable" format="reference"/>
+        <attr name="fileChooserPathViewStyle" format="reference" />
+        <attr name="fileChooserPathViewElevation" format="integer|reference" />
+        <attr name="fileChooserPathViewDisplayRoot" format="boolean|reference"/>
+        <attr name="fileChooserNewFolderStyle" format="reference" />
+        <attr name="fileChooserNewFolderOverlayColor" format="color|reference" />
+        <attr name="fileChooserNewFolderBackgroundColor" format="color|reference" />
+        <attr name="fileChooserNewFolderWidthWeight" format="float|reference" />
+        <attr name="fileChooserNewFolderElevation" format="integer|reference" />
+        <attr name="fileChooserNewFolderTextColor" format="color|reference" />
+        <attr name="fileChooserNewFolderSoftInputMode" format="flags">
+            <flag name="adjustUnspecified" value="0x00"/>
+            <flag name="adjustResize" value="0x10"/>
+            <flag name="adjustPan" value="0x20"/>
+            <flag name="adjustNothing" value="0x30"/>
+        </attr>
+    </declare-styleable>
+
+</resources>

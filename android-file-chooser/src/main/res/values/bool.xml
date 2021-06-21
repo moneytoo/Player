@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <bool name="use_activity">true</bool>
+    <bool name="use_provider">false</bool>
+
+</resources>

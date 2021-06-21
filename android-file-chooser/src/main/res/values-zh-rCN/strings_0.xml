@@ -1,0 +1,10 @@
+<resources>
+  <string name="title_choose">选择</string>
+  <string name="title_choose_dict_file">选择一个字典文件</string>
+  <string name="dialog_ok">选择</string>
+  <string name="dialog_cancel">取消</string>
+  <string name="option_create_folder">新建文件夹</string>
+  <string name="options_delete">删除</string>
+  <string name="new_folder_cancel">放弃</string>
+  <string name="new_folder_ok">确定</string>
+</resources>
