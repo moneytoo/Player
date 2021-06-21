@@ -5,7 +5,7 @@
         <item name="android:navigationBarColor">@color/ui_controls_background</item>
         <item name="android:windowBackground">@color/black</item>
         <item name="android:colorPrimary">@color/green</item>
-        <item name="android:windowLayoutInDisplayCutoutMode" tools:targetApi="27">shortEdges</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:ignore="NewApi">shortEdges</item>
         <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
     </style>
 
