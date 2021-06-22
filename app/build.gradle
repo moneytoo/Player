@@ -33,7 +33,10 @@ android {
 dependencies {
     def exoplayerVersion = '2.14.1'
     implementation "com.google.android.exoplayer:exoplayer-core:$exoplayerVersion"
-    implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion"
+    // FIXME: Temporarily use patched exoplayer-ui r2.14.1
+    // https://github.com/google/ExoPlayer/issues/9061
+    // https://github.com/google/ExoPlayer/issues/9086
+    //implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion"
     implementation "com.google.android.exoplayer:extension-mediasession:$exoplayerVersion"
     implementation "com.google.android.exoplayer:exoplayer-dash:$exoplayerVersion"
     implementation "com.google.android.exoplayer:exoplayer-hls:$exoplayerVersion"
