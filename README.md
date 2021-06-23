@@ -8,7 +8,7 @@
 [![ExoPlayer](https://img.shields.io/badge/ExoPlayer-v2.14.1-007ec6)](https://github.com/google/ExoPlayer)
 [![Translation Status](https://hosted.weblate.org/widgets/just-player/-/svg-badge.svg)](https://hosted.weblate.org/engage/just-player/)
 
-Android video player based on [ExoPlayer](https://github.com/google/ExoPlayer)
+Android video player based on [ExoPlayer](https://github.com/google/ExoPlayer), compatible with Android 5+ and Android TV.
 
 It uses ExoPlayer's ``extension-ffmpeg`` with [all its audio formats](https://exoplayer.dev/supported-formats.html#ffmpeg-extension) enabled (it can handle even special formats like AC3, EAC3, DTS, DTS HD, TrueHD etc.).
 
@@ -78,11 +78,7 @@ If you enable [Caption preferences](https://support.google.com/accessibility/and
 
 Unfortunately, upstream ExoPlayer doesn't handle some older formats like [AVI container](https://github.com/google/ExoPlayer/issues/2092), WMV or [Theora](https://github.com/google/ExoPlayer/issues/4970). Majority of devices also cannot handle [10-bit AVC](https://github.com/moneytoo/Player/issues/87#issuecomment-816228143).
 
-Just Player focuses on playing videos so audio only playback isn't officialy supported ([request](https://github.com/moneytoo/Player/issues/55)). 
-
-### How about Android TV support?
-
-Since `v0.36`, Android TV is supported. Though, it is not available for installation on Android TV through Google Play yet.
+Just Player focuses on playing videos so audio only playback isn't officialy supported ([request](https://github.com/moneytoo/Player/issues/55)).
 
 ### How to view detailed video information (like resolution, bitrate etc.)?
 
