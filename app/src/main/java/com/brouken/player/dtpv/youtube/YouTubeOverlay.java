@@ -387,7 +387,7 @@ public final class YouTubeOverlay extends ConstraintLayout implements PlayerDoub
     public void onDoubleTapProgressUp(float posX, float posY) {
 
         // Check first whether forwarding/rewinding is "valid"
-        if (player == null || player.getCurrentPosition() < 0 || playerView == null || playerView.getWidth() < 0)
+        if (player == null || player.getMediaItemCount() < 1 || player.getCurrentPosition() < 0 || playerView == null || playerView.getWidth() < 0)
             return;
 
         long current = player.getCurrentPosition();

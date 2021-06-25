@@ -373,6 +373,7 @@ public class PlayerActivity extends Activity {
             deleteMedia();
             haveMedia = false;
             setDeleteVisible(false);
+            playerView.setControllerShowTimeoutMs(-1);
         });
 
         exoPlayPause.setOnClickListener(view -> dispatchPlayPause());
@@ -432,12 +433,12 @@ public class PlayerActivity extends Activity {
 
                 if (PlayerActivity.restoreControllerTimeout) {
                     restoreControllerTimeout = false;
-                    if (player.isPlaying())
-                        playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
-                    else
+                    if (player == null || !player.isPlaying()) {
                         playerView.setControllerShowTimeoutMs(-1);
+                    } else {
+                        playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+                    }
                 }
-
 
                 // https://developer.android.com/training/system-ui/immersive
                 if (visibility == View.VISIBLE) {
@@ -1498,6 +1499,9 @@ public class PlayerActivity extends Activity {
     }
 
     private void dispatchPlayPause() {
+        if (player == null)
+            return;
+
         @Player.State int state = player.getPlaybackState();
         String methodName;
         if (state == Player.STATE_IDLE || state == Player.STATE_ENDED || !player.getPlayWhenReady()) {
