@@ -173,6 +173,7 @@ public class PlayerActivity extends Activity {
         if (getIntent().getData() != null) {
             mPrefs.updateMedia(this, getIntent().getData(), getIntent().getType());
             searchSubtitles();
+            focusPlay = true;
         }
 
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
@@ -506,6 +507,7 @@ public class PlayerActivity extends Activity {
         if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null) {
             mPrefs.updateMedia(this, intent.getData(), intent.getType());
             searchSubtitles();
+            focusPlay = true;
             initializePlayer();
         }
     }
