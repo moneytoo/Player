@@ -237,7 +237,7 @@ public class PlayerActivity extends Activity {
 
         buttonOpen.setOnLongClickListener(view -> {
             if (!Utils.isTvBox(this) && mPrefs.askScope) {
-                askForScope(true);
+                askForScope(true, false);
             } else {
                 loadSubtitleFile(mPrefs.mediaUri);
             }
@@ -378,10 +378,11 @@ public class PlayerActivity extends Activity {
         });
 
         findViewById(R.id.next).setOnClickListener(view -> {
-            releasePlayer();
-            mPrefs.updateMedia(this, nextUri, null);
-            searchSubtitles();
-            initializePlayer();
+            if (!Utils.isTvBox(this) && mPrefs.askScope) {
+                askForScope(false, true);
+            } else {
+                skipToNext();
+            }
         });
 
         exoPlayPause.setOnClickListener(view -> dispatchPlayPause());
@@ -402,14 +403,14 @@ public class PlayerActivity extends Activity {
         final ImageButton exoSubtitle = exoBasicControls.findViewById(R.id.exo_subtitle);
         exoBasicControls.removeView(exoSubtitle);
 
-        exoSubtitle.setOnLongClickListener(view -> {
-            askForScope(false);
-            return true;
-        });
-
         final ImageButton exoSettings = exoBasicControls.findViewById(R.id.exo_settings);
         exoBasicControls.removeView(exoSettings);
         //exoBasicControls.setVisibility(View.GONE);
+
+        exoSettings.setOnLongClickListener(view -> {
+            askForScope(false, false);
+            return true;
+        });
 
         final HorizontalScrollView horizontalScrollView = (HorizontalScrollView) getLayoutInflater().inflate(R.layout.controls, null);
         final LinearLayout controls = horizontalScrollView.findViewById(R.id.controls);
@@ -1452,15 +1453,21 @@ public class PlayerActivity extends Activity {
         return null;
     }
 
-    void askForScope(boolean loadSubtitlesOnCancel) {
+    void askForScope(boolean loadSubtitlesOnCancel, boolean skipToNextOnCancel) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(PlayerActivity.this);
-        builder.setMessage(String.format(getString(R.string.subtitles_scope), getString(R.string.app_name)));
+        builder.setMessage(String.format(getString(R.string.request_scope), getString(R.string.app_name)));
         builder.setPositiveButton(android.R.string.ok, (dialogInterface, i) -> requestDirectoryAccess()
         );
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
             mPrefs.markScopeAsked();
             if (loadSubtitlesOnCancel) {
                 loadSubtitleFile(mPrefs.mediaUri);
+            }
+            if (skipToNextOnCancel) {
+                nextUri = findNext();
+                if (nextUri != null) {
+                    skipToNext();
+                }
             }
         });
         final AlertDialog dialog = builder.create();
@@ -1536,7 +1543,7 @@ public class PlayerActivity extends Activity {
 
     void setEndControlsVisible(boolean visible) {
         final int deleteVisible = (visible && haveMedia && Utils.isDeletable(this, mPrefs.mediaUri)) ? View.VISIBLE : View.INVISIBLE;
-        final int nextVisible = (visible && haveMedia && nextUri != null) ? View.VISIBLE : View.INVISIBLE;
+        final int nextVisible = (visible && haveMedia && (nextUri != null || (mPrefs.askScope && !Utils.isTvBox(this)))) ? View.VISIBLE : View.INVISIBLE;
         findViewById(R.id.delete).setVisibility(deleteVisible);
         findViewById(R.id.next).setVisibility(nextVisible);
     }
@@ -1568,5 +1575,12 @@ public class PlayerActivity extends Activity {
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
             e.printStackTrace();
         }
+    }
+
+    void skipToNext() {
+        releasePlayer();
+        mPrefs.updateMedia(this, nextUri, null);
+        searchSubtitles();
+        initializePlayer();
     }
 }

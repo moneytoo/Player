@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="subtitles_scope">Za automatsko učitavanje vanjskih titlova, dozvoli da %s pristupi najvišoj mapi koja sadrži tvoja videa (npr. Filmovi).</string>
     <string name="error_files_missing">Files aplikacija je deaktivirana ili nedostaje</string>
     <string name="error_details">Pojedinosti</string>
     <string name="open_subtitles">Učitaj titlove</string>

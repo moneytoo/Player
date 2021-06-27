@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="subtitles_scope">ในการโหลดคำบรรยายภายนอกโดยอัตโนมัติ ให้ %s เข้าถึงโฟลเดอร์หลักที่มีวิดีโอของคุณ (เช่น ภาพยนตร์)</string>
     <string name="video_orientation_video">ปรับทิศตามวีดีโอ</string>
     <string name="error_files_missing">แอพไฟล์ถูกปิดใช้งานหรือหายไป</string>
     <string name="error_details">รายละเอียด</string>

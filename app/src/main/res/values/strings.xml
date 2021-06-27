@@ -15,5 +15,5 @@
     <string name="error_details">Details</string>
     <string name="error_files_missing">Files app is disabled or missing</string>
 
-    <string name="subtitles_scope">To automatically load external subtitles, grant %s access to the topmost folder containing your videos (e.g. Movies).</string>
+    <string name="request_scope">To automatically load external subtitles or enable skipping to next file in a directory, grant %s access to the topmost folder containing your videos (e.g. Movies).</string>
 </resources>

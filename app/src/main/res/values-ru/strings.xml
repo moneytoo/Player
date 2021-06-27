@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="subtitles_scope">Чтобы автоматически загружать внешние субтитры, предоставьте %s доступ к самой верхней папке, содержащей ваши видео (например, фильмы).</string>
     <string name="error_files_missing">Приложение \"Файлы\" отключено или отсутствует</string>
     <string name="error_details">Подробности</string>
     <string name="open_subtitles">Загрузить субтитры</string>

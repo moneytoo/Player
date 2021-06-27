@@ -10,5 +10,4 @@
     <string name="video_resize_crop">Beskjør</string>
     <string name="video_resize_fit">Tilpass</string>
     <string name="app_name">Kun spiller</string>
-    <string name="subtitles_scope">Innvilg %s tilgang til hovedmappen som inneholder filmene dine for å laste inn eksterne undertekster.</string>
 </resources>
