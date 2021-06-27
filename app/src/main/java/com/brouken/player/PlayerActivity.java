@@ -370,11 +370,7 @@ public class PlayerActivity extends Activity {
         }
 
         findViewById(R.id.delete).setOnClickListener(view -> {
-            releasePlayer();
-            deleteMedia();
-            haveMedia = false;
-            setEndControlsVisible(false);
-            playerView.setControllerShowTimeoutMs(-1);
+            askDeleteMedia();
         });
 
         findViewById(R.id.next).setOnClickListener(view -> {
@@ -1546,6 +1542,21 @@ public class PlayerActivity extends Activity {
         final int nextVisible = (visible && haveMedia && (nextUri != null || (mPrefs.askScope && !Utils.isTvBox(this)))) ? View.VISIBLE : View.INVISIBLE;
         findViewById(R.id.delete).setVisibility(deleteVisible);
         findViewById(R.id.next).setVisibility(nextVisible);
+    }
+
+    void askDeleteMedia() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(PlayerActivity.this);
+        builder.setMessage(getString(R.string.delete_query));
+        builder.setPositiveButton(R.string.delete_confirmation, (dialogInterface, i) -> {
+            releasePlayer();
+            deleteMedia();
+            haveMedia = false;
+            setEndControlsVisible(false);
+            playerView.setControllerShowTimeoutMs(-1);
+        });
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
+        final AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
     void deleteMedia() {
