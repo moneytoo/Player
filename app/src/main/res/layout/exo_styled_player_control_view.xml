@@ -144,8 +144,9 @@
     <ImageButton android:id="@+id/exo_next"
         style="@style/ExoStyledControls.Button.Center.Next"/>
 
-    <View android:id="@+id/dummy"
-        style="@style/ExoStyledControls.Button.Center.Secondary"/>
+    <ImageButton android:id="@+id/next"
+        style="@style/ExoStyledControls.Button.Center.Secondary"
+        android:src="@drawable/exo_styled_controls_next"/>
 
   </LinearLayout>
 

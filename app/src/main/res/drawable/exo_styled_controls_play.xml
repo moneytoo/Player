@@ -2,19 +2,7 @@
 <layer-list xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     tools:keep="@drawable/exo_styled_controls_play">
-    <item>
-        <shape android:shape="oval">
-            <size
-                android:width="40dp"
-                android:height="40dp" />
-            <gradient
-                android:centerColor="#22000000"
-                android:endColor="#00000000"
-                android:gradientRadius="50%p"
-                android:startColor="#00000000"
-                android:type="radial" />
-        </shape>
-    </item>
+    <item android:drawable="@drawable/controls_gradient"/>
     <item
         android:drawable="@drawable/exo_ic_play_circle_filled"
         android:top="3dp"

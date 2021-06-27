@@ -15,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 class SubtitleUtils {
@@ -115,7 +116,7 @@ class SubtitleUtils {
         String path = uri.getPath();
         String[] array = path.split(":");
         if (array.length > 1) {
-            path = array[1];
+            path = array[array.length - 1];
             return path.split("/");
         }
         return new String[]{};
@@ -156,6 +157,31 @@ class SubtitleUtils {
             for (DocumentFile candidate : candidates) {
                 if (candidate.getName().startsWith(videoName + '.')) {
                     return candidate;
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public static DocumentFile findNext(DocumentFile video) {
+        DocumentFile dir = video.getParentFile();
+        return findNext(video, dir);
+    }
+
+    public static DocumentFile findNext(DocumentFile video, DocumentFile dir) {
+        DocumentFile list[] = dir.listFiles();
+        Arrays.sort(list, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
+
+        final String videoName = video.getName();
+        boolean matchFound = false;
+
+        for (DocumentFile file : list) {
+            if (file.getName().equals(videoName)) {
+                matchFound = true;
+            } else if (matchFound) {
+                if (isVideoFile(file)) {
+                    return file;
                 }
             }
         }

@@ -10,7 +10,6 @@ import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
 import android.app.RemoteAction;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -150,6 +149,7 @@ public class PlayerActivity extends Activity {
     public boolean frameRendered;
     private boolean alive;
     public static boolean focusPlay = false;
+    private Uri nextUri;
 
     public static boolean restoreControllerTimeout = false;
     public static boolean shortControllerTimeout = false;
@@ -373,8 +373,15 @@ public class PlayerActivity extends Activity {
             releasePlayer();
             deleteMedia();
             haveMedia = false;
-            setDeleteVisible(false);
+            setEndControlsVisible(false);
             playerView.setControllerShowTimeoutMs(-1);
+        });
+
+        findViewById(R.id.next).setOnClickListener(view -> {
+            releasePlayer();
+            mPrefs.updateMedia(this, nextUri, null);
+            searchSubtitles();
+            initializePlayer();
         });
 
         exoPlayPause.setOnClickListener(view -> dispatchPlayPause());
@@ -880,6 +887,8 @@ public class PlayerActivity extends Activity {
 
             ((DoubleTapPlayerView)playerView).setDoubleTapEnabled(true);
 
+            nextUri = findNext();
+
             player.setHandleAudioBecomingNoisy(true);
             mediaSession.setActive(true);
         } else {
@@ -964,7 +973,7 @@ public class PlayerActivity extends Activity {
                     isNearEnd = true;
                 }
             }
-            setDeleteVisible(haveMedia && (state == Player.STATE_ENDED || isNearEnd));
+            setEndControlsVisible(haveMedia && (state == Player.STATE_ENDED || isNearEnd));
 
             if (state == Player.STATE_READY) {
                 frameRendered = true;
@@ -1404,6 +1413,45 @@ public class PlayerActivity extends Activity {
         }
     }
 
+    Uri findNext() {
+        // TODO: Unify with searchSubtitles()
+        if (mPrefs.scopeUri != null || Utils.isTvBox(this)) {
+            DocumentFile video = null;
+            File videoRaw = null;
+
+            if (!Utils.isTvBox(this) && mPrefs.scopeUri != null) {
+                if ("com.android.externalstorage.documents".equals(mPrefs.mediaUri.getHost())) {
+                    // Fast search based on path in uri
+                    video = SubtitleUtils.findUriInScope(this, mPrefs.scopeUri, mPrefs.mediaUri);
+                } else {
+                    // Slow search based on matching metadata, no path in uri
+                    // Provider "com.android.providers.media.documents" when using "Videos" tab in file picker
+                    DocumentFile fileScope = DocumentFile.fromTreeUri(this, mPrefs.scopeUri);
+                    DocumentFile fileMedia = DocumentFile.fromSingleUri(this, mPrefs.mediaUri);
+                    video = SubtitleUtils.findDocInScope(fileScope, fileMedia);
+                }
+            } else if (Utils.isTvBox(this)) {
+                videoRaw = new File(mPrefs.mediaUri.getSchemeSpecificPart());
+                video = DocumentFile.fromFile(videoRaw);
+            }
+
+            if (video != null) {
+                DocumentFile next;
+                if (!Utils.isTvBox(this)) {
+                    next = SubtitleUtils.findNext(video);
+                } else {
+                    File parentRaw = videoRaw.getParentFile();
+                    DocumentFile dir = DocumentFile.fromFile(parentRaw);
+                    next = SubtitleUtils.findNext(video, dir);
+                }
+                if (next != null) {
+                    return next.getUri();
+                }
+            }
+        }
+        return null;
+    }
+
     void askForScope(boolean loadSubtitlesOnCancel) {
         final AlertDialog.Builder builder = new AlertDialog.Builder(PlayerActivity.this);
         builder.setMessage(String.format(getString(R.string.subtitles_scope), getString(R.string.app_name)));
@@ -1486,10 +1534,11 @@ public class PlayerActivity extends Activity {
         enterPictureInPictureMode(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
     }
 
-    void setDeleteVisible(boolean visible) {
-        final int visibility = (visible && haveMedia && Utils.isDeletable(this, mPrefs.mediaUri)) ? View.VISIBLE : View.GONE;
-        findViewById(R.id.delete).setVisibility(visibility);
-        findViewById(R.id.dummy).setVisibility(visibility);
+    void setEndControlsVisible(boolean visible) {
+        final int deleteVisible = (visible && haveMedia && Utils.isDeletable(this, mPrefs.mediaUri)) ? View.VISIBLE : View.INVISIBLE;
+        final int nextVisible = (visible && haveMedia && nextUri != null) ? View.VISIBLE : View.INVISIBLE;
+        findViewById(R.id.delete).setVisibility(deleteVisible);
+        findViewById(R.id.next).setVisibility(nextVisible);
     }
 
     void deleteMedia() {
