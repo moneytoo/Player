@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Just lejátszó</string>
+    <string name="error_files_missing">A fájlok alkalmazás le van tiltva vagy hiányzik</string>
+    <string name="video_orientation_sensor">Auto-forgatás</string>
+    <string name="video_resize_crop">Nyújtás</string>
+    <string name="video_resize_fit">Illesztés</string>
+    <string name="error_details">Részletek</string>
+    <string name="open_subtitles">Feliratok betöltése</string>
+    <string name="onboarding_open_description">Koppintson egyszer videófájl megnyitásához. Tartsa nyomva feliratok megnyitásához.</string>
+    <string name="onboarding_open_title">Válasszon egy videót a lejátszáshoz</string>
+    <string name="video_orientation_video">Videó tájolása</string>
+</resources>
