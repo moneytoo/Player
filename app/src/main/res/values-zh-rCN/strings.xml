@@ -10,4 +10,7 @@
     <string name="video_orientation_video">视频方向</string>
     <string name="video_resize_crop">裁剪</string>
     <string name="video_resize_fit">适应</string>
+    <string name="delete_confirmation">删除</string>
+    <string name="delete_query">删除这个文件？</string>
+    <string name="request_scope">要自动加载外部字幕或启用跳到目录中的下一个文件，请允许%s访问包含您的视频（例如电影）的最顶层文件夹的。</string>
 </resources>
