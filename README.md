@@ -39,6 +39,7 @@ HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
  * Resize (fit/crop)
  * Volume boost
  * Auto frame rate matching on Android TV/boxes (Android 6+)
+ * Post-playback actions (delete file/skip to next)
  * No ads, tracking or excessive permissions
 
 To load external (non-embedded) subtitles, long press the file open action in the bottom bar. The first time you do that, you will be offered to select root video folder to enable automatic loading of external subtitles.
