@@ -96,6 +96,8 @@ class SubtitleUtils {
     }
 
     public static DocumentFile findDocInScope(DocumentFile scope, DocumentFile doc) {
+        if (doc == null || scope == null)
+            return null;
         for (DocumentFile file : scope.listFiles()) {
             if (file.isDirectory()) {
                 final DocumentFile ret = findDocInScope(file, doc);
