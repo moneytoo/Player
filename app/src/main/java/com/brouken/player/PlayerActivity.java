@@ -1550,9 +1550,13 @@ public class PlayerActivity extends Activity {
         builder.setPositiveButton(R.string.delete_confirmation, (dialogInterface, i) -> {
             releasePlayer();
             deleteMedia();
-            haveMedia = false;
-            setEndControlsVisible(false);
-            playerView.setControllerShowTimeoutMs(-1);
+            if (nextUri == null) {
+                haveMedia = false;
+                setEndControlsVisible(false);
+                playerView.setControllerShowTimeoutMs(-1);
+            } else {
+                skipToNext();
+            }
         });
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
         final AlertDialog dialog = builder.create();
