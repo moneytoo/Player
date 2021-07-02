@@ -1593,9 +1593,11 @@ public class PlayerActivity extends Activity {
     }
 
     void skipToNext() {
-        releasePlayer();
-        mPrefs.updateMedia(this, nextUri, null);
-        searchSubtitles();
-        initializePlayer();
+        if (nextUri != null) {
+            releasePlayer();
+            mPrefs.updateMedia(this, nextUri, null);
+            searchSubtitles();
+            initializePlayer();
+        }
     }
 }
