@@ -10,4 +10,7 @@
     <string name="video_orientation_video">Videoorientierung</string>
     <string name="video_resize_crop">Zuschneiden</string>
     <string name="video_resize_fit">Anpassen</string>
+    <string name="delete_confirmation">Löschen</string>
+    <string name="delete_query">Diese Datei löschen\?</string>
+    <string name="request_scope">Um automatisch externe Untertitel zu laden oder das Springen zur nächsten Datei in einem Verzeichnis zu aktivieren, gewähren Sie %s Zugriff auf den obersten Ordner, der Ihre Videos enthält (z. B. Filme).</string>
 </resources>
