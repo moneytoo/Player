@@ -10,4 +10,7 @@
     <string name="open_subtitles">Carregar legendas</string>
     <string name="error_files_missing">O aplicativo Arquivos está desativado ou faltando</string>
     <string name="error_details">Detalhes</string>
+    <string name="request_scope">Para carregar automaticamente legendas externas ou permitir saltar para o próximo arquivo em um diretório, conceda a %s acesso à pasta mais alta que contém seus vídeos (por exemplo: Filmes).</string>
+    <string name="delete_confirmation">Apagar</string>
+    <string name="delete_query">Apagar este arquivo\?</string>
 </resources>
