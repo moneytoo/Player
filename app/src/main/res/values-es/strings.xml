@@ -10,4 +10,7 @@
     <string name="open_subtitles">Cargar subtítulos</string>
     <string name="error_details">Detalles</string>
     <string name="error_files_missing">La aplicación de archivos está desactivada o no existe</string>
+    <string name="delete_confirmation">Borrar</string>
+    <string name="delete_query">¿Borrar este archivo\?</string>
+    <string name="request_scope">Para cargar automáticamente los subtítulos externos o activar el salto al siguiente archivo de un directorio, concede el acceso a %s a la carpeta superior que contiene tus vídeos (por ejemplo: Películas).</string>
 </resources>
