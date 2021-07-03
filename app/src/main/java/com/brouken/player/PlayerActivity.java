@@ -150,6 +150,7 @@ public class PlayerActivity extends Activity {
     private boolean alive;
     public static boolean focusPlay = false;
     private Uri nextUri;
+    private static boolean isTvBox;
 
     public static boolean restoreControllerTimeout = false;
     public static boolean shortControllerTimeout = false;
@@ -169,6 +170,8 @@ public class PlayerActivity extends Activity {
         } else {
             setContentView(R.layout.activity_player);
         }
+
+        isTvBox = Utils.isTvBox(this);
 
         if (getIntent().getData() != null) {
             mPrefs.updateMedia(this, getIntent().getData(), getIntent().getType());
@@ -236,7 +239,7 @@ public class PlayerActivity extends Activity {
         buttonOpen.setOnClickListener(view -> openFile(mPrefs.mediaUri));
 
         buttonOpen.setOnLongClickListener(view -> {
-            if (!Utils.isTvBox(this) && mPrefs.askScope) {
+            if (!isTvBox && mPrefs.askScope) {
                 askForScope(true, false);
             } else {
                 loadSubtitleFile(mPrefs.mediaUri);
@@ -374,7 +377,7 @@ public class PlayerActivity extends Activity {
         });
 
         findViewById(R.id.next).setOnClickListener(view -> {
-            if (!Utils.isTvBox(this) && mPrefs.askScope) {
+            if (!isTvBox && mPrefs.askScope) {
                 askForScope(false, true);
             } else {
                 skipToNext();
@@ -417,7 +420,7 @@ public class PlayerActivity extends Activity {
         if (isPiPSupported()) {
             controls.addView(buttonPiP);
         }
-        if (!Utils.isTvBox(this)) {
+        if (!isTvBox) {
             controls.addView(buttonRotation);
         }
         controls.addView(exoSettings);
@@ -572,7 +575,7 @@ public class PlayerActivity extends Activity {
                 }
                 break;
             case KeyEvent.KEYCODE_BACK:
-                if (Utils.isTvBox(this)) {
+                if (isTvBox) {
                     if (controllerVisible && player.isPlaying()) {
                         playerView.hideController();
                         return true;
@@ -604,6 +607,20 @@ public class PlayerActivity extends Activity {
                 break;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        if (isTvBox && controllerVisible && !controllerVisibleFully) {
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                onKeyDown(event.getKeyCode(), event);
+            } else if (event.getAction() == KeyEvent.ACTION_UP) {
+                onKeyUp(event.getKeyCode(), event);
+            }
+            return true;
+        } else {
+            return super.dispatchKeyEvent(event);
+        }
     }
 
     @Override
@@ -1036,7 +1053,7 @@ public class PlayerActivity extends Activity {
     }
 
     private void openFile(Uri pickerInitialUri) {
-        if (Utils.isTvBox(this)) {
+        if (isTvBox) {
             Utils.alternativeChooser(this, pickerInitialUri, true);
         } else {
             enableRotation();
@@ -1052,7 +1069,7 @@ public class PlayerActivity extends Activity {
     private void loadSubtitleFile(Uri pickerInitialUri) {
         Toast.makeText(PlayerActivity.this, R.string.open_subtitles, Toast.LENGTH_SHORT).show();
 
-        if (Utils.isTvBox(this)) {
+        if (isTvBox) {
             Utils.alternativeChooser(this, pickerInitialUri, false);
         } else {
             enableRotation();
@@ -1370,11 +1387,11 @@ public class PlayerActivity extends Activity {
     }
 
     void searchSubtitles() {
-        if (mPrefs.scopeUri != null || Utils.isTvBox(this)) {
+        if (mPrefs.scopeUri != null || isTvBox) {
             DocumentFile video = null;
             File videoRaw = null;
 
-            if (!Utils.isTvBox(this) && mPrefs.scopeUri != null) {
+            if (!isTvBox && mPrefs.scopeUri != null) {
                 if ("com.android.externalstorage.documents".equals(mPrefs.mediaUri.getHost())) {
                     // Fast search based on path in uri
                     video = SubtitleUtils.findUriInScope(this, mPrefs.scopeUri, mPrefs.mediaUri);
@@ -1385,14 +1402,14 @@ public class PlayerActivity extends Activity {
                     DocumentFile fileMedia = DocumentFile.fromSingleUri(this, mPrefs.mediaUri);
                     video = SubtitleUtils.findDocInScope(fileScope, fileMedia);
                 }
-            } else if (Utils.isTvBox(this)) {
+            } else if (isTvBox) {
                 videoRaw = new File(mPrefs.mediaUri.getSchemeSpecificPart());
                 video = DocumentFile.fromFile(videoRaw);
             }
 
             if (video != null) {
                 DocumentFile subtitle;
-                if (!Utils.isTvBox(this)) {
+                if (!isTvBox) {
                     subtitle = SubtitleUtils.findSubtitle(video);
                 } else {
                     File parentRaw = videoRaw.getParentFile();
@@ -1412,11 +1429,11 @@ public class PlayerActivity extends Activity {
 
     Uri findNext() {
         // TODO: Unify with searchSubtitles()
-        if (mPrefs.scopeUri != null || Utils.isTvBox(this)) {
+        if (mPrefs.scopeUri != null || isTvBox) {
             DocumentFile video = null;
             File videoRaw = null;
 
-            if (!Utils.isTvBox(this) && mPrefs.scopeUri != null) {
+            if (!isTvBox && mPrefs.scopeUri != null) {
                 if ("com.android.externalstorage.documents".equals(mPrefs.mediaUri.getHost())) {
                     // Fast search based on path in uri
                     video = SubtitleUtils.findUriInScope(this, mPrefs.scopeUri, mPrefs.mediaUri);
@@ -1427,14 +1444,14 @@ public class PlayerActivity extends Activity {
                     DocumentFile fileMedia = DocumentFile.fromSingleUri(this, mPrefs.mediaUri);
                     video = SubtitleUtils.findDocInScope(fileScope, fileMedia);
                 }
-            } else if (Utils.isTvBox(this)) {
+            } else if (isTvBox) {
                 videoRaw = new File(mPrefs.mediaUri.getSchemeSpecificPart());
                 video = DocumentFile.fromFile(videoRaw);
             }
 
             if (video != null) {
                 DocumentFile next;
-                if (!Utils.isTvBox(this)) {
+                if (!isTvBox) {
                     next = SubtitleUtils.findNext(video);
                 } else {
                     File parentRaw = videoRaw.getParentFile();
@@ -1539,7 +1556,7 @@ public class PlayerActivity extends Activity {
 
     void setEndControlsVisible(boolean visible) {
         final int deleteVisible = (visible && haveMedia && Utils.isDeletable(this, mPrefs.mediaUri)) ? View.VISIBLE : View.INVISIBLE;
-        final int nextVisible = (visible && haveMedia && (nextUri != null || (mPrefs.askScope && !Utils.isTvBox(this)))) ? View.VISIBLE : View.INVISIBLE;
+        final int nextVisible = (visible && haveMedia && (nextUri != null || (mPrefs.askScope && !isTvBox))) ? View.VISIBLE : View.INVISIBLE;
         findViewById(R.id.delete).setVisibility(deleteVisible);
         findViewById(R.id.next).setVisibility(nextVisible);
     }
