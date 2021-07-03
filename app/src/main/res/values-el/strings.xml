@@ -10,7 +10,7 @@
     <string name="video_orientation_video">Προσανατολισμός βίντεο</string>
     <string name="video_resize_crop">Περικοπή</string>
     <string name="video_resize_fit">Προσαρμογή</string>
-    <string name="request_scope">Για την αυτόματη φόρτωση εξωτερικών υποτίτλων ή την ενεργοποίηση της παράβλεψης στο επόμενο αρχείο σε έναν κατάλογο, παραχωρήστε στο %s πρόσβαση στον κεντρικό φάκελο που περιέχει τα βίντεό σας (π.χ. Movies).</string>
+    <string name="request_scope">Για την αυτόματη φόρτωση εξωτερικών υποτίτλων ή την ενεργοποίηση της παράβλεψης στο επόμενο αρχείο σε έναν κατάλογο, παραχωρήστε στο %s πρόσβαση στον ριζικό φάκελο που περιέχει τα βίντεό σας (π.χ. Movies).</string>
     <string name="delete_confirmation">Διαγραφή</string>
     <string name="delete_query">Διαγραφή αυτού του αρχείου;</string>
 </resources>
