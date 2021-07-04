@@ -78,6 +78,8 @@ class CustomDefaultTrackNameProvider extends DefaultTrackNameProvider {
                 return "VTT";
             case MimeTypes.APPLICATION_TTML:
                 return "TTML";
+            case MimeTypes.APPLICATION_TX3G:
+                return "TX3G";
         }
         return null;
     }
