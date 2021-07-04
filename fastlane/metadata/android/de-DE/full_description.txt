@@ -1,4 +1,4 @@
-Android-Videoplayer basierend auf der ExoPlayer-Bibliothek. Verwendet die FFmpeg-Erweiterung von ExoPlayer mit all seinen aktivierten Audioformaten (kann sogar spezielle Formate wie AC3, EAC3, DTS, DTS HD, TrueHD usw. verarbeiten).
+Android-Videoplayer basierend auf der ExoPlayer-Bibliothek. Er verwendet die FFmpeg-Erweiterung von ExoPlayer mit all seinen aktivierten Audioformaten (er kann sogar spezielle Formate wie AC3, EAC3, DTS, DTS HD, TrueHD usw. verarbeiten).
 
 Bei Verwendung von Bluetooth-Kopfhörern/Lautsprechern wird der Ton korrekt mit der Videospur synchronisiert.
 
@@ -7,6 +7,7 @@ Unterstützte Formate
  * Audio: Vorbis, Opus, FLAC, ALAC, PCM/WAVE (μ-law, A-law), MP1, MP2, MP3, AMR (NB, WB), AAC (LC, ELD, HE; xHE auf Android 9+), AC-3, E-AC-3, DTS, DTS-HD, TrueHD
  * Video: H.263, H.264 AVC (Baseline Profile; Main Profile auf Android 6+), H.265 HEVC, MPEG-4 SP, VP8, VP9, AV1
  * Container: MP4, MOV, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV
+ * Streaming: DASH, HLS, SmoothStreaming, RTSP
  * Untertitel: SRT, SSA, ASS, TTML, VTT
 
 HDR (HDR10+ und Dolby Vision) Videowiedergabe auf kompatibler/unterstützter Hardware.
@@ -21,6 +22,8 @@ Funktionen
  * PiP (Bild im Bild) auf Android 8+ (Größenänderung auf Android 11+)
  * Größe ändern (einpassen/ausschneiden)
  * Lautstärke erhöhen
- * Keine Werbung, Verfolgung oder gar Internet-Erlaubnis (auch keine Speichererlaubnis)
+ * Automatische Bildratenanpassung auf Android TV/Boxen (Android 6+)
+ * Post-Playback-Aktionen (Datei löschen/zum nächsten springen)
+ * Keine Werbung, Tracking oder übermäßige Berechtigungen
 
-Um externe (nicht eingebettete) Untertitel zu laden, drücken Sie lange auf die Datei-Öffnen-Aktion in der unteren Leiste.
+Um externe (nicht eingebettete) Untertitel zu laden, drücken Sie lange auf die Dateiöffnungsaktion in der unteren Leiste. Bei erster Verwendung wird Ihnen angeboten, das Video- Wurzelverzeichnis auszuwählen, um das automatische Laden externer Untertitel zu aktivieren.

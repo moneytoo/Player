@@ -7,6 +7,7 @@ Podržani formati
 * Audio: Vorbis, Opus, FLAC, ALAC, PCM / WAVE (μ-zakon, A-zakon), MP1, MP2, MP3, AMR (NB, WB), AAC (LC, ELD, HE; xHE na Androidu 9+) ), AC-3, E-AC-3, DTS, DTS-HD, TrueHD
 * Video: H.263, H.264 AVC (osnovni profil; glavni profil na Androidu 6+), H.265 HEVC, MPEG-4 SP, VP8, VP9, AV1
 * Spremnici: MP4, MOV, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV
+* Emitiranje: DASH, HLS, SmoothStreaming, RTSP
 * Titlovi: SRT, SSA, ASS, TTML, VTT
 
 Reprodukcija HDR (HDR10 + i Dolby Vision) videa na kompatibilnom / podržanom hardveru.
@@ -21,6 +22,8 @@ Značajke
 * PiP (Slika u slici) na Androidu 8+ (promjenjiva veličina na Androidu 11+)
 * Mijenjanje veličine (prilagodi/obreži)
 * Pojačanje glasnoće
-* Bez oglasa, praćenja ili dopuštenja za Internet (niti dopuštenje za spremanje)
+* Automatsko podudaranje brzine kadrova na Android TV-u/boksovima (Android 6+)
+* Radnje nakon reprodukcije (brisanje datoteke/preskoči na sljedeću)
+* Bez oglasa, praćenja ili pretjeranih dozvola
 
-Za učitavanje vanjskih (neugrađenih) titlova, dugo dodirni gumb za otvaranje datoteke u donjoj traci.
+Za učitavanje vanjskih (neugrađenih) titlova, dugo dodirni gumb za otvaranje datoteke u donjoj traci. Kad to učiniš po prvi put, moći ćeš odabrati osnovnu mapu videa za omogućavanje automatskog učitavanje vanjskih titlova.
