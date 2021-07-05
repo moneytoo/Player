@@ -1387,6 +1387,9 @@ public class PlayerActivity extends Activity {
     }
 
     void searchSubtitles() {
+        if (mPrefs.mediaUri == null)
+            return;
+
         if (mPrefs.scopeUri != null || isTvBox) {
             DocumentFile video = null;
             File videoRaw = null;
