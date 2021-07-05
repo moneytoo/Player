@@ -1495,7 +1495,7 @@ public class PlayerActivity extends Activity {
     }
 
     void resetHideCallbacks() {
-        if (haveMedia && player.isPlaying()) {
+        if (haveMedia && player != null && player.isPlaying()) {
             // Keep controller UI visible - alternative to resetHideCallbacks()
             playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
         }
