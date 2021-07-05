@@ -697,7 +697,11 @@ public class PlayerActivity extends Activity {
                     } else if (persistedUri.getUri().equals(uri)) {
                         uriAlreadyTaken = true;
                     } else {
-                        contentResolver.releasePersistableUriPermission(persistedUri.getUri(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        try {
+                            contentResolver.releasePersistableUriPermission(persistedUri.getUri(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        } catch (SecurityException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
 
