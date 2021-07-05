@@ -202,6 +202,9 @@ public class PlayerActivity extends Activity {
         timeBar.addListener(new TimeBar.OnScrubListener() {
             @Override
             public void onScrubStart(TimeBar timeBar, long position) {
+                if (player == null) {
+                    return;
+                }
                 restorePlayState = player.isPlaying();
                 if (restorePlayState) {
                     player.pause();
