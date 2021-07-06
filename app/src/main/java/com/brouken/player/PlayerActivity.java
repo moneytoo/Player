@@ -151,6 +151,7 @@ public class PlayerActivity extends Activity {
     public static boolean focusPlay = false;
     private Uri nextUri;
     private static boolean isTvBox;
+    public static boolean locked = false;
 
     public static boolean restoreControllerTimeout = false;
     public static boolean shortControllerTimeout = false;

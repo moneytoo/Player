@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.core.view.GestureDetectorCompat;
 
-import com.brouken.player.dtpv.youtube.YouTubeOverlay;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.SeekParameters;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
@@ -154,6 +153,12 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     }
 
     public boolean tap() {
+        if (PlayerActivity.locked) {
+            Utils.showText(this, "");
+            exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_lock_24dp, 0, 0, 0);
+            return true;
+        }
+
         if (!PlayerActivity.controllerVisibleFully) {
             showController();
             return true;
@@ -166,7 +171,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float distanceX, float distanceY) {
-        if (mScaleDetector.isInProgress() || PlayerActivity.player == null)
+        if (mScaleDetector.isInProgress() || PlayerActivity.player == null || PlayerActivity.locked)
             return false;
 
         // Exclude edge areas
@@ -252,6 +257,11 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
     @Override
     public void onLongPress(MotionEvent motionEvent) {
+        if (PlayerActivity.locked || (getPlayer() != null && getPlayer().isPlaying())) {
+            PlayerActivity.locked = !PlayerActivity.locked;
+            Utils.showText(this, "");
+            exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(PlayerActivity.locked ? R.drawable.ic_lock_24dp : R.drawable.ic_lock_open_24dp, 0, 0, 0);
+        }
     }
 
     @Override
