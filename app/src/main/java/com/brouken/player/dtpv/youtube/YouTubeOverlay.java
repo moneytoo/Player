@@ -19,6 +19,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.TextViewCompat;
 
+import com.brouken.player.PlayerActivity;
 import com.brouken.player.R;
 import com.brouken.player.dtpv.DoubleTapPlayerView;
 import com.brouken.player.dtpv.PlayerDoubleTapListener;
@@ -367,6 +368,9 @@ public final class YouTubeOverlay extends ConstraintLayout implements PlayerDoub
     @Override
     public void onDoubleTapStarted(float posX, float posY) {
 
+        if (PlayerActivity.locked)
+            return;
+
         if (player != null && player.getCurrentPosition() >= 0L && playerView != null && playerView.getWidth() > 0) {
             if (posX >= playerView.getWidth() * 0.35 && posX <= playerView.getWidth() * 0.65) {
                 if (player.isPlaying()) {
@@ -385,6 +389,9 @@ public final class YouTubeOverlay extends ConstraintLayout implements PlayerDoub
 
     @Override
     public void onDoubleTapProgressUp(float posX, float posY) {
+
+        if (PlayerActivity.locked)
+            return;
 
         // Check first whether forwarding/rewinding is "valid"
         if (player == null || player.getMediaItemCount() < 1 || player.getCurrentPosition() < 0 || playerView == null || playerView.getWidth() < 0)

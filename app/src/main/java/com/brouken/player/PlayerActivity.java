@@ -840,6 +840,8 @@ public class PlayerActivity extends Activity {
 
         playerView.setControllerShowTimeoutMs(-1);
 
+        locked = false;
+
         if (haveMedia) {
             playerView.setResizeMode(mPrefs.resizeMode);
 
@@ -982,6 +984,10 @@ public class PlayerActivity extends Activity {
                 } else {
                     playerView.setControllerShowTimeoutMs(-1);
                 }
+            }
+
+            if (!isPlaying) {
+                PlayerActivity.locked = false;
             }
         }
 
