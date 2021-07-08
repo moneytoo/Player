@@ -265,6 +265,10 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
             isHandledLongPress = true;
             Utils.showText(this, "", MESSAGE_TIMEOUT_LONG);
             setIconLock(PlayerActivity.locked);
+
+            if (PlayerActivity.locked && PlayerActivity.controllerVisible) {
+                hideController();
+            }
         }
     }
 
