@@ -1021,6 +1021,8 @@ public class PlayerActivity extends Activity {
                             }
                         }
                         frameRateExo = format.frameRate;
+
+                        updateSubtitleViewMargin(format);
                     }
 
                     boolean switched = Utils.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri);
@@ -1284,6 +1286,39 @@ public class PlayerActivity extends Activity {
         }
     }
 
+    void updateSubtitleViewMargin() {
+        if (player == null) {
+            return;
+        }
+
+        updateSubtitleViewMargin(player.getVideoFormat());
+    }
+
+    // Set margins to fix PGS aspect as subtitle view is outside of content frame
+    void updateSubtitleViewMargin(Format format) {
+        if (format == null) {
+            return;
+        }
+
+        final Rational aspectVideo = Utils.getRational(format);
+        final DisplayMetrics metrics = getResources().getDisplayMetrics();
+        final Rational aspectDisplay = new Rational(metrics.widthPixels, metrics.heightPixels);
+
+        int marginHorizontal = 0;
+        int marginVertical = 0;
+
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            if (aspectDisplay.floatValue() > aspectVideo.floatValue()) {
+                // Left & right bars
+                int videoWidth = metrics.heightPixels / aspectVideo.getDenominator() * aspectVideo.getNumerator();
+                marginHorizontal = (metrics.widthPixels - videoWidth) / 2;
+            }
+        }
+
+        Utils.setViewParams(playerView.getSubtitleView(), 0, 0, 0, 0,
+                marginHorizontal, marginVertical, marginHorizontal, marginVertical);
+    }
+
     void setSubtitleTextSizePiP() {
         final SubtitleView subtitleView = playerView.getSubtitleView();
         if (subtitleView != null)
@@ -1315,8 +1350,10 @@ public class PlayerActivity extends Activity {
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
-        if (!isInPip())
+        if (!isInPip()) {
             setSubtitleTextSize(newConfig.orientation);
+            updateSubtitleViewMargin();
+        }
     }
 
     void showError(ExoPlaybackException error) {
@@ -1555,12 +1592,7 @@ public class PlayerActivity extends Activity {
                 ((SurfaceView)videoSurfaceView).getHolder().setFixedSize(format.width, format.height);
             }
 
-            Rational rational;
-            if (Utils.isRotated(format))
-                rational = new Rational(format.height, format.width);
-            else
-                rational = new Rational(format.width, format.height);
-
+            Rational rational = Utils.getRational(format);
             if (rational.floatValue() > rationalLimitWide.floatValue())
                 rational = rationalLimitWide;
             else if (rational.floatValue() < rationalLimitTall.floatValue())
