@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="delete_confirmation">Видалити</string>
+    <string name="delete_query">Видалити цей файл\?</string>
+    <string name="request_scope">Щоб автоматично підвантажити субтитри, або увімкнути пропускання до наступного файлу в теці, надайте %s доступ до головної теки з вашими відеофайлами (наприклад \"Відео\").</string>
+    <string name="error_files_missing">Тековий застосунок вимкнено або він відсутній</string>
+    <string name="error_details">Більше</string>
+    <string name="open_subtitles">Підвантажити субтитри</string>
+    <string name="onboarding_open_description">Торкніться для відкриття відеофайл. Довгий натиск підвантаже зовнішні субтитри.</string>
+    <string name="onboarding_open_title">Оберіть відео для відтворення</string>
+    <string name="video_orientation_sensor">Автоповоріт</string>
+    <string name="video_orientation_video">Орієнтація відео</string>
+    <string name="video_resize_crop">Обрізати</string>
+    <string name="video_resize_fit">Підігнати</string>
+    <string name="app_name">Лише Програвач</string>
+</resources>
