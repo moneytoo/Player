@@ -82,6 +82,14 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
         exoProgress = findViewById(R.id.exo_progress);
 
         mScaleDetector = new ScaleGestureDetector(context, this);
+
+        exoErrorMessage.setOnClickListener(v -> {
+            if (PlayerActivity.locked) {
+                PlayerActivity.locked = false;
+                Utils.showText(CustomStyledPlayerView.this, "", MESSAGE_TIMEOUT_LONG);
+                setIconLock(false);
+            }
+        });
     }
 
     public void clearIcon() {
