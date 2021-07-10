@@ -21,6 +21,15 @@ android {
             //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    flavorDimensions "exoplayer"
+    productFlavors {
+        exoMaven {
+            dimension "exoplayer"
+        }
+        exoLocal {
+            dimension "exoplayer"
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -34,28 +43,28 @@ dependencies {
     def exoplayerVersion = '2.14.1'
     // Use patched exoplayer-core - map Dolby Vision profile 7 to HEVC
     // https://github.com/google/ExoPlayer/issues/9139
-    //implementation "com.google.android.exoplayer:exoplayer-core:$exoplayerVersion"
-    implementation "com.google.android.exoplayer:exoplayer-common:$exoplayerVersion"
-    implementation "com.google.android.exoplayer:exoplayer-extractor:$exoplayerVersion"
+    exoMavenImplementation "com.google.android.exoplayer:exoplayer-core:$exoplayerVersion"
+    exoLocalImplementation "com.google.android.exoplayer:exoplayer-common:$exoplayerVersion"
+    exoLocalImplementation "com.google.android.exoplayer:exoplayer-extractor:$exoplayerVersion"
     // FIXME: Temporarily use patched exoplayer-ui r2.14.1
     // https://github.com/google/ExoPlayer/issues/9061
     // https://github.com/google/ExoPlayer/issues/9086
-    //implementation "com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion"
+    exoMavenImplementation "com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion"
     implementation "com.google.android.exoplayer:extension-mediasession:$exoplayerVersion"
-    //implementation "com.google.android.exoplayer:exoplayer-dash:$exoplayerVersion"
-    implementation("com.google.android.exoplayer:exoplayer-dash:$exoplayerVersion") {
+    exoMavenImplementation "com.google.android.exoplayer:exoplayer-dash:$exoplayerVersion"
+    exoLocalImplementation("com.google.android.exoplayer:exoplayer-dash:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
     }
-    //implementation "com.google.android.exoplayer:exoplayer-hls:$exoplayerVersion"
-    implementation("com.google.android.exoplayer:exoplayer-hls:$exoplayerVersion") {
+    exoMavenImplementation "com.google.android.exoplayer:exoplayer-hls:$exoplayerVersion"
+    exoLocalImplementation("com.google.android.exoplayer:exoplayer-hls:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
     }
-    //implementation "com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayerVersion"
-    implementation("com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayerVersion") {
+    exoMavenImplementation "com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayerVersion"
+    exoLocalImplementation("com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
     }
-    //implementation "com.google.android.exoplayer:exoplayer-rtsp:$exoplayerVersion"
-    implementation("com.google.android.exoplayer:exoplayer-rtsp:$exoplayerVersion") {
+    exoMavenImplementation "com.google.android.exoplayer:exoplayer-rtsp:$exoplayerVersion"
+    exoLocalImplementation("com.google.android.exoplayer:exoplayer-rtsp:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
     }
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.2'
@@ -65,5 +74,6 @@ dependencies {
     implementation 'com.arthenica:ffmpeg-kit-min:4.4.LTS'
     implementation project(path: ':doubletapplayerview')
     implementation project(path: ':android-file-chooser')
-    implementation fileTree(dir: "libs", include: ["*.aar"])
+    implementation fileTree(dir: "libs", include: ["extension-*.aar"])
+    exoLocalImplementation fileTree(dir: "libs", include: ["library-*.aar"])
 }
