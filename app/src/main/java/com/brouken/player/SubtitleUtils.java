@@ -145,6 +145,8 @@ class SubtitleUtils {
         List<DocumentFile> candidates = new ArrayList<>();
 
         for (DocumentFile file : dir.listFiles()) {
+            if (file.getName().startsWith("."))
+                continue;
             if (isSubtitleFile(file))
                 candidates.add(file);
             if (isVideoFile(file))
