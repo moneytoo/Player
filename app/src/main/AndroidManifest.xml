@@ -32,6 +32,7 @@
         android:icon="@mipmap/ic_launcher"
         android:banner="@mipmap/banner"
         android:label="@string/app_name"
+        android:appCategory="video"
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.Player"
