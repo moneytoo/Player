@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.core.view.GestureDetectorCompat;
 
-import com.brouken.player.dtpv.youtube.YouTubeOverlay;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.SeekParameters;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
@@ -44,9 +43,11 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     private final long SEEK_STEP = 1000;
     public static final int MESSAGE_TIMEOUT_TOUCH = 400;
     public static final int MESSAGE_TIMEOUT_KEY = 800;
+    public static final int MESSAGE_TIMEOUT_LONG = 1400;
 
     private boolean restorePlayState;
     private boolean canScale = true;
+    private boolean isHandledLongPress = false;
 
     private final ScaleGestureDetector mScaleDetector;
     private float mScaleFactor = 1.f;
@@ -81,6 +82,14 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
         exoProgress = findViewById(R.id.exo_progress);
 
         mScaleDetector = new ScaleGestureDetector(context, this);
+
+        exoErrorMessage.setOnClickListener(v -> {
+            if (PlayerActivity.locked) {
+                PlayerActivity.locked = false;
+                Utils.showText(CustomStyledPlayerView.this, "", MESSAGE_TIMEOUT_LONG);
+                setIconLock(false);
+            }
+        });
     }
 
     public void clearIcon() {
@@ -113,7 +122,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
                     if (gestureOrientation == Orientation.HORIZONTAL) {
                         setCustomErrorMessage(null);
                     } else {
-                        postDelayed(textClearRunnable, MESSAGE_TIMEOUT_TOUCH);
+                        postDelayed(textClearRunnable, isHandledLongPress ? MESSAGE_TIMEOUT_LONG : MESSAGE_TIMEOUT_TOUCH);
                     }
 
                     if (restorePlayState) {
@@ -138,6 +147,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
         gestureScrollY = 0;
         gestureScrollX = 0;
         gestureOrientation = Orientation.UNKNOWN;
+        isHandledLongPress = false;
 
         return false;
     }
@@ -154,6 +164,12 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     }
 
     public boolean tap() {
+        if (PlayerActivity.locked) {
+            Utils.showText(this, "", MESSAGE_TIMEOUT_LONG);
+            setIconLock(true);
+            return true;
+        }
+
         if (!PlayerActivity.controllerVisibleFully) {
             showController();
             return true;
@@ -166,7 +182,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float distanceX, float distanceY) {
-        if (mScaleDetector.isInProgress() || PlayerActivity.player == null)
+        if (mScaleDetector.isInProgress() || PlayerActivity.player == null || PlayerActivity.locked)
             return false;
 
         // Exclude edge areas
@@ -252,6 +268,16 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
     @Override
     public void onLongPress(MotionEvent motionEvent) {
+        if (PlayerActivity.locked || (getPlayer() != null && getPlayer().isPlaying())) {
+            PlayerActivity.locked = !PlayerActivity.locked;
+            isHandledLongPress = true;
+            Utils.showText(this, "", MESSAGE_TIMEOUT_LONG);
+            setIconLock(PlayerActivity.locked);
+
+            if (PlayerActivity.locked && PlayerActivity.controllerVisible) {
+                hideController();
+            }
+        }
     }
 
     @Override
@@ -261,6 +287,9 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
     @Override
     public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
+        if (PlayerActivity.locked)
+            return false;
+
         if (canScale) {
             final float previousScaleFactor = mScaleFactor;
             mScaleFactor *= scaleGestureDetector.getScaleFactor();
@@ -285,6 +314,9 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
+        if (PlayerActivity.locked)
+            return false;
+
         mScaleFactor = getVideoSurfaceView().getScaleX();
         if (getResizeMode() != AspectRatioFrameLayout.RESIZE_MODE_ZOOM) {
             canScale = false;
@@ -304,6 +336,9 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
     @Override
     public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
+        if (PlayerActivity.locked)
+            return;
+
         restoreSurfaceView();
     }
 
@@ -336,6 +371,10 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
     public void setIconBrightnessAuto() {
         exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_brightness_auto_24dp, 0, 0, 0);
+    }
+
+    public void setIconLock(boolean locked) {
+        exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(locked ? R.drawable.ic_lock_24dp : R.drawable.ic_lock_open_24dp, 0, 0, 0);
     }
 
     public void setScale(final float scale) {

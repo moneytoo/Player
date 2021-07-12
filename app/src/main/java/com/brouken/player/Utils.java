@@ -14,6 +14,7 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
 import android.util.Log;
+import android.util.Rational;
 import android.view.Display;
 import android.view.View;
 import android.view.Window;
@@ -239,6 +240,13 @@ class Utils {
         } else {
             return format.height > format.width;
         }
+    }
+
+    public static Rational getRational(final Format format) {
+        if (isRotated(format))
+            return new Rational(format.height, format.width);
+        else
+            return new Rational(format.width, format.height);
     }
 
     public static String formatMilis(long time) {

@@ -5,4 +5,8 @@
     <dimen name="exo_settings_offset" tools:keep="@dimen/exo_settings_offset">30dp</dimen>
     <dimen name="exo_icon_size">90dp</dimen>
     <dimen name="controls_padding">170sp</dimen>
+
+    <dimen name="exo_styled_progress_enabled_thumb_size">12dp</dimen>
+    <dimen name="exo_styled_progress_dragged_thumb_size">18dp</dimen>
+    <dimen name="exo_styled_progress_margin_bottom">51dp</dimen>
 </resources>
