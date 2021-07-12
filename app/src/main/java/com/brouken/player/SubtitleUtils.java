@@ -106,7 +106,12 @@ class SubtitleUtils {
             } else {
                 //if (doc.length() == file.length() && doc.lastModified() == file.lastModified() && doc.getName().equals(file.getName())) {
                 // lastModified is zero when opened from Solid Explorer
-                if (doc.length() == file.length() && doc.getName().equals(file.getName())) {
+                final String docName = doc.getName();
+                final String fileName = file.getName();
+                if (docName == null || fileName == null) {
+                    continue;
+                }
+                if (doc.length() == file.length() && docName.equals(fileName)) {
                     return file;
                 }
             }
