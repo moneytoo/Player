@@ -10,4 +10,7 @@
     <string name="onboarding_open_title">Válasszon egy videót a lejátszáshoz</string>
     <string name="video_orientation_video">Videó tájolása</string>
     <string name="app_name" translatable="false"></string>
+    <string name="delete_confirmation"></string>
+    <string name="delete_query"></string>
+    <string name="request_scope"></string>
 </resources>
