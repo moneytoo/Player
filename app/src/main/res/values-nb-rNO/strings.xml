@@ -10,4 +10,7 @@
     <string name="video_resize_crop">Beskjør</string>
     <string name="video_resize_fit">Tilpass</string>
     <string name="app_name" translatable="false"></string>
+    <string name="delete_query"></string>
+    <string name="delete_confirmation"></string>
+    <string name="request_scope"></string>
 </resources>
