@@ -9,4 +9,8 @@
     <string name="open_subtitles">Muat subtitle</string>
     <string name="error_details">Detail</string>
     <string name="error_files_missing">Aplikasi file dinonaktifkan atau hilang</string>
+    <string name="request_scope"></string>
+    <string name="app_name" translatable="false"></string>
+    <string name="delete_confirmation"></string>
+    <string name="delete_query"></string>
 </resources>
