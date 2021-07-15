@@ -542,6 +542,8 @@ public class PlayerActivity extends Activity {
             case KeyEvent.KEYCODE_DPAD_CENTER:
             case KeyEvent.KEYCODE_NUMPAD_ENTER:
             case KeyEvent.KEYCODE_SPACE:
+                if (player == null)
+                    break;
                 if (!controllerVisibleFully) {
                     if (player.isPlaying()) {
                         player.pause();
@@ -554,6 +556,8 @@ public class PlayerActivity extends Activity {
             case KeyEvent.KEYCODE_DPAD_LEFT:
             case KeyEvent.KEYCODE_BUTTON_L2:
                 if (!controllerVisibleFully) {
+                    if (player == null)
+                        break;
                     playerView.removeCallbacks(playerView.textClearRunnable);
                     long seekTo = player.getCurrentPosition() - 10_000;
                     if (seekTo < 0)
@@ -567,6 +571,8 @@ public class PlayerActivity extends Activity {
             case KeyEvent.KEYCODE_DPAD_RIGHT:
             case KeyEvent.KEYCODE_BUTTON_R2:
                 if (!controllerVisibleFully) {
+                    if (player == null)
+                        break;
                     playerView.removeCallbacks(playerView.textClearRunnable);
                     long seekTo = player.getCurrentPosition() + 10_000;
                     long seekMax = player.getDuration();
@@ -580,7 +586,7 @@ public class PlayerActivity extends Activity {
                 break;
             case KeyEvent.KEYCODE_BACK:
                 if (isTvBox) {
-                    if (controllerVisible && player.isPlaying()) {
+                    if (controllerVisible && player != null && player.isPlaying()) {
                         playerView.hideController();
                         return true;
                     }
