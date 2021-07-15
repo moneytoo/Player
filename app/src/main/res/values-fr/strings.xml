@@ -9,7 +9,6 @@
     <string name="video_orientation_video">Orientation vidéo</string>
     <string name="video_resize_crop">Rogner</string>
     <string name="video_resize_fit">Ajuster</string>
-    <string name="app_name">Juste Lecteur</string>
     <string name="request_scope">Pour charger automatiquement des sous-titres externes ou permettre le passage au fichier suivant dans un répertoire, accordez l’accès à %s au dossier le plus élevé contenant vos vidéos (par exemple, Films).</string>
     <string name="delete_confirmation">Supprimer</string>
     <string name="delete_query">Supprimer ce fichier \?</string>

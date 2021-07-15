@@ -9,7 +9,6 @@
     <string name="video_orientation_sensor">Otomatik döndür</string>
     <string name="video_resize_crop">Kırp</string>
     <string name="video_resize_fit">Sığdır</string>
-    <string name="app_name">Just Player</string>
     <string name="delete_confirmation">Sil</string>
     <string name="delete_query">Bu dosya silinsin mi\?</string>
     <string name="request_scope">Harici alt yazıları otomatik olarak yüklemek veya bir dizindeki sonraki dosyaya atlamayı etkinleştirmek için videolarınızı içeren en üstteki klasöre (örn. Filmler) %s erişim izni verin.</string>

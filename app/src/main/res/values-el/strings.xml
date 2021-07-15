@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Just Player</string>
     <string name="error_files_missing">Η εφαρμογή Αρχεία είναι απενεργοποιημένη ή λείπει</string>
     <string name="error_details">Λεπτομέρειες</string>
     <string name="open_subtitles">Φόρτωση υποτίτλων</string>

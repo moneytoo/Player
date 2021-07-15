@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Einfach Player</string>
     <string name="error_files_missing">Dateien-Anwendung ist deaktiviert oder fehlt</string>
     <string name="error_details">Einzelheiten</string>
     <string name="open_subtitles">Untertitel laden</string>

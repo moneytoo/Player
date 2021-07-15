@@ -12,5 +12,4 @@
     <string name="video_orientation_video">Орієнтація відео</string>
     <string name="video_resize_crop">Обрізати</string>
     <string name="video_resize_fit">Підігнати</string>
-    <string name="app_name">Лише Програвач</string>
 </resources>

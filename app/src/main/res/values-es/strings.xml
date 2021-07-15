@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Sólo Reproductor</string>
     <string name="video_resize_fit">Ajustar</string>
     <string name="video_resize_crop">Recortar</string>
     <string name="video_orientation_video">Orientación del vídeo</string>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Just Player</string>
     <string name="error_files_missing">文件应用处于禁用或缺失状态</string>
     <string name="error_details">详情</string>
     <string name="open_subtitles">加载字幕</string>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Just Player</string>
     <string name="video_resize_fit">Dopasuj</string>
     <string name="video_orientation_video">Orientacja wideo</string>
     <string name="error_details">Szczegóły</string>

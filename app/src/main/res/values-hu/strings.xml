@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Just lejátszó</string>
     <string name="error_files_missing">A fájlok alkalmazás le van tiltva vagy hiányzik</string>
     <string name="video_orientation_sensor">Auto-forgatás</string>
     <string name="video_resize_crop">Nyújtás</string>

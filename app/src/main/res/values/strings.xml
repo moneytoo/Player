@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Just Player</string>
+    <string name="app_name" translatable="false">Just Player</string>
 
     <string name="video_resize_fit">Fit</string>
     <string name="video_resize_crop">Crop</string>

@@ -9,7 +9,6 @@
     <string name="video_orientation_video">Orientamento video</string>
     <string name="video_resize_crop">Ritaglia</string>
     <string name="video_resize_fit">Adatta</string>
-    <string name="app_name">Solo Lettore</string>
     <string name="delete_confirmation">Elimina</string>
     <string name="delete_query">Eliminare questo file\?</string>
     <string name="request_scope">Per caricare automaticamente i sottotitoli esterni o abilitare il salto al file successivo in una directory, concedi l’accesso a %s alla cartella più in alto che contiene i tuoi video (ad esempio: Film).</string>

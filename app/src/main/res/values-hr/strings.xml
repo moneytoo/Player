@@ -9,7 +9,6 @@
     <string name="video_orientation_video">Položaj videa</string>
     <string name="video_resize_crop">Obreži</string>
     <string name="video_resize_fit">Prilagodi</string>
-    <string name="app_name">Samo Player</string>
     <string name="request_scope">Za automatsko učitavanje vanjskih titlova ili za omogućavanje preskakanja na sljedeću datoteku u mapi, odobri %s pristup najvišoj mapi koja sadrži tvoja videa (npr. Filmovi).</string>
     <string name="delete_confirmation">Izbriši</string>
     <string name="delete_query">Izbrisati ovu datoteku\?</string>
