@@ -9,4 +9,7 @@
     <string name="video_orientation_video">Ориентация видео</string>
     <string name="video_resize_crop">Обрезать</string>
     <string name="video_resize_fit">Подогнать</string>
+    <string name="request_scope"></string>
+    <string name="delete_confirmation"></string>
+    <string name="delete_query"></string>
 </resources>
