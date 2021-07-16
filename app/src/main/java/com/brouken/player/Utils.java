@@ -23,6 +23,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.documentfile.provider.DocumentFile;
+
 import com.arthenica.ffmpegkit.FFmpegKitConfig;
 import com.arthenica.ffmpegkit.FFprobeKit;
 import com.arthenica.ffmpegkit.MediaInformation;
@@ -426,7 +428,7 @@ class Utils {
                     @Override
                     public void onChoosePath(String path, File pathFile) {
                         activity.releasePlayer();
-                        Uri uri = Uri.parse(pathFile.toURI().toString());
+                        Uri uri = DocumentFile.fromFile(pathFile).getUri();
                         if (video) {
                             activity.mPrefs.updateMedia(activity, uri, null);
                             activity.searchSubtitles();
