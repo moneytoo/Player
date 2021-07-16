@@ -119,14 +119,18 @@ class SubtitleUtils {
         return null;
     }
 
-    public static String[] getTrailFromUri(Uri uri) {
+    public static String getTrailPathFromUri(Uri uri) {
         String path = uri.getPath();
         String[] array = path.split(":");
         if (array.length > 1) {
-            path = array[array.length - 1];
-            return path.split("/");
+            return array[array.length - 1];
+        } else {
+            return path;
         }
-        return new String[]{};
+    }
+
+    public static String[] getTrailFromUri(Uri uri) {
+        return getTrailPathFromUri(uri).split("/");
     }
 
     private static String getFileBaseName(String name) {

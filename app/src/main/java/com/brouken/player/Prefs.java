@@ -13,6 +13,7 @@ import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedHashMap;
+import java.util.Set;
 
 class Prefs {
 
@@ -186,10 +187,29 @@ class Prefs {
 
     public long getPosition() {
         Object val = positions.get(mediaUri.toString());
-        if (val == null)
-            return 0L;
-        else
+        if (val != null)
             return (long) val;
+
+        // Return position for uri from limited scope (loaded after using Next action)
+        if (ContentResolver.SCHEME_CONTENT.equals(mediaUri.getScheme())) {
+            final String searchPath = SubtitleUtils.getTrailPathFromUri(mediaUri);
+            if (searchPath == null || searchPath.length() < 1)
+                return 0L;
+            final Set<String> keySet = positions.keySet();
+            final Object[] keys = keySet.toArray();
+            for (int i = keys.length; i > 0; i--) {
+                final String key = (String) keys[i - 1];
+                final Uri uri = Uri.parse(key);
+                if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+                    final String keyPath = SubtitleUtils.getTrailPathFromUri(uri);
+                    if (searchPath.equals(keyPath)) {
+                        return (long) positions.get(key);
+                    }
+                }
+            }
+        }
+
+        return 0L;
     }
 
     public void updateOrientation() {
