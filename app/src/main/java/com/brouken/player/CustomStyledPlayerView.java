@@ -83,13 +83,15 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
 
         mScaleDetector = new ScaleGestureDetector(context, this);
 
-        exoErrorMessage.setOnClickListener(v -> {
-            if (PlayerActivity.locked) {
-                PlayerActivity.locked = false;
-                Utils.showText(CustomStyledPlayerView.this, "", MESSAGE_TIMEOUT_LONG);
-                setIconLock(false);
-            }
-        });
+        if (!Utils.isTvBox(getContext())) {
+            exoErrorMessage.setOnClickListener(v -> {
+                if (PlayerActivity.locked) {
+                    PlayerActivity.locked = false;
+                    Utils.showText(CustomStyledPlayerView.this, "", MESSAGE_TIMEOUT_LONG);
+                    setIconLock(false);
+                }
+            });
+        }
     }
 
     public void clearIcon() {

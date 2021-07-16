@@ -303,8 +303,8 @@ class Utils {
         return scheme.startsWith("http") || scheme.equals("rtsp");
     }
 
-    public static boolean isTvBox(Activity activity) {
-        return activity.getResources().getBoolean(R.bool.tv_box);
+    public static boolean isTvBox(Context context) {
+        return context.getResources().getBoolean(R.bool.tv_box);
     }
 
     public static int normRate(float rate) {
