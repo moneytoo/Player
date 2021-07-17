@@ -255,7 +255,7 @@ public class PlayerActivity extends Activity {
             // TODO: Android 12 improvements:
             // https://developer.android.com/about/versions/12/features/pip-improvements
             mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
-            updatePictureInPictureActions(R.drawable.ic_play_arrow_24dp, "Play", CONTROL_TYPE_PLAY, REQUEST_PLAY);
+            updatePictureInPictureActions(R.drawable.ic_play_arrow_24dp, R.string.exo_controls_play_description, CONTROL_TYPE_PLAY, REQUEST_PLAY);
 
             buttonPiP = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
             buttonPiP.setImageResource(R.drawable.ic_picture_in_picture_alt_24dp);
@@ -963,9 +963,9 @@ public class PlayerActivity extends Activity {
 
             if (isPiPSupported()) {
                 if (isPlaying) {
-                    updatePictureInPictureActions(R.drawable.ic_pause_24dp, "Pause", CONTROL_TYPE_PAUSE, REQUEST_PAUSE);
+                    updatePictureInPictureActions(R.drawable.ic_pause_24dp, R.string.exo_controls_pause_description, CONTROL_TYPE_PAUSE, REQUEST_PAUSE);
                 } else {
-                    updatePictureInPictureActions(R.drawable.ic_play_arrow_24dp, "Play", CONTROL_TYPE_PLAY, REQUEST_PLAY);
+                    updatePictureInPictureActions(R.drawable.ic_play_arrow_24dp, R.string.exo_controls_play_description, CONTROL_TYPE_PLAY, REQUEST_PLAY);
                 }
             }
 
@@ -1328,11 +1328,12 @@ public class PlayerActivity extends Activity {
     }
 
     @TargetApi(26)
-    void updatePictureInPictureActions(final int iconId, final String title, final int controlType, final int requestCode) {
+    void updatePictureInPictureActions(final int iconId, final int resTitle, final int controlType, final int requestCode) {
         final ArrayList<RemoteAction> actions = new ArrayList<>();
         final PendingIntent intent = PendingIntent.getBroadcast(PlayerActivity.this, requestCode,
                         new Intent(ACTION_MEDIA_CONTROL).putExtra(EXTRA_CONTROL_TYPE, controlType), PendingIntent.FLAG_IMMUTABLE);
         final Icon icon = Icon.createWithResource(PlayerActivity.this, iconId);
+        final String title = getString(resTitle);
         actions.add(new RemoteAction(icon, title, title, intent));
         ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setActions(actions);
         setPictureInPictureParams(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
