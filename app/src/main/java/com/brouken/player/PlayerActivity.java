@@ -2,6 +2,7 @@ package com.brouken.player;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -259,9 +260,7 @@ public class PlayerActivity extends Activity {
             buttonPiP = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
             buttonPiP.setImageResource(R.drawable.ic_picture_in_picture_alt_24dp);
 
-            buttonPiP.setOnClickListener(view -> {
-                enterPiP();
-            });
+            buttonPiP.setOnClickListener(view -> enterPiP());
 
             buttonPiP.setOnLongClickListener(v -> {
                 buttonPiP.performHapticFeedback(mPrefs.toggleAutoPiP() ?
@@ -375,9 +374,7 @@ public class PlayerActivity extends Activity {
             e.printStackTrace();
         }
 
-        findViewById(R.id.delete).setOnClickListener(view -> {
-            askDeleteMedia();
-        });
+        findViewById(R.id.delete).setOnClickListener(view -> askDeleteMedia());
 
         findViewById(R.id.next).setOnClickListener(view -> {
             if (!isTvBox && mPrefs.askScope) {
@@ -431,9 +428,7 @@ public class PlayerActivity extends Activity {
         exoBasicControls.addView(horizontalScrollView);
 
         if (Build.VERSION.SDK_INT > 23) {
-            horizontalScrollView.setOnScrollChangeListener((view, i, i1, i2, i3) -> {
-                resetHideCallbacks();
-            });
+            horizontalScrollView.setOnScrollChangeListener((view, i, i1, i2, i3) -> resetHideCallbacks());
         }
 
         playerView.setControllerVisibilityListener(new StyledPlayerControlView.VisibilityListener() {
@@ -993,6 +988,7 @@ public class PlayerActivity extends Activity {
             }
         }
 
+        @SuppressLint("SourceLockedOrientationActivity")
         @Override
         public void onPlaybackStateChanged(int state) {
             boolean isNearEnd = false;
