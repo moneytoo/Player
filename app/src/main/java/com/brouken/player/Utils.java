@@ -1,5 +1,6 @@
 package com.brouken.player;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -199,6 +200,7 @@ class Utils {
         }
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     public static void setOrientation(Activity activity, Orientation orientation) {
         switch (orientation) {
             case VIDEO:
