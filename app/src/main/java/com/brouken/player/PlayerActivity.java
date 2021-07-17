@@ -70,7 +70,6 @@ import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SeekParameters;
 import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.AudioAttributes;
-import com.google.android.exoplayer2.audio.AudioListener;
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ts.TsExtractor;
@@ -97,7 +96,7 @@ import java.util.Locale;
 
 public class PlayerActivity extends Activity {
 
-    private PlaybackStateListener playbackStateListener;
+    private PlayerListener playerListener;
     private BroadcastReceiver mReceiver;
     private AudioManager mAudioManager;
     private MediaSessionCompat mediaSession;
@@ -394,7 +393,7 @@ public class PlayerActivity extends Activity {
         findViewById(R.id.exo_bottom_bar).setOnTouchListener((v, event) -> true);
         //titleView.setOnTouchListener((v, event) -> true);
 
-        playbackStateListener = new PlaybackStateListener();
+        playerListener = new PlayerListener();
 
         mBrightnessControl = new BrightnessControl(this);
         if (mPrefs.brightness >= 0) {
@@ -884,21 +883,6 @@ public class PlayerActivity extends Activity {
                 e.printStackTrace();
             }
 
-            // When audio session id changes?
-            player.addAudioListener(new AudioListener() {
-                @Override
-                public void onAudioSessionIdChanged(int audioSessionId) {
-                    if (loudnessEnhancer != null) {
-                        loudnessEnhancer.release();
-                    }
-                    try {
-                        loudnessEnhancer = new LoudnessEnhancer(audioSessionId);
-                    } catch (RuntimeException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
             videoLoading = true;
 
             updateLoading(true);
@@ -925,7 +909,7 @@ public class PlayerActivity extends Activity {
             playerView.showController();
         }
 
-        player.addListener(playbackStateListener);
+        player.addListener(playerListener);
         player.prepare();
 
         if (restorePlayState) {
@@ -954,7 +938,7 @@ public class PlayerActivity extends Activity {
             if (player.isPlaying()) {
                 restorePlayState = true;
             }
-            player.removeListener(playbackStateListener);
+            player.removeListener(playerListener);
             player.clearMediaItems();
             player.release();
             player = null;
@@ -965,7 +949,19 @@ public class PlayerActivity extends Activity {
         Utils.setButtonEnabled(this, buttonAspectRatio, false);
     }
 
-    private class PlaybackStateListener implements Player.EventListener{
+    private class PlayerListener implements Player.Listener {
+        @Override
+        public void onAudioSessionIdChanged(int audioSessionId) {
+            if (loudnessEnhancer != null) {
+                loudnessEnhancer.release();
+            }
+            try {
+                loudnessEnhancer = new LoudnessEnhancer(audioSessionId);
+            } catch (RuntimeException e) {
+                e.printStackTrace();
+            }
+        }
+
         @Override
         public void onIsPlayingChanged(boolean isPlaying) {
             playerView.setKeepScreenOn(isPlaying);
