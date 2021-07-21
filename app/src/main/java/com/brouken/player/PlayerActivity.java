@@ -1633,7 +1633,14 @@ public class PlayerActivity extends Activity {
 
     void deleteMedia() {
         try {
-            DocumentsContract.deleteDocument(getContentResolver(), mPrefs.mediaUri);
+            if (ContentResolver.SCHEME_CONTENT.equals(mPrefs.mediaUri.getScheme())) {
+                DocumentsContract.deleteDocument(getContentResolver(), mPrefs.mediaUri);
+            } else if (ContentResolver.SCHEME_FILE.equals(mPrefs.mediaUri.getScheme())) {
+                final File file = new File(mPrefs.mediaUri.getSchemeSpecificPart());
+                if (file.canWrite()) {
+                    file.delete();
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

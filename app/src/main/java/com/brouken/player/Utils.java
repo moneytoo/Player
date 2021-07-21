@@ -1,11 +1,13 @@
 package com.brouken.player;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.media.AudioManager;
@@ -49,7 +51,7 @@ class Utils {
     }
 
     public static boolean fileExists(final Context context, final Uri uri) {
-        if ("file".equals(uri.getScheme())) {
+        if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
             final File file = new File(uri.getPath());
             return file.exists();
         } else {
@@ -295,6 +297,16 @@ class Utils {
                         }
                     }
                 }
+            } else if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
+                if (Build.VERSION.SDK_INT >= 23) {
+                    boolean hasPermission = context.checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                            == PackageManager.PERMISSION_GRANTED;
+                    if (!hasPermission) {
+                        return false;
+                    }
+                }
+                final File file = new File(uri.getSchemeSpecificPart());
+                return file.canWrite();
             }
         } catch (Exception e) {
             e.printStackTrace();
