@@ -254,10 +254,47 @@ Builds:
       - cp $$ExoPlayer$$/extensions/{ffmpeg,av1}/buildout/outputs/aar/*.aar libs/
     ndk: r21e
 
-MaintainerNotes: 'Extensions build instructions: https://github.com/google/ExoPlayer/blob/r2.14.0/extensions/ffmpeg/README.md
-    https://github.com/google/ExoPlayer/blob/r2.14.0/extensions/av1/README.md'
+  - versionName: '0.45'
+    versionCode: 45
+    commit: v0.45
+    subdir: app
+    gradle:
+      - exoMaven
+    srclibs:
+      - ExoPlayer@r2.14.2
+      - FFmpeg@release/4.2
+      - cpu_features@v0.6.0
+      - abseil-cpp@20210324.2
+      - libgav1@v0.16.3
+    scandelete:
+      - app/libs/
+    build:
+      - export FFMPEG_EXT_PATH="$$ExoPlayer$$/extensions/ffmpeg/src/main"
+      - export HOST_PLATFORM="$(uname -s | tr '[:upper:]' '[:lower:]')-x86_64"
+      - export ENABLED_DECODERS=(vorbis opus flac alac pcm_mulaw pcm_alaw mp3 amrnb
+        amrwb aac ac3 eac3 dca mlp truehd)
+      - pushd "${FFMPEG_EXT_PATH}/jni"
+      - ln -s "$$FFmpeg$$" ffmpeg
+      - cd "${FFMPEG_EXT_PATH}/jni"
+      - ./build_ffmpeg.sh "${FFMPEG_EXT_PATH}" "$$NDK$$" "${HOST_PLATFORM}" "${ENABLED_DECODERS[@]}"
+      - export AV1_EXT_PATH="$$ExoPlayer$$/extensions/av1/src/main"
+      - cd "${AV1_EXT_PATH}/jni"
+      - ln -s "$$cpu_features$$" cpu_features
+      - ln -s "$$libgav1$$" libgav1
+      - cd "${AV1_EXT_PATH}/jni/libgav1"
+      - mkdir "${AV1_EXT_PATH}/jni/libgav1/third_party"
+      - cd "${AV1_EXT_PATH}/jni/libgav1/third_party"
+      - ln -s "$$abseil-cpp$$" abseil-cpp
+      - cd "$$ExoPlayer$$"
+      - ./gradlew :extension-{ffmpeg,av1}:bundleReleaseAar
+      - popd
+      - cp $$ExoPlayer$$/extensions/{ffmpeg,av1}/buildout/outputs/aar/*.aar libs/
+    ndk: r21e
+
+MaintainerNotes: 'Extensions build instructions: https://github.com/google/ExoPlayer/blob/r2.14.2/extensions/ffmpeg/README.md
+    https://github.com/google/ExoPlayer/blob/r2.14.2/extensions/av1/README.md'
 
 AutoUpdateMode: None
 UpdateCheckMode: None
-CurrentVersion: '0.32'
-CurrentVersionCode: 32
+CurrentVersion: '0.45'
+CurrentVersionCode: 45
