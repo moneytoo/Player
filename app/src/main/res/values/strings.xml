@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name" translatable="false">Just Player</string>
 
@@ -17,6 +18,6 @@
 
     <string name="request_scope">To automatically load external subtitles or enable skipping to next file in a directory, grant %s access to the topmost folder containing your videos (e.g. Movies).</string>
 
-    <string name="delete_query">Delete this file?</string>
+    <string name="delete_query">Delete this file\?</string>
     <string name="delete_confirmation">Delete</string>
 </resources>

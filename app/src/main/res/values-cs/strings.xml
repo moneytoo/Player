@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="video_resize_fit">Přizpůsobení</string>
     <string name="video_resize_crop">Oříznutí</string>
@@ -15,6 +16,6 @@
 
     <string name="request_scope">Pro automatické načtení externích titulků nebo umožnění přechodu na následující soubor v adresáří, přidělte aplikaci %s přístup k nejvrchnější složce obsahující vaše videa (např. Movies).</string>
 
-    <string name="delete_query">Smazat tento soubor?</string>
+    <string name="delete_query">Smazat tento soubor\?</string>
     <string name="delete_confirmation">Smazat</string>
 </resources>
