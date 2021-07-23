@@ -1,0 +1,5 @@
+• Add post-playback actions (delete file/skip to next)
+• Add touch lock (long tap)
+• Add internet permission (streaming, access remote media using file managers)
+• Android TV improvements (navigation/controls, frame rate matching)
+• Update ExoPlayer to 2.14.2

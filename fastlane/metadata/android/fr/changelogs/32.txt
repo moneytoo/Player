@@ -1,1 +1,0 @@
-• Mise à jour d'ExoPlayer vers 2.14.0
