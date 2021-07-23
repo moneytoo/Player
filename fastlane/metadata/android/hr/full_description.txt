@@ -24,6 +24,7 @@ Značajke
 * Pojačanje glasnoće
 * Automatsko podudaranje brzine kadrova na Android TV-u/boksovima (Android 6+)
 * Radnje nakon reprodukcije (brisanje datoteke/preskoči na sljedeću)
+* Zaključavanje dodirom (dugi dodir)
 * Bez oglasa, praćenja ili pretjeranih dozvola
 
 Za učitavanje vanjskih (neugrađenih) titlova, dugo dodirni gumb za otvaranje datoteke u donjoj traci. Kad to učiniš po prvi put, moći ćeš odabrati osnovnu mapu videa za omogućavanje automatskog učitavanje vanjskih titlova.

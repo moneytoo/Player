@@ -24,6 +24,7 @@ Funktionen
  * Lautstärke erhöhen
  * Automatische Bildratenanpassung auf Android TV/Boxen (Android 6+)
  * Post-Playback-Aktionen (Datei löschen/zum nächsten springen)
+ * Berührungssperre (langes Tippen)
  * Keine Werbung, Tracking oder übermäßige Berechtigungen
 
 Um externe (nicht eingebettete) Untertitel zu laden, drücken Sie lange auf die Dateiöffnungsaktion in der unteren Leiste. Bei erster Verwendung wird Ihnen angeboten, das Video- Wurzelverzeichnis auszuwählen, um das automatische Laden externer Untertitel zu aktivieren.
