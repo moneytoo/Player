@@ -9,7 +9,6 @@
     <string name="video_orientation_video">Ориентация видео</string>
     <string name="video_resize_crop">Обрезать</string>
     <string name="video_resize_fit">Подогнать</string>
-    <string name="request_scope">Чтобы автоматически загружать внешние субтитры или включить переход к следующему файлу в каталоге, предоставьте доступ к самой верхней папке с видео.</string>
     <string name="delete_confirmation">Удалить</string>
     <string name="delete_query">Удалить этот файл\?</string>
 </resources>
