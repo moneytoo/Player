@@ -24,6 +24,7 @@ Funkce
  * Zvýšení hlasitosti
  * Automatické přizpůsobení obnovovací frekvence na Android TV/boxech (Android 6+)
  * Akce po skončení přehrávání (smazání souboru/skok na následující)
+ * Zamykání ovládání (dlouhé podržení)
  * Bez reklam, sledování nebo zbytečných povoleních
 
 Pro načteních externích titulků dlouze podržte tlačítko pro otevření souboru ve spodním panelu. Poprvé, co toto uděláte, vám bude nabídnuto vybrání kořenového video adresáře pro automatické načítání externích titulků.
