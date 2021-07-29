@@ -11,4 +11,5 @@
     <string name="video_resize_fit">Подогнать</string>
     <string name="delete_confirmation">Удалить</string>
     <string name="delete_query">Удалить этот файл\?</string>
+    <string name="request_scope">Чтобы автоматически загружать внешние субтитры или переходить к следующему файлу в каталоге, предоставьте %s доступ к самой верхней папке, содержащей ваши видео (например, Movies).</string>
 </resources>
