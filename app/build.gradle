@@ -10,8 +10,8 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 46
-        versionName "0.46"
+        versionCode 47
+        versionName "0.47"
         archivesBaseName = "Just.Player.v${versionName}"
     }
 
@@ -44,8 +44,9 @@ dependencies {
     // Use patched exoplayer-core - map Dolby Vision profile 7 to HEVC
     // https://github.com/google/ExoPlayer/issues/9139
     exoMavenImplementation "com.google.android.exoplayer:exoplayer-core:$exoplayerVersion"
-    exoLocalImplementation "com.google.android.exoplayer:exoplayer-common:$exoplayerVersion"
-    exoLocalImplementation "com.google.android.exoplayer:exoplayer-extractor:$exoplayerVersion"
+    exoLocalImplementation("com.google.android.exoplayer:exoplayer-common:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
+    }
     exoMavenImplementation "com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion"
     exoLocalImplementation("com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
