@@ -10,8 +10,8 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 47
-        versionName "0.47"
+        versionCode 48
+        versionName "0.48"
         archivesBaseName = "Just.Player.v${versionName}"
     }
 
@@ -48,9 +48,6 @@ dependencies {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
     }
     exoMavenImplementation "com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion"
-    exoLocalImplementation("com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion") {
-        exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
-    }
     implementation "com.google.android.exoplayer:extension-mediasession:$exoplayerVersion"
     exoMavenImplementation "com.google.android.exoplayer:exoplayer-dash:$exoplayerVersion"
     exoLocalImplementation("com.google.android.exoplayer:exoplayer-dash:$exoplayerVersion") {
