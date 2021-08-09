@@ -9,4 +9,7 @@
     <string name="open_subtitles">Muat subtitle</string>
     <string name="error_details">Detail</string>
     <string name="error_files_missing">Aplikasi file dinonaktifkan atau hilang</string>
+    <string name="delete_confirmation">Hapus</string>
+    <string name="delete_query">Hapus file ini\?</string>
+    <string name="request_scope">Untuk memuat subtitle eksternal otomatis atau mengaktifkan skipping ke file berikutnya dalam direktori, berikan akses %s ke folder paling atas yang berisi video Anda (misalnya Film).</string>
 </resources>
