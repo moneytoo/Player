@@ -66,6 +66,7 @@ import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.MediaItem;
+import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SeekParameters;
@@ -1045,12 +1046,15 @@ public class PlayerActivity extends Activity {
         }
 
         @Override
-        public void onPlayerError(ExoPlaybackException error) {
+        public void onPlayerError(PlaybackException error) {
             updateLoading(false);
-            if (controllerVisible && controllerVisibleFully) {
-                showError(error);
-            } else {
-                errorToShow = error;
+            if (error instanceof ExoPlaybackException) {
+                final ExoPlaybackException exoPlaybackException = (ExoPlaybackException) error;
+                if (controllerVisible && controllerVisibleFully) {
+                    showError(exoPlaybackException);
+                } else {
+                    errorToShow = exoPlaybackException;
+                }
             }
         }
     }

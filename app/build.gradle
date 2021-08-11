@@ -40,9 +40,7 @@ android {
 }
 
 dependencies {
-    def exoplayerVersion = '2.14.2'
-    // Use patched exoplayer-core - map Dolby Vision profile 7 to HEVC
-    // https://github.com/google/ExoPlayer/issues/9139
+    def exoplayerVersion = '2.15.0'
     exoMavenImplementation "com.google.android.exoplayer:exoplayer-core:$exoplayerVersion"
     exoLocalImplementation("com.google.android.exoplayer:exoplayer-common:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
