@@ -90,6 +90,13 @@ Install app like [MediaInfo](https://play.google.com/store/apps/details?id=net.m
 
 There as a hidden feature - Auto PiP. Long press the PiP icon to activate this feature. Then, when you leave Just Player through the home button and video is playing, PiP will be activated automatically.
 
+### I prefer using media library instead of a file chooser...
+
+Just Player uses system file chooser which already allows two different browsing modes: **Videos** - listing only device directories that contain videos; **File browser** - full navigation in the device file system structure
+
+Alternatively, some people choose to use the media library function of
+[Nova Video Player](https://github.com/nova-video-player/aos-AVP) and integrate it with Just Player by enabling "*Allow using another video player*" feature. This also gives you convenient access to content on network storages (SMB, UPnP, FTP etc.).
+
 ## Other open source Android video players
 
 Here's a comparison table presenting all available and significant open source video players for Android I was able to find. Just Player is something like ~~80%~~ 90% feature complete. It will probably never have dozens of options or some rich media library UI. It will never truly compete with feature rich VLC. It just attempts to provide functional feature set and motive others to create greater players based on amazing ExoPlayer.
