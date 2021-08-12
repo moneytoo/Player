@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="delete_confirmation">Eliminar</string>
+    <string name="delete_query">Eliminar ficheiro\?</string>
+    <string name="request_scope">Para carregar automaticamente as legendas ou avançar para outro vídeo do diretório, tem que conceder a %s o acesso à pasta que contém os seus vídeos (ex,: Movies).</string>
+    <string name="error_files_missing">Aplicação \'Ficheiros\' inativa ou em falta</string>
+    <string name="error_details">Detalhes</string>
+    <string name="open_subtitles">Carregar legendas</string>
+    <string name="onboarding_open_description">Toque para abrir um vídeo. Toque longo para carregar legendas.</string>
+    <string name="onboarding_open_title">Escolha o vídeo a reproduzir</string>
+    <string name="video_orientation_sensor">Rotação automática</string>
+    <string name="video_orientation_video">Orientação do vídeo</string>
+    <string name="video_resize_crop">Recortar</string>
+    <string name="video_resize_fit">Ajustar</string>
+</resources>

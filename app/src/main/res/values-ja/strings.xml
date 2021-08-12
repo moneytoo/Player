@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="delete_confirmation">削除</string>
+    <string name="delete_query">このファイルを削除しますか？</string>
+    <string name="request_scope">外部の字幕を自動的に読み込んだり、ディレクトリ内の次のファイルにスキップできるようにするには、ビデオが入っている一番上のフォルダ（例：Movies）へのアクセスを%sに許可してください。</string>
+    <string name="error_files_missing">ファイルアプリが無効または見つからない</string>
+    <string name="error_details">詳細</string>
+    <string name="open_subtitles">字幕を読み込む</string>
+    <string name="onboarding_open_description">タップしてビデオファイルを開く。長くタップして外部の字幕を読み込む。</string>
+    <string name="onboarding_open_title">再生するビデオを選択</string>
+    <string name="video_orientation_sensor">自動回転</string>
+    <string name="video_orientation_video">映像の向き</string>
+</resources>
