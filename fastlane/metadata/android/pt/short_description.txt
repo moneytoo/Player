@@ -1,0 +1,1 @@
+Reprodutor de vídeos baseado na biblioteca ExoPlayer

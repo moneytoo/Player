@@ -1,0 +1,1 @@
+Jednostavan video plejer zasnovan na ExoPlayer biblioteci

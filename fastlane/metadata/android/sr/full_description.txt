@@ -1,0 +1,30 @@
+Android video plejer zasnovan na ExoPlayer biblioteci. Koristi ExoPlayer FFmpeg ekstenziju sa svim audio formatima ukljucenim. (Podrzava i specijalne formate poput AC3, EAC3, DTS, DTS HD, TrueHD, itd.).
+
+Ispravno sinhronizira zvuk sa video klipom kada se koriste Bluetooth slusalice/zvucnici.
+
+Podrzani formati:
+
+ * Zvuk: Vorbis, Opus, FLAC, ALAC, PCM/WAVE (μ-law, A-law), MP1, MP2, MP3, AMR (NB, WB), AAC (LC, ELD, HE; xHE on Android 9+), AC-3, E-AC-3, DTS, DTS-HD, TrueHD
+ * Video: H.263, H.264 AVC (Baseline Profile; Main Profile on Android 6+), H.265 HEVC, MPEG-4 SP, VP8, VP9, AV1
+ * Kontejneri: MP4, MOV, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV
+ * Strimovanje: DASH, HLS, SmoothStreaming, RTSP
+ * Titlovi SRT, SSA, ASS, TTML, VTT
+
+HDR (HDR10+ i Dolby Vision) video plejbeck dostupan na podrzanim uredjajima.
+
+Funkcije
+
+ * Selekcija zvuka/titlova
+ * Kontrola brzine playback-a
+ * Horizontalno prevlacenje i dupli dodir za brzo trazenje
+ * Vertikalno prevlacenje da promenite osvetljenje (levo) / zvuk (desno)
+ * Ustinite da zumirate (Android 7+)
+ * PiP (Slika u slici) na Android 8+ (promena velicine na Android 11+)
+ * Promena velicine (uklopite/isecite)
+ * Pojacanje tona
+ * Automatsko uklapanje frejmova na Android televizorima/kutijama (Android 6+)
+ * Post-playback akcije (obrisite fajl/idite na sledeci)
+ * Zakljucajte dodir (Dugo dodirnite)
+ * Bez reklama, pracenja ili nepotrebnih dozvola
+
+Da ucitate spoljne titlove, dugo pritisnite file open akciju na donjoj strani ekrana. Kada to uradite prvi put, bice Vam ponudjeno da izaberete glavni video folder da omogucite automatsko ucitavanje spoljnih titlova.

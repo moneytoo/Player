@@ -7,6 +7,7 @@ Formats pris en charge
  * Audio : Vorbis, Opus, FLAC, ALAC, PCM/WAVE (μ-law, A-law), MP1, MP2, MP3, AMR (NB, WB), AAC (LC, ELD, HE ; xHE sur Android 9+), AC-3, E-AC-3, DTS, DTS-HD, TrueHD.
  * Vidéo : H.263, H.264 AVC (Profil de base ; Profil principal sur Android 6+), H.265 HEVC, MPEG-4 SP, VP8, VP9, AV1
  * Containers : MP4, MOV, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV
+ * Streaming : DASH, HLS, SmoothStreaming, RTSP
  * Sous-titres : SRT, SSA, ASS, TTML, VTT
 
 Lecture de vidéos HDR (HDR10+ et Dolby Vision) sur du matériel compatible/pris en charge.
@@ -21,6 +22,9 @@ Caractéristiques
  * PiP (Picture in Picture) sur Android 8+ (redimensionnable sur Android 11+)
  * Redimensionnement (ajustement/coupe)
  * Augmentation du volume
- * Pas de publicité, de suivi ou même de permission Internet (pas de permission de stockage non plus).
+ * Adaptation automatique de la fréquence d'images sur les téléviseurs/boîtes Android (Android 6+)
+ * Actions post-lecture (supprimer le fichier/ passer au suivant)
+ * Verrouillage tactile (appui long)
+ * Pas de publicité, de suivi ou de permissions excessives
 
-Pour charger des sous-titres externes (non intégrés), appuyez longuement sur l'action d'ouverture de fichier dans la barre inférieure.
+Pour charger des sous-titres externes (non intégrés), appuyez longuement sur l'action d'ouverture de fichier dans la barre inférieure. La première fois que vous le ferez, il vous sera proposé de sélectionner le dossier vidéo racine pour activer le chargement automatique des sous-titres externes.
