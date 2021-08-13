@@ -1,13 +1,18 @@
 package com.brouken.player;
 
+import static android.content.Context.UI_MODE_SERVICE;
+
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.UiModeManager;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.media.AudioManager;
@@ -320,7 +325,32 @@ class Utils {
     }
 
     public static boolean isTvBox(Context context) {
-        return context.getResources().getBoolean(R.bool.tv_box);
+        // TV for sure
+        UiModeManager uiModeManager = (UiModeManager) context.getSystemService(UI_MODE_SERVICE);
+        if (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION) {
+            return true;
+        }
+
+        // Android box (non Android TV) or phone connected to external display (desktop mode)
+
+        if (Build.VERSION.SDK_INT < 29) {
+            // Most likely not a box
+            if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)) {
+                return false;
+            }
+
+            // Missing Files app (DocumentsUI) means box
+            // Some boxes have non functional app or stub (!)
+            final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("video/*");
+            if (intent.resolveActivity(context.getPackageManager()) == null) {
+                return true;
+            }
+        }
+
+        // Default: No TV - use SAF
+        return false;
     }
 
     public static int normRate(float rate) {
