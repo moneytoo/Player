@@ -361,6 +361,8 @@ public class PlayerActivity extends Activity {
                 findViewById(R.id.exo_progress).setPadding(windowInsets.getSystemWindowInsetLeft(), 0,
                         windowInsets.getSystemWindowInsetRight(), 0);
 
+                Utils.setViewMargins(findViewById(R.id.exo_error_message), 0, windowInsets.getSystemWindowInsetTop() / 2, 0, getResources().getDimensionPixelSize(R.dimen.exo_error_message_margin_bottom) + windowInsets.getSystemWindowInsetBottom() / 2);
+
                 windowInsets.consumeSystemWindowInsets();
             }
             return windowInsets;
