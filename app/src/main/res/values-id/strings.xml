@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="video_resize_fit">Kecocokan</string>
+    <string name="video_resize_crop">Pangkas</string>
+    <string name="video_orientation_video">Orientasi video</string>
+    <string name="video_orientation_sensor">Rotasi otomatis</string>
+    <string name="onboarding_open_title">Pilih video untuk diputar</string>
+    <string name="onboarding_open_description">Ketuk untuk membuka file video. Ketuk panjang untuk memuat subtitle eksternal.</string>
+    <string name="open_subtitles">Muat subtitle</string>
+    <string name="error_details">Detail</string>
+    <string name="error_files_missing">Aplikasi file dinonaktifkan atau hilang</string>
+    <string name="delete_confirmation">Hapus</string>
+    <string name="delete_query">Hapus file ini\?</string>
+    <string name="request_scope">Untuk memuat subtitle eksternal otomatis atau mengaktifkan skipping ke file berikutnya dalam direktori, berikan akses %s ke folder paling atas yang berisi video Anda (misalnya Film).</string>
+</resources>
