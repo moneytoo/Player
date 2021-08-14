@@ -282,12 +282,15 @@ class Utils {
         }
     }
 
-    public static void setViewParams(final View view, int paddingLeft, int paddingTop, int paddingRight, int paddingBottom, int marginLeft, int marginTop, int marginRight, int marginBottom) {
-        view.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
-
+    public static void setViewMargins(final View view, int marginLeft, int marginTop, int marginRight, int marginBottom) {
         final FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) view.getLayoutParams();
         layoutParams.setMargins(marginLeft, marginTop, marginRight, marginBottom);
         view.setLayoutParams(layoutParams);
+    }
+
+    public static void setViewParams(final View view, int paddingLeft, int paddingTop, int paddingRight, int paddingBottom, int marginLeft, int marginTop, int marginRight, int marginBottom) {
+        view.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+        setViewMargins(view, marginLeft, marginTop, marginRight, marginBottom);
     }
 
     public static boolean isDeletable(final Context context, final Uri uri) {
