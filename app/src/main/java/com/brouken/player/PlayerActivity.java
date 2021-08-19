@@ -160,6 +160,13 @@ public class PlayerActivity extends Activity {
     final Rational rationalLimitWide = new Rational(239, 100);
     final Rational rationalLimitTall = new Rational(100, 239);
 
+    static final String API_POSITION = "position";
+    static final String API_RETURN_RESULT = "return_result";
+    boolean apiAccess;
+    boolean intentReturnResult;
+    boolean playbackFinished;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Rotate ASAP, before super/inflating to avoid glitches with activity launch animation
@@ -176,9 +183,23 @@ public class PlayerActivity extends Activity {
         isTvBox = Utils.isTvBox(this);
 
         if (getIntent().getData() != null) {
-            mPrefs.updateMedia(this, getIntent().getData(), getIntent().getType());
+            Intent intent = getIntent();
+
+            Bundle bundle = intent.getExtras();
+            apiAccess = bundle.containsKey(API_POSITION) || bundle.containsKey(API_RETURN_RESULT);
+            if (apiAccess)
+                mPrefs.setPersistent(false);
+
+            mPrefs.updateMedia(this, intent.getData(), intent.getType());
             searchSubtitles();
             focusPlay = true;
+
+            intentReturnResult = bundle.getBoolean(API_RETURN_RESULT);
+
+            if (bundle.containsKey(API_POSITION)) {
+                mPrefs.updatePosition((long) bundle.getInt(API_POSITION));
+            }
+
         }
 
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
@@ -509,6 +530,26 @@ public class PlayerActivity extends Activity {
     }
 
     @Override
+    public void finish() {
+        if (intentReturnResult) {
+            Intent intent = new Intent();
+            if (!playbackFinished) {
+                if (player.isCurrentWindowSeekable()) {
+                    long position;
+                    if (mPrefs.persistentMode)
+                        position = mPrefs.nonPersitentPosition;
+                    else
+                        position = player.getCurrentPosition();
+                    intent.putExtra(API_POSITION, (int) position);
+                }
+            }
+            setResult(Activity.RESULT_OK, intent);
+        }
+
+        super.finish();
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
@@ -720,6 +761,7 @@ public class PlayerActivity extends Activity {
                     }
                 }
 
+                mPrefs.setPersistent(true);
                 mPrefs.updateMedia(this, uri, data.getType());
                 searchSubtitles();
             }
@@ -885,7 +927,9 @@ public class PlayerActivity extends Activity {
 
             updateLoading(true);
 
-            play = mPrefs.getPosition() == 0L;
+            if (mPrefs.getPosition() == 0L || apiAccess) {
+                play = true;
+            }
 
             player.seekTo(mPrefs.getPosition());
 
@@ -899,7 +943,8 @@ public class PlayerActivity extends Activity {
 
             ((DoubleTapPlayerView)playerView).setDoubleTapEnabled(true);
 
-            nextUri = findNext();
+            if (!apiAccess)
+                nextUri = findNext();
 
             player.setHandleAudioBecomingNoisy(true);
             mediaSession.setActive(true);
@@ -1043,6 +1088,11 @@ public class PlayerActivity extends Activity {
                     }
                     if (mPrefs.subtitleTrack != -1 && (mPrefs.subtitleTrack < getTrackCountSubtitle() || mPrefs.subtitleTrack == Integer.MIN_VALUE))
                         setSelectedTrackSubtitle(mPrefs.subtitleTrack);
+                }
+            } else if (state == Player.STATE_ENDED) {
+                playbackFinished = true;
+                if (apiAccess) {
+                    finish();
                 }
             }
         }
@@ -1451,7 +1501,8 @@ public class PlayerActivity extends Activity {
             File videoRaw = null;
 
             if (!isTvBox && mPrefs.scopeUri != null) {
-                if ("com.android.externalstorage.documents".equals(mPrefs.mediaUri.getHost())) {
+                if ("com.android.externalstorage.documents".equals(mPrefs.mediaUri.getHost()) ||
+                        "org.courville.nova.provider".equals(mPrefs.mediaUri.getHost())) {
                     // Fast search based on path in uri
                     video = SubtitleUtils.findUriInScope(this, mPrefs.scopeUri, mPrefs.mediaUri);
                 } else {

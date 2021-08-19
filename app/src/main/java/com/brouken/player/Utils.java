@@ -477,6 +477,7 @@ class Utils {
                         activity.releasePlayer();
                         Uri uri = DocumentFile.fromFile(pathFile).getUri();
                         if (video) {
+                            activity.mPrefs.setPersistent(true);
                             activity.mPrefs.updateMedia(activity, uri, null);
                             activity.searchSubtitles();
                         } else {

@@ -1,5 +1,6 @@
 package com.brouken.player;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 
@@ -130,6 +131,12 @@ class SubtitleUtils {
     }
 
     public static String[] getTrailFromUri(Uri uri) {
+        if ("org.courville.nova.provider".equals(uri.getHost()) && ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+            String path = uri.getPath();
+            if (path.startsWith("/external_files/")) {
+                return path.substring("/external_files/".length()).split("/");
+            }
+        }
         return getTrailPathFromUri(uri).split("/");
     }
 
