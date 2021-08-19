@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="delete_confirmation">Obrisi</string>
+    <string name="delete_query">Da li zelite da obrisete ovaj fajl\?</string>
+    <string name="request_scope">Da automatski ucitate spolje titlove ili omogucite preskakanje do sledeceg fajla u kategoriji, dozvolite %s pristum glavnom folderu koji sadrzi videe (npr. Filmovi).</string>
+    <string name="error_files_missing">Aplikacija Datoteke je onemogucena ili nedostaje</string>
+    <string name="error_details">Detalji</string>
+    <string name="open_subtitles">Ucitaj titlove</string>
+    <string name="onboarding_open_description">Dodirni da otvoris video fajl. Zadrzi dugo da ucitas spoljne titlove.</string>
+    <string name="onboarding_open_title">Izaberi video za pokretanje</string>
+    <string name="video_orientation_sensor">Automatska rotacija</string>
+    <string name="video_orientation_video">Video orijentacija</string>
+    <string name="video_resize_crop">Iseci</string>
+    <string name="video_resize_fit">Uklopi</string>
+</resources>
