@@ -399,7 +399,7 @@ class Utils {
             if (BuildConfig.DEBUG)
                 Toast.makeText(activity, "Video frameRate: " + frameRate, Toast.LENGTH_LONG).show();
 
-            if (frameRate != Format.NO_VALUE) {
+            if (frameRate > 0) {
                 Display display = activity.getWindow().getDecorView().getDisplay();
                 Display.Mode[] supportedModes = display.getSupportedModes();
                 Display.Mode activeMode = display.getMode();
