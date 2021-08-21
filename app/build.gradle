@@ -10,8 +10,8 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 50
-        versionName "0.50"
+        versionCode 51
+        versionName "0.51"
         archivesBaseName = "Just.Player.v${versionName}"
     }
 

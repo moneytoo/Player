@@ -186,20 +186,23 @@ public class PlayerActivity extends Activity {
             Intent intent = getIntent();
 
             Bundle bundle = intent.getExtras();
-            apiAccess = bundle.containsKey(API_POSITION) || bundle.containsKey(API_RETURN_RESULT);
-            if (apiAccess)
-                mPrefs.setPersistent(false);
+            if (bundle != null) {
+                apiAccess = bundle.containsKey(API_POSITION) || bundle.containsKey(API_RETURN_RESULT);
+                if (apiAccess)
+                    mPrefs.setPersistent(false);
+            }
 
             mPrefs.updateMedia(this, intent.getData(), intent.getType());
             searchSubtitles();
             focusPlay = true;
 
-            intentReturnResult = bundle.getBoolean(API_RETURN_RESULT);
+            if (bundle != null) {
+                intentReturnResult = bundle.getBoolean(API_RETURN_RESULT);
 
-            if (bundle.containsKey(API_POSITION)) {
-                mPrefs.updatePosition((long) bundle.getInt(API_POSITION));
+                if (bundle.containsKey(API_POSITION)) {
+                    mPrefs.updatePosition((long) bundle.getInt(API_POSITION));
+                }
             }
-
         }
 
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
