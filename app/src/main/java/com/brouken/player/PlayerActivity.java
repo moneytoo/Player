@@ -81,6 +81,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.CaptionStyleCompat;
+import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.ui.TimeBar;
@@ -139,6 +140,7 @@ public class PlayerActivity extends Activity {
     private ImageButton exoPlayPause;
     private ProgressBar loadingProgressBar;
     private StyledPlayerControlView controlView;
+    private CustomDefaultTimeBar timeBar;
 
     private boolean restoreOrientationLock;
     private boolean restorePlayState;
@@ -221,10 +223,7 @@ public class PlayerActivity extends Activity {
 
         ((DoubleTapPlayerView)playerView).setDoubleTapEnabled(false);
 
-        // https://github.com/google/ExoPlayer/issues/5765
-        CustomDefaultTimeBar timeBar = playerView.findViewById(R.id.exo_progress);
-        timeBar.setBufferedColor(0x33FFFFFF);
-
+        timeBar = playerView.findViewById(R.id.exo_progress);
         timeBar.addListener(new TimeBar.OnScrubListener() {
             @Override
             public void onScrubStart(TimeBar timeBar, long position) {
@@ -808,7 +807,8 @@ public class PlayerActivity extends Activity {
     }
 
     public void initializePlayer() {
-        haveMedia = mPrefs.mediaUri != null && (Utils.fileExists(this, mPrefs.mediaUri) || Utils.isSupportedNetworkUri(mPrefs.mediaUri));
+        boolean isNetworkUri = Utils.isSupportedNetworkUri(mPrefs.mediaUri);
+        haveMedia = mPrefs.mediaUri != null && (Utils.fileExists(this, mPrefs.mediaUri) || isNetworkUri);
 
         if (player == null) {
             trackSelector = new DefaultTrackSelector(this);
@@ -891,6 +891,13 @@ public class PlayerActivity extends Activity {
         locked = false;
 
         if (haveMedia) {
+            if (isNetworkUri) {
+                timeBar.setBufferedColor(DefaultTimeBar.DEFAULT_BUFFERED_COLOR);
+            } else {
+                // https://github.com/google/ExoPlayer/issues/5765
+                timeBar.setBufferedColor(0x33FFFFFF);
+            }
+
             playerView.setResizeMode(mPrefs.resizeMode);
 
             if (mPrefs.resizeMode == AspectRatioFrameLayout.RESIZE_MODE_ZOOM) {
