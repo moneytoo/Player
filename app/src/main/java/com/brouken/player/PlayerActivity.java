@@ -24,6 +24,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Icon;
 import android.media.AudioManager;
+import android.media.audiofx.AudioEffect;
 import android.media.audiofx.LoudnessEnhancer;
 import android.net.Uri;
 import android.os.Build;
@@ -926,12 +927,12 @@ public class PlayerActivity extends Activity {
                 loudnessEnhancer.release();
             }
             try {
-                int audioSessionId = C.generateAudioSessionIdV21(this);
-                loudnessEnhancer = new LoudnessEnhancer(audioSessionId);
-                player.setAudioSessionId(audioSessionId);
+                loudnessEnhancer = new LoudnessEnhancer(player.getAudioSessionId());
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
+
+            notifyAudioSessionUpdate(true);
 
             videoLoading = true;
 
@@ -974,6 +975,8 @@ public class PlayerActivity extends Activity {
 
     public void releasePlayer() {
         if (player != null) {
+            notifyAudioSessionUpdate(false);
+
             mediaSession.setActive(false);
             mediaSession.release();
 
@@ -1013,6 +1016,7 @@ public class PlayerActivity extends Activity {
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
+            notifyAudioSessionUpdate(true);
         }
 
         @Override
@@ -1741,5 +1745,16 @@ public class PlayerActivity extends Activity {
             searchSubtitles();
             initializePlayer();
         }
+    }
+
+    void notifyAudioSessionUpdate(final boolean active) {
+        final Intent intent = new Intent(active ? AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION
+                : AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
+        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, player.getAudioSessionId());
+        intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
+        if (active) {
+            intent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MOVIE);
+        }
+        sendBroadcast(intent);
     }
 }
