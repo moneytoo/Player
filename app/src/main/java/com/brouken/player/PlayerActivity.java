@@ -813,6 +813,9 @@ public class PlayerActivity extends Activity {
 
         if (player == null) {
             trackSelector = new DefaultTrackSelector(this);
+            trackSelector.setParameters(trackSelector.buildUponParameters()
+                    .setTunnelingEnabled(true)
+            );
             if (Build.VERSION.SDK_INT >= 24) {
                 final LocaleList localeList = Resources.getSystem().getConfiguration().getLocales();
                 final List<String> locales = new ArrayList<>();
