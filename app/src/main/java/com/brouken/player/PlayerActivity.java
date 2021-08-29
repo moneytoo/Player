@@ -107,7 +107,7 @@ public class PlayerActivity extends Activity {
     private DefaultTrackSelector trackSelector;
     public static LoudnessEnhancer loudnessEnhancer;
 
-    private CustomStyledPlayerView playerView;
+    public CustomStyledPlayerView playerView;
     public static SimpleExoPlayer player;
 
     private Object mPictureInPictureParamsBuilder;
@@ -1088,7 +1088,7 @@ public class PlayerActivity extends Activity {
                         updateSubtitleViewMargin(format);
                     }
 
-                    boolean switched = Utils.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri);
+                    boolean switched = Utils.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri, play);
                     if (play) {
                         play = false;
                         if (!switched) {

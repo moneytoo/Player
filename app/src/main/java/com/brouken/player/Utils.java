@@ -31,6 +31,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.arthenica.ffmpegkit.FFmpegKitConfig;
@@ -360,11 +361,9 @@ class Utils {
         return (int)(rate * 100f);
     }
 
-    public static boolean switchFrameRate(final Activity activity, final float frameRateExo, final Uri uri) {
+    public static boolean switchFrameRate(final PlayerActivity activity, final float frameRateExo, final Uri uri, final boolean play) {
         if (!Utils.isTvBox(activity))
             return false;
-
-        float frameRate = Format.NO_VALUE;
 
         // preferredDisplayModeId only available on SDK 23+
         // ExoPlayer already uses Surface.setFrameRate() on Android 11+ but may not detect actual video frame rate
@@ -380,22 +379,44 @@ class Utils {
             }
             // Use ffprobe as ExoPlayer doesn't detect video frame rate for lots of videos
             // and has different precision than ffprobe (so do not mix that)
-            MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(path);
-            MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
-            if (mediaInformation == null)
-                return false;
-            List<StreamInformation> streamInformations = mediaInformation.getStreams();
-            for (StreamInformation streamInformation : streamInformations) {
-                if (streamInformation.getType().equals("video")) {
-                    String averageFrameRate = streamInformation.getAverageFrameRate();
-                    if (averageFrameRate.contains("/")) {
-                        String[] vals = averageFrameRate.split("/");
-                        frameRate = Float.parseFloat(vals[0]) / Float.parseFloat(vals[1]);
-                        break;
+            FFprobeKit.getMediaInformationAsync(path, session -> {
+                if (session == null)
+                    return;
+
+                float frameRate = Format.NO_VALUE;
+
+                MediaInformationSession mediaInformationSession;
+                if (session instanceof MediaInformationSession)
+                    mediaInformationSession = (MediaInformationSession) session;
+                else
+                    return;
+
+                MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
+                if (mediaInformation == null)
+                    return;
+                List<StreamInformation> streamInformations = mediaInformation.getStreams();
+                for (StreamInformation streamInformation : streamInformations) {
+                    if (streamInformation.getType().equals("video")) {
+                        String averageFrameRate = streamInformation.getAverageFrameRate();
+                        if (averageFrameRate.contains("/")) {
+                            String[] vals = averageFrameRate.split("/");
+                            frameRate = Float.parseFloat(vals[0]) / Float.parseFloat(vals[1]);
+                            break;
+                        }
                     }
                 }
-            }
 
+                handleFrameRate(activity, frameRate, play);
+            }, null, 8_000);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private static void handleFrameRate(final PlayerActivity activity, float frameRate, boolean play) {
+        activity.runOnUiThread(() -> {
             if (BuildConfig.DEBUG)
                 Toast.makeText(activity, "Video frameRate: " + frameRate, Toast.LENGTH_LONG).show();
 
@@ -446,15 +467,20 @@ class Utils {
                         if (switchingModes) {
                             layoutParams.preferredDisplayModeId = modeBest.getModeId();
                             window.setAttributes(layoutParams);
+                        } else {
+                            if (play) {
+                                if (PlayerActivity.player != null)
+                                    PlayerActivity.player.play();
+                                if (activity.playerView != null)
+                                    activity.playerView.hideController();
+                            }
                         }
                         if (BuildConfig.DEBUG)
                             Toast.makeText(activity, "Video frameRate: " + frameRate + "\nDisplay refreshRate: " + modeBest.getRefreshRate(), Toast.LENGTH_LONG).show();
-                        return switchingModes;
                     }
                 }
             }
-        }
-        return false;
+        });
     }
 
     public static boolean alternativeChooser(PlayerActivity activity, Uri initialUri, boolean video) {
