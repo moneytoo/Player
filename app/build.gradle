@@ -21,13 +21,16 @@ android {
             //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    flavorDimensions "exoplayer"
+    flavorDimensions "targetSdk"
     productFlavors {
-        exoMaven {
-            dimension "exoplayer"
+        latest {
+            dimension "targetSdk"
         }
-        exoLocal {
-            dimension "exoplayer"
+        legacy {
+            dimension "targetSdk"
+            applicationIdSuffix ".legacy"
+            versionNameSuffix "-legacy"
+            targetSdkVersion 29
         }
     }
     compileOptions {
@@ -41,26 +44,20 @@ android {
 
 dependencies {
     def exoplayerVersion = '2.15.0'
-    exoMavenImplementation "com.google.android.exoplayer:exoplayer-core:$exoplayerVersion"
-    exoLocalImplementation("com.google.android.exoplayer:exoplayer-common:$exoplayerVersion") {
+    implementation("com.google.android.exoplayer:exoplayer-common:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
     }
-    exoMavenImplementation "com.google.android.exoplayer:exoplayer-ui:$exoplayerVersion"
     implementation "com.google.android.exoplayer:extension-mediasession:$exoplayerVersion"
-    exoMavenImplementation "com.google.android.exoplayer:exoplayer-dash:$exoplayerVersion"
-    exoLocalImplementation("com.google.android.exoplayer:exoplayer-dash:$exoplayerVersion") {
+    implementation("com.google.android.exoplayer:exoplayer-dash:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
     }
-    exoMavenImplementation "com.google.android.exoplayer:exoplayer-hls:$exoplayerVersion"
-    exoLocalImplementation("com.google.android.exoplayer:exoplayer-hls:$exoplayerVersion") {
+    implementation("com.google.android.exoplayer:exoplayer-hls:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
     }
-    exoMavenImplementation "com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayerVersion"
-    exoLocalImplementation("com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayerVersion") {
+    implementation("com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
     }
-    exoMavenImplementation "com.google.android.exoplayer:exoplayer-rtsp:$exoplayerVersion"
-    exoLocalImplementation("com.google.android.exoplayer:exoplayer-rtsp:$exoplayerVersion") {
+    implementation("com.google.android.exoplayer:exoplayer-rtsp:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
     }
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
@@ -71,5 +68,5 @@ dependencies {
     implementation project(path: ':doubletapplayerview')
     implementation project(path: ':android-file-chooser')
     implementation fileTree(dir: "libs", include: ["extension-*.aar"])
-    exoLocalImplementation fileTree(dir: "libs", include: ["library-*.aar"])
+    implementation fileTree(dir: "libs", include: ["library-*.aar"])
 }
