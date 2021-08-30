@@ -329,26 +329,34 @@ class Utils {
     }
 
     public static boolean isTvBox(Context context) {
+        final PackageManager pm = context.getPackageManager();
+
         // TV for sure
         UiModeManager uiModeManager = (UiModeManager) context.getSystemService(UI_MODE_SERVICE);
         if (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION) {
             return true;
         }
 
-        // Android box (non Android TV) or phone connected to external display (desktop mode)
+        // Missing Files app (DocumentsUI) means box (some boxes still have non functional app or stub)
+        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("video/*");
+        if (intent.resolveActivity(pm) == null) {
+            return true;
+        }
 
-        if (Build.VERSION.SDK_INT < 29) {
-            // Most likely not a box
-            if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)) {
-                return false;
+        // Legacy storage no longer works on Android 11 (level 30)
+        if (Build.VERSION.SDK_INT < 30) {
+            // (Some boxes still report touchscreen feature)
+            if (!pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)) {
+                return true;
             }
 
-            // Missing Files app (DocumentsUI) means box
-            // Some boxes have non functional app or stub (!)
-            final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("video/*");
-            if (intent.resolveActivity(context.getPackageManager()) == null) {
+            if (pm.hasSystemFeature("android.hardware.hdmi.cec")) {
+                return true;
+            }
+
+            if (Build.MANUFACTURER.equalsIgnoreCase("zidoo")) {
                 return true;
             }
         }
