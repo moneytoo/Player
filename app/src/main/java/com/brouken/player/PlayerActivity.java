@@ -125,6 +125,8 @@ public class PlayerActivity extends Activity {
     private static final int REQUEST_CHOOSER_VIDEO = 1;
     private static final int REQUEST_CHOOSER_SUBTITLE = 2;
     private static final int REQUEST_CHOOSER_SCOPE_DIR = 10;
+    private static final int REQUEST_CHOOSER_VIDEO_MEDIASTORE = 20;
+    private static final int REQUEST_CHOOSER_SUBTITLE_MEDIASTORE = 21;
     public static final int CONTROLLER_TIMEOUT = 3500;
     private static final String ACTION_MEDIA_CONTROL = "media_control";
     private static final String EXTRA_CONTROL_TYPE = "control_type";
@@ -796,6 +798,20 @@ public class PlayerActivity extends Activity {
                     e.printStackTrace();
                 }
             }
+        } else if (requestCode == REQUEST_CHOOSER_VIDEO_MEDIASTORE) {
+            if (resultCode == RESULT_OK) {
+                final Uri uri = data.getData();
+                mPrefs.setPersistent(true);
+                mPrefs.updateMedia(this, uri, data.getType());
+            }
+        } else if (requestCode == REQUEST_CHOOSER_SUBTITLE_MEDIASTORE) {
+            Uri uri = data.getData();
+
+            // Convert subtitles to UTF-8 if necessary
+            SubtitleUtils.clearCache(this);
+            uri = SubtitleUtils.convertToUTF(this, uri);
+
+            mPrefs.updateSubtitle(uri);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -1141,7 +1157,13 @@ public class PlayerActivity extends Activity {
 
     private void openFile(Uri pickerInitialUri) {
         if (isTvBox) {
-            Utils.alternativeChooser(this, pickerInitialUri, true);
+            int targetSdkVersion = getApplicationContext().getApplicationInfo().targetSdkVersion;
+            if (Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30) {
+                Intent intent = new Intent(this, MediaStoreChooserActivity.class);
+                startActivityForResult(intent, REQUEST_CHOOSER_VIDEO_MEDIASTORE);
+            } else {
+                Utils.alternativeChooser(this, pickerInitialUri, true);
+            }
         } else {
             enableRotation();
 
@@ -1157,7 +1179,14 @@ public class PlayerActivity extends Activity {
         Toast.makeText(PlayerActivity.this, R.string.open_subtitles, Toast.LENGTH_SHORT).show();
 
         if (isTvBox) {
-            Utils.alternativeChooser(this, pickerInitialUri, false);
+            int targetSdkVersion = getApplicationContext().getApplicationInfo().targetSdkVersion;
+            if (Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30) {
+                Intent intent = new Intent(this, MediaStoreChooserActivity.class);
+                intent.putExtra(MediaStoreChooserActivity.SUBTITLES, true);
+                startActivityForResult(intent, REQUEST_CHOOSER_SUBTITLE_MEDIASTORE);
+            } else {
+                Utils.alternativeChooser(this, pickerInitialUri, false);
+            }
         } else {
             enableRotation();
 

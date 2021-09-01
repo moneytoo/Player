@@ -608,6 +608,11 @@
                 <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.WEBM" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MediaStoreChooserActivity"
+            android:configChanges="orientation"
+            android:theme="@style/Transparent"
+            />
     </application>
 
 </manifest>
