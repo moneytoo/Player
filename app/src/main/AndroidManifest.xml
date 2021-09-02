@@ -61,6 +61,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
+                <data android:scheme=""
+                    tools:ignore="AppLinkUrlError" /> <!-- External player compatibility in Kodi -->
                 <data android:scheme="content" />
                 <data android:scheme="file" />
                 <data android:mimeType="video/*" />

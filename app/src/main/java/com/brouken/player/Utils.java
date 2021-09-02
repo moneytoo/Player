@@ -57,10 +57,8 @@ class Utils {
     }
 
     public static boolean fileExists(final Context context, final Uri uri) {
-        if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
-            final File file = new File(uri.getPath());
-            return file.exists();
-        } else {
+        final String scheme = uri.getScheme();
+        if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
             try {
                 final InputStream inputStream = context.getContentResolver().openInputStream(uri);
                 inputStream.close();
@@ -68,6 +66,15 @@ class Utils {
             } catch (Exception e) {
                 return false;
             }
+        } else {
+            String path;
+            if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+                path = uri.getPath();
+            } else {
+                path = uri.toString();
+            }
+            final File file = new File(path);
+            return file.exists();
         }
     }
 
@@ -325,6 +332,8 @@ class Utils {
 
     public static boolean isSupportedNetworkUri(final Uri uri) {
         final String scheme = uri.getScheme();
+        if (scheme == null)
+            return false;
         return scheme.startsWith("http") || scheme.equals("rtsp");
     }
 
