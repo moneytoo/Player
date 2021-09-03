@@ -339,6 +339,11 @@ public class PlayerActivity extends Activity {
         centerView.addView(titleView);
 
         titleView.setOnLongClickListener(view -> {
+            // Prevent FileUriExposedException
+            if (mPrefs.mediaUri != null && ContentResolver.SCHEME_FILE.equals(mPrefs.mediaUri.getScheme())) {
+                return false;
+            }
+
             final Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.putExtra(Intent.EXTRA_STREAM, mPrefs.mediaUri);
             if (mPrefs.mediaType == null)
