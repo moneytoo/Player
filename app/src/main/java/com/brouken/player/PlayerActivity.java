@@ -1689,6 +1689,10 @@ public class PlayerActivity extends Activity {
             return;
         }
 
+        if (player == null) {
+            return;
+        }
+
         playerView.setControllerAutoShow(false);
         playerView.hideController();
 
