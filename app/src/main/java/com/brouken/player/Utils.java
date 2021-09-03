@@ -439,6 +439,9 @@ class Utils {
 
             if (frameRate > 0) {
                 Display display = activity.getWindow().getDecorView().getDisplay();
+                if (display == null) {
+                    return;
+                }
                 Display.Mode[] supportedModes = display.getSupportedModes();
                 Display.Mode activeMode = display.getMode();
 
