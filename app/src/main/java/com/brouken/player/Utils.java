@@ -434,6 +434,8 @@ class Utils {
     @RequiresApi(api = Build.VERSION_CODES.M)
     private static void handleFrameRate(final PlayerActivity activity, float frameRate, boolean play) {
         activity.runOnUiThread(() -> {
+            boolean switchingModes = false;
+
             if (BuildConfig.DEBUG)
                 Toast.makeText(activity, "Video frameRate: " + frameRate, Toast.LENGTH_LONG).show();
 
@@ -483,21 +485,23 @@ class Utils {
                         if (modeBest == null)
                             modeBest = modeTop;
 
-                        final boolean switchingModes = !(modeBest.getModeId() == activeMode.getModeId());
+                        switchingModes = !(modeBest.getModeId() == activeMode.getModeId());
                         if (switchingModes) {
                             layoutParams.preferredDisplayModeId = modeBest.getModeId();
                             window.setAttributes(layoutParams);
-                        } else {
-                            if (play) {
-                                if (PlayerActivity.player != null)
-                                    PlayerActivity.player.play();
-                                if (activity.playerView != null)
-                                    activity.playerView.hideController();
-                            }
                         }
                         if (BuildConfig.DEBUG)
                             Toast.makeText(activity, "Video frameRate: " + frameRate + "\nDisplay refreshRate: " + modeBest.getRefreshRate(), Toast.LENGTH_LONG).show();
                     }
+                }
+            }
+
+            if (!switchingModes) {
+                if (play) {
+                    if (PlayerActivity.player != null)
+                        PlayerActivity.player.play();
+                    if (activity.playerView != null)
+                        activity.playerView.hideController();
                 }
             }
         });
