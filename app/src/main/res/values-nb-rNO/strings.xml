@@ -9,4 +9,19 @@
     <string name="video_orientation_video">Skjermretning</string>
     <string name="video_resize_crop">Beskjør</string>
     <string name="video_resize_fit">Tilpass</string>
+    <string name="pref_tunneling_summary">Tunnelforsendelse gir bedre støtte for 4K/HDR-innhold, men kan ha problemer på noen enheter</string>
+    <string name="pref_tunneling">Tunnel-avspilling</string>
+    <string name="pref_auto_pip_off">Ikke bytt til BiB automatisk</string>
+    <string name="pref_auto_pip_on">Bytt til BiB når programmet lukkes</string>
+    <string name="pref_auto_pip">Automatisk bilde-i-bilde</string>
+    <string name="pref_framerate_matching">Automatisk rammetakt-jamføring</string>
+    <string name="pref_framerate_matching_on">Bytt skjermoppfriskningstakt for å samsvare med videorammetakt</string>
+    <string name="request_scope">Innvilg %s tilgang til grunnmappen (f.eks «Filmer») som inneholder videoene dine for å laste eksterne undertekster eller hoppe til neste fil i mappen automatisk.</string>
+    <string name="pref_framerate_matching_off">Ikke endre skjermoppfriskningstakt</string>
+    <string name="pref_skip_silence">Hopp over stillhet</string>
+    <string name="pref_skip_silence_off">Spill innholdet som det er</string>
+    <string name="pref_general_header">Generelt</string>
+    <string name="pref_title">Innstillinger</string>
+    <string name="delete_confirmation">Slett</string>
+    <string name="delete_query">Slett denne filen\?</string>
 </resources>

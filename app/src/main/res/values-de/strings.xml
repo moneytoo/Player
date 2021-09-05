@@ -12,4 +12,17 @@
     <string name="delete_confirmation">Löschen</string>
     <string name="delete_query">Diese Datei löschen\?</string>
     <string name="request_scope">Um automatisch externe Untertitel zu laden oder das Springen zur nächsten Datei in einem Verzeichnis zu aktivieren, gewähren Sie %s Zugriff auf den obersten Ordner, der Ihre Videos enthält (z. B. Filme).</string>
+    <string name="pref_tunneling_summary">Tunneling bietet bessere Unterstützung für 4K/HDR-Inhalte, funktioniert aber möglicherweise nicht auf allen Geräten</string>
+    <string name="pref_skip_silence_off">Inhalt unverändert wiedergeben</string>
+    <string name="pref_skip_silence_on">Teile mit Stille im Audiostrom überspringen</string>
+    <string name="pref_skip_silence">Stille überspringen</string>
+    <string name="pref_auto_pip_off">Nicht automatisch auf BiB umschalten</string>
+    <string name="pref_auto_pip_on">Beim Verlassen der Anwendung auf BiB umschalten</string>
+    <string name="pref_auto_pip">Automatisches Bild-im-Bild</string>
+    <string name="pref_tunneling">Getunnelte Wiedergabe</string>
+    <string name="pref_framerate_matching_off">Bildwiederholfrequenz nicht ändern</string>
+    <string name="pref_framerate_matching_on">Bildwiederholfrequenz des Bildschirms zur Anpassung an die Videobildfrequenz umschalten</string>
+    <string name="pref_framerate_matching">Automatische Anpassung der Bildfrequenz</string>
+    <string name="pref_general_header">Allgemein</string>
+    <string name="pref_title">Einstellungen</string>
 </resources>

@@ -12,4 +12,17 @@
     <string name="delete_confirmation">删除</string>
     <string name="delete_query">删除这个文件？</string>
     <string name="request_scope">要自动加载外部字幕或启用跳到目录中的下一个文件，请允许%s访问包含您的视频（例如电影）的最顶层文件夹的。</string>
+    <string name="pref_tunneling_summary">隧道模式为 4K/HDR 内容提供了更好的支持，但可能无法在所有设备上工作</string>
+    <string name="pref_skip_silence_off">按原样播放</string>
+    <string name="pref_skip_silence_on">跳过音频缺失部分</string>
+    <string name="pref_skip_silence">跳过无声片段</string>
+    <string name="pref_auto_pip_off">不要自动切换到画中画</string>
+    <string name="pref_auto_pip_on">离开本应用时切换至画中画</string>
+    <string name="pref_auto_pip">自动画中画</string>
+    <string name="pref_tunneling">隧道播放</string>
+    <string name="pref_framerate_matching_off">不要更改显示刷新率</string>
+    <string name="pref_framerate_matching_on">切换显示刷新率以匹配视频帧率</string>
+    <string name="pref_framerate_matching">自动帧率匹配</string>
+    <string name="pref_general_header">一般</string>
+    <string name="pref_title">设置</string>
 </resources>
