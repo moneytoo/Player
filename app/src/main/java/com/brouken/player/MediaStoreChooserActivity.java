@@ -106,6 +106,9 @@ public class MediaStoreChooserActivity extends Activity {
                 do {
                     int id = cursor.getInt(columnId);
                     String name = cursor.getString(columnName);
+                    if (name == null) {
+                        continue;
+                    }
                     if (!hashMap.containsKey(id)) {
                         hashMap.put(id, name);
                     }
