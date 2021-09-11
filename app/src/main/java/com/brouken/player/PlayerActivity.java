@@ -945,7 +945,7 @@ public class PlayerActivity extends Activity {
                         subtitleLanguage, C.SELECTION_FLAG_DEFAULT, C.ROLE_FLAG_SUBTITLE, subtitleName);
                 mediaItemBuilder.setSubtitles(Collections.singletonList(subtitle));
             }
-            player.setMediaItem(mediaItemBuilder.build());
+            player.setMediaItem(mediaItemBuilder.build(), mPrefs.getPosition());
 
             if (loudnessEnhancer != null) {
                 loudnessEnhancer.release();
@@ -965,8 +965,6 @@ public class PlayerActivity extends Activity {
             if (mPrefs.getPosition() == 0L || apiAccess) {
                 play = true;
             }
-
-            player.seekTo(mPrefs.getPosition());
 
             titleView.setText(Utils.getFileName(this, mPrefs.mediaUri));
             titleView.setVisibility(View.VISIBLE);
