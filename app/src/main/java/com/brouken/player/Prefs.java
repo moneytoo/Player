@@ -32,6 +32,7 @@ class Prefs {
     private static final String PREF_KEY_ASK_SCOPE = "askScope";
     private static final String PREF_KEY_AUTO_PIP = "autoPiP";
     private static final String PREF_KEY_TUNNELING = "tunneling";
+    private static final String PREF_KEY_SKIP_SILENCE = "skipSilence";
 
     final Context mContext;
     final SharedPreferences mSharedPreferences;
@@ -54,6 +55,7 @@ class Prefs {
     public boolean autoPiP = false;
 
     public boolean tunneling = false;
+    public boolean skipSilence = false;
 
     private LinkedHashMap positions;
 
@@ -95,6 +97,7 @@ class Prefs {
 
     public void loadUserPreferences() {
         tunneling = mSharedPreferences.getBoolean(PREF_KEY_TUNNELING, tunneling);
+        skipSilence = mSharedPreferences.getBoolean(PREF_KEY_SKIP_SILENCE, skipSilence);
     }
 
     public void updateMedia(final Context context, final Uri uri, final String type) {

@@ -874,6 +874,12 @@ public class PlayerActivity extends Activity {
                     .build();
             player.setAudioAttributes(audioAttributes, true);
 
+            if (mPrefs.skipSilence) {
+                if (player.getAudioComponent() != null) {
+                    player.getAudioComponent().setSkipSilenceEnabled(true);
+                }
+            }
+
             final YouTubeOverlay youTubeOverlay = findViewById(R.id.youtube_overlay);
 
             youTubeOverlay.performListener(new YouTubeOverlay.PerformListener() {

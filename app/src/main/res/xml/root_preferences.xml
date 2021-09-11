@@ -7,6 +7,11 @@
             app:defaultValue="false"
             app:title="@string/pref_tunneling" />
 
+        <SwitchPreferenceCompat
+            app:key="skipSilence"
+            app:defaultValue="false"
+            app:title="@string/pref_skip_silence" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
