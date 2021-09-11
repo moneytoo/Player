@@ -127,6 +127,7 @@ public class PlayerActivity extends Activity {
     private static final int REQUEST_CHOOSER_SCOPE_DIR = 10;
     private static final int REQUEST_CHOOSER_VIDEO_MEDIASTORE = 20;
     private static final int REQUEST_CHOOSER_SUBTITLE_MEDIASTORE = 21;
+    private static final int REQUEST_SETTINGS = 100;
     public static final int CONTROLLER_TIMEOUT = 3500;
     private static final String ACTION_MEDIA_CONTROL = "media_control";
     private static final String EXTRA_CONTROL_TYPE = "control_type";
@@ -441,7 +442,9 @@ public class PlayerActivity extends Activity {
         //exoBasicControls.setVisibility(View.GONE);
 
         exoSettings.setOnLongClickListener(view -> {
-            askForScope(false, false);
+            //askForScope(false, false);
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivityForResult(intent, REQUEST_SETTINGS);
             return true;
         });
 
@@ -817,6 +820,8 @@ public class PlayerActivity extends Activity {
             uri = SubtitleUtils.convertToUTF(this, uri);
 
             mPrefs.updateSubtitle(uri);
+        } else if (requestCode == REQUEST_SETTINGS) {
+            mPrefs.loadUserPreferences();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -834,9 +839,11 @@ public class PlayerActivity extends Activity {
 
         if (player == null) {
             trackSelector = new DefaultTrackSelector(this);
-            //trackSelector.setParameters(trackSelector.buildUponParameters()
-                    //.setTunnelingEnabled(true)
-            //);
+            if (mPrefs.tunneling) {
+                trackSelector.setParameters(trackSelector.buildUponParameters()
+                        .setTunnelingEnabled(true)
+                );
+            }
             if (Build.VERSION.SDK_INT >= 24) {
                 final LocaleList localeList = Resources.getSystem().getConfiguration().getLocales();
                 final List<String> locales = new ArrayList<>();

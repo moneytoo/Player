@@ -20,4 +20,8 @@
 
     <string name="delete_query">Delete this file\?</string>
     <string name="delete_confirmation">Delete</string>
+
+    <string name="pref_title">Settings</string>
+    <string name="pref_general_header">General</string>
+    <string name="pref_tunneling">Tunneled playback</string>
 </resources>

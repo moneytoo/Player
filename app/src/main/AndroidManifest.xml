@@ -20,6 +20,7 @@
     <queries>
         <intent>
             <action android:name="android.intent.action.OPEN_DOCUMENT" />
+
             <data android:mimeType="*/*" />
         </intent>
         <intent>
@@ -31,27 +32,28 @@
     </queries>
 
     <application
-        tools:replace="android:allowBackup"
         android:allowBackup="false"
-        android:icon="@mipmap/ic_launcher"
-        android:banner="@mipmap/banner"
-        android:label="@string/app_name"
         android:appCategory="video"
+        android:banner="@mipmap/banner"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
         android:largeHeap="true"
+        android:networkSecurityConfig="@xml/network_security_config"
+        android:requestLegacyExternalStorage="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.Player"
-        android:requestLegacyExternalStorage="true"
-        android:networkSecurityConfig="@xml/network_security_config"
+        tools:replace="android:allowBackup"
         tools:targetApi="n">
         <activity
             android:name=".PlayerActivity"
             android:configChanges="keyboard|keyboardHidden|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:exported="true"
             android:launchMode="singleTop"
             android:supportsPictureInPicture="true"
-            android:exported="true"
             tools:targetApi="n">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
@@ -61,7 +63,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data android:scheme=""
+                <data
+                    android:scheme=""
                     tools:ignore="AppLinkUrlError" /> <!-- External player compatibility in Kodi -->
                 <data android:scheme="content" />
                 <data android:scheme="file" />
@@ -95,7 +98,6 @@
                 <data android:scheme="http" />
                 <data android:scheme="https" />
                 <data android:host="*" />
-
                 <data android:pathPattern=".*\\.3gp" />
                 <data android:pathPattern=".*\\..*\\.3gp" />
                 <data android:pathPattern=".*\\..*\\..*\\.3gp" />
@@ -613,8 +615,18 @@
         <activity
             android:name=".MediaStoreChooserActivity"
             android:configChanges="orientation"
-            android:theme="@style/Transparent"
-            />
+            android:theme="@style/Transparent" />
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="true"
+            android:label="@string/pref_title"
+            android:theme="@style/Theme.AppCompat.DayNight" >
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
