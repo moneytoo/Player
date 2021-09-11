@@ -620,6 +620,7 @@
             android:name=".SettingsActivity"
             android:exported="true"
             android:label="@string/pref_title"
+            android:screenOrientation="locked"
             android:theme="@style/Theme.AppCompat.DayNight" >
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
