@@ -18,4 +18,18 @@
 
     <string name="delete_query">Smazat tento soubor\?</string>
     <string name="delete_confirmation">Smazat</string>
+
+    <string name="pref_title">Nastavení</string>
+    <string name="pref_general_header">Hlavní</string>
+    <string name="pref_framerate_matching">Automatické přizpůsobení obnovovací frekvence</string>
+    <string name="pref_framerate_matching_on">Přepínat obnovovací frekvenci displeje podle snímkové frekvence videa</string>
+    <string name="pref_framerate_matching_off">Nepřepínat obnovovací frekvenci displeje</string>
+    <string name="pref_tunneling">Tunelové přehrávání</string>
+    <string name="pref_tunneling_summary">Tunelování poskytuje lepší podporu 4K/HDR obsahu, ale nemusí fungovat na všech zařízeních</string>
+    <string name="pref_auto_pip">Automatický režim obrazu v obraze</string>
+    <string name="pref_auto_pip_on">Přepnout do režimu obrazu v obraze při opouštění aplikace</string>
+    <string name="pref_auto_pip_off">Nepřepínat automaticky do režimu obrazu v obraze</string>
+    <string name="pref_skip_silence">Přeskakování ticha</string>
+    <string name="pref_skip_silence_on">Přeskakovat části s tichem ve zvukové stopě</string>
+    <string name="pref_skip_silence_off">Přehrávat obsah tak, jak je</string>
 </resources>

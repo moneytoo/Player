@@ -46,6 +46,13 @@ HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
 
 To load external (non-embedded) subtitles, long press the file open action in the bottom bar. The first time you do that, you will be offered to select root video folder to enable automatic loading of external subtitles.
 
+Available since `v0.59`: Some advanced features can be configured in settings. To access it, long press the ⚙️ gear icon. (Alternatively, you can also enter this settings from App info screen.)
+
+ * Auto frame rate matching (enabled by default on Android TV)
+ * [Tunneled playback](https://medium.com/google-exoplayer/tunneled-video-playback-in-exoplayer-84f084a8094d) (disabled by default). Enabling tunneling can improve playback of 4K/HDR content on Android TV.
+ * Auto picture-in-picture. When you leave Just Player through the home button and video is playing, PiP will be activated automatically.
+ * Skip silence
+
 **`WRITE_SETTINGS` ("Modify system settings") permission**: When the system file chooser is opened, it will always use current system orientation, even if the Player app sets its own. Granting this permission via adb (`adb shell pm grant com.brouken.player android.permission.WRITE_SETTINGS`) or App info screen will allow this app to temporarily enable Auto-rotate to at least partially mitigate [this imperfection](https://issuetracker.google.com/issues/141968218).
 
 Donate: [PayPal](https://paypal.me/MarcelDopita) | [Bitcoin](https://live.blockcypher.com/btc/address/bc1q9u2ezgsnug995fv0m4vaxa90ujjwlucp78w4n0) | [Litecoin](https://live.blockcypher.com/ltc/address/LLZ3fULGwxbs6W9Vf7gtu1EjZvviCka7zP)
@@ -86,10 +93,6 @@ Just Player focuses on playing videos so audio only playback isn't officialy sup
 ### How to view detailed video information (like resolution, bitrate etc.)?
 
 Install app like [MediaInfo](https://play.google.com/store/apps/details?id=net.mediaarea.mediainfo) (or APK from [MediaArea.net](https://mediaarea.net/en/MediaInfo/Download/Android)). Then, to quickly open MediaInfo from Just Player, long press the video name/title.
-
-### I want to automatically activate PiP mode when leaving the player...
-
-There as a hidden feature - Auto PiP. Long press the PiP icon to activate this feature. Then, when you leave Just Player through the home button and video is playing, PiP will be activated automatically.
 
 ### I prefer using media library instead of a file chooser...
 
