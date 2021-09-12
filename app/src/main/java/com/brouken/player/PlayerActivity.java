@@ -180,7 +180,7 @@ public class PlayerActivity extends Activity {
         Utils.setOrientation(this, mPrefs.orientation);
 
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT == 28 && Build.MANUFACTURER.toLowerCase().equals("xiaomi") && Build.DEVICE.toLowerCase().equals("oneday")) {
+        if (Build.VERSION.SDK_INT == 28 && Build.MANUFACTURER.equalsIgnoreCase("xiaomi") && Build.DEVICE.equalsIgnoreCase("oneday")) {
             setContentView(R.layout.activity_player_textureview);
         } else {
             setContentView(R.layout.activity_player);
