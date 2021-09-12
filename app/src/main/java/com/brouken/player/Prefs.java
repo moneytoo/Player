@@ -33,6 +33,7 @@ class Prefs {
     private static final String PREF_KEY_AUTO_PIP = "autoPiP";
     private static final String PREF_KEY_TUNNELING = "tunneling";
     private static final String PREF_KEY_SKIP_SILENCE = "skipSilence";
+    private static final String PREF_KEY_FRAMERATE_MATCHING = "frameRateMatching";
 
     final Context mContext;
     final SharedPreferences mSharedPreferences;
@@ -56,6 +57,7 @@ class Prefs {
 
     public boolean tunneling = false;
     public boolean skipSilence = false;
+    public boolean frameRateMatching;
 
     private LinkedHashMap positions;
 
@@ -65,6 +67,7 @@ class Prefs {
     public Prefs(Context context) {
         mContext = context;
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        frameRateMatching = Utils.isTvBox(context);
         loadSavedPreferences();
         loadPositions();
     }
@@ -98,6 +101,7 @@ class Prefs {
     public void loadUserPreferences() {
         tunneling = mSharedPreferences.getBoolean(PREF_KEY_TUNNELING, tunneling);
         skipSilence = mSharedPreferences.getBoolean(PREF_KEY_SKIP_SILENCE, skipSilence);
+        frameRateMatching = mSharedPreferences.getBoolean(PREF_KEY_FRAMERATE_MATCHING, frameRateMatching);
     }
 
     public void updateMedia(final Context context, final Uri uri, final String type) {
@@ -290,6 +294,15 @@ class Prefs {
 
     public void setPersistent(boolean persistentMode) {
         this.persistentMode = persistentMode;
+    }
+
+    public static void initDefaults(Context context) {
+        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+        if (!sharedPreferences.contains(PREF_KEY_FRAMERATE_MATCHING)) {
+            final SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
+            sharedPreferencesEditor.putBoolean(PREF_KEY_FRAMERATE_MATCHING, Utils.isTvBox(context));
+            sharedPreferencesEditor.commit();
+        }
     }
 
 }

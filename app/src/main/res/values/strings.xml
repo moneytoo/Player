@@ -23,6 +23,12 @@
 
     <string name="pref_title">Settings</string>
     <string name="pref_general_header">General</string>
+    <string name="pref_framerate_matching">Auto frame rate matching</string>
+    <string name="pref_framerate_matching_on">Switch display refresh rate to match video frame rate</string>
+    <string name="pref_framerate_matching_off">Do not change display refresh rate</string>
     <string name="pref_tunneling">Tunneled playback</string>
+    <string name="pref_tunneling_summary">Tunneling provides better support of 4K/HDR content but may not work on all device</string>
     <string name="pref_skip_silence">Skip silence</string>
+    <string name="pref_skip_silence_on">Skip parts with silence on the audio stream</string>
+    <string name="pref_skip_silence_off">Play content as is</string>
 </resources>

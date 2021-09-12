@@ -3,13 +3,23 @@
     <PreferenceCategory app:title="@string/pref_general_header">
 
         <SwitchPreferenceCompat
+            app:key="frameRateMatching"
+            app:defaultValue="false"
+            app:summaryOn="@string/pref_framerate_matching_on"
+            app:summaryOff="@string/pref_framerate_matching_off"
+            app:title="@string/pref_framerate_matching" />
+
+        <SwitchPreferenceCompat
             app:key="tunneling"
             app:defaultValue="false"
+            app:summary="@string/pref_tunneling_summary"
             app:title="@string/pref_tunneling" />
 
         <SwitchPreferenceCompat
             app:key="skipSilence"
             app:defaultValue="false"
+            app:summaryOn="@string/pref_skip_silence_on"
+            app:summaryOff="@string/pref_skip_silence_off"
             app:title="@string/pref_skip_silence" />
 
     </PreferenceCategory>

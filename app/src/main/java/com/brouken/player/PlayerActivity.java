@@ -1120,7 +1120,10 @@ public class PlayerActivity extends Activity {
                         updateSubtitleViewMargin(format);
                     }
 
-                    boolean switched = Utils.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri, play);
+                    boolean switched = false;
+                    if (mPrefs.frameRateMatching) {
+                        switched = Utils.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri, play);
+                    }
                     if (play) {
                         play = false;
                         if (!switched) {
