@@ -551,4 +551,8 @@ class Utils {
 
         return true;
     }
+
+    public static boolean isPiPSupported(Context context) {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
+    }
 }

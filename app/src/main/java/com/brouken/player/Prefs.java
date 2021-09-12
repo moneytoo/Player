@@ -94,11 +94,11 @@ class Prefs {
         if (mSharedPreferences.contains(PREF_KEY_SCOPE_URI))
             scopeUri = Uri.parse(mSharedPreferences.getString(PREF_KEY_SCOPE_URI, null));
         askScope = mSharedPreferences.getBoolean(PREF_KEY_ASK_SCOPE, askScope);
-        autoPiP = mSharedPreferences.getBoolean(PREF_KEY_AUTO_PIP, autoPiP);
         loadUserPreferences();
     }
 
     public void loadUserPreferences() {
+        autoPiP = mSharedPreferences.getBoolean(PREF_KEY_AUTO_PIP, autoPiP);
         tunneling = mSharedPreferences.getBoolean(PREF_KEY_TUNNELING, tunneling);
         skipSilence = mSharedPreferences.getBoolean(PREF_KEY_SKIP_SILENCE, skipSilence);
         frameRateMatching = mSharedPreferences.getBoolean(PREF_KEY_FRAMERATE_MATCHING, frameRateMatching);
@@ -282,14 +282,6 @@ class Prefs {
         else
             sharedPreferencesEditor.putString(PREF_KEY_SCOPE_URI, uri.toString());
         sharedPreferencesEditor.commit();
-    }
-
-    public boolean toggleAutoPiP() {
-        autoPiP = !autoPiP;
-        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-        sharedPreferencesEditor.putBoolean(PREF_KEY_AUTO_PIP, autoPiP);
-        sharedPreferencesEditor.commit();
-        return autoPiP;
     }
 
     public void setPersistent(boolean persistentMode) {

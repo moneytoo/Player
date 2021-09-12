@@ -279,7 +279,7 @@ public class PlayerActivity extends Activity {
             return true;
         });
 
-        if (isPiPSupported()) {
+        if (Utils.isPiPSupported(this)) {
             // TODO: Android 12 improvements:
             // https://developer.android.com/about/versions/12/features/pip-improvements
             mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
@@ -289,13 +289,6 @@ public class PlayerActivity extends Activity {
             buttonPiP.setImageResource(R.drawable.ic_picture_in_picture_alt_24dp);
 
             buttonPiP.setOnClickListener(view -> enterPiP());
-
-            buttonPiP.setOnLongClickListener(v -> {
-                buttonPiP.performHapticFeedback(mPrefs.toggleAutoPiP() ?
-                        HapticFeedbackConstants.VIRTUAL_KEY : HapticFeedbackConstants.LONG_PRESS);
-                resetHideCallbacks();
-                return true;
-            });
 
             Utils.setButtonEnabled(this, buttonPiP, false);
         }
@@ -454,7 +447,7 @@ public class PlayerActivity extends Activity {
         controls.addView(buttonOpen);
         controls.addView(exoSubtitle);
         controls.addView(buttonAspectRatio);
-        if (isPiPSupported()) {
+        if (Utils.isPiPSupported(this)) {
             controls.addView(buttonPiP);
         }
         if (!isTvBox) {
@@ -1058,7 +1051,7 @@ public class PlayerActivity extends Activity {
         public void onIsPlayingChanged(boolean isPlaying) {
             playerView.setKeepScreenOn(isPlaying);
 
-            if (isPiPSupported()) {
+            if (Utils.isPiPSupported(PlayerActivity.this)) {
                 if (isPlaying) {
                     updatePictureInPictureActions(R.drawable.ic_pause_24dp, R.string.exo_controls_pause_description, CONTROL_TYPE_PAUSE, REQUEST_PAUSE);
                 } else {
@@ -1444,10 +1437,6 @@ public class PlayerActivity extends Activity {
             subtitleView.setFractionalTextSize(SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * 2);
     }
 
-    boolean isPiPSupported() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
-    }
-
     @TargetApi(26)
     void updatePictureInPictureActions(final int iconId, final int resTitle, final int controlType, final int requestCode) {
         final ArrayList<RemoteAction> actions = new ArrayList<>();
@@ -1461,7 +1450,7 @@ public class PlayerActivity extends Activity {
     }
 
     private boolean isInPip() {
-        if (!isPiPSupported())
+        if (!Utils.isPiPSupported(this))
             return false;
         return isInPictureInPictureMode();
     }
@@ -1686,7 +1675,7 @@ public class PlayerActivity extends Activity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onUserLeaveHint() {
-        if (mPrefs!= null && mPrefs.autoPiP && player != null && player.isPlaying() && isPiPSupported())
+        if (mPrefs!= null && mPrefs.autoPiP && player != null && player.isPlaying() && Utils.isPiPSupported(this))
             enterPiP();
         else
             super.onUserLeaveHint();
