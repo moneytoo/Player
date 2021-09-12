@@ -31,6 +31,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.arthenica.ffmpegkit.FFmpegKitConfig;
@@ -56,10 +57,8 @@ class Utils {
     }
 
     public static boolean fileExists(final Context context, final Uri uri) {
-        if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
-            final File file = new File(uri.getPath());
-            return file.exists();
-        } else {
+        final String scheme = uri.getScheme();
+        if (ContentResolver.SCHEME_CONTENT.equals(scheme)) {
             try {
                 final InputStream inputStream = context.getContentResolver().openInputStream(uri);
                 inputStream.close();
@@ -67,6 +66,15 @@ class Utils {
             } catch (Exception e) {
                 return false;
             }
+        } else {
+            String path;
+            if (ContentResolver.SCHEME_FILE.equals(scheme)) {
+                path = uri.getPath();
+            } else {
+                path = uri.toString();
+            }
+            final File file = new File(path);
+            return file.exists();
         }
     }
 
@@ -324,30 +332,40 @@ class Utils {
 
     public static boolean isSupportedNetworkUri(final Uri uri) {
         final String scheme = uri.getScheme();
+        if (scheme == null)
+            return false;
         return scheme.startsWith("http") || scheme.equals("rtsp");
     }
 
     public static boolean isTvBox(Context context) {
+        final PackageManager pm = context.getPackageManager();
+
         // TV for sure
         UiModeManager uiModeManager = (UiModeManager) context.getSystemService(UI_MODE_SERVICE);
         if (uiModeManager.getCurrentModeType() == Configuration.UI_MODE_TYPE_TELEVISION) {
             return true;
         }
 
-        // Android box (non Android TV) or phone connected to external display (desktop mode)
+        // Missing Files app (DocumentsUI) means box (some boxes still have non functional app or stub)
+        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("video/*");
+        if (intent.resolveActivity(pm) == null) {
+            return true;
+        }
 
-        if (Build.VERSION.SDK_INT < 29) {
-            // Most likely not a box
-            if (context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)) {
-                return false;
+        // Legacy storage no longer works on Android 11 (level 30)
+        if (Build.VERSION.SDK_INT < 30) {
+            // (Some boxes still report touchscreen feature)
+            if (!pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)) {
+                return true;
             }
 
-            // Missing Files app (DocumentsUI) means box
-            // Some boxes have non functional app or stub (!)
-            final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-            intent.addCategory(Intent.CATEGORY_OPENABLE);
-            intent.setType("video/*");
-            if (intent.resolveActivity(context.getPackageManager()) == null) {
+            if (pm.hasSystemFeature("android.hardware.hdmi.cec")) {
+                return true;
+            }
+
+            if (Build.MANUFACTURER.equalsIgnoreCase("zidoo")) {
                 return true;
             }
         }
@@ -360,12 +378,7 @@ class Utils {
         return (int)(rate * 100f);
     }
 
-    public static boolean switchFrameRate(final Activity activity, final float frameRateExo, final Uri uri) {
-        if (!Utils.isTvBox(activity))
-            return false;
-
-        float frameRate = Format.NO_VALUE;
-
+    public static boolean switchFrameRate(final PlayerActivity activity, final float frameRateExo, final Uri uri, final boolean play) {
         // preferredDisplayModeId only available on SDK 23+
         // ExoPlayer already uses Surface.setFrameRate() on Android 11+ but may not detect actual video frame rate
         if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT < 30 || (frameRateExo == Format.NO_VALUE))) {
@@ -380,27 +393,54 @@ class Utils {
             }
             // Use ffprobe as ExoPlayer doesn't detect video frame rate for lots of videos
             // and has different precision than ffprobe (so do not mix that)
-            MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(path);
-            MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
-            if (mediaInformation == null)
-                return false;
-            List<StreamInformation> streamInformations = mediaInformation.getStreams();
-            for (StreamInformation streamInformation : streamInformations) {
-                if (streamInformation.getType().equals("video")) {
-                    String averageFrameRate = streamInformation.getAverageFrameRate();
-                    if (averageFrameRate.contains("/")) {
-                        String[] vals = averageFrameRate.split("/");
-                        frameRate = Float.parseFloat(vals[0]) / Float.parseFloat(vals[1]);
-                        break;
+            FFprobeKit.getMediaInformationAsync(path, session -> {
+                if (session == null)
+                    return;
+
+                float frameRate = Format.NO_VALUE;
+
+                MediaInformationSession mediaInformationSession;
+                if (session instanceof MediaInformationSession)
+                    mediaInformationSession = (MediaInformationSession) session;
+                else
+                    return;
+
+                MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
+                if (mediaInformation == null)
+                    return;
+                List<StreamInformation> streamInformations = mediaInformation.getStreams();
+                for (StreamInformation streamInformation : streamInformations) {
+                    if (streamInformation.getType().equals("video")) {
+                        String averageFrameRate = streamInformation.getAverageFrameRate();
+                        if (averageFrameRate.contains("/")) {
+                            String[] vals = averageFrameRate.split("/");
+                            frameRate = Float.parseFloat(vals[0]) / Float.parseFloat(vals[1]);
+                            break;
+                        }
                     }
                 }
-            }
+
+                handleFrameRate(activity, frameRate, play);
+            }, null, 8_000);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private static void handleFrameRate(final PlayerActivity activity, float frameRate, boolean play) {
+        activity.runOnUiThread(() -> {
+            boolean switchingModes = false;
 
             if (BuildConfig.DEBUG)
                 Toast.makeText(activity, "Video frameRate: " + frameRate, Toast.LENGTH_LONG).show();
 
-            if (frameRate != Format.NO_VALUE) {
+            if (frameRate > 0) {
                 Display display = activity.getWindow().getDecorView().getDisplay();
+                if (display == null) {
+                    return;
+                }
                 Display.Mode[] supportedModes = display.getSupportedModes();
                 Display.Mode activeMode = display.getMode();
 
@@ -442,19 +482,26 @@ class Utils {
                         if (modeBest == null)
                             modeBest = modeTop;
 
-                        final boolean switchingModes = !(modeBest.getModeId() == activeMode.getModeId());
+                        switchingModes = !(modeBest.getModeId() == activeMode.getModeId());
                         if (switchingModes) {
                             layoutParams.preferredDisplayModeId = modeBest.getModeId();
                             window.setAttributes(layoutParams);
                         }
                         if (BuildConfig.DEBUG)
                             Toast.makeText(activity, "Video frameRate: " + frameRate + "\nDisplay refreshRate: " + modeBest.getRefreshRate(), Toast.LENGTH_LONG).show();
-                        return switchingModes;
                     }
                 }
             }
-        }
-        return false;
+
+            if (!switchingModes) {
+                if (play) {
+                    if (PlayerActivity.player != null)
+                        PlayerActivity.player.play();
+                    if (activity.playerView != null)
+                        activity.playerView.hideController();
+                }
+            }
+        });
     }
 
     public static boolean alternativeChooser(PlayerActivity activity, Uri initialUri, boolean video) {
@@ -477,6 +524,7 @@ class Utils {
                         activity.releasePlayer();
                         Uri uri = DocumentFile.fromFile(pathFile).getUri();
                         if (video) {
+                            activity.mPrefs.setPersistent(true);
                             activity.mPrefs.updateMedia(activity, uri, null);
                             activity.searchSubtitles();
                         } else {
@@ -502,5 +550,9 @@ class Utils {
         chooserDialog.build().show();
 
         return true;
+    }
+
+    public static boolean isPiPSupported(Context context) {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
     }
 }

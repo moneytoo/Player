@@ -24,6 +24,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Icon;
 import android.media.AudioManager;
+import android.media.audiofx.AudioEffect;
 import android.media.audiofx.LoudnessEnhancer;
 import android.net.Uri;
 import android.os.Build;
@@ -81,6 +82,7 @@ import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
 import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.CaptionStyleCompat;
+import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.ui.TimeBar;
@@ -105,7 +107,7 @@ public class PlayerActivity extends Activity {
     private DefaultTrackSelector trackSelector;
     public static LoudnessEnhancer loudnessEnhancer;
 
-    private CustomStyledPlayerView playerView;
+    public CustomStyledPlayerView playerView;
     public static SimpleExoPlayer player;
 
     private Object mPictureInPictureParamsBuilder;
@@ -123,6 +125,9 @@ public class PlayerActivity extends Activity {
     private static final int REQUEST_CHOOSER_VIDEO = 1;
     private static final int REQUEST_CHOOSER_SUBTITLE = 2;
     private static final int REQUEST_CHOOSER_SCOPE_DIR = 10;
+    private static final int REQUEST_CHOOSER_VIDEO_MEDIASTORE = 20;
+    private static final int REQUEST_CHOOSER_SUBTITLE_MEDIASTORE = 21;
+    private static final int REQUEST_SETTINGS = 100;
     public static final int CONTROLLER_TIMEOUT = 3500;
     private static final String ACTION_MEDIA_CONTROL = "media_control";
     private static final String EXTRA_CONTROL_TYPE = "control_type";
@@ -139,6 +144,7 @@ public class PlayerActivity extends Activity {
     private ImageButton exoPlayPause;
     private ProgressBar loadingProgressBar;
     private StyledPlayerControlView controlView;
+    private CustomDefaultTimeBar timeBar;
 
     private boolean restoreOrientationLock;
     private boolean restorePlayState;
@@ -160,6 +166,13 @@ public class PlayerActivity extends Activity {
     final Rational rationalLimitWide = new Rational(239, 100);
     final Rational rationalLimitTall = new Rational(100, 239);
 
+    static final String API_POSITION = "position";
+    static final String API_RETURN_RESULT = "return_result";
+    boolean apiAccess;
+    boolean intentReturnResult;
+    boolean playbackFinished;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Rotate ASAP, before super/inflating to avoid glitches with activity launch animation
@@ -167,7 +180,7 @@ public class PlayerActivity extends Activity {
         Utils.setOrientation(this, mPrefs.orientation);
 
         super.onCreate(savedInstanceState);
-        if (Build.VERSION.SDK_INT == 28 && Build.MANUFACTURER.toLowerCase().equals("xiaomi") && Build.DEVICE.toLowerCase().equals("oneday")) {
+        if (Build.VERSION.SDK_INT == 28 && Build.MANUFACTURER.equalsIgnoreCase("xiaomi") && Build.DEVICE.equalsIgnoreCase("oneday")) {
             setContentView(R.layout.activity_player_textureview);
         } else {
             setContentView(R.layout.activity_player);
@@ -176,9 +189,26 @@ public class PlayerActivity extends Activity {
         isTvBox = Utils.isTvBox(this);
 
         if (getIntent().getData() != null) {
-            mPrefs.updateMedia(this, getIntent().getData(), getIntent().getType());
+            Intent intent = getIntent();
+
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                apiAccess = bundle.containsKey(API_POSITION) || bundle.containsKey(API_RETURN_RESULT);
+                if (apiAccess)
+                    mPrefs.setPersistent(false);
+            }
+
+            mPrefs.updateMedia(this, intent.getData(), intent.getType());
             searchSubtitles();
             focusPlay = true;
+
+            if (bundle != null) {
+                intentReturnResult = bundle.getBoolean(API_RETURN_RESULT);
+
+                if (bundle.containsKey(API_POSITION)) {
+                    mPrefs.updatePosition((long) bundle.getInt(API_POSITION));
+                }
+            }
         }
 
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
@@ -197,10 +227,7 @@ public class PlayerActivity extends Activity {
 
         ((DoubleTapPlayerView)playerView).setDoubleTapEnabled(false);
 
-        // https://github.com/google/ExoPlayer/issues/5765
-        CustomDefaultTimeBar timeBar = playerView.findViewById(R.id.exo_progress);
-        timeBar.setBufferedColor(0x33FFFFFF);
-
+        timeBar = playerView.findViewById(R.id.exo_progress);
         timeBar.addListener(new TimeBar.OnScrubListener() {
             @Override
             public void onScrubStart(TimeBar timeBar, long position) {
@@ -252,7 +279,7 @@ public class PlayerActivity extends Activity {
             return true;
         });
 
-        if (isPiPSupported()) {
+        if (Utils.isPiPSupported(this)) {
             // TODO: Android 12 improvements:
             // https://developer.android.com/about/versions/12/features/pip-improvements
             mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
@@ -262,13 +289,6 @@ public class PlayerActivity extends Activity {
             buttonPiP.setImageResource(R.drawable.ic_picture_in_picture_alt_24dp);
 
             buttonPiP.setOnClickListener(view -> enterPiP());
-
-            buttonPiP.setOnLongClickListener(v -> {
-                buttonPiP.performHapticFeedback(mPrefs.toggleAutoPiP() ?
-                        HapticFeedbackConstants.VIRTUAL_KEY : HapticFeedbackConstants.LONG_PRESS);
-                resetHideCallbacks();
-                return true;
-            });
 
             Utils.setButtonEnabled(this, buttonPiP, false);
         }
@@ -313,6 +333,11 @@ public class PlayerActivity extends Activity {
         centerView.addView(titleView);
 
         titleView.setOnLongClickListener(view -> {
+            // Prevent FileUriExposedException
+            if (mPrefs.mediaUri != null && ContentResolver.SCHEME_FILE.equals(mPrefs.mediaUri.getScheme())) {
+                return false;
+            }
+
             final Intent shareIntent = new Intent(Intent.ACTION_SEND);
             shareIntent.putExtra(Intent.EXTRA_STREAM, mPrefs.mediaUri);
             if (mPrefs.mediaType == null)
@@ -410,7 +435,9 @@ public class PlayerActivity extends Activity {
         //exoBasicControls.setVisibility(View.GONE);
 
         exoSettings.setOnLongClickListener(view -> {
-            askForScope(false, false);
+            //askForScope(false, false);
+            Intent intent = new Intent(this, SettingsActivity.class);
+            startActivityForResult(intent, REQUEST_SETTINGS);
             return true;
         });
 
@@ -420,7 +447,7 @@ public class PlayerActivity extends Activity {
         controls.addView(buttonOpen);
         controls.addView(exoSubtitle);
         controls.addView(buttonAspectRatio);
-        if (isPiPSupported()) {
+        if (Utils.isPiPSupported(this)) {
             controls.addView(buttonPiP);
         }
         if (!isTvBox) {
@@ -506,6 +533,26 @@ public class PlayerActivity extends Activity {
         super.onStop();
         alive = false;
         releasePlayer();
+    }
+
+    @Override
+    public void finish() {
+        if (intentReturnResult) {
+            Intent intent = new Intent();
+            if (!playbackFinished) {
+                if (player.isCurrentWindowSeekable()) {
+                    long position;
+                    if (mPrefs.persistentMode)
+                        position = mPrefs.nonPersitentPosition;
+                    else
+                        position = player.getCurrentPosition();
+                    intent.putExtra(API_POSITION, (int) position);
+                }
+            }
+            setResult(Activity.RESULT_OK, intent);
+        }
+
+        super.finish();
     }
 
     @Override
@@ -720,6 +767,7 @@ public class PlayerActivity extends Activity {
                     }
                 }
 
+                mPrefs.setPersistent(true);
                 mPrefs.updateMedia(this, uri, data.getType());
                 searchSubtitles();
             }
@@ -751,6 +799,22 @@ public class PlayerActivity extends Activity {
                     e.printStackTrace();
                 }
             }
+        } else if (requestCode == REQUEST_CHOOSER_VIDEO_MEDIASTORE) {
+            if (resultCode == RESULT_OK) {
+                final Uri uri = data.getData();
+                mPrefs.setPersistent(true);
+                mPrefs.updateMedia(this, uri, data.getType());
+            }
+        } else if (requestCode == REQUEST_CHOOSER_SUBTITLE_MEDIASTORE) {
+            Uri uri = data.getData();
+
+            // Convert subtitles to UTF-8 if necessary
+            SubtitleUtils.clearCache(this);
+            uri = SubtitleUtils.convertToUTF(this, uri);
+
+            mPrefs.updateSubtitle(uri);
+        } else if (requestCode == REQUEST_SETTINGS) {
+            mPrefs.loadUserPreferences();
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -763,10 +827,16 @@ public class PlayerActivity extends Activity {
     }
 
     public void initializePlayer() {
-        haveMedia = mPrefs.mediaUri != null && (Utils.fileExists(this, mPrefs.mediaUri) || Utils.isSupportedNetworkUri(mPrefs.mediaUri));
+        boolean isNetworkUri = mPrefs.mediaUri != null && Utils.isSupportedNetworkUri(mPrefs.mediaUri);
+        haveMedia = mPrefs.mediaUri != null && (Utils.fileExists(this, mPrefs.mediaUri) || isNetworkUri);
 
         if (player == null) {
             trackSelector = new DefaultTrackSelector(this);
+            if (mPrefs.tunneling) {
+                trackSelector.setParameters(trackSelector.buildUponParameters()
+                        .setTunnelingEnabled(true)
+                );
+            }
             if (Build.VERSION.SDK_INT >= 24) {
                 final LocaleList localeList = Resources.getSystem().getConfiguration().getLocales();
                 final List<String> locales = new ArrayList<>();
@@ -796,6 +866,12 @@ public class PlayerActivity extends Activity {
                     .setContentType(C.CONTENT_TYPE_MOVIE)
                     .build();
             player.setAudioAttributes(audioAttributes, true);
+
+            if (mPrefs.skipSilence) {
+                if (player.getAudioComponent() != null) {
+                    player.getAudioComponent().setSkipSilenceEnabled(true);
+                }
+            }
 
             final YouTubeOverlay youTubeOverlay = findViewById(R.id.youtube_overlay);
 
@@ -846,6 +922,13 @@ public class PlayerActivity extends Activity {
         locked = false;
 
         if (haveMedia) {
+            if (isNetworkUri) {
+                timeBar.setBufferedColor(DefaultTimeBar.DEFAULT_BUFFERED_COLOR);
+            } else {
+                // https://github.com/google/ExoPlayer/issues/5765
+                timeBar.setBufferedColor(0x33FFFFFF);
+            }
+
             playerView.setResizeMode(mPrefs.resizeMode);
 
             if (mPrefs.resizeMode == AspectRatioFrameLayout.RESIZE_MODE_ZOOM) {
@@ -868,26 +951,26 @@ public class PlayerActivity extends Activity {
                         subtitleLanguage, C.SELECTION_FLAG_DEFAULT, C.ROLE_FLAG_SUBTITLE, subtitleName);
                 mediaItemBuilder.setSubtitles(Collections.singletonList(subtitle));
             }
-            player.setMediaItem(mediaItemBuilder.build());
+            player.setMediaItem(mediaItemBuilder.build(), mPrefs.getPosition());
 
             if (loudnessEnhancer != null) {
                 loudnessEnhancer.release();
             }
             try {
-                int audioSessionId = C.generateAudioSessionIdV21(this);
-                loudnessEnhancer = new LoudnessEnhancer(audioSessionId);
-                player.setAudioSessionId(audioSessionId);
+                loudnessEnhancer = new LoudnessEnhancer(player.getAudioSessionId());
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
+
+            notifyAudioSessionUpdate(true);
 
             videoLoading = true;
 
             updateLoading(true);
 
-            play = mPrefs.getPosition() == 0L;
-
-            player.seekTo(mPrefs.getPosition());
+            if (mPrefs.getPosition() == 0L || apiAccess) {
+                play = true;
+            }
 
             titleView.setText(Utils.getFileName(this, mPrefs.mediaUri));
             titleView.setVisibility(View.VISIBLE);
@@ -899,7 +982,8 @@ public class PlayerActivity extends Activity {
 
             ((DoubleTapPlayerView)playerView).setDoubleTapEnabled(true);
 
-            nextUri = findNext();
+            if (!apiAccess)
+                nextUri = findNext();
 
             player.setHandleAudioBecomingNoisy(true);
             mediaSession.setActive(true);
@@ -919,6 +1003,8 @@ public class PlayerActivity extends Activity {
 
     public void releasePlayer() {
         if (player != null) {
+            notifyAudioSessionUpdate(false);
+
             mediaSession.setActive(false);
             mediaSession.release();
 
@@ -958,13 +1044,14 @@ public class PlayerActivity extends Activity {
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
+            notifyAudioSessionUpdate(true);
         }
 
         @Override
         public void onIsPlayingChanged(boolean isPlaying) {
             playerView.setKeepScreenOn(isPlaying);
 
-            if (isPiPSupported()) {
+            if (Utils.isPiPSupported(PlayerActivity.this)) {
                 if (isPlaying) {
                     updatePictureInPictureActions(R.drawable.ic_pause_24dp, R.string.exo_controls_pause_description, CONTROL_TYPE_PAUSE, REQUEST_PAUSE);
                 } else {
@@ -1026,7 +1113,10 @@ public class PlayerActivity extends Activity {
                         updateSubtitleViewMargin(format);
                     }
 
-                    boolean switched = Utils.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri);
+                    boolean switched = false;
+                    if (mPrefs.frameRateMatching) {
+                        switched = Utils.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri, play);
+                    }
                     if (play) {
                         play = false;
                         if (!switched) {
@@ -1043,6 +1133,11 @@ public class PlayerActivity extends Activity {
                     }
                     if (mPrefs.subtitleTrack != -1 && (mPrefs.subtitleTrack < getTrackCountSubtitle() || mPrefs.subtitleTrack == Integer.MIN_VALUE))
                         setSelectedTrackSubtitle(mPrefs.subtitleTrack);
+                }
+            } else if (state == Player.STATE_ENDED) {
+                playbackFinished = true;
+                if (apiAccess) {
+                    finish();
                 }
             }
         }
@@ -1074,7 +1169,13 @@ public class PlayerActivity extends Activity {
 
     private void openFile(Uri pickerInitialUri) {
         if (isTvBox) {
-            Utils.alternativeChooser(this, pickerInitialUri, true);
+            int targetSdkVersion = getApplicationContext().getApplicationInfo().targetSdkVersion;
+            if (Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30) {
+                Intent intent = new Intent(this, MediaStoreChooserActivity.class);
+                startActivityForResult(intent, REQUEST_CHOOSER_VIDEO_MEDIASTORE);
+            } else {
+                Utils.alternativeChooser(this, pickerInitialUri, true);
+            }
         } else {
             enableRotation();
 
@@ -1090,7 +1191,14 @@ public class PlayerActivity extends Activity {
         Toast.makeText(PlayerActivity.this, R.string.open_subtitles, Toast.LENGTH_SHORT).show();
 
         if (isTvBox) {
-            Utils.alternativeChooser(this, pickerInitialUri, false);
+            int targetSdkVersion = getApplicationContext().getApplicationInfo().targetSdkVersion;
+            if (Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30) {
+                Intent intent = new Intent(this, MediaStoreChooserActivity.class);
+                intent.putExtra(MediaStoreChooserActivity.SUBTITLES, true);
+                startActivityForResult(intent, REQUEST_CHOOSER_SUBTITLE_MEDIASTORE);
+            } else {
+                Utils.alternativeChooser(this, pickerInitialUri, false);
+            }
         } else {
             enableRotation();
 
@@ -1329,10 +1437,6 @@ public class PlayerActivity extends Activity {
             subtitleView.setFractionalTextSize(SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * 2);
     }
 
-    boolean isPiPSupported() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
-    }
-
     @TargetApi(26)
     void updatePictureInPictureActions(final int iconId, final int resTitle, final int controlType, final int requestCode) {
         final ArrayList<RemoteAction> actions = new ArrayList<>();
@@ -1346,7 +1450,7 @@ public class PlayerActivity extends Activity {
     }
 
     private boolean isInPip() {
-        if (!isPiPSupported())
+        if (!Utils.isPiPSupported(this))
             return false;
         return isInPictureInPictureMode();
     }
@@ -1451,7 +1555,8 @@ public class PlayerActivity extends Activity {
             File videoRaw = null;
 
             if (!isTvBox && mPrefs.scopeUri != null) {
-                if ("com.android.externalstorage.documents".equals(mPrefs.mediaUri.getHost())) {
+                if ("com.android.externalstorage.documents".equals(mPrefs.mediaUri.getHost()) ||
+                        "org.courville.nova.provider".equals(mPrefs.mediaUri.getHost())) {
                     // Fast search based on path in uri
                     video = SubtitleUtils.findUriInScope(this, mPrefs.scopeUri, mPrefs.mediaUri);
                 } else {
@@ -1570,7 +1675,7 @@ public class PlayerActivity extends Activity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onUserLeaveHint() {
-        if (mPrefs!= null && mPrefs.autoPiP && player != null && player.isPlaying() && isPiPSupported())
+        if (mPrefs!= null && mPrefs.autoPiP && player != null && player.isPlaying() && Utils.isPiPSupported(this))
             enterPiP();
         else
             super.onUserLeaveHint();
@@ -1584,6 +1689,10 @@ public class PlayerActivity extends Activity {
             if (intent.resolveActivity(getPackageManager()) != null) {
                 startActivity(intent);
             }
+            return;
+        }
+
+        if (player == null) {
             return;
         }
 
@@ -1680,5 +1789,16 @@ public class PlayerActivity extends Activity {
             searchSubtitles();
             initializePlayer();
         }
+    }
+
+    void notifyAudioSessionUpdate(final boolean active) {
+        final Intent intent = new Intent(active ? AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION
+                : AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
+        intent.putExtra(AudioEffect.EXTRA_AUDIO_SESSION, player.getAudioSessionId());
+        intent.putExtra(AudioEffect.EXTRA_PACKAGE_NAME, getPackageName());
+        if (active) {
+            intent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MOVIE);
+        }
+        sendBroadcast(intent);
     }
 }
