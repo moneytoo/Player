@@ -17,12 +17,12 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.UriPermission;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Icon;
+import android.hardware.display.DisplayManager;
 import android.media.AudioManager;
 import android.media.audiofx.AudioEffect;
 import android.media.audiofx.LoudnessEnhancer;
@@ -39,7 +39,6 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Rational;
 import android.util.TypedValue;
-import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.SurfaceView;
 import android.view.View;
@@ -171,6 +170,9 @@ public class PlayerActivity extends Activity {
     boolean apiAccess;
     boolean intentReturnResult;
     boolean playbackFinished;
+
+    DisplayManager displayManager;
+    DisplayManager.DisplayListener displayListener;
 
 
     @Override
@@ -1115,11 +1117,47 @@ public class PlayerActivity extends Activity {
 
                     boolean switched = false;
                     if (mPrefs.frameRateMatching) {
+                        if (play) {
+                            if (displayManager == null) {
+                                displayManager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
+                            }
+                            if (displayListener == null) {
+                                displayListener = new DisplayManager.DisplayListener() {
+                                    @Override
+                                    public void onDisplayAdded(int displayId) {
+
+                                    }
+
+                                    @Override
+                                    public void onDisplayRemoved(int displayId) {
+
+                                    }
+
+                                    @Override
+                                    public void onDisplayChanged(int displayId) {
+                                        if (play) {
+                                            play = false;
+                                            displayManager.unregisterDisplayListener(this);
+                                            if (player != null) {
+                                                player.play();
+                                            }
+                                            if (playerView != null) {
+                                                playerView.hideController();
+                                            }
+                                        }
+                                    }
+                                };
+                            }
+                            displayManager.registerDisplayListener(displayListener, null);
+                        }
                         switched = Utils.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri, play);
                     }
-                    if (play) {
-                        play = false;
-                        if (!switched) {
+                    if (!switched) {
+                        if (displayManager != null) {
+                            displayManager.unregisterDisplayListener(displayListener);
+                        }
+                        if (play) {
+                            play = false;
                             player.play();
                             playerView.hideController();
                         }
