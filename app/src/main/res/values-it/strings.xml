@@ -12,7 +12,7 @@
     <string name="delete_confirmation">Elimina</string>
     <string name="delete_query">Eliminare questo file\?</string>
     <string name="request_scope">Per caricare automaticamente i sottotitoli esterni o abilitare il salto al file successivo in una directory, concedi l’accesso a %s alla cartella più in alto che contiene i tuoi video (ad esempio: Film).</string>
-    <string name="pref_tunneling_summary">Il tunneling fornisce un migliore supporto ai contenuti 4K/HDR ma potrebbe non funzionare su tutti i dispositivi</string>
+    <string name="pref_tunneling_summary">Il tunneling fornisce un migliore supporto per i contenuti 4K/HDR, ma potrebbe non funzionare su tutti i dispositivi</string>
     <string name="pref_skip_silence_off">Riproduci il contenuto così com’è</string>
     <string name="pref_skip_silence_on">Salta le parti con silenzio nel flusso audio</string>
     <string name="pref_skip_silence">Salta il silenzio</string>

@@ -2,23 +2,16 @@
 <resources>
     <string name="video_resize_fit">Přizpůsobení</string>
     <string name="video_resize_crop">Oříznutí</string>
-
     <string name="video_orientation_video">Orientace videa</string>
     <string name="video_orientation_sensor">Automatické otáčení</string>
-
     <string name="onboarding_open_title">Vyberte video k přehrání</string>
     <string name="onboarding_open_description">Klepněte pro otevření souboru s videem. Dlouze podržte pro načtení externích titulků.</string>
-
     <string name="open_subtitles">Načíst titulky</string>
-
     <string name="error_details">Podrobnosti</string>
     <string name="error_files_missing">Aplikace Soubory je deaktivována nebo chybí</string>
-
     <string name="request_scope">Pro automatické načtení externích titulků nebo umožnění přechodu na následující soubor v adresáří, přidělte aplikaci %s přístup k nejvrchnější složce obsahující vaše videa (např. Movies).</string>
-
     <string name="delete_query">Smazat tento soubor\?</string>
     <string name="delete_confirmation">Smazat</string>
-
     <string name="pref_title">Nastavení</string>
     <string name="pref_general_header">Hlavní</string>
     <string name="pref_framerate_matching">Automatické přizpůsobení obnovovací frekvence</string>

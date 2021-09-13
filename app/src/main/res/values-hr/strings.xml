@@ -12,4 +12,17 @@
     <string name="request_scope">Za automatsko učitavanje vanjskih titlova ili za omogućavanje preskakanja na sljedeću datoteku u mapi, odobri %s pristup najvišoj mapi koja sadrži tvoja videa (npr. Filmovi).</string>
     <string name="delete_confirmation">Izbriši</string>
     <string name="delete_query">Izbrisati ovu datoteku\?</string>
+    <string name="pref_tunneling_summary">Tuneliranje pruža bolju podršku za 4K/HDR sadržaj, ali možda neće raditi na svim uređajima</string>
+    <string name="pref_tunneling">Tunelirana reprodukcija</string>
+    <string name="pref_framerate_matching_off">Nemoj mijenjati brzinu osvježavanja ekrana</string>
+    <string name="pref_framerate_matching_on">Promijeni brzinu osvježavanja ekrana tako da odgovara brzini kadrova videa</string>
+    <string name="pref_framerate_matching">Automatsko poklapanje brzine kadrova</string>
+    <string name="pref_skip_silence_off">Reproduciraj sadržaj onako kakav je</string>
+    <string name="pref_skip_silence_on">Preskoči dijelove s tišinom na audio prijenosu</string>
+    <string name="pref_skip_silence">Preskoči tišinu</string>
+    <string name="pref_auto_pip_off">Nemoj automatski prebaciti na slika u slici</string>
+    <string name="pref_auto_pip_on">Prije napuštanja programa prebaci na slika u slici</string>
+    <string name="pref_auto_pip">Automatska slika u slici</string>
+    <string name="pref_general_header">Opće</string>
+    <string name="pref_title">Postavke</string>
 </resources>

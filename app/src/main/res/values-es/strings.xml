@@ -15,4 +15,14 @@
     <string name="pref_framerate_matching">Adaptación automática de la frecuencia de imagen</string>
     <string name="pref_general_header">General</string>
     <string name="pref_title">Ajustes</string>
+    <string name="pref_skip_silence_off">Reproducir contenido tal cual</string>
+    <string name="pref_skip_silence_on">Omitir partes con silencio en el flujo de audio</string>
+    <string name="pref_skip_silence">Omitir silencio</string>
+    <string name="pref_auto_pip_off">No cambiar automáticamente a modo Imagen en Imagen</string>
+    <string name="pref_auto_pip_on">Cambiar a modo Imagen en Imagen al salir de la aplicación</string>
+    <string name="pref_auto_pip">Auto imagen en imagen</string>
+    <string name="pref_tunneling_summary">La tunelización ofrece una mejor compatibilidad con los contenidos 4K/HDR, pero puede no funcionar en todos los dispositivos</string>
+    <string name="pref_tunneling">Reproducción en túnel</string>
+    <string name="pref_framerate_matching_off">No cambiar la frecuencia de actualización de la pantalla</string>
+    <string name="pref_framerate_matching_on">Cambia la frecuencia de actualización de la pantalla para que coincida con la frecuencia de fotogramas del video</string>
 </resources>
