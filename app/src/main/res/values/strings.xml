@@ -19,7 +19,7 @@
     <string name="pref_framerate_matching_on">Switch display refresh rate to match video frame rate</string>
     <string name="pref_framerate_matching_off">Do not change display refresh rate</string>
     <string name="pref_tunneling">Tunneled playback</string>
-    <string name="pref_tunneling_summary">Tunneling provides better support of 4K/HDR content, but may not work on all devices</string>
+    <string name="pref_tunneling_summary">Tunneling provides better support for 4K/HDR content, but may not work on all devices</string>
     <string name="pref_auto_pip">Auto picture-in-picture</string>
     <string name="pref_auto_pip_on">Switch to PiP when leaving the app</string>
     <string name="pref_auto_pip_off">Do not automatically switch to PiP</string>
