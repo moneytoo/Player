@@ -12,4 +12,17 @@
     <string name="delete_confirmation">Elimina</string>
     <string name="delete_query">Eliminare questo file\?</string>
     <string name="request_scope">Per caricare automaticamente i sottotitoli esterni o abilitare il salto al file successivo in una directory, concedi l’accesso a %s alla cartella più in alto che contiene i tuoi video (ad esempio: Film).</string>
+    <string name="pref_tunneling_summary">Il tunneling fornisce un migliore supporto ai contenuti 4K/HDR ma potrebbe non funzionare su tutti i dispositivi</string>
+    <string name="pref_skip_silence_off">Riproduci il contenuto così com’è</string>
+    <string name="pref_skip_silence_on">Salta le parti con silenzio nel flusso audio</string>
+    <string name="pref_skip_silence">Salta il silenzio</string>
+    <string name="pref_auto_pip_off">Non passare automaticamente all’immagine nell’immagine</string>
+    <string name="pref_auto_pip_on">Passa all’immagine nell’immagine quando si lascia l’app</string>
+    <string name="pref_auto_pip">Immagine nell’immagine automatica</string>
+    <string name="pref_tunneling">Riproduzione in tunnel</string>
+    <string name="pref_framerate_matching_off">Non cambiare la frequenza di aggiornamento dello schermo</string>
+    <string name="pref_framerate_matching_on">Cambia la frequenza di aggiornamento dello schermo in modo che corrisponda alla frequenza dei fotogrammi video</string>
+    <string name="pref_framerate_matching">Corrispondenza automatica della frequenza dei fotogrammi</string>
+    <string name="pref_general_header">Generale</string>
+    <string name="pref_title">Impostazioni</string>
 </resources>
