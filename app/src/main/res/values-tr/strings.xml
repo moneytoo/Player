@@ -12,4 +12,17 @@
     <string name="delete_confirmation">Sil</string>
     <string name="delete_query">Bu dosya silinsin mi\?</string>
     <string name="request_scope">Harici alt yazıları otomatik olarak yüklemek veya bir dizindeki sonraki dosyaya atlamayı etkinleştirmek için videolarınızı içeren en üstteki klasöre (örn. Filmler) %s erişim izni verin.</string>
+    <string name="pref_skip_silence_off">İçeriği olduğu gibi oynat</string>
+    <string name="pref_skip_silence_on">Ses akışında sessiz olan bölümleri atla</string>
+    <string name="pref_skip_silence">Sessizliği atla</string>
+    <string name="pref_auto_pip_off">Otomatik olarak resim içinde resime geçme</string>
+    <string name="pref_auto_pip_on">Uygulamadan çıkarken resim içinde resime geç</string>
+    <string name="pref_auto_pip">Otomatik resim içinde resim</string>
+    <string name="pref_tunneling_summary">Tünelleme, 4K/HDR içeriği için daha iyi destek sağlar ancak tüm aygıtlarda çalışmayabilir</string>
+    <string name="pref_tunneling">Tünellenen oynatma</string>
+    <string name="pref_framerate_matching_off">Ekran yenileme hızını değiştirme</string>
+    <string name="pref_framerate_matching_on">Ekran yenileme hızını video kare hızına uyacak şekilde değiştir</string>
+    <string name="pref_framerate_matching">Otomatik kare hızı eşleştirme</string>
+    <string name="pref_general_header">Genel</string>
+    <string name="pref_title">Ayarlar</string>
 </resources>
