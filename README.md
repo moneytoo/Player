@@ -46,7 +46,7 @@ HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
 
 To load external (non-embedded) subtitles, long press the file open action in the bottom bar. The first time you do that, you will be offered to select root video folder to enable automatic loading of external subtitles.
 
-Available since `v0.59`: Some advanced features can be configured in settings. To access it, long press the ⚙️ gear icon. (Alternatively, you can also enter this settings from App info screen.)
+Some advanced features can be configured in settings. To access it, long press the ⚙️ gear icon. (Alternatively, you can also enter this settings from App info screen.)
 
  * Auto frame rate matching (enabled by default on Android TV)
  * [Tunneled playback](https://medium.com/google-exoplayer/tunneled-video-playback-in-exoplayer-84f084a8094d) (disabled by default). Enabling tunneling can improve playback of 4K/HDR content on Android TV.
