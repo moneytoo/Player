@@ -328,14 +328,14 @@ Builds:
       - cp $$ExoPlayer$$/extensions/{ffmpeg,av1}/buildout/outputs/aar/*.aar libs/
     ndk: r21e
 
-  - versionName: '0.54'
-    versionCode: 54
-    commit: v0.54
+  - versionName: '0.62'
+    versionCode: 62
+    commit: v0.62
     subdir: app
     gradle:
       - latest
     srclibs:
-      - ExoPlayer-moneytoo@r2.15.0
+      - ExoPlayer-moneytoo@r2.15.1
       - FFmpeg@release/4.2
       - cpu_features@v0.6.0
       - abseil-cpp@20210324.2
@@ -343,7 +343,7 @@ Builds:
     scandelete:
       - app/libs/
     build:
-      - export FFMPEG_EXT_PATH="$$ExoPlayer$$/extensions/ffmpeg/src/main"
+      - export FFMPEG_EXT_PATH="$$ExoPlayer-moneytoo$$/extensions/ffmpeg/src/main"
       - export HOST_PLATFORM="$(uname -s | tr '[:upper:]' '[:lower:]')-x86_64"
       - export ENABLED_DECODERS=(vorbis opus flac alac pcm_mulaw pcm_alaw mp3 amrnb
         amrwb aac ac3 eac3 dca mlp truehd)
@@ -351,7 +351,7 @@ Builds:
       - ln -s "$$FFmpeg$$" ffmpeg
       - cd "${FFMPEG_EXT_PATH}/jni"
       - ./build_ffmpeg.sh "${FFMPEG_EXT_PATH}" "$$NDK$$" "${HOST_PLATFORM}" "${ENABLED_DECODERS[@]}"
-      - export AV1_EXT_PATH="$$ExoPlayer$$/extensions/av1/src/main"
+      - export AV1_EXT_PATH="$$ExoPlayer-moneytoo$$/extensions/av1/src/main"
       - cd "${AV1_EXT_PATH}/jni"
       - ln -s "$$cpu_features$$" cpu_features
       - ln -s "$$libgav1$$" libgav1
@@ -359,18 +359,18 @@ Builds:
       - mkdir "${AV1_EXT_PATH}/jni/libgav1/third_party"
       - cd "${AV1_EXT_PATH}/jni/libgav1/third_party"
       - ln -s "$$abseil-cpp$$" abseil-cpp
-      - cd "$$ExoPlayer$$"
+      - cd "$$ExoPlayer-moneytoo$$"
       - ./gradlew :extension-{ffmpeg,av1}:bundleReleaseAar
       - ./gradlew :library-{core,extractor,ui}:bundleReleaseAar
       - popd
-      - cp $$ExoPlayer$$/extensions/{ffmpeg,av1}/buildout/outputs/aar/*.aar libs/
-      - cp $$ExoPlayer$$/library/{core,extractor,ui}/buildout/outputs/aar/*.aar libs/
-    ndk: r21e
+      - cp $$ExoPlayer-moneytoo$$/extensions/{ffmpeg,av1}/buildout/outputs/aar/*.aar libs/
+      - cp $$ExoPlayer-moneytoo$$/library/{core,extractor,ui}/buildout/outputs/aar/*.aar libs/
+    ndk: r23
 
-MaintainerNotes: 'Extensions build instructions: https://github.com/google/ExoPlayer/blob/r2.15.0/extensions/ffmpeg/README.md
-    https://github.com/google/ExoPlayer/blob/r2.15.0/extensions/av1/README.md'
+MaintainerNotes: 'Extensions build instructions: https://github.com/google/ExoPlayer/blob/r2.15.1/extensions/ffmpeg/README.md
+    https://github.com/google/ExoPlayer/blob/r2.15.1/extensions/av1/README.md'
 
 AutoUpdateMode: None
 UpdateCheckMode: None
-CurrentVersion: '0.54'
-CurrentVersionCode: 54
+CurrentVersion: '0.62'
+CurrentVersionCode: 62
