@@ -14,6 +14,10 @@ class CustomDefaultTrackNameProvider extends DefaultTrackNameProvider {
     @Override
     public String getTrackName(Format format) {
         String trackName = super.getTrackName(format);
+
+        // https://github.com/google/ExoPlayer/issues/9452
+        trackName = trackName.substring(0, 1).toUpperCase() + (trackName.length() > 1 ? trackName.substring(1) : "");
+
         if (format.sampleMimeType != null) {
             String sampleFormat = formatNameFromMime(format.sampleMimeType);
             if (BuildConfig.DEBUG && sampleFormat == null) {
