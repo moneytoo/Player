@@ -1499,8 +1499,8 @@ public class PlayerActivity extends Activity {
 
         if (!isInPip()) {
             setSubtitleTextSize(newConfig.orientation);
-            updateSubtitleViewMargin();
         }
+        updateSubtitleViewMargin();
     }
 
     void showError(ExoPlaybackException error) {
