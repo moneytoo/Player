@@ -601,7 +601,8 @@ public class PlayerActivity extends Activity {
                 break;
             case KeyEvent.KEYCODE_DPAD_LEFT:
             case KeyEvent.KEYCODE_BUTTON_L2:
-                if (!controllerVisibleFully) {
+            case KeyEvent.KEYCODE_MEDIA_REWIND:
+                if (!controllerVisibleFully || keyCode == KeyEvent.KEYCODE_MEDIA_REWIND) {
                     if (player == null)
                         break;
                     playerView.removeCallbacks(playerView.textClearRunnable);
@@ -616,7 +617,8 @@ public class PlayerActivity extends Activity {
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
             case KeyEvent.KEYCODE_BUTTON_R2:
-                if (!controllerVisibleFully) {
+            case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
+                if (!controllerVisibleFully || keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
                     if (player == null)
                         break;
                     playerView.removeCallbacks(playerView.textClearRunnable);
@@ -657,8 +659,10 @@ public class PlayerActivity extends Activity {
                 return true;
             case KeyEvent.KEYCODE_DPAD_LEFT:
             case KeyEvent.KEYCODE_BUTTON_L2:
+            case KeyEvent.KEYCODE_MEDIA_REWIND:
             case KeyEvent.KEYCODE_DPAD_RIGHT:
             case KeyEvent.KEYCODE_BUTTON_R2:
+            case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
                 playerView.postDelayed(playerView.textClearRunnable, CustomStyledPlayerView.MESSAGE_TIMEOUT_KEY);
                 break;
         }
