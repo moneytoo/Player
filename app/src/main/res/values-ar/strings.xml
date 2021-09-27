@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_tunneling">التشغيل النفقي</string>
+    <string name="pref_tunneling_summary">التشغيل النفقي يوفر دعم أفضل لجودة 4K/HDR، لكنه قد لا يعمل على جميع الأجهزة</string>
+    <string name="pref_skip_silence_off">شغل المحتوى كما هو</string>
+    <string name="pref_skip_silence_on">تخطي المقاطع الصامتة في البث الصوتي</string>
+    <string name="pref_skip_silence">تخطي الصمت</string>
+    <string name="pref_auto_pip_off">لا تبدل لوضع الصورة المنبثقة تلقائيا</string>
+    <string name="pref_auto_pip_on">تبديل لوضع الصورة المنبثقة عند الخروج من التطبيق</string>
+    <string name="pref_auto_pip">صورة منبثقة تلقائيا</string>
+    <string name="pref_framerate_matching_off">لا تغير معدل تحديث العرض</string>
+    <string name="pref_framerate_matching_on">تبديل معدل تحديث العرض لمطابقة معدل إطار الفيديو</string>
+    <string name="pref_framerate_matching">مطابقة معدل الإطارات تلقائيًا</string>
+    <string name="pref_general_header">عام</string>
+    <string name="pref_title">الإعدادات</string>
+    <string name="delete_confirmation">حذف</string>
+    <string name="delete_query">هل ترغب بحذف هذا الملف؟</string>
+    <string name="request_scope">لتحميل الترجمات الخارجية أو لتفعيل ميزة التخطي للفيديو التالي تلقائيا، أعط %s صلاحية الوصول للمجلد الذي يحوي فيديوهاتك (مثل مجلد Movies).</string>
+    <string name="video_resize_fit">ملائم</string>
+    <string name="video_resize_crop">اقتصاص</string>
+    <string name="video_orientation_video">اتجاه الفيديو</string>
+    <string name="video_orientation_sensor">دوران تلقائي</string>
+    <string name="error_files_missing">تطبيق Files غير فعّال أو غير موجود</string>
+    <string name="error_details">التفاصيل</string>
+    <string name="open_subtitles">تحميل الترجمات</string>
+    <string name="onboarding_open_description">انقر لفتح ملف فيديو. اضغط ضغطة مطوّلة لتحميل الترجمات الخارجية.</string>
+    <string name="onboarding_open_title">اختر مقطع فيديو لتشغيله</string>
+</resources>
