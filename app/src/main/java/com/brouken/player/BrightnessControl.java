@@ -36,6 +36,8 @@ class BrightnessControl {
         else if (currentBrightnessLevel != -1)
             setScreenBrightness(levelToBrightness(currentBrightnessLevel));
 
+        playerView.setHighlight(false);
+
         if (currentBrightnessLevel == -1 && canSetAuto) {
             playerView.setIconBrightnessAuto();
             playerView.setCustomErrorMessage("");
