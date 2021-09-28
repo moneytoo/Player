@@ -74,6 +74,7 @@ import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
+import com.google.android.exoplayer2.extractor.ts.DefaultTsPayloadReaderFactory;
 import com.google.android.exoplayer2.extractor.ts.TsExtractor;
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
 import com.google.android.exoplayer2.source.TrackGroupArray;
@@ -862,6 +863,7 @@ public class PlayerActivity extends Activity {
                     .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
             // https://github.com/google/ExoPlayer/issues/8571
             final DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory()
+                    .setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS)
                     .setTsExtractorTimestampSearchBytes(1500 * TsExtractor.TS_PACKET_SIZE);
             player = new SimpleExoPlayer.Builder(this, renderersFactory)
                     .setTrackSelector(trackSelector)
