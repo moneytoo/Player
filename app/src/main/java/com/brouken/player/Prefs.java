@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Build;
 import android.preference.PreferenceManager;
 
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
@@ -67,7 +68,7 @@ class Prefs {
     public Prefs(Context context) {
         mContext = context;
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        frameRateMatching = Utils.isTvBox(context);
+        frameRateMatching = Utils.isTvBox(context) && Build.VERSION.SDK_INT < 30;
         loadSavedPreferences();
         loadPositions();
     }
