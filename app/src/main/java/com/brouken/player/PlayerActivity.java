@@ -555,6 +555,13 @@ public class PlayerActivity extends Activity {
             setResult(Activity.RESULT_OK, intent);
         }
 
+        if(mPrefs.tvQuickActionsAFR){
+            Intent intent = new Intent();
+            intent.setPackage("dev.vodik7.tvquickactions");
+            intent.setAction("dev.vodik7.tvquickactions.STOP_AFR");
+            sendBroadcast(intent);
+        }
+
         super.finish();
     }
 
@@ -1156,7 +1163,7 @@ public class PlayerActivity extends Activity {
                             }
                             displayManager.registerDisplayListener(displayListener, null);
                         }
-                        switched = Utils.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri, play);
+                        switched = Utils.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri, play, mPrefs.tvQuickActionsAFR);
                     }
                     if (!switched) {
                         if (displayManager != null) {

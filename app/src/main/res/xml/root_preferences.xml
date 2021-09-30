@@ -10,6 +10,13 @@
             app:title="@string/pref_framerate_matching" />
 
         <SwitchPreferenceCompat
+            app:key="tvQuickActionsAFR"
+            app:defaultValue="false"
+            app:summaryOn="@string/pref_framerate_matching_on_tvquickactions"
+            app:summaryOff="@string/pref_framerate_matching_off_tvquickactions"
+            app:title="@string/pref_framerate_matching_tvquickactions" />
+
+        <SwitchPreferenceCompat
             app:key="tunneling"
             app:defaultValue="false"
             app:summary="@string/pref_tunneling_summary"

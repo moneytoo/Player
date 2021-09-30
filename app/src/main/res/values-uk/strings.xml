@@ -12,4 +12,11 @@
     <string name="video_orientation_video">Орієнтація відео</string>
     <string name="video_resize_crop">Обрізати</string>
     <string name="video_resize_fit">Підігнати</string>
+    <string name="pref_framerate_matching_off">Не змінювати частоту оновлення екрана</string>
+    <string name="pref_framerate_matching_on">Переключити частоту оновлення екрана у відповідност з частотою кадрів відеосигналу</string>
+    <string name="pref_framerate_matching">Автоматичне погоджування частоти кадрів</string>
+    <string name="pref_framerate_matching_tvquickactions">Автоматичне погоджування частоти кадрів за допомогою tvQuickActions</string>
+    <string name="pref_framerate_matching_on_tvquickactions">Переключити частоту оновлення екрана у відповідност з частотою кадрів за допомогою tvQuickActions</string>
+    <string name="pref_framerate_matching_off_tvquickactions">Не змінювати частоту оновлення екрана за допомогою tvQuickActions</string>
+
 </resources>

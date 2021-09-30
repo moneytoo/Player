@@ -23,6 +23,10 @@
     <string name="pref_framerate_matching_off">Не изменять частоту обновления экрана</string>
     <string name="pref_framerate_matching_on">Переключать частоту обновления экрана в соответствии с частотой кадров видеосигнала</string>
     <string name="pref_framerate_matching">Автоматическое согласование частоты кадров</string>
+    <string name="pref_framerate_matching_tvquickactions">Автоматическое согласование частоты кадров с помощью tvQuickActions</string>
+    <string name="pref_framerate_matching_on_tvquickactions">Переключать частоту обновления экрана в соответствии с частотой кадров видеосигнала с помощью tvQuickActions</string>
+    <string name="pref_framerate_matching_off_tvquickactions">Не изменять частоту обновления экрана с помощью tvQuickActions</string>
+
     <string name="pref_general_header">Общие</string>
     <string name="pref_title">Настройки</string>
 </resources>

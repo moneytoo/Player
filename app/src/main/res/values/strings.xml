@@ -18,6 +18,9 @@
     <string name="pref_framerate_matching">Auto frame rate matching</string>
     <string name="pref_framerate_matching_on">Switch display refresh rate to match video frame rate</string>
     <string name="pref_framerate_matching_off">Do not change display refresh rate</string>
+    <string name="pref_framerate_matching_tvquickactions">Auto frame rate matching via tvQuickActions</string>
+    <string name="pref_framerate_matching_on_tvquickactions">Switch display refresh rate to match video frame rate via tvQuickActions</string>
+    <string name="pref_framerate_matching_off_tvquickactions">Do not change display refresh rate via tvQuickActions</string>
     <string name="pref_tunneling">Tunneled playback</string>
     <string name="pref_tunneling_summary">Tunneling provides better support for 4K/HDR content, but may not work on all devices</string>
     <string name="pref_auto_pip">Auto picture-in-picture</string>

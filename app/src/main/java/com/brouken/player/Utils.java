@@ -378,7 +378,7 @@ class Utils {
         return (int)(rate * 100f);
     }
 
-    public static boolean switchFrameRate(final PlayerActivity activity, final float frameRateExo, final Uri uri, final boolean play) {
+    public static boolean switchFrameRate(final PlayerActivity activity, final float frameRateExo, final Uri uri, final boolean play, final boolean tvQuickActionsAFR) {
         // preferredDisplayModeId only available on SDK 23+
         // ExoPlayer already uses Surface.setFrameRate() on Android 11+ but may not detect actual video frame rate
         if (Build.VERSION.SDK_INT >= 23 && (Build.VERSION.SDK_INT < 30 || (frameRateExo == Format.NO_VALUE))) {
@@ -420,7 +420,15 @@ class Utils {
                     }
                 }
 
-                handleFrameRate(activity, frameRate, play);
+                if(!tvQuickActionsAFR)
+                    handleFrameRate(activity, frameRate, play);
+                else{
+                    Intent intent = new Intent();
+                    intent.setPackage("dev.vodik7.tvquickactions");
+                    intent.setAction("dev.vodik7.tvquickactions.START_AFR");
+                    intent.putExtra("fps", frameRate);
+                    activity.sendBroadcast(intent);
+                }
             }, null, 8_000);
             return true;
         } else {
