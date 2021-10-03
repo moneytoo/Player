@@ -266,6 +266,7 @@ Builds:
       - cpu_features@v0.6.0
       - abseil-cpp@20210324.2
       - libgav1@v0.16.3
+    prebuild: sed -i -e '/android {/a ndkVersion = "21.4.7075529"' $$ExoPlayer$$/common_library_config.gradle
     scandelete:
       - app/libs/
     build:
@@ -291,46 +292,9 @@ Builds:
       - cp $$ExoPlayer$$/extensions/{ffmpeg,av1}/buildout/outputs/aar/*.aar libs/
     ndk: r21e
 
-  - versionName: '0.49'
-    versionCode: 49
-    commit: v0.49
-    subdir: app
-    gradle:
-      - exoMaven
-    srclibs:
-      - ExoPlayer@r2.15.0
-      - FFmpeg@release/4.2
-      - cpu_features@v0.6.0
-      - abseil-cpp@20210324.2
-      - libgav1@v0.16.3
-    scandelete:
-      - app/libs/
-    build:
-      - export FFMPEG_EXT_PATH="$$ExoPlayer$$/extensions/ffmpeg/src/main"
-      - export HOST_PLATFORM="$(uname -s | tr '[:upper:]' '[:lower:]')-x86_64"
-      - export ENABLED_DECODERS=(vorbis opus flac alac pcm_mulaw pcm_alaw mp3 amrnb
-        amrwb aac ac3 eac3 dca mlp truehd)
-      - pushd "${FFMPEG_EXT_PATH}/jni"
-      - ln -s "$$FFmpeg$$" ffmpeg
-      - cd "${FFMPEG_EXT_PATH}/jni"
-      - ./build_ffmpeg.sh "${FFMPEG_EXT_PATH}" "$$NDK$$" "${HOST_PLATFORM}" "${ENABLED_DECODERS[@]}"
-      - export AV1_EXT_PATH="$$ExoPlayer$$/extensions/av1/src/main"
-      - cd "${AV1_EXT_PATH}/jni"
-      - ln -s "$$cpu_features$$" cpu_features
-      - ln -s "$$libgav1$$" libgav1
-      - cd "${AV1_EXT_PATH}/jni/libgav1"
-      - mkdir "${AV1_EXT_PATH}/jni/libgav1/third_party"
-      - cd "${AV1_EXT_PATH}/jni/libgav1/third_party"
-      - ln -s "$$abseil-cpp$$" abseil-cpp
-      - cd "$$ExoPlayer$$"
-      - ./gradlew :extension-{ffmpeg,av1}:bundleReleaseAar
-      - popd
-      - cp $$ExoPlayer$$/extensions/{ffmpeg,av1}/buildout/outputs/aar/*.aar libs/
-    ndk: r21e
-
-  - versionName: '0.62'
-    versionCode: 62
-    commit: v0.62
+  - versionName: '0.64'
+    versionCode: 64
+    commit: v0.64
     subdir: app
     gradle:
       - latest
@@ -339,7 +303,8 @@ Builds:
       - FFmpeg@release/4.2
       - cpu_features@v0.6.0
       - abseil-cpp@20210324.2
-      - libgav1@v0.16.3
+      - libgav1@5d2111493aad97bd4642a0009ad5a3c3558847ba
+    prebuild: sed -i -e 's/android {/&\n    ndkVersion "21.4.7075529"/' $$ExoPlayer-moneytoo$$/common_library_config.gradle
     scandelete:
       - app/libs/
     build:
@@ -365,12 +330,12 @@ Builds:
       - popd
       - cp $$ExoPlayer-moneytoo$$/extensions/{ffmpeg,av1}/buildout/outputs/aar/*.aar libs/
       - cp $$ExoPlayer-moneytoo$$/library/{core,extractor,ui}/buildout/outputs/aar/*.aar libs/
-    ndk: r23
+    ndk: r21e
 
 MaintainerNotes: 'Extensions build instructions: https://github.com/google/ExoPlayer/blob/r2.15.1/extensions/ffmpeg/README.md
     https://github.com/google/ExoPlayer/blob/r2.15.1/extensions/av1/README.md'
 
 AutoUpdateMode: None
 UpdateCheckMode: None
-CurrentVersion: '0.62'
-CurrentVersionCode: 62
+CurrentVersion: '0.64'
+CurrentVersionCode: 64
