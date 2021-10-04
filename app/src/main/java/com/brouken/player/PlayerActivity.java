@@ -225,6 +225,8 @@ public class PlayerActivity extends Activity {
         playerView.setShowFastForwardButton(false);
         playerView.setShowRewindButton(false);
 
+        playerView.setRepeatToggleModes(Player.REPEAT_MODE_ONE);
+
         playerView.setControllerHideOnTouch(false);
         playerView.setControllerAutoShow(true);
 
@@ -435,6 +437,8 @@ public class PlayerActivity extends Activity {
 
         final ImageButton exoSettings = exoBasicControls.findViewById(R.id.exo_settings);
         exoBasicControls.removeView(exoSettings);
+        final ImageButton exoRepeat = exoBasicControls.findViewById(R.id.exo_repeat_toggle);
+        exoBasicControls.removeView(exoRepeat);
         //exoBasicControls.setVisibility(View.GONE);
 
         exoSettings.setOnLongClickListener(view -> {
@@ -452,6 +456,9 @@ public class PlayerActivity extends Activity {
         controls.addView(buttonAspectRatio);
         if (Utils.isPiPSupported(this)) {
             controls.addView(buttonPiP);
+        }
+        if (mPrefs.repeatToggle) {
+            controls.addView(exoRepeat);
         }
         if (!isTvBox) {
             controls.addView(buttonRotation);

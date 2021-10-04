@@ -29,6 +29,12 @@
             app:summaryOff="@string/pref_skip_silence_off"
             app:title="@string/pref_skip_silence" />
 
+        <SwitchPreferenceCompat
+            app:key="repeatToggle"
+            app:defaultValue="false"
+            app:summary="@string/pref_repeat_toggle_summary"
+            app:title="@string/pref_repeat_toggle" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>
