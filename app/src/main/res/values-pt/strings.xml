@@ -12,4 +12,17 @@
     <string name="video_orientation_video">Orientação do vídeo</string>
     <string name="video_resize_crop">Recortar</string>
     <string name="video_resize_fit">Ajustar</string>
+    <string name="pref_skip_silence_off">Reproduzir conteúdo \'as is\'</string>
+    <string name="pref_skip_silence_on">Ignorar partes do vídeo que não tenham fluxo de áudio</string>
+    <string name="pref_skip_silence">Ignorar silêncio</string>
+    <string name="pref_auto_pip_off">Não alterar para PiP automaticamente</string>
+    <string name="pref_auto_pip_on">Alterar para PiP ao sair da aplicação</string>
+    <string name="pref_auto_pip">PIP automático</string>
+    <string name="pref_tunneling_summary">A reprodução em túnel disponibiliza melhorias em conteúdo 4K/HDR mas não funciona em todos os dispositivos</string>
+    <string name="pref_tunneling">Reprodução em túnel</string>
+    <string name="pref_framerate_matching_off">Não alterar taxa de exibição</string>
+    <string name="pref_framerate_matching_on">Alterar taxa de exibição para correspondência com a taxa do vídeo</string>
+    <string name="pref_framerate_matching">Correspondência automática</string>
+    <string name="pref_general_header">Geral</string>
+    <string name="pref_title">Definições</string>
 </resources>

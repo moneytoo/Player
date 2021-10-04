@@ -12,4 +12,17 @@
     <string name="delete_confirmation">Hapus</string>
     <string name="delete_query">Hapus file ini\?</string>
     <string name="request_scope">Untuk memuat subtitle eksternal otomatis atau mengaktifkan skipping ke file berikutnya dalam direktori, berikan akses %s ke folder paling atas yang berisi video Anda (misalnya Film).</string>
+    <string name="pref_skip_silence_off">Mainkan konten apa adanya</string>
+    <string name="pref_skip_silence_on">Lewati bagian silence di aliran audio</string>
+    <string name="pref_skip_silence">Lewati keheningan</string>
+    <string name="pref_auto_pip_off">Jangan secara otomatis berganti ke PiP</string>
+    <string name="pref_auto_pip_on">Ganti ke PiP ketika keluar aplikasi</string>
+    <string name="pref_auto_pip">Picture-in-picture otomatis</string>
+    <string name="pref_tunneling_summary">Tunneling memberikan dukungan yang lebih baik untuk konten 4K / HDR, tetapi mungkin tidak berfungsi pada semua perangkat</string>
+    <string name="pref_tunneling">Pemutaran Tunneled</string>
+    <string name="pref_framerate_matching_off">Jangan mengubah display refresh rate</string>
+    <string name="pref_framerate_matching_on">Ganti refresh rate tampilan agar sesuai dengan frame rate video</string>
+    <string name="pref_framerate_matching">Pencocokan frame rate otomatis</string>
+    <string name="pref_general_header">Umum</string>
+    <string name="pref_title">Pengaturan</string>
 </resources>

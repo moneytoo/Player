@@ -36,6 +36,8 @@ class Prefs {
     private static final String PREF_KEY_SKIP_SILENCE = "skipSilence";
     private static final String PREF_KEY_FRAMERATE_MATCHING = "frameRateMatching";
     private static final String PREF_KEY_FRAMERATE_MATCHING_TVQA = "tvQuickActionsAFR";
+    private static final String PREF_KEY_REPEAT_TOGGLE = "repeatToggle";
+
 
     final Context mContext;
     final SharedPreferences mSharedPreferences;
@@ -61,6 +63,7 @@ class Prefs {
     public boolean skipSilence = false;
     public boolean frameRateMatching;
     public boolean tvQuickActionsAFR = false;
+    public boolean repeatToggle = false;
 
     private LinkedHashMap positions;
 
@@ -106,6 +109,7 @@ class Prefs {
         skipSilence = mSharedPreferences.getBoolean(PREF_KEY_SKIP_SILENCE, skipSilence);
         frameRateMatching = mSharedPreferences.getBoolean(PREF_KEY_FRAMERATE_MATCHING, frameRateMatching);
         tvQuickActionsAFR = mSharedPreferences.getBoolean(PREF_KEY_FRAMERATE_MATCHING_TVQA, tvQuickActionsAFR);
+        repeatToggle = mSharedPreferences.getBoolean(PREF_KEY_REPEAT_TOGGLE, repeatToggle);
     }
 
     public void updateMedia(final Context context, final Uri uri, final String type) {
