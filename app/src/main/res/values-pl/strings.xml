@@ -9,4 +9,5 @@
     <string name="video_orientation_sensor">Obrót automatyczny</string>
     <string name="onboarding_open_title">Wybierz wideo do odtworzenia</string>
     <string name="error_files_missing">Aplikacja Pliki jest wyłączona lub jej brakuje</string>
+    <string name="shortcut_videos">Filmy</string>
 </resources>

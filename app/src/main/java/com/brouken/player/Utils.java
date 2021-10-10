@@ -555,4 +555,14 @@ class Utils {
     public static boolean isPiPSupported(Context context) {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
     }
+
+    public static Uri getMoviesFolderUri() {
+        Uri uri = null;
+        if (Build.VERSION.SDK_INT >= 26) {
+            final String authority = "com.android.externalstorage.documents";
+            final String documentId = "primary:" + Environment.DIRECTORY_MOVIES;
+            uri = DocumentsContract.buildDocumentUri(authority, documentId);
+        }
+        return uri;
+    }
 }

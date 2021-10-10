@@ -9,4 +9,5 @@
     <string name="onboarding_open_description">Koppintson egyszer videófájl megnyitásához. Tartsa nyomva feliratok megnyitásához.</string>
     <string name="onboarding_open_title">Válasszon egy videót a lejátszáshoz</string>
     <string name="video_orientation_video">Videó tájolása</string>
+    <string name="shortcut_videos">Videók</string>
 </resources>

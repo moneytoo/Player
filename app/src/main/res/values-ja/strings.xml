@@ -12,4 +12,5 @@
     <string name="video_orientation_video">映像の向き</string>
     <string name="video_resize_fit">画面に丁度収める</string>
     <string name="video_resize_crop">切り抜く</string>
+    <string name="shortcut_videos">動画</string>
 </resources>

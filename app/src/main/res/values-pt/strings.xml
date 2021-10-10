@@ -27,4 +27,5 @@
     <string name="pref_title">Definições</string>
     <string name="pref_repeat_toggle">Repetição</string>
     <string name="pref_repeat_toggle_summary">Controlo extra para permitir a repetição infinita do vídeo (tem que reiniciar)</string>
+    <string name="shortcut_videos">Vídeos</string>
 </resources>

@@ -27,4 +27,5 @@
     <string name="pref_title">设置</string>
     <string name="pref_repeat_toggle">重复切换</string>
     <string name="pref_repeat_toggle_summary">允许无限循环视频的额外控制（需要重新启动应用程序）</string>
+    <string name="shortcut_videos">视频</string>
 </resources>

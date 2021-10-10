@@ -27,4 +27,5 @@
     <string name="pref_title">Paramètres</string>
     <string name="pref_repeat_toggle_summary">Commande supplémentaire pour permettre de jouer la vidéo en boucle indéfiniment (nécessite le redémarrage de l\'application)</string>
     <string name="pref_repeat_toggle">Activer/désactiver la répétition</string>
+    <string name="shortcut_videos">Vidéos</string>
 </resources>

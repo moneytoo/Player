@@ -25,4 +25,5 @@
     <string name="pref_framerate_matching">Pencocokan frame rate otomatis</string>
     <string name="pref_general_header">Umum</string>
     <string name="pref_title">Pengaturan</string>
+    <string name="shortcut_videos">Video</string>
 </resources>

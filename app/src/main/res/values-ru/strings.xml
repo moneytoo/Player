@@ -25,4 +25,5 @@
     <string name="pref_framerate_matching">Автоматическое согласование частоты кадров</string>
     <string name="pref_general_header">Общие</string>
     <string name="pref_title">Настройки</string>
+    <string name="shortcut_videos">Видео</string>
 </resources>

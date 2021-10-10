@@ -12,4 +12,5 @@
     <string name="delete_confirmation">ลบ</string>
     <string name="delete_query">ลบไฟล์นี้ \?</string>
     <string name="request_scope">ในการโหลดคำบรรยายภายนอกโดยอัตโนมัติ หรือ เปิดใช้งานการข้ามไปยังไฟล์ถัดไปในไดเร็กทอรี ให้ %s เข้าถึงโฟลเดอร์นอกสุดที่มีวิดีโอของคุณ (เช่น ภาพยนตร์)</string>
+    <string name="shortcut_videos">วิดีโอ</string>
 </resources>

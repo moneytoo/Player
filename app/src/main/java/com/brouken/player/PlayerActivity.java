@@ -29,7 +29,6 @@ import android.media.audiofx.LoudnessEnhancer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.LocaleList;
 import android.provider.DocumentsContract;
 import android.provider.Settings;
@@ -191,17 +190,20 @@ public class PlayerActivity extends Activity {
 
         isTvBox = Utils.isTvBox(this);
 
-        if (getIntent().getData() != null) {
-            Intent intent = getIntent();
+        final Intent launchIntent = getIntent();
+        final String action = launchIntent.getAction();
 
-            Bundle bundle = intent.getExtras();
+        if ("com.brouken.player.action.SHORTCUT_VIDEOS".equals(action)) {
+            openFile(Utils.getMoviesFolderUri());
+        } else if (launchIntent.getData() != null) {
+            Bundle bundle = launchIntent.getExtras();
             if (bundle != null) {
                 apiAccess = bundle.containsKey(API_POSITION) || bundle.containsKey(API_RETURN_RESULT);
                 if (apiAccess)
                     mPrefs.setPersistent(false);
             }
 
-            mPrefs.updateMedia(this, intent.getData(), intent.getType());
+            mPrefs.updateMedia(this, launchIntent.getData(), launchIntent.getType());
             searchSubtitles();
             focusPlay = true;
 
@@ -1273,17 +1275,7 @@ public class PlayerActivity extends Activity {
 
     private void requestDirectoryAccess() {
         enableRotation();
-
-        Uri initialUri = null;
-
-        if (Build.VERSION.SDK_INT >= 26) {
-            final String authority = "com.android.externalstorage.documents";
-            final String documentId = "primary:" + Environment.DIRECTORY_MOVIES;
-            initialUri = DocumentsContract.buildDocumentUri(authority, documentId);
-        }
-
-        final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT_TREE, initialUri);
-
+        final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT_TREE, Utils.getMoviesFolderUri());
         safelyStartActivityForResult(intent, REQUEST_CHOOSER_SCOPE_DIR);
     }
 

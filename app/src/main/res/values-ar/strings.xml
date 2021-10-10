@@ -25,4 +25,5 @@
     <string name="open_subtitles">تحميل الترجمات</string>
     <string name="onboarding_open_description">انقر لفتح ملف فيديو. اضغط ضغطة مطوّلة لتحميل الترجمات الخارجية.</string>
     <string name="onboarding_open_title">اختر مقطع فيديو لتشغيله</string>
+    <string name="shortcut_videos">الفيديوهات</string>
 </resources>
