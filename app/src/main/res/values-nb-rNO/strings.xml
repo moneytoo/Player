@@ -9,10 +9,10 @@
     <string name="video_orientation_video">Skjermretning</string>
     <string name="video_resize_crop">Beskjør</string>
     <string name="video_resize_fit">Tilpass</string>
-    <string name="pref_tunneling_summary">Tunnelforsendelse gir bedre støtte for 4K/HDR-innhold, men kan ha problemer på noen enheter</string>
+    <string name="pref_tunneling_summary">Tunnel gir bedre støtte for 4K/HDR innhold, men kan ikke fungere på alle enheter</string>
     <string name="pref_tunneling">Tunnel-avspilling</string>
     <string name="pref_auto_pip_off">Ikke bytt til BiB automatisk</string>
-    <string name="pref_auto_pip_on">Bytt til BiB når programmet lukkes</string>
+    <string name="pref_auto_pip_on">Bytte til PiP når du forlater app</string>
     <string name="pref_auto_pip">Automatisk bilde-i-bilde</string>
     <string name="pref_framerate_matching">Automatisk rammetakt-jamføring</string>
     <string name="pref_framerate_matching_on">Bytt skjermoppfriskningstakt for å samsvare med videorammetakt</string>
@@ -24,4 +24,5 @@
     <string name="pref_title">Innstillinger</string>
     <string name="delete_confirmation">Slett</string>
     <string name="delete_query">Slett denne filen\?</string>
+    <string name="pref_skip_silence_on">Hoppe over deler med stillhet på audio stream</string>
 </resources>

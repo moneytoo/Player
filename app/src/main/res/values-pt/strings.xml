@@ -25,4 +25,6 @@
     <string name="pref_framerate_matching">Correspondência automática</string>
     <string name="pref_general_header">Geral</string>
     <string name="pref_title">Definições</string>
+    <string name="pref_repeat_toggle">Repetição</string>
+    <string name="pref_repeat_toggle_summary">Controlo extra para permitir a repetição infinita do vídeo (tem que reiniciar)</string>
 </resources>
