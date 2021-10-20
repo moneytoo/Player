@@ -42,7 +42,7 @@ HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
  * Auto frame rate matching on Android TV/boxes (Android 6+)
  * Post-playback actions (delete file/skip to next)
  * Touch lock (long tap)
- * App shortcut for direct access to file chooser
+ * App shortcut for direct access to file chooser (Android 7.1+)
  * 3rd party equalizer / audio processing support (e.g. [Wavelet](https://github.com/Pittvandewitt/Wavelet))
  * Media Session and Audio Focus support
  * Pause playback when disconnecting headphones
