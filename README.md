@@ -42,6 +42,10 @@ HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
  * Auto frame rate matching on Android TV/boxes (Android 6+)
  * Post-playback actions (delete file/skip to next)
  * Touch lock (long tap)
+ * App shortcut for direct access to file chooser
+ * 3rd party equalizer / audio processing support (e.g. [Wavelet](https://github.com/Pittvandewitt/Wavelet))
+ * Media Session and Audio Focus support
+ * Pause playback when disconnecting headphones
  * No ads, tracking or excessive permissions
 
 To load external (non-embedded) subtitles, long press the file open action in the bottom bar. The first time you do that, you will be offered to select root video folder to enable automatic loading of external subtitles.
@@ -52,6 +56,7 @@ Some advanced features can be configured in settings. To access it, long press t
  * [Tunneled playback](https://medium.com/google-exoplayer/tunneled-video-playback-in-exoplayer-84f084a8094d) (disabled by default). Enabling tunneling can improve playback of 4K/HDR content on Android TV.
  * Auto picture-in-picture. When you leave Just Player through the home button and video is playing, PiP will be activated automatically.
  * Skip silence
+ * Repeat toggle
 
 **`WRITE_SETTINGS` ("Modify system settings") permission**: When the system file chooser is opened, it will always use current system orientation, even if the Player app sets its own. Granting this permission via adb (`adb shell pm grant com.brouken.player android.permission.WRITE_SETTINGS`) or App info screen will allow this app to temporarily enable Auto-rotate to at least partially mitigate [this imperfection](https://issuetracker.google.com/issues/141968218).
 
