@@ -25,5 +25,7 @@
     <string name="pref_framerate_matching">Pencocokan frame rate otomatis</string>
     <string name="pref_general_header">Umum</string>
     <string name="pref_title">Pengaturan</string>
+    <string name="pref_repeat_toggle">Ulangi toggle</string>
+    <string name="pref_repeat_toggle_summary">Kendali tambahan untuk mengaktifkan video loop tanpa batas (memerlukan restart aplikasi)</string>
     <string name="shortcut_videos">Video</string>
 </resources>

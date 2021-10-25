@@ -25,5 +25,7 @@
     <string name="pref_tunneling">Reproducción en túnel</string>
     <string name="pref_framerate_matching_off">No cambiar la frecuencia de actualización de la pantalla</string>
     <string name="pref_framerate_matching_on">Cambia la frecuencia de actualización de la pantalla para que coincida con la frecuencia de fotogramas del video</string>
+    <string name="pref_repeat_toggle">Alternar repetición</string>
+    <string name="pref_repeat_toggle_summary">Control extra para permitir un video en bucle indefinido (requiere reiniciar la aplicación)</string>
     <string name="shortcut_videos">Vídeos</string>
 </resources>
