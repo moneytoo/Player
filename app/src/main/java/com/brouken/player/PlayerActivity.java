@@ -807,7 +807,7 @@ public class PlayerActivity extends Activity {
             if (resultCode == RESULT_OK) {
                 final Uri uri = data.getData();
                 try {
-                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                     mPrefs.updateScope(uri);
                     mPrefs.markScopeAsked();
                     searchSubtitles();
