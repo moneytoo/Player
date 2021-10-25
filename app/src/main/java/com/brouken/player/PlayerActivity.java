@@ -1232,6 +1232,10 @@ public class PlayerActivity extends Activity {
         } else {
             enableRotation();
 
+            if (pickerInitialUri == null || Utils.isSupportedNetworkUri(pickerInitialUri) || !Utils.fileExists(this, pickerInitialUri)) {
+                pickerInitialUri = Utils.getMoviesFolderUri();
+            }
+
             final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT, pickerInitialUri);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("video/*");
