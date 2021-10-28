@@ -26,4 +26,6 @@
     <string name="pref_general_header">Opće</string>
     <string name="pref_title">Postavke</string>
     <string name="shortcut_videos">Videozapisi</string>
+    <string name="pref_repeat_toggle_summary">Dodatna kontrola koja omogućuje beskonačno ponavljanje videa (zahtijeva ponovno pokretanje programa)</string>
+    <string name="pref_repeat_toggle">Ponovi uključivanje/isključivanje</string>
 </resources>
