@@ -754,47 +754,55 @@ public class PlayerActivity extends Activity {
             releasePlayer();
         }
 
-        if (requestCode == REQUEST_CHOOSER_VIDEO) {
+        if (requestCode == REQUEST_CHOOSER_VIDEO || requestCode == REQUEST_CHOOSER_VIDEO_MEDIASTORE) {
             if (resultCode == RESULT_OK) {
                 final Uri uri = data.getData();
-                boolean uriAlreadyTaken = false;
 
-                // https://commonsware.com/blog/2020/06/13/count-your-saf-uri-permission-grants.html
-                final ContentResolver contentResolver = getContentResolver();
-                for (UriPermission persistedUri : contentResolver.getPersistedUriPermissions()) {
-                    if (persistedUri.getUri().equals(mPrefs.scopeUri)) {
-                        continue;
-                    } else if (persistedUri.getUri().equals(uri)) {
-                        uriAlreadyTaken = true;
-                    } else {
+                if (requestCode == REQUEST_CHOOSER_VIDEO) {
+                    boolean uriAlreadyTaken = false;
+
+                    // https://commonsware.com/blog/2020/06/13/count-your-saf-uri-permission-grants.html
+                    final ContentResolver contentResolver = getContentResolver();
+                    for (UriPermission persistedUri : contentResolver.getPersistedUriPermissions()) {
+                        if (persistedUri.getUri().equals(mPrefs.scopeUri)) {
+                            continue;
+                        } else if (persistedUri.getUri().equals(uri)) {
+                            uriAlreadyTaken = true;
+                        } else {
+                            try {
+                                contentResolver.releasePersistableUriPermission(persistedUri.getUri(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            } catch (SecurityException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+
+                    if (!uriAlreadyTaken) {
                         try {
-                            contentResolver.releasePersistableUriPermission(persistedUri.getUri(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         } catch (SecurityException e) {
                             e.printStackTrace();
                         }
                     }
                 }
 
-                if (!uriAlreadyTaken) {
-                    try {
-                        contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
-                    }
-                }
-
                 mPrefs.setPersistent(true);
                 mPrefs.updateMedia(this, uri, data.getType());
-                searchSubtitles();
+
+                if (requestCode == REQUEST_CHOOSER_VIDEO) {
+                    searchSubtitles();
+                }
             }
-        } else if (requestCode == REQUEST_CHOOSER_SUBTITLE) {
+        } else if (requestCode == REQUEST_CHOOSER_SUBTITLE || requestCode == REQUEST_CHOOSER_SUBTITLE_MEDIASTORE) {
             if (resultCode == RESULT_OK) {
                 Uri uri = data.getData();
 
-                try {
-                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                } catch (SecurityException e) {
-                    e.printStackTrace();
+                if (requestCode == REQUEST_CHOOSER_SUBTITLE) {
+                    try {
+                        getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                    }
                 }
 
                 // Convert subtitles to UTF-8 if necessary
@@ -815,20 +823,6 @@ public class PlayerActivity extends Activity {
                     e.printStackTrace();
                 }
             }
-        } else if (requestCode == REQUEST_CHOOSER_VIDEO_MEDIASTORE) {
-            if (resultCode == RESULT_OK) {
-                final Uri uri = data.getData();
-                mPrefs.setPersistent(true);
-                mPrefs.updateMedia(this, uri, data.getType());
-            }
-        } else if (requestCode == REQUEST_CHOOSER_SUBTITLE_MEDIASTORE) {
-            Uri uri = data.getData();
-
-            // Convert subtitles to UTF-8 if necessary
-            SubtitleUtils.clearCache(this);
-            uri = SubtitleUtils.convertToUTF(this, uri);
-
-            mPrefs.updateSubtitle(uri);
         } else if (requestCode == REQUEST_SETTINGS) {
             mPrefs.loadUserPreferences();
         } else {
