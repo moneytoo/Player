@@ -43,10 +43,13 @@ android {
 }
 
 dependencies {
-    def exoplayerVersion = '2.15.1'
+    def exoplayerVersion = '2.16.0'
     implementation("com.google.android.exoplayer:exoplayer-common:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
     }
+    implementation "com.google.android.exoplayer:exoplayer-datasource:$exoplayerVersion"
+    implementation "com.google.android.exoplayer:exoplayer-decoder:$exoplayerVersion"
+    implementation "com.google.android.exoplayer:exoplayer-database:$exoplayerVersion"
     implementation "com.google.android.exoplayer:extension-mediasession:$exoplayerVersion"
     implementation("com.google.android.exoplayer:exoplayer-dash:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-core"

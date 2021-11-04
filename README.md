@@ -6,7 +6,7 @@
 [![GitHub all releases](https://img.shields.io/github/downloads/moneytoo/Player/total?logo=github)](https://github.com/moneytoo/Player/releases/latest)
 [![Google Play](https://img.shields.io/endpoint?color=green&logo=google-play&url=https%3A%2F%2Fplayshields.herokuapp.com%2Fplay%3Fi%3Dcom.brouken.player%26l%3Ddownloads%26m%3D%24installs)](https://play.google.com/store/apps/details?id=com.brouken.player)
 [![Google Play](https://img.shields.io/endpoint?color=green&logo=google-play&url=https%3A%2F%2Fplayshields.herokuapp.com%2Fplay%3Fi%3Dcom.brouken.player%26l%3Drating%26m%3D%24rating%252F5)](https://play.google.com/store/apps/details?id=com.brouken.player)
-[![ExoPlayer](https://img.shields.io/badge/ExoPlayer-v2.15.1-007ec6)](https://github.com/google/ExoPlayer)
+[![ExoPlayer](https://img.shields.io/badge/ExoPlayer-v2.16.0-007ec6)](https://github.com/google/ExoPlayer)
 [![Translation Status](https://hosted.weblate.org/widgets/just-player/-/svg-badge.svg)](https://hosted.weblate.org/engage/just-player/)
 
 Android video player based on [ExoPlayer](https://github.com/google/ExoPlayer), compatible with Android 5+ and Android TV.
