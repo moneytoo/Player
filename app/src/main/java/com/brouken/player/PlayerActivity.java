@@ -63,13 +63,13 @@ import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SeekParameters;
-import com.google.android.exoplayer2.SimpleExoPlayer;
 import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -107,7 +107,7 @@ public class PlayerActivity extends Activity {
     public static LoudnessEnhancer loudnessEnhancer;
 
     public CustomStyledPlayerView playerView;
-    public static SimpleExoPlayer player;
+    public static ExoPlayer player;
 
     private Object mPictureInPictureParamsBuilder;
 
@@ -552,7 +552,7 @@ public class PlayerActivity extends Activity {
         if (intentReturnResult) {
             Intent intent = new Intent();
             if (!playbackFinished) {
-                if (player.isCurrentWindowSeekable()) {
+                if (player.isCurrentMediaItemSeekable()) {
                     long position;
                     if (mPrefs.persistentMode)
                         position = mPrefs.nonPersitentPosition;
@@ -868,7 +868,7 @@ public class PlayerActivity extends Activity {
             final DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory()
                     .setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS)
                     .setTsExtractorTimestampSearchBytes(1500 * TsExtractor.TS_PACKET_SIZE);
-            player = new SimpleExoPlayer.Builder(this, renderersFactory)
+            player = new ExoPlayer.Builder(this, renderersFactory)
                     .setTrackSelector(trackSelector)
                     .setMediaSourceFactory(new DefaultMediaSourceFactory(this, extractorsFactory))
                     .build();
@@ -879,9 +879,7 @@ public class PlayerActivity extends Activity {
             player.setAudioAttributes(audioAttributes, true);
 
             if (mPrefs.skipSilence) {
-                if (player.getAudioComponent() != null) {
-                    player.getAudioComponent().setSkipSilenceEnabled(true);
-                }
+                player.setSkipSilenceEnabled(true);
             }
 
             final YouTubeOverlay youTubeOverlay = findViewById(R.id.youtube_overlay);
@@ -958,9 +956,14 @@ public class PlayerActivity extends Activity {
                 if (subtitleLanguage == null)
                     subtitleName = Utils.getFileName(this, mPrefs.subtitleUri);
 
-                MediaItem.Subtitle subtitle = new MediaItem.Subtitle(mPrefs.subtitleUri, subtitleMime,
-                        subtitleLanguage, C.SELECTION_FLAG_DEFAULT, C.ROLE_FLAG_SUBTITLE, subtitleName);
-                mediaItemBuilder.setSubtitles(Collections.singletonList(subtitle));
+                MediaItem.SubtitleConfiguration subtitle = new MediaItem.SubtitleConfiguration.Builder(mPrefs.subtitleUri)
+                        .setMimeType(subtitleMime)
+                        .setLanguage(subtitleLanguage)
+                        .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                        .setRoleFlags(C.ROLE_FLAG_SUBTITLE)
+                        .setLabel(subtitleName)
+                        .build();
+                mediaItemBuilder.setSubtitleConfigurations(Collections.singletonList(subtitle));
             }
             player.setMediaItem(mediaItemBuilder.build(), mPrefs.getPosition());
 
@@ -1024,7 +1027,7 @@ public class PlayerActivity extends Activity {
 
             if (haveMedia) {
                 // Prevent overwriting temporarily inaccessible media position
-                if (player.isCurrentWindowSeekable()) {
+                if (player.isCurrentMediaItemSeekable()) {
                     mPrefs.updatePosition(player.getCurrentPosition());
                 }
                 mPrefs.updateMeta(getSelectedTrackAudio(false), getSelectedTrackAudio(true), getSelectedTrackSubtitle(), playerView.getResizeMode(), playerView.getVideoSurfaceView().getScaleX());
