@@ -14,10 +14,6 @@ class CustomDefaultTrackNameProvider extends DefaultTrackNameProvider {
     @Override
     public String getTrackName(Format format) {
         String trackName = super.getTrackName(format);
-
-        // https://github.com/google/ExoPlayer/issues/9452
-        trackName = trackName.substring(0, 1).toUpperCase() + (trackName.length() > 1 ? trackName.substring(1) : "");
-
         if (format.sampleMimeType != null) {
             String sampleFormat = formatNameFromMime(format.sampleMimeType);
             if (BuildConfig.DEBUG && sampleFormat == null) {
@@ -54,7 +50,9 @@ class CustomDefaultTrackNameProvider extends DefaultTrackNameProvider {
             case MimeTypes.AUDIO_AAC:
                 return "AAC";
             case MimeTypes.AUDIO_MPEG:
-                return "MPEG";
+                return "MP3";
+            case MimeTypes.AUDIO_MPEG_L2:
+                return "MP2";
             case MimeTypes.AUDIO_VORBIS:
                 return "Vorbis";
             case MimeTypes.AUDIO_OPUS:
@@ -84,6 +82,8 @@ class CustomDefaultTrackNameProvider extends DefaultTrackNameProvider {
                 return "TTML";
             case MimeTypes.APPLICATION_TX3G:
                 return "TX3G";
+            case MimeTypes.APPLICATION_DVBSUBS:
+                return "DVB";
         }
         return null;
     }
