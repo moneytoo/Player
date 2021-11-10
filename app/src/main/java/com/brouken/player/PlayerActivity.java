@@ -70,15 +70,17 @@ import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SeekParameters;
+import com.google.android.exoplayer2.TracksInfo;
 import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
 import com.google.android.exoplayer2.extractor.ts.DefaultTsPayloadReaderFactory;
 import com.google.android.exoplayer2.extractor.ts.TsExtractor;
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
-import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.source.TrackGroup;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.MappingTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelectionOverrides;
+import com.google.android.exoplayer2.trackselection.TrackSelectionParameters;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.CaptionStyleCompat;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
@@ -96,6 +98,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class PlayerActivity extends Activity {
 
@@ -1030,7 +1033,7 @@ public class PlayerActivity extends Activity {
                 if (player.isCurrentMediaItemSeekable()) {
                     mPrefs.updatePosition(player.getCurrentPosition());
                 }
-                mPrefs.updateMeta(getSelectedTrackAudio(false), getSelectedTrackAudio(true), getSelectedTrackSubtitle(), playerView.getResizeMode(), playerView.getVideoSurfaceView().getScaleX());
+                mPrefs.updateMeta(getSelectedTrack(C.TRACK_TYPE_AUDIO), getSelectedTrack(C.TRACK_TYPE_TEXT), playerView.getResizeMode(), playerView.getVideoSurfaceView().getScaleX());
             }
 
             if (player.isPlaying()) {
@@ -1177,12 +1180,7 @@ public class PlayerActivity extends Activity {
 
                     updateLoading(false);
 
-                    if (mPrefs.audioTrack != -1 && mPrefs.audioTrackFfmpeg != -1) {
-                        setSelectedTrackAudio(mPrefs.audioTrack, false);
-                        setSelectedTrackAudio(mPrefs.audioTrackFfmpeg, true);
-                    }
-                    if (mPrefs.subtitleTrack != -1 && (mPrefs.subtitleTrack < getTrackCountSubtitle() || mPrefs.subtitleTrack == Integer.MIN_VALUE))
-                        setSelectedTrackSubtitle(mPrefs.subtitleTrack);
+                    setSelectedTracks(mPrefs.subtitleTrackId, mPrefs.audioTrackId);
                 }
             } else if (state == Player.STATE_ENDED) {
                 playbackFinished = true;
@@ -1300,123 +1298,85 @@ public class PlayerActivity extends Activity {
             startActivityForResult(intent, code);
     }
 
-    public void setSelectedTrackSubtitle(final int trackIndex) {
-        final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
-        if (mappedTrackInfo != null) {
-            final DefaultTrackSelector.Parameters parameters = trackSelector.getParameters();
-            final DefaultTrackSelector.ParametersBuilder parametersBuilder = parameters.buildUpon();
-            for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
-                if (mappedTrackInfo.getRendererType(rendererIndex) == C.TRACK_TYPE_TEXT) {
-                    if (trackIndex == Integer.MIN_VALUE) {
-                        parametersBuilder.setRendererDisabled(rendererIndex, true);
-                    } else {
-                        parametersBuilder.setRendererDisabled(rendererIndex, false);
-                        if (trackIndex == -1) {
-                            parametersBuilder.clearSelectionOverrides(rendererIndex);
-                        } else {
-                            final int [] tracks = {0};
-                            final DefaultTrackSelector.SelectionOverride selectionOverride = new DefaultTrackSelector.SelectionOverride(trackIndex, tracks);
-                            parametersBuilder.setSelectionOverride(rendererIndex, mappedTrackInfo.getTrackGroups(rendererIndex), selectionOverride);
-                        }
-                    }
+    private TrackGroup getTrackGroupFromFormatId(int trackType, String id) {
+        if (id == null || player == null) {
+            return null;
+        }
+        for (TracksInfo.TrackGroupInfo groupInfo : player.getCurrentTracksInfo().getTrackGroupInfos()) {
+            if (groupInfo.getTrackType() == trackType) {
+                final TrackGroup trackGroup = groupInfo.getTrackGroup();
+                final Format format = trackGroup.getFormat(0);
+                if (Objects.equals(id, format.id)) {
+                    return trackGroup;
                 }
             }
-            trackSelector.setParameters(parametersBuilder);
+        }
+        return null;
+    }
+
+    public void setSelectedTracks(final String subtitleId, final String audioId) {
+        if ("#none".equals(subtitleId)) {
+            trackSelector.setParameters(trackSelector.buildUponParameters().setDisabledTextTrackSelectionFlags(C.SELECTION_FLAG_DEFAULT | C.SELECTION_FLAG_FORCED));
+        }
+
+        TrackGroup subtitleGroup = getTrackGroupFromFormatId(C.TRACK_TYPE_TEXT, subtitleId);
+        TrackGroup audioGroup = getTrackGroupFromFormatId(C.TRACK_TYPE_AUDIO, audioId);
+
+        TrackSelectionOverrides.Builder overridesBuilder = new TrackSelectionOverrides.Builder();
+        final List<Integer> tracks = new ArrayList<>(); tracks.add(0);
+        if (subtitleGroup != null) {
+            overridesBuilder.addOverride(new TrackSelectionOverrides.TrackSelectionOverride(subtitleGroup, tracks));
+        }
+        if (audioGroup != null) {
+            overridesBuilder.addOverride(new TrackSelectionOverrides.TrackSelectionOverride(audioGroup, tracks));
+        }
+
+        TrackSelectionParameters.Builder trackSelectionParametersBuilder = new TrackSelectionParameters.Builder(this)
+                .setTrackSelectionOverrides(overridesBuilder.build());
+        if (player != null) {
+            player.setTrackSelectionParameters(trackSelectionParametersBuilder.build());
         }
     }
 
-    public int getSelectedTrackSubtitle() {
-        if (trackSelector != null) {
-            final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
-            if (mappedTrackInfo != null) {
-                for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
-                    if (mappedTrackInfo.getRendererType(rendererIndex) == C.TRACK_TYPE_TEXT) {
-                        final TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
-                        final DefaultTrackSelector.SelectionOverride selectionOverride = trackSelector.getParameters().getSelectionOverride(rendererIndex, trackGroups);
-                        DefaultTrackSelector.Parameters parameters = trackSelector.getParameters();
-                        if (parameters.getRendererDisabled(rendererIndex)) {
-                            return Integer.MIN_VALUE;
-                        }
-                        if (selectionOverride == null) {
-                            return -1;
-                        }
-                        return selectionOverride.groupIndex;
-                    }
-                }
+    private boolean hasOverrideAudio() {
+        TrackSelectionParameters trackSelectionParameters = player.getTrackSelectionParameters();
+        for (TrackSelectionOverrides.TrackSelectionOverride override : trackSelectionParameters.trackSelectionOverrides.asList()) {
+            Format format = override.trackGroup.getFormat(0);
+            String mimeType = format.sampleMimeType;
+            if ((mimeType != null && mimeType.startsWith(MimeTypes.BASE_TYPE_AUDIO + "/"))
+                    || format.channelCount >= 1) {
+                return true;
             }
         }
-        return -1;
+        return false;
     }
 
-    public int getSelectedTrackAudio(final boolean ffmpeg) {
-        if (trackSelector != null) {
-            final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
-            if (mappedTrackInfo != null) {
-                for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
-                    if (mappedTrackInfo.getRendererType(rendererIndex) == C.TRACK_TYPE_AUDIO) {
-                        final String rendererName = mappedTrackInfo.getRendererName(rendererIndex);
-                        if ((rendererName.toLowerCase().contains("ffmpeg") && !ffmpeg) ||
-                                (!rendererName.toLowerCase().contains("ffmpeg") && ffmpeg))
-                            continue;
-                        final TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
-                        final DefaultTrackSelector.SelectionOverride selectionOverride = trackSelector.getParameters().getSelectionOverride(rendererIndex, trackGroups);
-                        DefaultTrackSelector.Parameters parameters = trackSelector.getParameters();
-                        if (parameters.getRendererDisabled(rendererIndex)) {
-                            return Integer.MIN_VALUE;
-                        }
-                        if (selectionOverride == null) {
-                            return -1;
-                        }
-                        return selectionOverride.groupIndex;
-                    }
-                }
-            }
+    public String getSelectedTrack(final int trackType) {
+        if (player == null) {
+            return null;
         }
-        return -1;
-    }
+        TracksInfo tracksInfo = player.getCurrentTracksInfo();
 
-    public void setSelectedTrackAudio(final int trackIndex, final boolean ffmpeg) {
-        final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
-        if (mappedTrackInfo != null) {
-            final DefaultTrackSelector.Parameters parameters = trackSelector.getParameters();
-            final DefaultTrackSelector.ParametersBuilder parametersBuilder = parameters.buildUpon();
-            for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
-                if (mappedTrackInfo.getRendererType(rendererIndex) == C.TRACK_TYPE_AUDIO) {
-                    final String rendererName = mappedTrackInfo.getRendererName(rendererIndex);
-                    if ((rendererName.toLowerCase().contains("ffmpeg") && !ffmpeg) ||
-                            (!rendererName.toLowerCase().contains("ffmpeg") && ffmpeg))
-                        continue;
-                    if (trackIndex == Integer.MIN_VALUE) {
-                        parametersBuilder.setRendererDisabled(rendererIndex, true);
-                    } else {
-                        parametersBuilder.setRendererDisabled(rendererIndex, false);
-                        if (trackIndex == -1) {
-                            parametersBuilder.clearSelectionOverrides(rendererIndex);
-                        } else {
-                            final int [] tracks = {0};
-                            final DefaultTrackSelector.SelectionOverride selectionOverride = new DefaultTrackSelector.SelectionOverride(trackIndex, tracks);
-                            parametersBuilder.setSelectionOverride(rendererIndex, mappedTrackInfo.getTrackGroups(rendererIndex), selectionOverride);
-                        }
-                    }
-                }
-            }
-            trackSelector.setParameters(parametersBuilder);
+        // Disabled (e.g. selected subtitle "None" - different than default)
+        if (!tracksInfo.isTypeSelected(trackType)) {
+            return "#none";
         }
-    }
 
-    public int getTrackCountSubtitle() {
-        if (trackSelector != null) {
-            final MappingTrackSelector.MappedTrackInfo mappedTrackInfo = trackSelector.getCurrentMappedTrackInfo();
-            if (mappedTrackInfo != null) {
-                for (int rendererIndex = 0; rendererIndex < mappedTrackInfo.getRendererCount(); rendererIndex++) {
-                    if (mappedTrackInfo.getRendererType(rendererIndex) == C.TRACK_TYPE_TEXT) {
-                        final TrackGroupArray trackGroups = mappedTrackInfo.getTrackGroups(rendererIndex);
-                        return trackGroups.length;
-                    }
-                }
+        // Audio track set to "Auto"
+        if (trackType == C.TRACK_TYPE_AUDIO) {
+            if (!hasOverrideAudio()) {
+                return null;
             }
         }
-        return 0;
+
+        for (TracksInfo.TrackGroupInfo groupInfo : tracksInfo.getTrackGroupInfos()) {
+            if (groupInfo.isSelected() && groupInfo.getTrackType() == trackType) {
+                Format format = groupInfo.getTrackGroup().getFormat(0);
+                return format.id;
+            }
+        }
+
+        return null;
     }
 
     void setSubtitleTextSize() {
