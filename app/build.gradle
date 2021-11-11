@@ -44,13 +44,21 @@ android {
 
 dependencies {
     def exoplayerVersion = '2.16.0'
-    implementation("com.google.android.exoplayer:exoplayer-common:$exoplayerVersion") {
-        exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
+//    implementation("com.google.android.exoplayer:exoplayer-common:$exoplayerVersion") {
+//        exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
+//    }
+    implementation("com.google.android.exoplayer:exoplayer-datasource:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-common"
     }
-    implementation "com.google.android.exoplayer:exoplayer-datasource:$exoplayerVersion"
-    implementation "com.google.android.exoplayer:exoplayer-decoder:$exoplayerVersion"
-    implementation "com.google.android.exoplayer:exoplayer-database:$exoplayerVersion"
-    implementation "com.google.android.exoplayer:extension-mediasession:$exoplayerVersion"
+    implementation("com.google.android.exoplayer:exoplayer-decoder:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-common"
+    }
+    implementation("com.google.android.exoplayer:exoplayer-database:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-common"
+    }
+    implementation("com.google.android.exoplayer:extension-mediasession:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-common"
+    }
     implementation("com.google.android.exoplayer:exoplayer-dash:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
     }
@@ -62,6 +70,13 @@ dependencies {
     }
     implementation("com.google.android.exoplayer:exoplayer-rtsp:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
+    }
+    api ('com.google.guava:guava:27.1-android') {
+        exclude group: 'com.google.code.findbugs', module: 'jsr305'
+        exclude group: 'org.checkerframework', module: 'checker-compat-qual'
+        exclude group: 'com.google.errorprone', module: 'error_prone_annotations'
+        exclude group: 'com.google.j2objc', module: 'j2objc-annotations'
+        exclude group: 'org.codehaus.mojo', module: 'animal-sniffer-annotations'
     }
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
     implementation 'com.google.android.material:material:1.4.0'

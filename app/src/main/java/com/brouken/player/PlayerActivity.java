@@ -1338,15 +1338,11 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    private boolean hasOverrideAudio() {
+    private boolean hasOverrideType(final int trackType) {
         TrackSelectionParameters trackSelectionParameters = player.getTrackSelectionParameters();
         for (TrackSelectionOverrides.TrackSelectionOverride override : trackSelectionParameters.trackSelectionOverrides.asList()) {
-            Format format = override.trackGroup.getFormat(0);
-            String mimeType = format.sampleMimeType;
-            if ((mimeType != null && mimeType.startsWith(MimeTypes.BASE_TYPE_AUDIO + "/"))
-                    || format.channelCount >= 1) {
+            if (override.getTrackType() == trackType)
                 return true;
-            }
         }
         return false;
     }
@@ -1364,7 +1360,7 @@ public class PlayerActivity extends Activity {
 
         // Audio track set to "Auto"
         if (trackType == C.TRACK_TYPE_AUDIO) {
-            if (!hasOverrideAudio()) {
+            if (!hasOverrideType(C.TRACK_TYPE_AUDIO)) {
                 return null;
             }
         }
