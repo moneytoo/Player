@@ -143,6 +143,7 @@ public class PlayerActivity extends Activity {
     private ImageButton buttonOpen;
     private ImageButton buttonPiP;
     private ImageButton buttonAspectRatio;
+    private ImageButton exoSettings;
     private ImageButton exoPlayPause;
     private ProgressBar loadingProgressBar;
     private StyledPlayerControlView controlView;
@@ -299,8 +300,6 @@ public class PlayerActivity extends Activity {
             buttonPiP.setImageResource(R.drawable.ic_picture_in_picture_alt_24dp);
 
             buttonPiP.setOnClickListener(view -> enterPiP());
-
-            Utils.setButtonEnabled(this, buttonPiP, false);
         }
 
         buttonAspectRatio = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
@@ -317,8 +316,6 @@ public class PlayerActivity extends Activity {
             }
             resetHideCallbacks();
         });
-        Utils.setButtonEnabled(this, buttonAspectRatio, false);
-
         ImageButton buttonRotation = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
         buttonRotation.setImageResource(R.drawable.ic_auto_rotate_24dp);
         buttonRotation.setOnClickListener(view -> {
@@ -440,7 +437,7 @@ public class PlayerActivity extends Activity {
         final ImageButton exoSubtitle = exoBasicControls.findViewById(R.id.exo_subtitle);
         exoBasicControls.removeView(exoSubtitle);
 
-        final ImageButton exoSettings = exoBasicControls.findViewById(R.id.exo_settings);
+        exoSettings = exoBasicControls.findViewById(R.id.exo_settings);
         exoBasicControls.removeView(exoSettings);
         final ImageButton exoRepeat = exoBasicControls.findViewById(R.id.exo_repeat_toggle);
         exoBasicControls.removeView(exoRepeat);
@@ -452,6 +449,8 @@ public class PlayerActivity extends Activity {
             startActivityForResult(intent, REQUEST_SETTINGS);
             return true;
         });
+
+        updateButtons(false);
 
         final HorizontalScrollView horizontalScrollView = (HorizontalScrollView) getLayoutInflater().inflate(R.layout.controls, null);
         final LinearLayout controls = horizontalScrollView.findViewById(R.id.controls);
@@ -992,10 +991,7 @@ public class PlayerActivity extends Activity {
             titleView.setText(Utils.getFileName(this, mPrefs.mediaUri));
             titleView.setVisibility(View.VISIBLE);
 
-            if (buttonPiP != null)
-                Utils.setButtonEnabled(this, buttonPiP, true);
-
-            Utils.setButtonEnabled(this, buttonAspectRatio, true);
+            updateButtons(true);
 
             ((DoubleTapPlayerView)playerView).setDoubleTapEnabled(true);
 
@@ -1045,9 +1041,7 @@ public class PlayerActivity extends Activity {
             player = null;
         }
         titleView.setVisibility(View.GONE);
-        if (buttonPiP != null)
-            Utils.setButtonEnabled(this, buttonPiP, false);
-        Utils.setButtonEnabled(this, buttonAspectRatio, false);
+        updateButtons(false);
     }
 
     private class PlayerListener implements Player.Listener {
@@ -1800,5 +1794,13 @@ public class PlayerActivity extends Activity {
             intent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MOVIE);
         }
         sendBroadcast(intent);
+    }
+
+    void updateButtons(final boolean enable) {
+        if (buttonPiP != null) {
+            Utils.setButtonEnabled(this, buttonPiP, enable);
+        }
+        Utils.setButtonEnabled(this, buttonAspectRatio, enable);
+        Utils.setButtonEnabled(this, exoSettings, enable);
     }
 }
