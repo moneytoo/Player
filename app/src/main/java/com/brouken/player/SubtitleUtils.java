@@ -6,6 +6,8 @@ import android.net.Uri;
 
 import androidx.documentfile.provider.DocumentFile;
 
+import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
@@ -14,6 +16,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -235,8 +238,18 @@ class SubtitleUtils {
 
     public static Uri convertToUTF(Context context, Uri subtitleUri) {
         try {
+            InputStream inputStream = context.getContentResolver().openInputStream(subtitleUri);
+            return convertInputStreamToUTF(context, subtitleUri, inputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return subtitleUri;
+    }
+
+    public static Uri convertInputStreamToUTF(Context context, Uri subtitleUri, InputStream inputStream) {
+        try {
             final CharsetDetector detector = new CharsetDetector();
-            final BufferedInputStream bufferedInputStream = new BufferedInputStream(context.getContentResolver().openInputStream(subtitleUri));
+            final BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
             detector.setText(bufferedInputStream);
             final CharsetMatch charsetMatch = detector.detect();
 
@@ -255,5 +268,21 @@ class SubtitleUtils {
             e.printStackTrace();
         }
         return subtitleUri;
+    }
+
+    public static MediaItem.SubtitleConfiguration buildSubtitle(Context context, Uri uri) {
+        final String subtitleMime = SubtitleUtils.getSubtitleMime(uri);
+        final String subtitleLanguage = SubtitleUtils.getSubtitleLanguage(uri);
+        String subtitleName = null;
+        if (subtitleLanguage == null)
+            subtitleName = Utils.getFileName(context, uri);
+
+        return new MediaItem.SubtitleConfiguration.Builder(uri)
+                .setMimeType(subtitleMime)
+                .setLanguage(subtitleLanguage)
+                .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                .setRoleFlags(C.ROLE_FLAG_SUBTITLE)
+                .setLabel(subtitleName)
+                .build();
     }
 }

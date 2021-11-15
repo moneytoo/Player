@@ -565,4 +565,15 @@ class Utils {
         }
         return uri;
     }
+
+    public static boolean isProgressiveContainerUri(final Uri uri) {
+        String path = uri.getPath();
+        if (path == null) {
+            return false;
+        }
+        path = path.toLowerCase();
+        // FIXME: Have a single list of supported containers - same as from file system?
+        return (path.endsWith(".3gp") || path.endsWith(".m4v") || path.endsWith(".mkv") || path.endsWith(".mov")
+                || path.endsWith(".mp4") || path.endsWith(".webm"));
+    }
 }

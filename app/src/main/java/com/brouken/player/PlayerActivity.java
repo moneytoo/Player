@@ -177,6 +177,7 @@ public class PlayerActivity extends Activity {
 
     DisplayManager displayManager;
     DisplayManager.DisplayListener displayListener;
+    SubtitleFinder subtitleFinder;
 
 
     @Override
@@ -952,19 +953,7 @@ public class PlayerActivity extends Activity {
                     .setUri(mPrefs.mediaUri)
                     .setMimeType(mPrefs.mediaType);
             if (mPrefs.subtitleUri != null && Utils.fileExists(this, mPrefs.subtitleUri)) {
-                final String subtitleMime = SubtitleUtils.getSubtitleMime(mPrefs.subtitleUri);
-                final String subtitleLanguage = SubtitleUtils.getSubtitleLanguage(mPrefs.subtitleUri);
-                String subtitleName = null;
-                if (subtitleLanguage == null)
-                    subtitleName = Utils.getFileName(this, mPrefs.subtitleUri);
-
-                MediaItem.SubtitleConfiguration subtitle = new MediaItem.SubtitleConfiguration.Builder(mPrefs.subtitleUri)
-                        .setMimeType(subtitleMime)
-                        .setLanguage(subtitleLanguage)
-                        .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
-                        .setRoleFlags(C.ROLE_FLAG_SUBTITLE)
-                        .setLabel(subtitleName)
-                        .build();
+                MediaItem.SubtitleConfiguration subtitle = SubtitleUtils.buildSubtitle(this, mPrefs.subtitleUri);
                 mediaItemBuilder.setSubtitleConfigurations(Collections.singletonList(subtitle));
             }
             player.setMediaItem(mediaItemBuilder.build(), mPrefs.getPosition());
@@ -1543,6 +1532,13 @@ public class PlayerActivity extends Activity {
     void searchSubtitles() {
         if (mPrefs.mediaUri == null)
             return;
+
+        if (Utils.isSupportedNetworkUri(mPrefs.mediaUri) && Utils.isProgressiveContainerUri(mPrefs.mediaUri)) {
+            SubtitleUtils.clearCache(this);
+            subtitleFinder = new SubtitleFinder(PlayerActivity.this, mPrefs.mediaUri);
+            subtitleFinder.start();
+            return;
+        }
 
         if (mPrefs.scopeUri != null || isTvBox) {
             DocumentFile video = null;
