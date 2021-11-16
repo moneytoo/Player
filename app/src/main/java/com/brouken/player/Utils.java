@@ -512,7 +512,7 @@ class Utils {
             startPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).getAbsolutePath();
         }
 
-        final String[] suffixes = (video ? new String[] { "3gp", "m4v", "mkv", "mov", "mp4", "webm" } :
+        final String[] suffixes = (video ? new String[] { "3gp", "m4v", "mkv", "mov", "mp4", "ts", "webm" } :
                 new String[] { "srt", "ssa", "ass", "vtt", "ttml", "dfxp", "xml" });
 
         ChooserDialog chooserDialog = new ChooserDialog(activity)
@@ -574,6 +574,6 @@ class Utils {
         path = path.toLowerCase();
         // FIXME: Have a single list of supported containers - same as from file system?
         return (path.endsWith(".3gp") || path.endsWith(".m4v") || path.endsWith(".mkv") || path.endsWith(".mov")
-                || path.endsWith(".mp4") || path.endsWith(".webm"));
+                || path.endsWith(".mp4") || path.endsWith(".ts") || path.endsWith(".webm"));
     }
 }
