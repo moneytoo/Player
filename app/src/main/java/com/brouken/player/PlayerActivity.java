@@ -18,7 +18,6 @@ import android.content.IntentFilter;
 import android.content.UriPermission;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Icon;
@@ -29,7 +28,6 @@ import android.media.audiofx.LoudnessEnhancer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.LocaleList;
 import android.provider.DocumentsContract;
 import android.provider.Settings;
 import android.support.v4.media.MediaMetadataCompat;
@@ -97,7 +95,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 public class PlayerActivity extends Activity {
@@ -850,21 +847,9 @@ public class PlayerActivity extends Activity {
                         .setTunnelingEnabled(true)
                 );
             }
-            if (Build.VERSION.SDK_INT >= 24) {
-                final LocaleList localeList = Resources.getSystem().getConfiguration().getLocales();
-                final List<String> locales = new ArrayList<>();
-                for (int i = 0; i < localeList.size(); i++) {
-                    locales.add(localeList.get(i).getISO3Language());
-                }
-                trackSelector.setParameters(trackSelector.buildUponParameters()
-                        .setPreferredAudioLanguages(locales.toArray(new String[0]))
-                );
-            } else {
-                final Locale locale = Resources.getSystem().getConfiguration().locale;
-                trackSelector.setParameters(trackSelector.buildUponParameters()
-                        .setPreferredAudioLanguage(locale.getISO3Language())
-                );
-            }
+            trackSelector.setParameters(trackSelector.buildUponParameters()
+                    .setPreferredAudioLanguages(Utils.getDeviceLanguages())
+            );
             RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
                     .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
             // https://github.com/google/ExoPlayer/issues/8571

@@ -1,9 +1,6 @@
 package com.brouken.player;
 
-import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
-import android.os.LocaleList;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,7 +12,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 
@@ -42,8 +38,7 @@ public class SubtitleFinder {
         urls = new LinkedHashMap<>();
     }
 
-    private void addLocale(Locale locale) {
-        final String lang = locale.getISO3Language();
+    private void addLanguage(String lang) {
         urls.put(buildUri(lang + ".srt"), false);
         urls.put(buildUri(Util.normalizeLanguageCode(lang) + ".srt"), false);
     }
@@ -59,14 +54,8 @@ public class SubtitleFinder {
             public void run() {
                 urls.put(buildUri("srt"), false);
 
-                if (Build.VERSION.SDK_INT >= 24) {
-                    final LocaleList localeList = Resources.getSystem().getConfiguration().getLocales();
-                    for (int i = 0; i < localeList.size(); i++) {
-                        addLocale(localeList.get(i));
-                    }
-                } else {
-                    final Locale locale = Resources.getSystem().getConfiguration().locale;
-                    addLocale(locale);
+                for (String language : Utils.getDeviceLanguages()) {
+                    addLanguage(language);
                 }
 
                 OkHttpClient client = new OkHttpClient.Builder()

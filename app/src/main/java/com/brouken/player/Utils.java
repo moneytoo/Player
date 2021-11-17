@@ -19,6 +19,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.os.LocaleList;
 import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
 import android.util.Log;
@@ -46,6 +47,7 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 class Utils {
     public static int dpToPx(int dp) {
@@ -575,5 +577,19 @@ class Utils {
         // FIXME: Have a single list of supported containers - same as from file system?
         return (path.endsWith(".3gp") || path.endsWith(".m4v") || path.endsWith(".mkv") || path.endsWith(".mov")
                 || path.endsWith(".mp4") || path.endsWith(".ts") || path.endsWith(".webm"));
+    }
+
+    public static String[] getDeviceLanguages() {
+        final List<String> locales = new ArrayList<>();
+        if (Build.VERSION.SDK_INT >= 24) {
+            final LocaleList localeList = Resources.getSystem().getConfiguration().getLocales();
+            for (int i = 0; i < localeList.size(); i++) {
+                locales.add(localeList.get(i).getISO3Language());
+            }
+        } else {
+            final Locale locale = Resources.getSystem().getConfiguration().locale;
+            locales.add(locale.getISO3Language());
+        }
+        return locales.toArray(new String[0]);
     }
 }
