@@ -17,19 +17,15 @@ import java.util.LinkedHashMap;
 import java.util.Set;
 
 class Prefs {
-    // Previously used
-    // private static final String PREF_KEY_AUDIO_TRACK = "audioTrack";
-    // private static final String PREF_KEY_AUDIO_TRACK_FFMPEG = "audioTrackFfmpeg";
-    // private static final String PREF_KEY_SUBTITLE_TRACK = "subtitleTrack";
 
     private static final String PREF_KEY_MEDIA_URI = "mediaUri";
     private static final String PREF_KEY_MEDIA_TYPE = "mediaType";
     private static final String PREF_KEY_BRIGHTNESS = "brightness";
     private static final String PREF_KEY_FIRST_RUN = "firstRun";
     private static final String PREF_KEY_SUBTITLE_URI = "subtitleUri";
-
-    private static final String PREF_KEY_AUDIO_TRACK_ID = "audioTrackId";
-    private static final String PREF_KEY_SUBTITLE_TRACK_ID = "subtitleTrackId";
+    private static final String PREF_KEY_AUDIO_TRACK = "audioTrack";
+    private static final String PREF_KEY_AUDIO_TRACK_FFMPEG = "audioTrackFfmpeg";
+    private static final String PREF_KEY_SUBTITLE_TRACK = "subtitleTrack";
     private static final String PREF_KEY_RESIZE_MODE = "resizeMode";
     private static final String PREF_KEY_ORIENTATION = "orientation";
     private static final String PREF_KEY_SCALE = "scale";
@@ -52,8 +48,9 @@ class Prefs {
     public Utils.Orientation orientation = Utils.Orientation.VIDEO;
     public float scale = 1.f;
 
-    public String subtitleTrackId;
-    public String audioTrackId;
+    public int subtitleTrack = -1;
+    public int audioTrack = -1;
+    public int audioTrackFfmpeg = -1;
 
     public int brightness = -1;
     public boolean firstRun = true;
@@ -87,10 +84,12 @@ class Prefs {
         firstRun = mSharedPreferences.getBoolean(PREF_KEY_FIRST_RUN, firstRun);
         if (mSharedPreferences.contains(PREF_KEY_SUBTITLE_URI))
             subtitleUri = Uri.parse(mSharedPreferences.getString(PREF_KEY_SUBTITLE_URI, null));
-        if (mSharedPreferences.contains(PREF_KEY_AUDIO_TRACK_ID))
-            audioTrackId = mSharedPreferences.getString(PREF_KEY_AUDIO_TRACK_ID, audioTrackId);
-        if (mSharedPreferences.contains(PREF_KEY_SUBTITLE_TRACK_ID))
-            subtitleTrackId = mSharedPreferences.getString(PREF_KEY_SUBTITLE_TRACK_ID, subtitleTrackId);
+        if (mSharedPreferences.contains(PREF_KEY_AUDIO_TRACK))
+            audioTrack = mSharedPreferences.getInt(PREF_KEY_AUDIO_TRACK, audioTrack);
+        if (mSharedPreferences.contains(PREF_KEY_AUDIO_TRACK_FFMPEG))
+            audioTrackFfmpeg = mSharedPreferences.getInt(PREF_KEY_AUDIO_TRACK_FFMPEG, audioTrackFfmpeg);
+        if (mSharedPreferences.contains(PREF_KEY_SUBTITLE_TRACK))
+            subtitleTrack = mSharedPreferences.getInt(PREF_KEY_SUBTITLE_TRACK, subtitleTrack);
         if (mSharedPreferences.contains(PREF_KEY_RESIZE_MODE))
             resizeMode = mSharedPreferences.getInt(PREF_KEY_RESIZE_MODE, resizeMode);
         orientation = Utils.Orientation.values()[mSharedPreferences.getInt(PREF_KEY_ORIENTATION, 1)];
@@ -113,7 +112,7 @@ class Prefs {
         mediaUri = uri;
         mediaType = type;
         updateSubtitle(null);
-        updateMeta(null, null, AspectRatioFrameLayout.RESIZE_MODE_FIT, 1.f);
+        updateMeta(-1, -1, -1, AspectRatioFrameLayout.RESIZE_MODE_FIT, 1.f);
 
         if (mediaType != null && mediaType.endsWith("/*")) {
             mediaType = null;
@@ -141,14 +140,14 @@ class Prefs {
 
     public void updateSubtitle(final Uri uri) {
         subtitleUri = uri;
-        subtitleTrackId = null;
+        subtitleTrack = -1;
         if (persistentMode) {
             final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
             if (uri == null)
                 sharedPreferencesEditor.remove(PREF_KEY_SUBTITLE_URI);
             else
                 sharedPreferencesEditor.putString(PREF_KEY_SUBTITLE_URI, uri.toString());
-            sharedPreferencesEditor.remove(PREF_KEY_SUBTITLE_TRACK_ID);
+            sharedPreferencesEditor.remove(PREF_KEY_SUBTITLE_TRACK);
             sharedPreferencesEditor.commit();
         }
     }
@@ -253,21 +252,26 @@ class Prefs {
         sharedPreferencesEditor.commit();
     }
 
-    public void updateMeta(final String audioTrackId, final String subtitleTrackId, final int resizeMode, final float scale) {
-        this.audioTrackId = audioTrackId;
-        this.subtitleTrackId = subtitleTrackId;
+    public void updateMeta(final int audioTrack, final int audioTrackFfmpeg, final int subtitleTrack, final int resizeMode, final float scale) {
+        this.audioTrack = audioTrack;
+        this.audioTrackFfmpeg = audioTrackFfmpeg;
+        this.subtitleTrack = subtitleTrack;
         this.resizeMode = resizeMode;
         this.scale = scale;
         if (persistentMode) {
             final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-            if (audioTrackId == null)
-                sharedPreferencesEditor.remove(PREF_KEY_AUDIO_TRACK_ID);
+            if (audioTrack == -1)
+                sharedPreferencesEditor.remove(PREF_KEY_AUDIO_TRACK);
             else
-                sharedPreferencesEditor.putString(PREF_KEY_AUDIO_TRACK_ID, audioTrackId);
-            if (subtitleTrackId == null)
-                sharedPreferencesEditor.remove(PREF_KEY_SUBTITLE_TRACK_ID);
+                sharedPreferencesEditor.putInt(PREF_KEY_AUDIO_TRACK, audioTrack);
+            if (audioTrackFfmpeg == -1)
+                sharedPreferencesEditor.remove(PREF_KEY_AUDIO_TRACK_FFMPEG);
             else
-                sharedPreferencesEditor.putString(PREF_KEY_SUBTITLE_TRACK_ID, subtitleTrackId);
+                sharedPreferencesEditor.putInt(PREF_KEY_AUDIO_TRACK_FFMPEG, audioTrackFfmpeg);
+            if (subtitleTrack == -1)
+                sharedPreferencesEditor.remove(PREF_KEY_SUBTITLE_TRACK);
+            else
+                sharedPreferencesEditor.putInt(PREF_KEY_SUBTITLE_TRACK, subtitleTrack);
             sharedPreferencesEditor.putInt(PREF_KEY_RESIZE_MODE, resizeMode);
             sharedPreferencesEditor.putFloat(PREF_KEY_SCALE, scale);
             sharedPreferencesEditor.commit();

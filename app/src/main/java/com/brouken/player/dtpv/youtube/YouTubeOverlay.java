@@ -26,8 +26,8 @@ import com.brouken.player.dtpv.PlayerDoubleTapListener;
 import com.brouken.player.dtpv.SeekListener;
 import com.brouken.player.dtpv.youtube.views.CircleClipTapView;
 import com.brouken.player.dtpv.youtube.views.SecondsView;
-import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.SeekParameters;
+import com.google.android.exoplayer2.SimpleExoPlayer;
 
 /**
  * Overlay for [DoubleTapPlayerView] to create a similar UI/UX experience like the official
@@ -80,7 +80,7 @@ public final class YouTubeOverlay extends ConstraintLayout implements PlayerDoub
 
     // Player behaviors
     private DoubleTapPlayerView playerView;
-    private ExoPlayer player;
+    private SimpleExoPlayer player;
 
     /**
      * Sets all optional XML attributes and defaults
@@ -172,7 +172,7 @@ public final class YouTubeOverlay extends ConstraintLayout implements PlayerDoub
      *
      * @param player PlayerView which triggers the event
      */
-    public YouTubeOverlay player(ExoPlayer player) {
+    public YouTubeOverlay player(SimpleExoPlayer player) {
         this.player = player;
         return this;
     }

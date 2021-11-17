@@ -128,8 +128,8 @@ public class SubtitleFinder {
                             if (PlayerActivity.player != null) {
                                 MediaItem mediaItem = PlayerActivity.player.getCurrentMediaItem();
                                 if (mediaItem != null) {
-                                    MediaItem.SubtitleConfiguration subtitle = SubtitleUtils.buildSubtitle(activity, convertedSubtitleUri);
-                                    mediaItem = mediaItem.buildUpon().setSubtitleConfigurations(Collections.singletonList(subtitle)).build();
+                                    MediaItem.Subtitle subtitle = SubtitleUtils.buildSubtitle(activity, convertedSubtitleUri);
+                                    mediaItem = mediaItem.buildUpon().setSubtitles(Collections.singletonList(subtitle)).build();
                                     PlayerActivity.player.setMediaItem(mediaItem, false);
                                     if (BuildConfig.DEBUG) {
                                         Toast.makeText(activity, "Subtitle found", Toast.LENGTH_SHORT).show();
