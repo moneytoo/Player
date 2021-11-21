@@ -13,9 +13,10 @@ import com.ibm.icu.text.CharsetDetector;
 import com.ibm.icu.text.CharsetMatch;
 
 import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.FileWriter;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -257,12 +258,16 @@ class SubtitleUtils {
                 String filename = subtitleUri.getPath();
                 filename = filename.substring(filename.lastIndexOf("/") + 1);
                 final File file = new File(context.getCacheDir(), filename);
-                try (FileOutputStream stream = new FileOutputStream(file)) {
-                    stream.write(charsetMatch.getString().getBytes());
-                    subtitleUri = Uri.fromFile(file);
-                } catch (IOException e) {
-                    e.printStackTrace();
+                final BufferedReader bufferedReader = new BufferedReader(charsetMatch.getReader());
+                final BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+                char[] buffer = new char[512];
+                int num;
+                while ((num = bufferedReader.read(buffer)) != -1) {
+                    bufferedWriter.write(buffer, 0, num);
                 }
+                bufferedWriter.close();
+                bufferedReader.close();
+                subtitleUri = Uri.fromFile(file);
             }
         } catch (Exception e) {
             e.printStackTrace();
