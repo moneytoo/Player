@@ -82,14 +82,14 @@ public class SubtitleFinder {
                     }
                 };
 
+                countDownLatch = new CountDownLatch(urls.size());
+
                 for (Uri url : urls.keySet()) {
                     // Total Commander 3.24 / LAN plugin 3.20 does not support HTTP HEAD
                     //Request request = new Request.Builder().url(url.toString()).head().build();
                     Request request = new Request.Builder().url(url.toString()).build();
                     client.newCall(request).enqueue(callback);
                 }
-
-                countDownLatch = new CountDownLatch(urls.size());
 
                 try {
                     countDownLatch.await();
