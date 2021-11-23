@@ -20,6 +20,7 @@ import okhttp3.Callback;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 public class SubtitleFinder {
 
@@ -118,22 +119,29 @@ public class SubtitleFinder {
 
                 Request request = new Request.Builder().url(subtitleUri.toString()).build();
                 try (Response response = client.newCall(request).execute()) {
-                    InputStream inputStream = response.body().byteStream();
+                    final ResponseBody responseBody = response.body();
+
+                    if (responseBody == null || responseBody.contentLength() > 2_000_000) {
+                        return;
+                    }
+
+                    InputStream inputStream = responseBody.byteStream();
                     Uri convertedSubtitleUri = SubtitleUtils.convertInputStreamToUTF(activity, subtitleUri, inputStream);
 
-                    activity.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            activity.mPrefs.updateSubtitle(convertedSubtitleUri);
-                            if (PlayerActivity.player != null) {
-                                MediaItem mediaItem = PlayerActivity.player.getCurrentMediaItem();
-                                if (mediaItem != null) {
-                                    MediaItem.SubtitleConfiguration subtitle = SubtitleUtils.buildSubtitle(activity, convertedSubtitleUri);
-                                    mediaItem = mediaItem.buildUpon().setSubtitleConfigurations(Collections.singletonList(subtitle)).build();
-                                    PlayerActivity.player.setMediaItem(mediaItem, false);
-                                    if (BuildConfig.DEBUG) {
-                                        Toast.makeText(activity, "Subtitle found", Toast.LENGTH_SHORT).show();
-                                    }
+                    if (convertedSubtitleUri == null) {
+                        return;
+                    }
+
+                    activity.runOnUiThread(() -> {
+                        activity.mPrefs.updateSubtitle(convertedSubtitleUri);
+                        if (PlayerActivity.player != null) {
+                            MediaItem mediaItem = PlayerActivity.player.getCurrentMediaItem();
+                            if (mediaItem != null) {
+                                MediaItem.SubtitleConfiguration subtitle = SubtitleUtils.buildSubtitle(activity, convertedSubtitleUri);
+                                mediaItem = mediaItem.buildUpon().setSubtitleConfigurations(Collections.singletonList(subtitle)).build();
+                                PlayerActivity.player.setMediaItem(mediaItem, false);
+                                if (BuildConfig.DEBUG) {
+                                    Toast.makeText(activity, "Subtitle found", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         }

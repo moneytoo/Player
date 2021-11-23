@@ -262,12 +262,23 @@ class SubtitleUtils {
                 final BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
                 char[] buffer = new char[512];
                 int num;
+                int pass = 0;
+                boolean success = true;
                 while ((num = bufferedReader.read(buffer)) != -1) {
                     bufferedWriter.write(buffer, 0, num);
+                    pass++;
+                    if (pass * 512 > 2_000_000) {
+                        success = false;
+                        break;
+                    }
                 }
                 bufferedWriter.close();
                 bufferedReader.close();
-                subtitleUri = Uri.fromFile(file);
+                if (success) {
+                    subtitleUri = Uri.fromFile(file);
+                } else {
+                    subtitleUri = null;
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
