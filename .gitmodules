@@ -1,4 +1,4 @@
 [submodule "ExoPlayer"]
 	path = ExoPlayer
 	url = git@github.com:moneytoo/ExoPlayer.git
-    branch = r2.16.1
+	branch = r2.16.1
