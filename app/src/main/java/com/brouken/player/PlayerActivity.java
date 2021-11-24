@@ -11,6 +11,7 @@ import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
 import android.app.RemoteAction;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -1203,6 +1204,11 @@ public class PlayerActivity extends Activity {
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("video/*");
 
+            final ComponentName systemComponentName = Utils.getSystemComponent(this, intent);
+            if (systemComponentName != null) {
+                intent.setComponent(systemComponentName);
+            }
+
             safelyStartActivityForResult(intent, REQUEST_CHOOSER_VIDEO);
         }
     }
@@ -1235,6 +1241,11 @@ public class PlayerActivity extends Activity {
                     "application/octet-stream"
             };
             intent.putExtra(Intent.EXTRA_MIME_TYPES, supportedMimeTypes);
+
+            final ComponentName systemComponentName = Utils.getSystemComponent(this, intent);
+            if (systemComponentName != null) {
+                intent.setComponent(systemComponentName);
+            }
 
             safelyStartActivityForResult(intent, REQUEST_CHOOSER_SUBTITLE);
         }

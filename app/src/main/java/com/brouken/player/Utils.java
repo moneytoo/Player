@@ -6,12 +6,15 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.UiModeManager;
+import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
@@ -591,5 +594,26 @@ class Utils {
             locales.add(locale.getISO3Language());
         }
         return locales.toArray(new String[0]);
+    }
+
+    public static ComponentName getSystemComponent(Context context, Intent intent) {
+        List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentActivities(intent, 0);
+        if (resolveInfos.size() < 2) {
+            return null;
+        }
+        int systemCount = 0;
+        ComponentName componentName = null;
+        for (ResolveInfo resolveInfo : resolveInfos) {
+            int flags = resolveInfo.activityInfo.applicationInfo.flags;
+            boolean system = (flags & ApplicationInfo.FLAG_SYSTEM) != 0;
+            if (system) {
+                systemCount++;
+                componentName = new ComponentName(resolveInfo.activityInfo.packageName, resolveInfo.activityInfo.name);
+            }
+        }
+        if (systemCount == 1) {
+            return componentName;
+        }
+        return null;
     }
 }
