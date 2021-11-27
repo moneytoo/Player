@@ -13,4 +13,5 @@
     <string name="video_resize_fit">画面に丁度収める</string>
     <string name="video_resize_crop">切り抜く</string>
     <string name="shortcut_videos">動画</string>
+    <string name="pref_title">設定</string>
 </resources>
