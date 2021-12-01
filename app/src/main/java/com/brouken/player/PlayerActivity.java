@@ -293,12 +293,14 @@ public class PlayerActivity extends Activity {
             // TODO: Android 12 improvements:
             // https://developer.android.com/about/versions/12/features/pip-improvements
             mPictureInPictureParamsBuilder = new PictureInPictureParams.Builder();
-            updatePictureInPictureActions(R.drawable.ic_play_arrow_24dp, R.string.exo_controls_play_description, CONTROL_TYPE_PLAY, REQUEST_PLAY);
+            boolean success = updatePictureInPictureActions(R.drawable.ic_play_arrow_24dp, R.string.exo_controls_play_description, CONTROL_TYPE_PLAY, REQUEST_PLAY);
 
-            buttonPiP = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
-            buttonPiP.setImageResource(R.drawable.ic_picture_in_picture_alt_24dp);
+            if (success) {
+                buttonPiP = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
+                buttonPiP.setImageResource(R.drawable.ic_picture_in_picture_alt_24dp);
 
-            buttonPiP.setOnClickListener(view -> enterPiP());
+                buttonPiP.setOnClickListener(view -> enterPiP());
+            }
         }
 
         buttonAspectRatio = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
@@ -457,7 +459,7 @@ public class PlayerActivity extends Activity {
         controls.addView(buttonOpen);
         controls.addView(exoSubtitle);
         controls.addView(buttonAspectRatio);
-        if (Utils.isPiPSupported(this)) {
+        if (Utils.isPiPSupported(this) && buttonPiP != null) {
             controls.addView(buttonPiP);
         }
         if (mPrefs.repeatToggle) {
@@ -1417,15 +1419,23 @@ public class PlayerActivity extends Activity {
     }
 
     @TargetApi(26)
-    void updatePictureInPictureActions(final int iconId, final int resTitle, final int controlType, final int requestCode) {
-        final ArrayList<RemoteAction> actions = new ArrayList<>();
-        final PendingIntent intent = PendingIntent.getBroadcast(PlayerActivity.this, requestCode,
-                        new Intent(ACTION_MEDIA_CONTROL).putExtra(EXTRA_CONTROL_TYPE, controlType), PendingIntent.FLAG_IMMUTABLE);
-        final Icon icon = Icon.createWithResource(PlayerActivity.this, iconId);
-        final String title = getString(resTitle);
-        actions.add(new RemoteAction(icon, title, title, intent));
-        ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setActions(actions);
-        setPictureInPictureParams(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
+    boolean updatePictureInPictureActions(final int iconId, final int resTitle, final int controlType, final int requestCode) {
+        try {
+            final ArrayList<RemoteAction> actions = new ArrayList<>();
+            final PendingIntent intent = PendingIntent.getBroadcast(PlayerActivity.this, requestCode,
+                    new Intent(ACTION_MEDIA_CONTROL).putExtra(EXTRA_CONTROL_TYPE, controlType), PendingIntent.FLAG_IMMUTABLE);
+            final Icon icon = Icon.createWithResource(PlayerActivity.this, iconId);
+            final String title = getString(resTitle);
+            actions.add(new RemoteAction(icon, title, title, intent));
+            ((PictureInPictureParams.Builder) mPictureInPictureParamsBuilder).setActions(actions);
+            setPictureInPictureParams(((PictureInPictureParams.Builder) mPictureInPictureParamsBuilder).build());
+            return true;
+        } catch (IllegalStateException e) {
+            // On Samsung devices with Talkback active:
+            // Caused by: java.lang.IllegalStateException: setPictureInPictureParams: Device doesn't support picture-in-picture mode.
+            e.printStackTrace();
+        }
+        return false;
     }
 
     private boolean isInPip() {
