@@ -29,4 +29,8 @@
     <string name="pref_repeat_toggle">Repeat toggle</string>
     <string name="pref_repeat_toggle_summary">Extra control to allow indefinitely loop video (requires app restart)</string>
     <string name="shortcut_videos">Videos</string>
+    <string name="button_open">Open</string>
+    <string name="button_crop">Resize</string>
+    <string name="button_rotate">Rotate</string>
+    <string name="button_pip">Picture-in-picture</string>
 </resources>

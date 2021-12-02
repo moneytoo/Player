@@ -277,6 +277,7 @@ public class PlayerActivity extends Activity {
         buttonOpen = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
         buttonOpen.setImageResource(R.drawable.ic_folder_open_24dp);
         buttonOpen.setId(View.generateViewId());
+        buttonOpen.setContentDescription(getString(R.string.button_open));
 
         buttonOpen.setOnClickListener(view -> openFile(mPrefs.mediaUri));
 
@@ -297,6 +298,7 @@ public class PlayerActivity extends Activity {
 
             if (success) {
                 buttonPiP = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
+                buttonPiP.setContentDescription(getString(R.string.button_pip));
                 buttonPiP.setImageResource(R.drawable.ic_picture_in_picture_alt_24dp);
 
                 buttonPiP.setOnClickListener(view -> enterPiP());
@@ -304,6 +306,7 @@ public class PlayerActivity extends Activity {
         }
 
         buttonAspectRatio = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
+        buttonAspectRatio.setContentDescription(getString(R.string.button_crop));
         buttonAspectRatio.setImageResource(R.drawable.ic_aspect_ratio_24dp);
         buttonAspectRatio.setOnClickListener(view -> {
             playerView.setScale(1.f);
@@ -318,6 +321,7 @@ public class PlayerActivity extends Activity {
             resetHideCallbacks();
         });
         ImageButton buttonRotation = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
+        buttonRotation.setContentDescription(getString(R.string.button_rotate));
         buttonRotation.setImageResource(R.drawable.ic_auto_rotate_24dp);
         buttonRotation.setOnClickListener(view -> {
             mPrefs.orientation = Utils.getNextOrientation(mPrefs.orientation);
