@@ -1,3 +1,2 @@
 include ':app', ':doubletapplayerview', 'android-file-chooser'
-apply from: 'ExoPlayer/core_settings.gradle'
 rootProject.name = "Player"

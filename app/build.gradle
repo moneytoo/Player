@@ -10,8 +10,8 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 74
-        versionName "0.74"
+        versionCode 75
+        versionName "0.75"
         archivesBaseName = "Just.Player.v${versionName}"
     }
 
@@ -43,14 +43,34 @@ android {
 }
 
 dependencies {
-    implementation project(':library-core')
-    implementation project(':library-ui')
-    implementation project(':extension-mediasession')
-    implementation project(':library-dash')
-    implementation project(':library-hls')
-    implementation project(':library-smoothstreaming')
-    implementation project(':library-rtsp')
-
+    def exoplayerVersion = '2.16.1'
+    implementation("com.google.android.exoplayer:exoplayer-common:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-extractor"
+    }
+    implementation("com.google.android.exoplayer:exoplayer-datasource:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-common"
+    }
+    implementation("com.google.android.exoplayer:exoplayer-decoder:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-common"
+    }
+    implementation("com.google.android.exoplayer:exoplayer-database:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-common"
+    }
+    implementation("com.google.android.exoplayer:extension-mediasession:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-common"
+    }
+    implementation("com.google.android.exoplayer:exoplayer-dash:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
+    }
+    implementation("com.google.android.exoplayer:exoplayer-hls:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
+    }
+    implementation("com.google.android.exoplayer:exoplayer-smoothstreaming:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
+    }
+    implementation("com.google.android.exoplayer:exoplayer-rtsp:$exoplayerVersion") {
+        exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
+    }
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
