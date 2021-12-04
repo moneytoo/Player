@@ -216,7 +216,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
                 }
 
                 gestureOrientation = Orientation.HORIZONTAL;
-                final long position;
+                long position = 0;
                 float distanceDiff = Math.max(0.5f, Math.min(Math.abs(Utils.pxToDp(distanceX) / 4), 10.f));
 
                 if (PlayerActivity.haveMedia) {
@@ -239,7 +239,11 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
                             PlayerActivity.player.seekTo(position);
                         }
                     }
-                    setCustomErrorMessage(Utils.formatMilisSign(seekChange));
+                    String message = Utils.formatMilisSign(seekChange);
+                    if (!isControllerFullyVisible()) {
+                        message += "\n" + Utils.formatMilis(position);
+                    }
+                    setCustomErrorMessage(message);
                     gestureScrollX = 0.0001f;
                 }
             }

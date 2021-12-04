@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <dimen name="exo_error_message_height" tools:keep="@dimen/exo_error_message_height">40dp</dimen>
     <dimen name="exo_error_message_margin_bottom" tools:keep="@dimen/exo_error_message_margin_bottom">84dp</dimen>
     <dimen name="exo_error_message_text_size" tools:keep="@dimen/exo_error_message_text_size">20sp</dimen>
+    <dimen name="exo_error_message_text_padding_vertical" tools:keep="@dimen/exo_error_message_text_padding_vertical">6sp</dimen>
     <dimen name="exo_icon_size" tools:keep="@dimen/exo_icon_size">90dp</dimen>
     <dimen name="controls_padding">170sp</dimen>
 
