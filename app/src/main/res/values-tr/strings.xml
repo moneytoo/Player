@@ -28,4 +28,8 @@
     <string name="pref_repeat_toggle_summary">Videonun süresiz döngüye alınmasına izin vermek için ek denetim (uygulamanın yeniden başlatılmasını gerektirir)</string>
     <string name="pref_repeat_toggle">Tekrarlama anahtarı</string>
     <string name="shortcut_videos">Videolar</string>
+    <string name="button_pip">Resim içinde resim</string>
+    <string name="button_rotate">Döndür</string>
+    <string name="button_open">Aç</string>
+    <string name="button_crop">Yeniden boyutlandır</string>
 </resources>
