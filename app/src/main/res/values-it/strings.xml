@@ -28,4 +28,8 @@
     <string name="pref_repeat_toggle">Attiva/diattiva la ripetizione</string>
     <string name="pref_repeat_toggle_summary">Controllo aggiuntivo per permettere di riprodurre il video indefinitamente (richiede il riavvio dell\'app)</string>
     <string name="shortcut_videos">Video</string>
+    <string name="button_open">Apri</string>
+    <string name="button_crop">Ridimensiona</string>
+    <string name="button_rotate">Ruota</string>
+    <string name="button_pip">Immagine nell’immagine</string>
 </resources>

@@ -25,7 +25,11 @@
     <string name="pref_framerate_matching">Adaptation automatique de la fréquence d’affichage</string>
     <string name="pref_general_header">Général</string>
     <string name="pref_title">Paramètres</string>
-    <string name="pref_repeat_toggle_summary">Commande supplémentaire pour permettre de jouer la vidéo en boucle indéfiniment (nécessite le redémarrage de l\'application)</string>
+    <string name="pref_repeat_toggle_summary">Commande supplémentaire pour permettre de jouer la vidéo en boucle indéfiniment (nécessite le redémarrage de l’application)</string>
     <string name="pref_repeat_toggle">Activer/désactiver la répétition</string>
     <string name="shortcut_videos">Vidéos</string>
+    <string name="button_open">Ouvrir</string>
+    <string name="button_crop">Redimensionner</string>
+    <string name="button_rotate">Orienter</string>
+    <string name="button_pip">Image dans l\'image</string>
 </resources>

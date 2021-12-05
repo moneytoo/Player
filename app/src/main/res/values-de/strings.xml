@@ -28,4 +28,8 @@
     <string name="pref_repeat_toggle">Wiederholung umschalten</string>
     <string name="pref_repeat_toggle_summary">Zusätzliches Steuerelement, um Videoschleifen auf unbestimmte Zeit zu ermöglichen (erfordert einen Neustart der Anwendung)</string>
     <string name="shortcut_videos">Videos</string>
+    <string name="button_open">Öffnen</string>
+    <string name="button_crop">Größe ändern</string>
+    <string name="button_rotate">Drehen</string>
+    <string name="button_pip">Bild-im-Bild</string>
 </resources>

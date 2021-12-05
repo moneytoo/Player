@@ -28,4 +28,8 @@
     <string name="pref_repeat_toggle">Alternar repetición</string>
     <string name="pref_repeat_toggle_summary">Control extra para permitir un video en bucle indefinido (requiere reiniciar la aplicación)</string>
     <string name="shortcut_videos">Vídeos</string>
+    <string name="button_open">Abrir</string>
+    <string name="button_crop">Redimensionar</string>
+    <string name="button_rotate">Girar</string>
+    <string name="button_pip">Imagen en imagen</string>
 </resources>
