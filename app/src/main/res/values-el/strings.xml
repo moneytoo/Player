@@ -28,4 +28,8 @@
     <string name="pref_repeat_toggle">Εναλλαγή επανάληψης</string>
     <string name="pref_repeat_toggle_summary">Πρόσθετος έλεγχος για να επιτρέπεται επ\' αόριστον η επανάληψη βίντεο (απαιτεί επανεκκίνηση της εφαρμογής)</string>
     <string name="shortcut_videos">Βίντεο</string>
+    <string name="button_open">Άνοιγμα</string>
+    <string name="button_crop">Αλλαγή μεγέθους</string>
+    <string name="button_rotate">Περιστροφή</string>
+    <string name="button_pip">Εικόνα σε εικόνα</string>
 </resources>
