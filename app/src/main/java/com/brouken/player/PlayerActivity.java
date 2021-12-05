@@ -548,10 +548,16 @@ public class PlayerActivity extends Activity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        savePlayer();
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         alive = false;
-        releasePlayer();
+        releasePlayer(false);
     }
 
     @Override
@@ -995,13 +1001,8 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    public void releasePlayer() {
+    private void savePlayer() {
         if (player != null) {
-            notifyAudioSessionUpdate(false);
-
-            mediaSession.setActive(false);
-            mediaSession.release();
-
             mPrefs.updateBrightness(mBrightnessControl.currentBrightnessLevel);
             mPrefs.updateOrientation();
 
@@ -1012,6 +1013,23 @@ public class PlayerActivity extends Activity {
                 }
                 mPrefs.updateMeta(getSelectedTrack(C.TRACK_TYPE_AUDIO), getSelectedTrack(C.TRACK_TYPE_TEXT), playerView.getResizeMode(), playerView.getVideoSurfaceView().getScaleX());
             }
+        }
+    }
+
+    public void releasePlayer() {
+        releasePlayer(true);
+    }
+
+    public void releasePlayer(boolean save) {
+        if (save) {
+            savePlayer();
+        }
+
+        if (player != null) {
+            notifyAudioSessionUpdate(false);
+
+            mediaSession.setActive(false);
+            mediaSession.release();
 
             if (player.isPlaying()) {
                 restorePlayState = true;
