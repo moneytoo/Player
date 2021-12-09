@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="video_resize_fit">Vừa vặn</string>
+    <string name="video_resize_crop">Cắt bỏ</string>
+    <string name="video_orientation_video">Hướng video</string>
+    <string name="video_orientation_sensor">Tự động xoay</string>
+    <string name="onboarding_open_title">Chọn một video để phát</string>
+    <string name="onboarding_open_description">Nhấn để mở tệp video. Nhấn và giữ để tải phụ đề bên ngoài.</string>
+    <string name="open_subtitles">Tải phụ đề</string>
+    <string name="error_details">Thông tin chi tiết</string>
+    <string name="error_files_missing">Ứng dụng tập tin bị tắt hoặc bị thiếu</string>
+    <string name="delete_query">Xóa tệp tin này\?</string>
+    <string name="delete_confirmation">Xóa</string>
+    <string name="pref_title">Cài đặt</string>
+    <string name="pref_general_header">Tổng quan</string>
+    <string name="pref_framerate_matching">Tự động khớp với tốc độ khung hình</string>
+    <string name="pref_framerate_matching_on">Chuyển đổi tần số quét màn hình để phù hợp với tốc độ khung hình video</string>
+    <string name="pref_framerate_matching_off">Không thay đổi tần số quét trên màn hình</string>
+    <string name="pref_tunneling">Đường hầm đa phương tiện</string>
+    <string name="pref_tunneling_summary">Đường hầm đa phương tiện hỗ trợ tốt hơn cho nội dung 4K / HDR, nhưng có thể không hoạt động trên tất cả các thiết bị</string>
+    <string name="pref_auto_pip">Tự động hình trong hình</string>
+    <string name="pref_auto_pip_on">Chuyển sang hình trong hình khi rời khỏi ứng dụng</string>
+    <string name="pref_auto_pip_off">Không tự động chuyển sang hình trong hình</string>
+    <string name="pref_skip_silence">Bỏ qua khoảng trống của âm thanh</string>
+    <string name="pref_skip_silence_on">Bỏ qua các phần có khoảng trống trên luồng âm thanh</string>
+    <string name="pref_skip_silence_off">Phát nội dung như hiện tại</string>
+    <string name="pref_repeat_toggle">Bật/tắt lập lại</string>
+    <string name="pref_repeat_toggle_summary">Kiểm soát bổ sung để cho phép video lặp lại vô thời hạn (yêu cầu khởi động lại ứng dụng)</string>
+    <string name="button_open">Mở</string>
+    <string name="button_crop">Thay đổi kích thước</string>
+    <string name="button_rotate">Xoay</string>
+    <string name="button_pip">Hình trong hình</string>
+    <string name="shortcut_videos">Video</string>
+    <string name="request_scope">Để tự động tải phụ đề bên ngoài hoặc cho phép bỏ qua tệp tin tiếp theo trong thư mục, hãy cấp cho %s quyền truy cập vào thư mục trên cùng chứa video của bạn (ví dụ: Phim).</string>
+</resources>
