@@ -197,14 +197,23 @@ public class FileUtil {
                 if (isRemovable != vol.isRemovable()) {
                     continue;
                 }
-                Method getPath = vol.getClass().getMethod("getPath");
-                String path = (String) getPath.invoke(vol);
-                Log.d("X", "    ---path--" + path);
-                // HACK
-                if (isRemovable && result.size() > 2 && path.startsWith("/storage/"))
-                    return "/storage";
-                else
-                    return path;
+                if (Build.VERSION.SDK_INT >= 30) {
+                    // TODO: Handle multiple removable volumes
+                    File dir = vol.getDirectory();
+                    if (dir == null) {
+                        continue;
+                    }
+                    return dir.getAbsolutePath();
+                } else {
+                    Method getPath = vol.getClass().getMethod("getPath");
+                    String path = (String) getPath.invoke(vol);
+                    Log.d("X", "    ---path--" + path);
+                    // HACK
+                    if (isRemovable && result.size() > 2 && path.startsWith("/storage/"))
+                        return "/storage";
+                    else
+                        return path;
+                }
             }
         } catch (InvocationTargetException e) {
             e.printStackTrace();

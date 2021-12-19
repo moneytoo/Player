@@ -1210,13 +1210,13 @@ public class PlayerActivity extends Activity {
 
     private void openFile(Uri pickerInitialUri) {
         if (isTvBox) {
-            int targetSdkVersion = getApplicationContext().getApplicationInfo().targetSdkVersion;
-            if (Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30) {
-                Intent intent = new Intent(this, MediaStoreChooserActivity.class);
-                startActivityForResult(intent, REQUEST_CHOOSER_VIDEO_MEDIASTORE);
-            } else {
+            //int targetSdkVersion = getApplicationContext().getApplicationInfo().targetSdkVersion;
+            //if (Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30) {
+                //Intent intent = new Intent(this, MediaStoreChooserActivity.class);
+                //startActivityForResult(intent, REQUEST_CHOOSER_VIDEO_MEDIASTORE);
+            //} else {
                 Utils.alternativeChooser(this, pickerInitialUri, true);
-            }
+            //}
         } else {
             enableRotation();
 
