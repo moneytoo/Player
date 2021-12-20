@@ -125,8 +125,6 @@ public class PlayerActivity extends Activity {
     private static final int REQUEST_CHOOSER_VIDEO = 1;
     private static final int REQUEST_CHOOSER_SUBTITLE = 2;
     private static final int REQUEST_CHOOSER_SCOPE_DIR = 10;
-    private static final int REQUEST_CHOOSER_VIDEO_MEDIASTORE = 20;
-    private static final int REQUEST_CHOOSER_SUBTITLE_MEDIASTORE = 21;
     private static final int REQUEST_SETTINGS = 100;
     public static final int CONTROLLER_TIMEOUT = 3500;
     private static final String ACTION_MEDIA_CONTROL = "media_control";
@@ -767,55 +765,48 @@ public class PlayerActivity extends Activity {
             releasePlayer();
         }
 
-        if (requestCode == REQUEST_CHOOSER_VIDEO || requestCode == REQUEST_CHOOSER_VIDEO_MEDIASTORE) {
+        if (requestCode == REQUEST_CHOOSER_VIDEO) {
             if (resultCode == RESULT_OK) {
                 final Uri uri = data.getData();
+                boolean uriAlreadyTaken = false;
 
-                if (requestCode == REQUEST_CHOOSER_VIDEO) {
-                    boolean uriAlreadyTaken = false;
-
-                    // https://commonsware.com/blog/2020/06/13/count-your-saf-uri-permission-grants.html
-                    final ContentResolver contentResolver = getContentResolver();
-                    for (UriPermission persistedUri : contentResolver.getPersistedUriPermissions()) {
-                        if (persistedUri.getUri().equals(mPrefs.scopeUri)) {
-                            continue;
-                        } else if (persistedUri.getUri().equals(uri)) {
-                            uriAlreadyTaken = true;
-                        } else {
-                            try {
-                                contentResolver.releasePersistableUriPermission(persistedUri.getUri(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                            } catch (SecurityException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-
-                    if (!uriAlreadyTaken) {
+                // https://commonsware.com/blog/2020/06/13/count-your-saf-uri-permission-grants.html
+                final ContentResolver contentResolver = getContentResolver();
+                for (UriPermission persistedUri : contentResolver.getPersistedUriPermissions()) {
+                    if (persistedUri.getUri().equals(mPrefs.scopeUri)) {
+                        continue;
+                    } else if (persistedUri.getUri().equals(uri)) {
+                        uriAlreadyTaken = true;
+                    } else {
                         try {
-                            contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            contentResolver.releasePersistableUriPermission(persistedUri.getUri(), Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         } catch (SecurityException e) {
                             e.printStackTrace();
                         }
                     }
                 }
 
-                mPrefs.setPersistent(true);
-                mPrefs.updateMedia(this, uri, data.getType());
-
-                if (requestCode == REQUEST_CHOOSER_VIDEO) {
-                    searchSubtitles();
-                }
-            }
-        } else if (requestCode == REQUEST_CHOOSER_SUBTITLE || requestCode == REQUEST_CHOOSER_SUBTITLE_MEDIASTORE) {
-            if (resultCode == RESULT_OK) {
-                Uri uri = data.getData();
-
-                if (requestCode == REQUEST_CHOOSER_SUBTITLE) {
+                if (!uriAlreadyTaken) {
                     try {
-                        getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     } catch (SecurityException e) {
                         e.printStackTrace();
                     }
+                }
+
+                mPrefs.setPersistent(true);
+                mPrefs.updateMedia(this, uri, data.getType());
+
+                searchSubtitles();
+            }
+        } else if (requestCode == REQUEST_CHOOSER_SUBTITLE) {
+            if (resultCode == RESULT_OK) {
+                Uri uri = data.getData();
+
+                try {
+                    getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                } catch (SecurityException e) {
+                    e.printStackTrace();
                 }
 
                 // Convert subtitles to UTF-8 if necessary
@@ -1210,13 +1201,7 @@ public class PlayerActivity extends Activity {
 
     private void openFile(Uri pickerInitialUri) {
         if (isTvBox) {
-            //int targetSdkVersion = getApplicationContext().getApplicationInfo().targetSdkVersion;
-            //if (Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30) {
-                //Intent intent = new Intent(this, MediaStoreChooserActivity.class);
-                //startActivityForResult(intent, REQUEST_CHOOSER_VIDEO_MEDIASTORE);
-            //} else {
-                Utils.alternativeChooser(this, pickerInitialUri, true);
-            //}
+            Utils.alternativeChooser(this, pickerInitialUri, true);
         } else {
             enableRotation();
 
@@ -1241,14 +1226,7 @@ public class PlayerActivity extends Activity {
         Toast.makeText(PlayerActivity.this, R.string.open_subtitles, Toast.LENGTH_SHORT).show();
 
         if (isTvBox) {
-            int targetSdkVersion = getApplicationContext().getApplicationInfo().targetSdkVersion;
-            if (Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30) {
-                Intent intent = new Intent(this, MediaStoreChooserActivity.class);
-                intent.putExtra(MediaStoreChooserActivity.SUBTITLES, true);
-                startActivityForResult(intent, REQUEST_CHOOSER_SUBTITLE_MEDIASTORE);
-            } else {
-                Utils.alternativeChooser(this, pickerInitialUri, false);
-            }
+            Utils.alternativeChooser(this, pickerInitialUri, false);
         } else {
             enableRotation();
 
