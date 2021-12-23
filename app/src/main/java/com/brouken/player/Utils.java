@@ -53,6 +53,10 @@ import java.util.List;
 import java.util.Locale;
 
 class Utils {
+
+    private static final String[] supportedExtensionsVideo = new String[] { "3gp", "m4v", "mkv", "mov", "mp4", "ts", "webm" };
+    private static final String[] supportedExtensionsSubtitle = new String[] { "srt", "ssa", "ass", "vtt", "ttml", "dfxp", "xml" };
+
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
@@ -517,8 +521,7 @@ class Utils {
             startPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES).getAbsolutePath();
         }
 
-        final String[] suffixes = (video ? new String[] { "3gp", "m4v", "mkv", "mov", "mp4", "ts", "webm" } :
-                new String[] { "srt", "ssa", "ass", "vtt", "ttml", "dfxp", "xml" });
+        final String[] suffixes = (video ? supportedExtensionsVideo : supportedExtensionsSubtitle);
 
         ChooserDialog chooserDialog = new ChooserDialog(activity)
                 .withStartFile(startPath)
@@ -577,9 +580,12 @@ class Utils {
             return false;
         }
         path = path.toLowerCase();
-        // FIXME: Have a single list of supported containers - same as from file system?
-        return (path.endsWith(".3gp") || path.endsWith(".m4v") || path.endsWith(".mkv") || path.endsWith(".mov")
-                || path.endsWith(".mp4") || path.endsWith(".ts") || path.endsWith(".webm"));
+        for (String extension : supportedExtensionsVideo) {
+            if (path.endsWith(extension)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public static String[] getDeviceLanguages() {
