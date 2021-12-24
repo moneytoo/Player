@@ -1280,7 +1280,7 @@ public class PlayerActivity extends Activity {
     }
 
     private TrackGroup getTrackGroupFromFormatId(int trackType, String id) {
-        if (id == null || player == null) {
+        if ((id == null && trackType == C.TRACK_TYPE_AUDIO ) || player == null) {
             return null;
         }
         for (TracksInfo.TrackGroupInfo groupInfo : player.getCurrentTracksInfo().getTrackGroupInfos()) {
