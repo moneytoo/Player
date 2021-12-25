@@ -1002,7 +1002,11 @@ public class PlayerActivity extends Activity {
                 if (player.isCurrentMediaItemSeekable()) {
                     mPrefs.updatePosition(player.getCurrentPosition());
                 }
-                mPrefs.updateMeta(getSelectedTrack(C.TRACK_TYPE_AUDIO), getSelectedTrack(C.TRACK_TYPE_TEXT), playerView.getResizeMode(), playerView.getVideoSurfaceView().getScaleX());
+                mPrefs.updateMeta(getSelectedTrack(C.TRACK_TYPE_AUDIO),
+                        getSelectedTrack(C.TRACK_TYPE_TEXT),
+                        playerView.getResizeMode(),
+                        playerView.getVideoSurfaceView().getScaleX(),
+                        player.getPlaybackParameters().speed);
             }
         }
     }
@@ -1164,6 +1168,9 @@ public class PlayerActivity extends Activity {
 
                     updateLoading(false);
 
+                    if (mPrefs.speed <= 0.99f || mPrefs.speed >= 1.01f) {
+                        player.setPlaybackSpeed(mPrefs.speed);
+                    }
                     setSelectedTracks(mPrefs.subtitleTrackId, mPrefs.audioTrackId);
                 }
             } else if (state == Player.STATE_ENDED) {

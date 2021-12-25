@@ -40,6 +40,7 @@ class Prefs {
     private static final String PREF_KEY_SKIP_SILENCE = "skipSilence";
     private static final String PREF_KEY_FRAMERATE_MATCHING = "frameRateMatching";
     private static final String PREF_KEY_REPEAT_TOGGLE = "repeatToggle";
+    private static final String PREF_KEY_SPEED = "speed";
 
     final Context mContext;
     final SharedPreferences mSharedPreferences;
@@ -51,6 +52,7 @@ class Prefs {
     public int resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT;
     public Utils.Orientation orientation = Utils.Orientation.VIDEO;
     public float scale = 1.f;
+    public float speed = 1.f;
 
     public String subtitleTrackId;
     public String audioTrackId;
@@ -98,6 +100,7 @@ class Prefs {
         if (mSharedPreferences.contains(PREF_KEY_SCOPE_URI))
             scopeUri = Uri.parse(mSharedPreferences.getString(PREF_KEY_SCOPE_URI, null));
         askScope = mSharedPreferences.getBoolean(PREF_KEY_ASK_SCOPE, askScope);
+        speed = mSharedPreferences.getFloat(PREF_KEY_SPEED, speed);
         loadUserPreferences();
     }
 
@@ -113,7 +116,7 @@ class Prefs {
         mediaUri = uri;
         mediaType = type;
         updateSubtitle(null);
-        updateMeta(null, null, AspectRatioFrameLayout.RESIZE_MODE_FIT, 1.f);
+        updateMeta(null, null, AspectRatioFrameLayout.RESIZE_MODE_FIT, 1.f, 1.f);
 
         if (mediaType != null && mediaType.endsWith("/*")) {
             mediaType = null;
@@ -253,11 +256,12 @@ class Prefs {
         sharedPreferencesEditor.commit();
     }
 
-    public void updateMeta(final String audioTrackId, final String subtitleTrackId, final int resizeMode, final float scale) {
+    public void updateMeta(final String audioTrackId, final String subtitleTrackId, final int resizeMode, final float scale, final float speed) {
         this.audioTrackId = audioTrackId;
         this.subtitleTrackId = subtitleTrackId;
         this.resizeMode = resizeMode;
         this.scale = scale;
+        this.speed = speed;
         if (persistentMode) {
             final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
             if (audioTrackId == null)
@@ -270,6 +274,7 @@ class Prefs {
                 sharedPreferencesEditor.putString(PREF_KEY_SUBTITLE_TRACK_ID, subtitleTrackId);
             sharedPreferencesEditor.putInt(PREF_KEY_RESIZE_MODE, resizeMode);
             sharedPreferencesEditor.putFloat(PREF_KEY_SCALE, scale);
+            sharedPreferencesEditor.putFloat(PREF_KEY_SPEED, speed);
             sharedPreferencesEditor.commit();
         }
     }
