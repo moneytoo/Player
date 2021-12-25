@@ -301,4 +301,27 @@ class SubtitleUtils {
                 .setLabel(subtitleName)
                 .build();
     }
+
+    public static float normalizeFontScale(float fontScale) {
+        // ¯\_(ツ)_/¯
+        if (fontScale > 1.01f) {
+            if (fontScale >= 1.99f) {
+                // 2.0
+                return 1.2f;
+            } else {
+                // 1.5
+                return 1.1f;
+            }
+        } else if (fontScale < 0.99f) {
+            if (fontScale <= 0.26f) {
+                // 0.25
+                return 0.8f;
+            } else {
+                // 0.5
+                return 0.9f;
+            }
+        } else {
+            return 1.0f;
+        }
+    }
 }
