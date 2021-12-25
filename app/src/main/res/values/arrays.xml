@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <integer-array name="exo_speed_multiplied_by_100">
+    <item>25</item>
+    <item>50</item>
+    <item>75</item>
+    <item>100</item>
+    <item>125</item>
+    <item>150</item>
+    <item>175</item>
+    <item>200</item>
+  </integer-array>
+
+  <string-array translatable="false" name="exo_playback_speeds">
+    <item>0.25×</item>
+    <item>0.5×</item>
+    <item>0.75×</item>
+    <item>@string/exo_controls_playback_speed_normal</item>
+    <item>1.25×</item>
+    <item>1.5×</item>
+    <item>1.75×</item>
+    <item>2×</item>
+  </string-array>
+</resources>
