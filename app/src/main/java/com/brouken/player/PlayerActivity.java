@@ -121,6 +121,9 @@ public class PlayerActivity extends Activity {
     public static Snackbar snackbar;
     private ExoPlaybackException errorToShow;
     public static int boostLevel = 0;
+    private boolean isScaling = false;
+    private boolean isScaleStarting = false;
+    private float scaleFactor = 1.0f;
 
     private static final int REQUEST_CHOOSER_VIDEO = 1;
     private static final int REQUEST_CHOOSER_SUBTITLE = 2;
@@ -318,6 +321,12 @@ public class PlayerActivity extends Activity {
             }
             resetHideCallbacks();
         });
+        if (isTvBox && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            buttonAspectRatio.setOnLongClickListener(v -> {
+                scaleStart();
+                return true;
+            });
+        }
         ImageButton buttonRotation = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
         buttonRotation.setContentDescription(getString(R.string.button_rotate));
         buttonRotation.setImageResource(R.drawable.ic_auto_rotate_24dp);
@@ -692,6 +701,33 @@ public class PlayerActivity extends Activity {
 
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
+        if (isScaling) {
+            final int keyCode = event.getKeyCode();
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_DPAD_UP:
+                        scale(true);
+                        break;
+                    case KeyEvent.KEYCODE_DPAD_DOWN:
+                        scale(false);
+                        break;
+                }
+            } else if (event.getAction() == KeyEvent.ACTION_UP) {
+                switch (keyCode) {
+                    case KeyEvent.KEYCODE_DPAD_UP:
+                    case KeyEvent.KEYCODE_DPAD_DOWN:
+                        break;
+                    default:
+                        if (isScaleStarting) {
+                            isScaleStarting = false;
+                        } else {
+                            scaleEnd();
+                        }
+                }
+            }
+            return true;
+        }
+
         if (isTvBox && controllerVisible && !controllerVisibleFully) {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 onKeyDown(event.getKeyCode(), event);
@@ -1811,5 +1847,37 @@ public class PlayerActivity extends Activity {
         }
         Utils.setButtonEnabled(this, buttonAspectRatio, enable);
         Utils.setButtonEnabled(this, exoSettings, enable);
+    }
+
+    private void scaleStart() {
+        isScaling = true;
+        if (playerView.getResizeMode() != AspectRatioFrameLayout.RESIZE_MODE_ZOOM) {
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_ZOOM);
+        }
+        scaleFactor = playerView.getVideoSurfaceView().getScaleX();
+        playerView.removeCallbacks(playerView.textClearRunnable);
+        playerView.clearIcon();
+        playerView.setCustomErrorMessage((int)(scaleFactor * 100) + "%");
+        playerView.hideController();
+        isScaleStarting = true;
+    }
+
+    private void scale(boolean up) {
+        if (up) {
+            scaleFactor += 0.01;
+        } else {
+            scaleFactor -= 0.01;
+        }
+        scaleFactor = Utils.normalizeScaleFactor(scaleFactor);
+        playerView.setScale(scaleFactor);
+        playerView.setCustomErrorMessage((int)(scaleFactor * 100) + "%");
+    }
+
+    private void scaleEnd() {
+        isScaling = false;
+        playerView.postDelayed(playerView.textClearRunnable, 200);
+        if (!player.isPlaying()) {
+            playerView.showController();
+        }
     }
 }

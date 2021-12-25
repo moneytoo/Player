@@ -299,7 +299,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
         if (canScale) {
             final float previousScaleFactor = mScaleFactor;
             mScaleFactor *= scaleGestureDetector.getScaleFactor();
-            mScaleFactor = Math.max(0.25f, Math.min(mScaleFactor, 2.0f));
+            mScaleFactor = Utils.normalizeScaleFactor(mScaleFactor);
 
             if (isCrossingThreshold(previousScaleFactor, mScaleFactor, 1.0f) ||
                     isCrossingThreshold(previousScaleFactor, mScaleFactor, mScaleFactorFit))
