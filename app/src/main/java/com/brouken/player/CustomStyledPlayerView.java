@@ -337,6 +337,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
             mScaleFactorFit = getScaleFit();
             canScale = true;
         }
+        hideController();
         return true;
     }
 
@@ -344,7 +345,9 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
         if (PlayerActivity.locked)
             return;
-
+        if (!PlayerActivity.player.isPlaying()) {
+            showController();
+        }
         restoreSurfaceView();
     }
 
