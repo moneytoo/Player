@@ -1553,43 +1553,31 @@ public class PlayerActivity extends Activity {
     void updateSubtitleStyle() {
         final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
         final SubtitleView subtitleView = playerView.getSubtitleView();
-        if (captioningManager.isEnabled()) {
-            subtitlesScale = SubtitleUtils.normalizeFontScale(captioningManager.getFontScale());
-            if (subtitleView != null) {
-                final CaptioningManager.CaptionStyle userStyle = captioningManager.getUserStyle();
-                final CaptionStyleCompat userStyleCompat = CaptionStyleCompat.createFromCaptionStyle(userStyle);
-                final CaptionStyleCompat captionStyle = new CaptionStyleCompat(
-                        userStyle.hasForegroundColor() ? userStyleCompat.foregroundColor : Color.WHITE,
-                        userStyle.hasBackgroundColor() ? userStyleCompat.backgroundColor : Color.TRANSPARENT,
-                        userStyle.hasWindowColor() ? userStyleCompat.windowColor : Color.TRANSPARENT,
-                        userStyle.hasEdgeType() ? userStyleCompat.edgeType : CaptionStyleCompat.EDGE_TYPE_OUTLINE,
-                        userStyle.hasEdgeColor() ? userStyleCompat.edgeColor : Color.BLACK,
-                        userStyleCompat.typeface != null ? userStyleCompat.typeface : Typeface.DEFAULT_BOLD);
-                subtitleView.setStyle(captionStyle);
+        subtitlesScale = SubtitleUtils.normalizeFontScale(captioningManager.getFontScale());
+        if (subtitleView != null) {
+            final CaptioningManager.CaptionStyle userStyle = captioningManager.getUserStyle();
+            final CaptionStyleCompat userStyleCompat = CaptionStyleCompat.createFromCaptionStyle(userStyle);
+            final CaptionStyleCompat captionStyle = new CaptionStyleCompat(
+                    userStyle.hasForegroundColor() ? userStyleCompat.foregroundColor : Color.WHITE,
+                    userStyle.hasBackgroundColor() ? userStyleCompat.backgroundColor : Color.TRANSPARENT,
+                    userStyle.hasWindowColor() ? userStyleCompat.windowColor : Color.TRANSPARENT,
+                    userStyle.hasEdgeType() ? userStyleCompat.edgeType : CaptionStyleCompat.EDGE_TYPE_OUTLINE,
+                    userStyle.hasEdgeColor() ? userStyleCompat.edgeColor : Color.BLACK,
+                    userStyleCompat.typeface != null ? userStyleCompat.typeface : Typeface.DEFAULT_BOLD);
+            subtitleView.setStyle(captionStyle);
+
+            if (captioningManager.isEnabled()) {
                 // Do not apply embedded style as currently the only supported color style is PrimaryColour
                 // https://github.com/google/ExoPlayer/issues/8435#issuecomment-762449001
                 // This may result in poorly visible text (depending on user's selected edgeColor)
                 // The same can happen with style provided using setStyle but enabling CaptioningManager should be a way to change the behavior
                 subtitleView.setApplyEmbeddedStyles(false);
-            }
-        } else {
-            subtitlesScale = 1.05f;
-            final CaptionStyleCompat captionStyle = new CaptionStyleCompat(
-                    Color.WHITE,
-                    Color.TRANSPARENT,
-                    Color.TRANSPARENT,
-                    CaptionStyleCompat.EDGE_TYPE_OUTLINE,
-                    Color.BLACK,
-                    Typeface.DEFAULT_BOLD);
-            if (subtitleView != null) {
-                subtitleView.setStyle(captionStyle);
+            } else {
                 subtitleView.setApplyEmbeddedStyles(true);
             }
-        }
 
-        if (subtitleView != null)
             subtitleView.setBottomPaddingFraction(SubtitleView.DEFAULT_BOTTOM_PADDING_FRACTION * 2f / 3f);
-
+        }
         setSubtitleTextSize();
     }
 
