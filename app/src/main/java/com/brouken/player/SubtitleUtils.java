@@ -39,7 +39,7 @@ class SubtitleUtils {
     }
 
     public static String getSubtitleLanguage(Uri uri) {
-        final String path = uri.getPath();
+        final String path = uri.getPath().toLowerCase();
 
         if (path.endsWith(".srt")) {
             int last = path.lastIndexOf(".");
@@ -220,7 +220,7 @@ class SubtitleUtils {
     public static boolean isSubtitleFile(DocumentFile file) {
         if (!file.isFile())
             return false;
-        final String name = file.getName();
+        final String name = file.getName().toLowerCase();
         return name.endsWith(".srt") || name.endsWith(".ssa") || name.endsWith(".ass")
                 || name.endsWith(".vtt") || name.endsWith(".ttml");
     }
