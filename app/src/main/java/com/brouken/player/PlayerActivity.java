@@ -693,7 +693,9 @@ public class PlayerActivity extends Activity {
             case KeyEvent.KEYCODE_DPAD_RIGHT:
             case KeyEvent.KEYCODE_BUTTON_R2:
             case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
-                playerView.postDelayed(playerView.textClearRunnable, CustomStyledPlayerView.MESSAGE_TIMEOUT_KEY);
+                if (!isScrubbing) {
+                    playerView.postDelayed(playerView.textClearRunnable, CustomStyledPlayerView.MESSAGE_TIMEOUT_KEY);
+                }
                 break;
         }
         return super.onKeyUp(keyCode, event);
