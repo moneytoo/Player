@@ -48,6 +48,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     private boolean restorePlayState;
     private boolean canScale = true;
     private boolean isHandledLongPress = false;
+    public long keySeekStart = -1;
 
     private final ScaleGestureDetector mScaleDetector;
     private float mScaleFactor = 1.f;
@@ -57,6 +58,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     public final Runnable textClearRunnable = () -> {
         setCustomErrorMessage(null);
         clearIcon();
+        keySeekStart = -1;
     };
 
     private final AudioManager mAudioManager;

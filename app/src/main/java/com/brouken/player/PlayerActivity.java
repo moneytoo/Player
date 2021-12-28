@@ -637,12 +637,17 @@ public class PlayerActivity extends Activity {
                     if (player == null)
                         break;
                     playerView.removeCallbacks(playerView.textClearRunnable);
-                    long seekTo = player.getCurrentPosition() - 10_000;
+                    long pos = player.getCurrentPosition();
+                    if (playerView.keySeekStart == -1) {
+                        playerView.keySeekStart = pos;
+                    }
+                    long seekTo = pos - 10_000;
                     if (seekTo < 0)
                         seekTo = 0;
                     player.setSeekParameters(SeekParameters.PREVIOUS_SYNC);
                     player.seekTo(seekTo);
-                    playerView.setCustomErrorMessage(Utils.formatMilis(seekTo));
+                    final String message = Utils.formatMilisSign(seekTo - playerView.keySeekStart) + "\n" + Utils.formatMilis(seekTo);
+                    playerView.setCustomErrorMessage(message);
                     return true;
                 }
                 break;
@@ -653,13 +658,18 @@ public class PlayerActivity extends Activity {
                     if (player == null)
                         break;
                     playerView.removeCallbacks(playerView.textClearRunnable);
-                    long seekTo = player.getCurrentPosition() + 10_000;
+                    long pos = player.getCurrentPosition();
+                    if (playerView.keySeekStart == -1) {
+                        playerView.keySeekStart = pos;
+                    }
+                    long seekTo = pos + 10_000;
                     long seekMax = player.getDuration();
                     if (seekMax != C.TIME_UNSET && seekTo > seekMax)
                         seekTo = seekMax;
                     PlayerActivity.player.setSeekParameters(SeekParameters.NEXT_SYNC);
                     player.seekTo(seekTo);
-                    playerView.setCustomErrorMessage(Utils.formatMilis(seekTo));
+                    final String message = Utils.formatMilisSign(seekTo - playerView.keySeekStart) + "\n" + Utils.formatMilis(seekTo);
+                    playerView.setCustomErrorMessage(message);
                     return true;
                 }
                 break;
@@ -695,7 +705,7 @@ public class PlayerActivity extends Activity {
             case KeyEvent.KEYCODE_BUTTON_R2:
             case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
                 if (!isScrubbing) {
-                    playerView.postDelayed(playerView.textClearRunnable, CustomStyledPlayerView.MESSAGE_TIMEOUT_KEY);
+                    playerView.postDelayed(playerView.textClearRunnable, 1000);
                 }
                 break;
         }
