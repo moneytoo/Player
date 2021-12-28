@@ -97,6 +97,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class PlayerActivity extends Activity {
 
@@ -1154,6 +1155,12 @@ public class PlayerActivity extends Activity {
                         frameRateExo = format.frameRate;
 
                         updateSubtitleViewMargin(format);
+                    }
+
+                    if (duration != C.TIME_UNSET && duration > TimeUnit.MINUTES.toMillis(20)) {
+                        timeBar.setKeyTimeIncrement(TimeUnit.MINUTES.toMillis(1));
+                    } else {
+                        timeBar.setKeyCountIncrement(20);
                     }
 
                     boolean switched = false;
