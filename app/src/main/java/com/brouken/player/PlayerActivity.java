@@ -1157,7 +1157,6 @@ public class PlayerActivity extends Activity {
                     videoLoading = false;
 
                     final Format format = player.getVideoFormat();
-                    float frameRateExo = Format.NO_VALUE;
 
                     if (format != null) {
                         if (mPrefs.orientation == Utils.Orientation.VIDEO) {
@@ -1167,7 +1166,6 @@ public class PlayerActivity extends Activity {
                                 PlayerActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                             }
                         }
-                        frameRateExo = format.frameRate;
 
                         updateSubtitleViewMargin(format);
                     }
@@ -1213,7 +1211,7 @@ public class PlayerActivity extends Activity {
                             }
                             displayManager.registerDisplayListener(displayListener, null);
                         }
-                        switched = Utils.switchFrameRate(PlayerActivity.this, frameRateExo, mPrefs.mediaUri, play);
+                        switched = Utils.switchFrameRate(PlayerActivity.this, mPrefs.mediaUri, play);
                     }
                     if (!switched) {
                         if (displayManager != null) {

@@ -297,7 +297,7 @@ class Prefs {
         final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (!sharedPreferences.contains(PREF_KEY_FRAMERATE_MATCHING)) {
             final SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
-            sharedPreferencesEditor.putBoolean(PREF_KEY_FRAMERATE_MATCHING, Utils.isTvBox(context));
+            sharedPreferencesEditor.putBoolean(PREF_KEY_FRAMERATE_MATCHING, Utils.isTvBox(context) && Build.VERSION.SDK_INT < 30);
             sharedPreferencesEditor.commit();
         }
     }
