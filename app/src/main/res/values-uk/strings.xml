@@ -13,4 +13,6 @@
     <string name="video_resize_crop">Обрізати</string>
     <string name="video_resize_fit">Підігнати</string>
     <string name="shortcut_videos">Відео</string>
+    <string name="pref_framerate_matching">Автоматичне узгодження частоти кадрів</string>
+    <string name="pref_title">Налаштування</string>
 </resources>
