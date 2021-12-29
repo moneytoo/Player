@@ -5,4 +5,12 @@
     <color name="li_row_background">#fffbfbfb</color>
     <color name="li_row_background_tint">#40444444</color>
     <color name="li_row_selector">#40888888</color>
+
+    <color name="text_light_secondary">#bbbbbb</color>
+    <color name="text_light_primary">#fefefe</color>
+    <color name="li_row_background_dark">#303030</color>
+    <color name="li_row_background_tint_dark">#00ffffff</color>
+    <color name="li_row_selector_dark">#30ffffff</color>
+    <color name="background_dark">#303030</color>
+    <color name="overlay_dark">#00000000</color>
 </resources>

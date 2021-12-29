@@ -523,7 +523,7 @@ class Utils {
 
         final String[] suffixes = (video ? supportedExtensionsVideo : supportedExtensionsSubtitle);
 
-        ChooserDialog chooserDialog = new ChooserDialog(activity)
+        ChooserDialog chooserDialog = new ChooserDialog(activity, R.style.FileChooserStyle_Dark)
                 .withStartFile(startPath)
                 .withFilter(false, false, suffixes)
                 .withChosenListener(new ChooserDialog.Result() {
