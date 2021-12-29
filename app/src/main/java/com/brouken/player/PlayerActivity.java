@@ -52,6 +52,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.documentfile.provider.DocumentFile;
 
@@ -194,6 +195,10 @@ public class PlayerActivity extends Activity {
         }
 
         isTvBox = Utils.isTvBox(this);
+
+        if (isTvBox) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        }
 
         final Intent launchIntent = getIntent();
         final String action = launchIntent.getAction();
