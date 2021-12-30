@@ -394,8 +394,12 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     public void setScale(final float scale) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             final View videoSurfaceView = getVideoSurfaceView();
-            videoSurfaceView.setScaleX(scale);
-            videoSurfaceView.setScaleY(scale);
+            try {
+                videoSurfaceView.setScaleX(scale);
+                videoSurfaceView.setScaleY(scale);
+            } catch (IllegalArgumentException e) {
+                e.printStackTrace();
+            }
             //videoSurfaceView.animate().setStartDelay(0).setDuration(0).scaleX(scale).scaleY(scale).start();
         }
     }

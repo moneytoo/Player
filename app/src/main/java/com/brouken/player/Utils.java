@@ -391,29 +391,23 @@ class Utils {
         // preferredDisplayModeId only available on SDK 23+
         // ExoPlayer already uses Surface.setFrameRate() on Android 11+
         if (Build.VERSION.SDK_INT >= 23) {
-            String path;
-            if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
-                path = FFmpegKitConfig.getSafParameterForRead(activity, uri);
-            } else if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
-                // TODO: FFprobeKit doesn't accept encoded uri (like %20) (?!)
-                path = uri.getSchemeSpecificPart();
-            } else {
-                path = uri.toString();
+            if (activity.frameRateSwitchThread != null) {
+                activity.frameRateSwitchThread.interrupt();
             }
-            // Use ffprobe as ExoPlayer doesn't detect video frame rate for lots of videos
-            // and has different precision than ffprobe (so do not mix that)
-            FFprobeKit.getMediaInformationAsync(path, session -> {
-                if (session == null)
-                    return;
-
+            activity.frameRateSwitchThread = new Thread(() -> {
+                String path;
+                if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+                    path = FFmpegKitConfig.getSafParameterForRead(activity, uri);
+                } else if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
+                    // TODO: FFprobeKit doesn't accept encoded uri (like %20) (?!)
+                    path = uri.getSchemeSpecificPart();
+                } else {
+                    path = uri.toString();
+                }
                 float frameRate = Format.NO_VALUE;
-
-                MediaInformationSession mediaInformationSession;
-                if (session instanceof MediaInformationSession)
-                    mediaInformationSession = (MediaInformationSession) session;
-                else
-                    return;
-
+                // Use ffprobe as ExoPlayer doesn't detect video frame rate for lots of videos
+                // and has different precision than ffprobe (so do not mix that)
+                MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(path);
                 MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
                 if (mediaInformation == null)
                     return;
@@ -428,9 +422,9 @@ class Utils {
                         }
                     }
                 }
-
                 handleFrameRate(activity, frameRate, play);
-            }, null, 8_000);
+            });
+            activity.frameRateSwitchThread.start();
             return true;
         } else {
             return false;
@@ -476,8 +470,10 @@ class Utils {
 
                     if (modesResolutionCount > 1) {
                         Display.Mode modeBest = null;
+                        String modes = "Available refreshRates:";
 
                         for (Display.Mode mode : modesHigh) {
+                            modes += " " + mode.getRefreshRate();
                             if (normRate(mode.getRefreshRate()) % normRate(frameRate) <= 0.0001f) {
                                 if (modeBest == null || normRate(mode.getRefreshRate()) > normRate(modeBest.getRefreshRate())) {
                                     modeBest = mode;
@@ -497,7 +493,9 @@ class Utils {
                             window.setAttributes(layoutParams);
                         }
                         if (BuildConfig.DEBUG)
-                            Toast.makeText(activity, "Video frameRate: " + frameRate + "\nDisplay refreshRate: " + modeBest.getRefreshRate(), Toast.LENGTH_LONG).show();
+                            Toast.makeText(activity, modes + "\n" +
+                                    "Video frameRate: " + frameRate + "\n" +
+                                    "Current display refreshRate: " + modeBest.getRefreshRate(), Toast.LENGTH_LONG).show();
                     }
                 }
             }

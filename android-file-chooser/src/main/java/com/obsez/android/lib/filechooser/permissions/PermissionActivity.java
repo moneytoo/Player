@@ -70,7 +70,9 @@ public class PermissionActivity extends AppCompatActivity {
         }
         if (_permissions_denied.isEmpty()) {
             if (_permissions_granted.isEmpty()) {
-                throw new RuntimeException("there are no permissions");
+                // HACK: https://github.com/hedzr/android-file-chooser/issues/73
+                //throw new RuntimeException("there are no permissions");
+                finish();
             } else {
                 if (_permissionListener != null) {
                     _permissionListener.onPermissionGranted(_permissions_granted.toArray(new String[0]));

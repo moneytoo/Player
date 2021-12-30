@@ -163,6 +163,8 @@ public class PlayerActivity extends Activity {
     private Uri nextUri;
     private static boolean isTvBox;
     public static boolean locked = false;
+    private Thread nextUriThread;
+    public Thread frameRateSwitchThread;
 
     public static boolean restoreControllerTimeout = false;
     public static boolean shortControllerTimeout = false;
@@ -579,12 +581,13 @@ public class PlayerActivity extends Activity {
             Intent intent = new Intent();
             if (!playbackFinished) {
                 if (player.isCurrentMediaItemSeekable()) {
-                    long position;
-                    if (mPrefs.persistentMode)
-                        position = mPrefs.nonPersitentPosition;
-                    else
-                        position = player.getCurrentPosition();
-                    intent.putExtra(API_POSITION, (int) position);
+                    if (mPrefs.persistentMode) {
+                        intent.putExtra(API_POSITION, (int) mPrefs.nonPersitentPosition);
+                    } else {
+                        if (player != null) {
+                            intent.putExtra(API_POSITION, (int) player.getCurrentPosition());
+                        }
+                    }
                 }
             }
             setResult(Activity.RESULT_OK, intent);
@@ -840,7 +843,7 @@ public class PlayerActivity extends Activity {
                     }
                 }
 
-                if (!uriAlreadyTaken) {
+                if (!uriAlreadyTaken && uri != null) {
                     try {
                         contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                     } catch (SecurityException e) {
@@ -1027,8 +1030,19 @@ public class PlayerActivity extends Activity {
 
             ((DoubleTapPlayerView)playerView).setDoubleTapEnabled(true);
 
-            if (!apiAccess)
-                nextUri = findNext();
+            if (!apiAccess) {
+                if (nextUriThread != null) {
+                    nextUriThread.interrupt();
+                }
+                nextUri = null;
+                nextUriThread = new Thread(() -> {
+                    Uri uri = findNext();
+                    if (!Thread.currentThread().isInterrupted()) {
+                        nextUri = uri;
+                    }
+                });
+                nextUriThread.start();
+            }
 
             player.setHandleAudioBecomingNoisy(true);
             mediaSession.setActive(true);
@@ -1362,6 +1376,9 @@ public class PlayerActivity extends Activity {
 
     public void setSelectedTracks(final String subtitleId, final String audioId) {
         if ("#none".equals(subtitleId)) {
+            if (trackSelector == null) {
+                return;
+            }
             trackSelector.setParameters(trackSelector.buildUponParameters().setDisabledTextTrackSelectionFlags(C.SELECTION_FLAG_DEFAULT | C.SELECTION_FLAG_FORCED));
         }
 
