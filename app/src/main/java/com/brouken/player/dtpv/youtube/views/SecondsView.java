@@ -30,6 +30,7 @@ public final class SecondsView extends ConstraintLayout {
     private int seconds;
     private boolean isForward;
     private int icon;
+    private boolean animate;
 
     private final ValueAnimator firstAnimator;
     private final ValueAnimator secondAnimator;
@@ -44,6 +45,7 @@ public final class SecondsView extends ConstraintLayout {
         seconds = 0;
         isForward = true;
         icon = R.drawable.ic_play_triangle;
+        animate = false;
 
         LayoutInflater.from(context).inflate(R.layout.yt_seconds_view, this, true);
 
@@ -62,7 +64,8 @@ public final class SecondsView extends ConstraintLayout {
         }, new Runnable() {
             @Override
             public void run() {
-                secondAnimator.start();
+                if (animate)
+                    secondAnimator.start();
             }
         });
 
@@ -81,7 +84,8 @@ public final class SecondsView extends ConstraintLayout {
         }, new Runnable() {
             @Override
             public void run() {
-                thirdAnimator.start();
+                if (animate)
+                    thirdAnimator.start();
             }
         });
 
@@ -101,7 +105,8 @@ public final class SecondsView extends ConstraintLayout {
         }, new Runnable() {
             @Override
             public void run() {
-                fourthAnimator.start();
+                if (animate)
+                    fourthAnimator.start();
             }
         });
 
@@ -120,7 +125,8 @@ public final class SecondsView extends ConstraintLayout {
         }, new Runnable() {
             @Override
             public void run() {
-                fifthAnimator.start();
+                if (animate)
+                    fifthAnimator.start();
             }
         });
 
@@ -139,7 +145,8 @@ public final class SecondsView extends ConstraintLayout {
         }, new Runnable() {
             @Override
             public void run() {
-                firstAnimator.start();
+                if (animate)
+                    firstAnimator.start();
             }
         });
     }
@@ -214,6 +221,7 @@ public final class SecondsView extends ConstraintLayout {
      */
     public final void start() {
         stop();
+        animate = true;
         firstAnimator.start();
     }
 
@@ -221,6 +229,7 @@ public final class SecondsView extends ConstraintLayout {
      * Stops the triangle animation
      */
     public final void stop() {
+        animate = false;
         firstAnimator.cancel();
         secondAnimator.cancel();
         thirdAnimator.cancel();

@@ -528,7 +528,7 @@ public final class YouTubeOverlay extends ConstraintLayout implements PlayerDoub
             constraintSet.connect(secondsView.getId(), ConstraintSet.START,
                     ConstraintSet.PARENT_ID, ConstraintSet.START);
         }
-        secondsView.start();
+        //secondsView.start();
         constraintSet.applyTo((ConstraintLayout)findViewById(R.id.root_constraint_layout));
     }
 
