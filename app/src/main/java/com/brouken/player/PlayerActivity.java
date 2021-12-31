@@ -37,7 +37,9 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Rational;
 import android.util.TypedValue;
+import android.view.InputDevice;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -617,7 +619,6 @@ public class PlayerActivity extends Activity {
                 break;
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
-                playerView.removeCallbacks(playerView.textClearRunnable);
                 Utils.adjustVolume(mAudioManager, playerView, keyCode == KeyEvent.KEYCODE_VOLUME_UP, event.getRepeatCount() == 0);
                 return true;
             case KeyEvent.KEYCODE_BUTTON_SELECT:
@@ -759,6 +760,19 @@ public class PlayerActivity extends Activity {
         } else {
             return super.dispatchKeyEvent(event);
         }
+    }
+
+    @Override
+    public boolean onGenericMotionEvent(MotionEvent event) {
+        if (0 != (event.getSource() & InputDevice.SOURCE_CLASS_POINTER)) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_SCROLL:
+                    final float value = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
+                    Utils.adjustVolume(mAudioManager, playerView, value > 0.0f, Math.abs(value) > 1.0f);
+                    return true;
+            }
+        }
+        return super.onGenericMotionEvent(event);
     }
 
     @Override

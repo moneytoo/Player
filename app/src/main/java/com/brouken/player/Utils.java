@@ -147,6 +147,8 @@ class Utils {
     }
 
     public static void adjustVolume(final AudioManager audioManager, final CustomStyledPlayerView playerView, final boolean raise, boolean canBoost) {
+        playerView.removeCallbacks(playerView.textClearRunnable);
+
         final int volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
         final int volumeMax = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
         boolean volumeActive = volume != 0;
@@ -190,6 +192,8 @@ class Utils {
         if (PlayerActivity.loudnessEnhancer != null)
             PlayerActivity.loudnessEnhancer.setEnabled(PlayerActivity.boostLevel > 0);
         playerView.setHighlight(PlayerActivity.boostLevel > 0);
+
+        playerView.postDelayed(playerView.textClearRunnable, CustomStyledPlayerView.MESSAGE_TIMEOUT_KEY);
     }
 
     public static void setButtonEnabled(final Context context, final ImageButton button, final boolean enabled) {
