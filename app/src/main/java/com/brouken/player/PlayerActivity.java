@@ -578,6 +578,12 @@ public class PlayerActivity extends Activity {
     }
 
     @Override
+    protected void onDestroy() {
+        mBrightnessControl = null;
+        super.onDestroy();
+    }
+
+    @Override
     public void finish() {
         if (intentReturnResult) {
             Intent intent = new Intent();

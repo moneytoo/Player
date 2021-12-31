@@ -43,7 +43,7 @@ class BrightnessControl {
             playerView.setCustomErrorMessage("");
         } else {
             playerView.setIconBrightness();
-            playerView.setCustomErrorMessage(" " + PlayerActivity.mBrightnessControl.currentBrightnessLevel);
+            playerView.setCustomErrorMessage(" " + currentBrightnessLevel);
         }
     }
 
