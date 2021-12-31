@@ -771,6 +771,19 @@ public class PlayerActivity extends Activity {
                     Utils.adjustVolume(mAudioManager, playerView, value > 0.0f, Math.abs(value) > 1.0f);
                     return true;
             }
+        } else if ((event.getSource() & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK &&
+                event.getAction() == MotionEvent.ACTION_MOVE) {
+            // TODO: This somehow works, but it would use better filtering
+            float value = event.getAxisValue(MotionEvent.AXIS_RZ);
+            for (int i = 0; i < event.getHistorySize(); i++) {
+                float historical = event.getHistoricalAxisValue(MotionEvent.AXIS_RZ, i);
+                if (Math.abs(historical) > value) {
+                    value = historical;
+                }
+            }
+            if (Math.abs(value) == 1.0f) {
+                Utils.adjustVolume(mAudioManager, playerView, value < 0, true);
+            }
         }
         return super.onGenericMotionEvent(event);
     }
