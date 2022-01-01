@@ -103,10 +103,24 @@ Install app like [MediaInfo](https://play.google.com/store/apps/details?id=net.m
 
 ### I prefer using media library instead of a file chooser...
 
-Just Player uses system file chooser which already allows two different browsing modes: **Videos** - listing only device directories that contain videos; **File browser** - full navigation in the device file system structure
+Just Player uses system file chooser which already allows two different browsing modes: 
+
+1. **Videos** - listing only device directories that contain videos
+
+    <img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/readmeScreenshots/files_1.png" width="280">
+
+2. **File browser** - full navigation in the device file system structure
+
+    <img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/readmeScreenshots/files_2.png" width="280">
 
 Alternatively, some people choose to use the media library function of
-[Nova Video Player](https://github.com/nova-video-player/aos-AVP) and integrate it with Just Player by enabling "*Allow using another video player*" feature. This also gives you convenient access to content on network storages (SMB, UPnP, FTP etc.).
+[Nova Video Player](https://github.com/nova-video-player/aos-AVP) and integrate it with Just Player by enabling "*Allow using another video player*" feature. This also gives you convenient access to content on network storages (SMB, UPnP, FTP and SFTP).
+
+### How to access videos on network storages (SMB, WebDAV, SFTP, etc.)?
+
+1. The default system file chooser allows access to any remote storage using appropriate _Document Provider_. I highly recommend [CIFS Documents Provider](https://github.com/wa2c/cifs-documents-provider) for accessing Samba shares. There are also providers like [WebDAV Provider](https://github.com/alexbakker/webdav-provider), [FileManagerUtils](https://github.com/rikyiso01/FileManagerUtils) (SFTP client) and [rcx](https://github.com/x0b/rcx) (file explorer). Sadly, Document providers are not supported on Android TV.
+
+2. Open video directly from your favorite file explorer. _Solid Explorer_ works really well, especially if you also want to automatically load subtitles.
 
 ### How to zoom in to get rid of black bars?
 
