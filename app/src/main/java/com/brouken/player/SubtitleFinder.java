@@ -39,6 +39,14 @@ public class SubtitleFinder {
         urls = new LinkedHashMap<>();
     }
 
+    public static boolean isUriCompatible(Uri uri) {
+        String pth = uri.getPath();
+        if (pth != null) {
+            return pth.lastIndexOf('.') > -1;
+        }
+        return false;
+    }
+
     private void addLanguage(String lang) {
         urls.put(buildUri(lang + ".srt"), false);
         urls.put(buildUri(Util.normalizeLanguageCode(lang) + ".srt"), false);

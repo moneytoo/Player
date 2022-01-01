@@ -1659,8 +1659,10 @@ public class PlayerActivity extends Activity {
 
         if (Utils.isSupportedNetworkUri(mPrefs.mediaUri) && Utils.isProgressiveContainerUri(mPrefs.mediaUri)) {
             SubtitleUtils.clearCache(this);
-            subtitleFinder = new SubtitleFinder(PlayerActivity.this, mPrefs.mediaUri);
-            subtitleFinder.start();
+            if (SubtitleFinder.isUriCompatible(mPrefs.mediaUri)) {
+                subtitleFinder = new SubtitleFinder(PlayerActivity.this, mPrefs.mediaUri);
+                subtitleFinder.start();
+            }
             return;
         }
 
