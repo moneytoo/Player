@@ -62,6 +62,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     };
 
     private final AudioManager mAudioManager;
+    private BrightnessControl brightnessControl;
 
     private final TextView exoErrorMessage;
     private final View exoProgress;
@@ -257,12 +258,12 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
             if (Math.abs(gestureScrollY) > SCROLL_STEP) {
                 if (gestureOrientation == Orientation.UNKNOWN) {
                     canBoostVolume = Utils.isVolumeMax(mAudioManager);
-                    canSetAutoBrightness = PlayerActivity.mBrightnessControl.currentBrightnessLevel <= 0;
+                    canSetAutoBrightness = brightnessControl.currentBrightnessLevel <= 0;
                 }
                 gestureOrientation = Orientation.VERTICAL;
 
                 if (motionEvent.getX() < (float)(getWidth() / 2)) {
-                    PlayerActivity.mBrightnessControl.changeBrightness(this, gestureScrollY > 0, canSetAutoBrightness);
+                    brightnessControl.changeBrightness(this, gestureScrollY > 0, canSetAutoBrightness);
                 } else {
                     Utils.adjustVolume(mAudioManager, this, gestureScrollY > 0, canBoostVolume);
                 }
@@ -413,5 +414,9 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
             systemGestureExclusionRect.right = right;
             setSystemGestureExclusionRects(Collections.singletonList(systemGestureExclusionRect));
         }
+    }
+
+    public void setBrightnessControl(BrightnessControl brightnessControl) {
+        this.brightnessControl = brightnessControl;
     }
 }

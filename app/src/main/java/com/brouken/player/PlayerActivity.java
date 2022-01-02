@@ -117,7 +117,7 @@ public class PlayerActivity extends Activity {
     private Object mPictureInPictureParamsBuilder;
 
     public Prefs mPrefs;
-    public static BrightnessControl mBrightnessControl;
+    public BrightnessControl mBrightnessControl;
     public static boolean haveMedia;
     private boolean videoLoading;
     public static boolean controllerVisible;
@@ -454,6 +454,7 @@ public class PlayerActivity extends Activity {
             mBrightnessControl.currentBrightnessLevel = mPrefs.brightness;
             mBrightnessControl.setScreenBrightness(mBrightnessControl.levelToBrightness(mBrightnessControl.currentBrightnessLevel));
         }
+        playerView.setBrightnessControl(mBrightnessControl);
 
         final LinearLayout exoBasicControls = playerView.findViewById(R.id.exo_basic_controls);
         final ImageButton exoSubtitle = exoBasicControls.findViewById(R.id.exo_subtitle);
@@ -575,12 +576,6 @@ public class PlayerActivity extends Activity {
         super.onStop();
         alive = false;
         releasePlayer(false);
-    }
-
-    @Override
-    protected void onDestroy() {
-        mBrightnessControl = null;
-        super.onDestroy();
     }
 
     @Override
