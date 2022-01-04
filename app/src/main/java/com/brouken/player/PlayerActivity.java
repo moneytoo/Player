@@ -37,6 +37,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Rational;
 import android.util.TypedValue;
+import android.view.HapticFeedbackConstants;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -167,6 +168,9 @@ public class PlayerActivity extends Activity {
     public static boolean locked = false;
     private Thread nextUriThread;
     public Thread frameRateSwitchThread;
+    public Thread chaptersThread;
+    private long lastScrubbingPosition;
+    public long[] chapterStarts;
 
     public static boolean restoreControllerTimeout = false;
     public static boolean shortControllerTimeout = false;
@@ -259,6 +263,7 @@ public class PlayerActivity extends Activity {
                 if (restorePlayState) {
                     player.pause();
                 }
+                lastScrubbingPosition = position;
                 scrubbingNoticeable = false;
                 isScrubbing = true;
                 frameRendered = true;
@@ -271,6 +276,12 @@ public class PlayerActivity extends Activity {
             @Override
             public void onScrubMove(TimeBar timeBar, long position) {
                 reportScrubbing(position);
+                for (long start : chapterStarts) {
+                    if ((lastScrubbingPosition < start && position >= start) || (lastScrubbingPosition > start && position <= start)) {
+                        playerView.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
+                    }
+                }
+                lastScrubbingPosition = position;
             }
 
             @Override
@@ -421,6 +432,8 @@ public class PlayerActivity extends Activity {
             }
             return windowInsets;
         });
+        timeBar.setAdMarkerColor(Color.argb(0x00, 0xFF, 0xFF, 0xFF));
+        timeBar.setPlayedAdMarkerColor(Color.argb(0x98, 0xFF, 0xFF, 0xFF));
 
         try {
             CustomDefaultTrackNameProvider customDefaultTrackNameProvider = new CustomDefaultTrackNameProvider(getResources());
@@ -1007,6 +1020,8 @@ public class PlayerActivity extends Activity {
 
         locked = false;
 
+        chapterStarts = new long[0];
+
         if (haveMedia) {
             if (isNetworkUri) {
                 timeBar.setBufferedColor(DefaultTimeBar.DEFAULT_BUFFERED_COLOR);
@@ -1071,6 +1086,8 @@ public class PlayerActivity extends Activity {
                 });
                 nextUriThread.start();
             }
+
+            Utils.markChapters(this, mPrefs.mediaUri, controlView);
 
             player.setHandleAudioBecomingNoisy(true);
             mediaSession.setActive(true);

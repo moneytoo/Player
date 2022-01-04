@@ -63,7 +63,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
     implementation 'com.ibm.icu:icu4j:70.1'
-    implementation 'com.arthenica:ffmpeg-kit-min:4.5.LTS'
+    implementation 'com.arthenica:ffmpeg-kit-min:4.5.1.LTS'
     implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'

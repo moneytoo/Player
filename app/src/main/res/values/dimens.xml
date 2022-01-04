@@ -9,4 +9,6 @@
     <dimen name="exo_styled_progress_enabled_thumb_size" tools:keep="@dimen/exo_styled_progress_enabled_thumb_size">12dp</dimen>
     <dimen name="exo_styled_progress_dragged_thumb_size" tools:keep="@dimen/exo_styled_progress_dragged_thumb_size">18dp</dimen>
     <dimen name="exo_styled_progress_margin_bottom" tools:keep="@dimen/exo_styled_progress_margin_bottom">51dp</dimen>
+
+    <dimen name="marker_width">3dp</dimen>
 </resources>

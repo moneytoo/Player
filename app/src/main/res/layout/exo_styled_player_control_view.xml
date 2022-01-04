@@ -96,7 +96,8 @@
       app:bar_gravity="bottom"
       app:touch_target_height="@dimen/exo_styled_progress_touch_target_height"
       app:scrubber_enabled_size="@dimen/exo_styled_progress_enabled_thumb_size"
-      app:scrubber_dragged_size="@dimen/exo_styled_progress_dragged_thumb_size"/>
+      app:scrubber_dragged_size="@dimen/exo_styled_progress_dragged_thumb_size"
+      app:ad_marker_width="@dimen/marker_width"/>
 
   <LinearLayout android:id="@+id/exo_minimal_controls"
       android:layout_width="wrap_content"

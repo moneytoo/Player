@@ -38,12 +38,14 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.documentfile.provider.DocumentFile;
 
+import com.arthenica.ffmpegkit.Chapter;
 import com.arthenica.ffmpegkit.FFmpegKitConfig;
 import com.arthenica.ffmpegkit.FFprobeKit;
 import com.arthenica.ffmpegkit.MediaInformation;
 import com.arthenica.ffmpegkit.MediaInformationSession;
 import com.arthenica.ffmpegkit.StreamInformation;
 import com.google.android.exoplayer2.Format;
+import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 import com.obsez.android.lib.filechooser.ChooserDialog;
 
 import java.io.File;
@@ -399,20 +401,10 @@ class Utils {
                 activity.frameRateSwitchThread.interrupt();
             }
             activity.frameRateSwitchThread = new Thread(() -> {
-                String path;
-                if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
-                    path = FFmpegKitConfig.getSafParameterForRead(activity, uri);
-                } else if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
-                    // TODO: FFprobeKit doesn't accept encoded uri (like %20) (?!)
-                    path = uri.getSchemeSpecificPart();
-                } else {
-                    path = uri.toString();
-                }
-                float frameRate = Format.NO_VALUE;
                 // Use ffprobe as ExoPlayer doesn't detect video frame rate for lots of videos
                 // and has different precision than ffprobe (so do not mix that)
-                MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(path);
-                MediaInformation mediaInformation = mediaInformationSession.getMediaInformation();
+                float frameRate = Format.NO_VALUE;
+                MediaInformation mediaInformation = getMediaInformation(activity, uri);
                 if (mediaInformation == null)
                     return;
                 List<StreamInformation> streamInformations = mediaInformation.getStreams();
@@ -627,5 +619,45 @@ class Utils {
 
     public static float normalizeScaleFactor(float scaleFactor) {
         return Math.max(0.25f, Math.min(scaleFactor, 2.0f));
+    }
+
+    private static MediaInformation getMediaInformation(final Activity activity, final Uri uri) {
+        String path;
+        if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
+            path = FFmpegKitConfig.getSafParameterForRead(activity, uri);
+        } else if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
+            // TODO: FFprobeKit doesn't accept encoded uri (like %20) (?!)
+            path = uri.getSchemeSpecificPart();
+        } else {
+            path = uri.toString();
+        }
+        MediaInformationSession mediaInformationSession = FFprobeKit.getMediaInformation(path);
+        return mediaInformationSession.getMediaInformation();
+    }
+
+    public static void markChapters(final PlayerActivity activity, final Uri uri, StyledPlayerControlView controlView) {
+        if (activity.chaptersThread != null) {
+            activity.chaptersThread.interrupt();
+        }
+        activity.chaptersThread = new Thread(() -> {
+            MediaInformation mediaInformation = getMediaInformation(activity, uri);
+            if (mediaInformation == null)
+                return;
+            final List<Chapter> chapters = mediaInformation.getChapters();
+            final long[] starts = new long[chapters.size()];
+            final boolean[] played = new boolean[chapters.size()];
+
+            for (int i = 0; i < chapters.size(); i++) {
+                Chapter chapter = chapters.get(i);
+                final long start = chapter.getStart();
+                if (start > 0) {
+                    starts[i] = start / 1_000_000;
+                    played[i] = true;
+                }
+            }
+            activity.chapterStarts = starts;
+            activity.runOnUiThread(() -> controlView.setExtraAdGroupMarkers(starts, played));
+        });
+        activity.chaptersThread.start();
     }
 }
