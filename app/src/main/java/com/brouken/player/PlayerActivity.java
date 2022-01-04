@@ -1205,6 +1205,15 @@ public class PlayerActivity extends Activity {
                 final long position = player.getCurrentPosition();
                 if (position + 4000 >= duration) {
                     isNearEnd = true;
+                } else {
+                    // Last chapter is probably "Credits" chapter
+                    final int chapters = chapterStarts.length;
+                    if (chapters > 1) {
+                        final long lastChapter = chapterStarts[chapters - 1];
+                        if (duration - lastChapter < duration / 10 && position > lastChapter) {
+                            isNearEnd = true;
+                        }
+                    }
                 }
             }
             setEndControlsVisible(haveMedia && (state == Player.STATE_ENDED || isNearEnd));
