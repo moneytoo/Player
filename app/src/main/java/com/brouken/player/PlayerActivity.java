@@ -1690,8 +1690,9 @@ public class PlayerActivity extends Activity {
         if (mPrefs.scopeUri != null || isTvBox) {
             DocumentFile video = null;
             File videoRaw = null;
+            final String scheme = mPrefs.mediaUri.getScheme();
 
-            if (!isTvBox && mPrefs.scopeUri != null) {
+            if (mPrefs.scopeUri != null) {
                 if ("com.android.externalstorage.documents".equals(mPrefs.mediaUri.getHost()) ||
                         "org.courville.nova.provider".equals(mPrefs.mediaUri.getHost())) {
                     // Fast search based on path in uri
@@ -1703,16 +1704,16 @@ public class PlayerActivity extends Activity {
                     DocumentFile fileMedia = DocumentFile.fromSingleUri(this, mPrefs.mediaUri);
                     video = SubtitleUtils.findDocInScope(fileScope, fileMedia);
                 }
-            } else if (isTvBox) {
+            } else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
                 videoRaw = new File(mPrefs.mediaUri.getSchemeSpecificPart());
                 video = DocumentFile.fromFile(videoRaw);
             }
 
             if (video != null) {
-                DocumentFile subtitle;
-                if (!isTvBox) {
+                DocumentFile subtitle = null;
+                if (mPrefs.scopeUri != null) {
                     subtitle = SubtitleUtils.findSubtitle(video);
-                } else {
+                } else if (ContentResolver.SCHEME_FILE.equals(scheme)) {
                     File parentRaw = videoRaw.getParentFile();
                     DocumentFile dir = DocumentFile.fromFile(parentRaw);
                     subtitle = SubtitleUtils.findSubtitle(video, dir);
