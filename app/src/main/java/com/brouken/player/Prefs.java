@@ -64,7 +64,7 @@ class Prefs {
 
     public boolean tunneling = false;
     public boolean skipSilence = false;
-    public boolean frameRateMatching;
+    public boolean frameRateMatching = false;
     public boolean repeatToggle = false;
 
     private LinkedHashMap positions;
@@ -75,7 +75,6 @@ class Prefs {
     public Prefs(Context context) {
         mContext = context;
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        frameRateMatching = Utils.isTvBox(context) && Build.VERSION.SDK_INT < 30;
         loadSavedPreferences();
         loadPositions();
     }
@@ -292,14 +291,4 @@ class Prefs {
     public void setPersistent(boolean persistentMode) {
         this.persistentMode = persistentMode;
     }
-
-    public static void initDefaults(Context context) {
-        final SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (!sharedPreferences.contains(PREF_KEY_FRAMERATE_MATCHING)) {
-            final SharedPreferences.Editor sharedPreferencesEditor = sharedPreferences.edit();
-            sharedPreferencesEditor.putBoolean(PREF_KEY_FRAMERATE_MATCHING, Utils.isTvBox(context) && Build.VERSION.SDK_INT < 30);
-            sharedPreferencesEditor.commit();
-        }
-    }
-
 }

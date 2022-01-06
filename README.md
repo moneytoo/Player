@@ -52,7 +52,7 @@ To load external (non-embedded) subtitles, long press the file open action in th
 
 Some advanced features can be configured in settings. To access it, long press the ⚙️ gear icon. (Alternatively, you can also enter this settings from App info screen.)
 
- * Auto frame rate matching (enabled by default on Android TV up to Android 10). (On Android 11+ and "compatible" displays, ExoPlayer supports [seamless refresh rate switching](https://source.android.com/devices/graphics/multiple-refresh-rate))
+ * Auto frame rate matching. (On Android 11+ and "compatible" displays, ExoPlayer supports [seamless refresh rate switching](https://source.android.com/devices/graphics/multiple-refresh-rate))
  * [Tunneled playback](https://medium.com/google-exoplayer/tunneled-video-playback-in-exoplayer-84f084a8094d) (disabled by default). Enabling tunneling can improve playback of 4K/HDR content on Android TV.
  * Auto picture-in-picture. When you leave Just Player through the home button and video is playing, PiP will be activated automatically.
  * Skip silence

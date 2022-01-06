@@ -30,8 +30,6 @@ public class SettingsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        Prefs.initDefaults(this);
-
         setContentView(R.layout.settings_activity);
         if (savedInstanceState == null) {
             getSupportFragmentManager()
