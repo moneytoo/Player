@@ -58,106 +58,105 @@ public class SubtitleFinder {
     }
 
     public void start() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                urls.put(buildUri("srt"), false);
+        new Thread(() -> {
+            urls.put(buildUri("srt"), false);
+            for (String language : Utils.getDeviceLanguages()) {
+                addLanguage(language);
+            }
+            urls.put(buildUri("ssa"), false);
+            urls.put(buildUri("ass"), false);
+            urls.put(buildUri("vtt"), false);
 
-                for (String language : Utils.getDeviceLanguages()) {
-                    addLanguage(language);
+            OkHttpClient client = new OkHttpClient.Builder()
+                    //.callTimeout(15, TimeUnit.SECONDS)
+                    .build();
+
+            Callback callback = new Callback() {
+                @Override
+                public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    countDownLatch.countDown();
                 }
 
-                OkHttpClient client = new OkHttpClient.Builder()
-                        //.callTimeout(15, TimeUnit.SECONDS)
-                        .build();
-
-                Callback callback = new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                        countDownLatch.countDown();
-                    }
-
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        Uri url = Uri.parse(response.request().url().toString());
-                        Utils.log(response.code() + ": " + url);
-                        if (response.isSuccessful()) {
-                            synchronized (urls) {
-                                urls.put(url, true);
-                            }
+                @Override
+                public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                    Uri url = Uri.parse(response.request().url().toString());
+                    Utils.log(response.code() + ": " + url);
+                    if (response.isSuccessful()) {
+                        synchronized (urls) {
+                            urls.put(url, true);
                         }
-                        response.close();
-                        countDownLatch.countDown();
                     }
-                };
-
-                countDownLatch = new CountDownLatch(urls.size());
-
-                for (Uri url : urls.keySet()) {
-                    // Total Commander 3.24 / LAN plugin 3.20 does not support HTTP HEAD
-                    //Request request = new Request.Builder().url(url.toString()).head().build();
-                    Request request = new Request.Builder().url(url.toString()).build();
-                    client.newCall(request).enqueue(callback);
+                    response.close();
+                    countDownLatch.countDown();
                 }
+            };
 
-                try {
-                    countDownLatch.await();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            countDownLatch = new CountDownLatch(urls.size());
+
+            for (Uri url : urls.keySet()) {
+                // Total Commander 3.24 / LAN plugin 3.20 does not support HTTP HEAD
+                //Request request = new Request.Builder().url(url.toString()).head().build();
+                Request request = new Request.Builder().url(url.toString()).build();
+                client.newCall(request).enqueue(callback);
+            }
+
+            try {
+                countDownLatch.await();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+            for (Map.Entry<Uri, Boolean> set : urls.entrySet()) {
+                if (set.getValue()) {
+                    subtitleUri = set.getKey();
+                    break;
                 }
+            }
 
-                for (Map.Entry<Uri, Boolean> set : urls.entrySet()) {
-                    if (set.getValue()) {
-                        subtitleUri = set.getKey();
-                        break;
-                    }
-                }
+            if (subtitleUri == null) {
+                return;
+            }
 
-                if (subtitleUri == null) {
+            Utils.log(subtitleUri.toString());
+
+            // ProtocolException when reusing client:
+            // java.net.ProtocolException: Unexpected status line: 1
+            client = new OkHttpClient.Builder()
+                    //.callTimeout(15, TimeUnit.SECONDS)
+                    .build();
+
+            Request request = new Request.Builder().url(subtitleUri.toString()).build();
+            try (Response response = client.newCall(request).execute()) {
+                final ResponseBody responseBody = response.body();
+
+                if (responseBody == null || responseBody.contentLength() > 2_000_000) {
                     return;
                 }
 
-                Utils.log(subtitleUri.toString());
+                InputStream inputStream = responseBody.byteStream();
+                Uri convertedSubtitleUri = SubtitleUtils.convertInputStreamToUTF(activity, subtitleUri, inputStream);
 
-                // ProtocolException when reusing client:
-                // java.net.ProtocolException: Unexpected status line: 1
-                client = new OkHttpClient.Builder()
-                        //.callTimeout(15, TimeUnit.SECONDS)
-                        .build();
+                if (convertedSubtitleUri == null) {
+                    return;
+                }
 
-                Request request = new Request.Builder().url(subtitleUri.toString()).build();
-                try (Response response = client.newCall(request).execute()) {
-                    final ResponseBody responseBody = response.body();
-
-                    if (responseBody == null || responseBody.contentLength() > 2_000_000) {
-                        return;
-                    }
-
-                    InputStream inputStream = responseBody.byteStream();
-                    Uri convertedSubtitleUri = SubtitleUtils.convertInputStreamToUTF(activity, subtitleUri, inputStream);
-
-                    if (convertedSubtitleUri == null) {
-                        return;
-                    }
-
-                    activity.runOnUiThread(() -> {
-                        activity.mPrefs.updateSubtitle(convertedSubtitleUri);
-                        if (PlayerActivity.player != null) {
-                            MediaItem mediaItem = PlayerActivity.player.getCurrentMediaItem();
-                            if (mediaItem != null) {
-                                MediaItem.SubtitleConfiguration subtitle = SubtitleUtils.buildSubtitle(activity, convertedSubtitleUri);
-                                mediaItem = mediaItem.buildUpon().setSubtitleConfigurations(Collections.singletonList(subtitle)).build();
-                                PlayerActivity.player.setMediaItem(mediaItem, false);
-                                if (BuildConfig.DEBUG) {
-                                    Toast.makeText(activity, "Subtitle found", Toast.LENGTH_SHORT).show();
-                                }
+                activity.runOnUiThread(() -> {
+                    activity.mPrefs.updateSubtitle(convertedSubtitleUri);
+                    if (PlayerActivity.player != null) {
+                        MediaItem mediaItem = PlayerActivity.player.getCurrentMediaItem();
+                        if (mediaItem != null) {
+                            MediaItem.SubtitleConfiguration subtitle = SubtitleUtils.buildSubtitle(activity, convertedSubtitleUri);
+                            mediaItem = mediaItem.buildUpon().setSubtitleConfigurations(Collections.singletonList(subtitle)).build();
+                            PlayerActivity.player.setMediaItem(mediaItem, false);
+                            if (BuildConfig.DEBUG) {
+                                Toast.makeText(activity, "Subtitle found", Toast.LENGTH_SHORT).show();
                             }
                         }
-                    });
-                } catch (IOException e) {
-                    Utils.log(e.toString());
-                    e.printStackTrace();
-                }
+                    }
+                });
+            } catch (IOException e) {
+                Utils.log(e.toString());
+                e.printStackTrace();
             }
         }).start();
     }
