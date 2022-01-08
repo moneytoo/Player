@@ -53,7 +53,7 @@ To load external (non-embedded) subtitles, long press the file open action in th
 Some advanced features can be configured in settings. To access it, long press the ⚙️ gear icon. (Alternatively, you can also enter this settings from App info screen.)
 
  * Auto frame rate matching. (On Android 11+ and "compatible" displays, ExoPlayer supports [seamless refresh rate switching](https://source.android.com/devices/graphics/multiple-refresh-rate))
- * [Tunneled playback](https://medium.com/google-exoplayer/tunneled-video-playback-in-exoplayer-84f084a8094d) (disabled by default). Enabling tunneling can improve playback of 4K/HDR content on Android TV.
+ * [Tunneled playback](https://medium.com/google-exoplayer/tunneled-video-playback-in-exoplayer-84f084a8094d). Enabling tunneling can improve playback of 4K/HDR content on Android TV.
  * Auto picture-in-picture. When you leave Just Player through the home button and video is playing, PiP will be activated automatically.
  * Skip silence
  * Repeat toggle
@@ -125,6 +125,12 @@ Alternatively, some people choose to use the media library function of
 ### How to zoom in to get rid of black bars?
 
 If your device has a touchscreen you can use the pinch-to-zoom gesture or just tap the Resize button for a Crop. **Android TV**: Long tap the Resize button to enter Zoom mode. Then use Up and Down keys for precise zoom.
+
+### Why is the APK so big?
+
+The APK available here contains native libraries for all supported architectures (`armeabi-v7a`/`armeabi-v7a-neon`/`arm64-v8a`/`x86`/`x86_64`), which is what takes the most space. Although Just Player relies mostly on device decoders, it packs _FFmpeg_ for some advanced features (video chapters and frame rate detection). The second largest dependency is [ICU4J](https://github.com/moneytoo/Player/issues/76) - 10 MB only for charset detection of subtitle files. 🤷
+
+Please note that installs and updates made through Google Play are significantly smaller thanks to Android App Bundles and delta updates.
 
 ## Other open source Android video players
 
