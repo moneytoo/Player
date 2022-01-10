@@ -632,7 +632,12 @@ class Utils {
     private static MediaInformation getMediaInformation(final Activity activity, final Uri uri) {
         String path;
         if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
-            path = FFmpegKitConfig.getSafParameterForRead(activity, uri);
+            try {
+                path = FFmpegKitConfig.getSafParameterForRead(activity, uri);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+                return null;
+            }
         } else if (ContentResolver.SCHEME_FILE.equals(uri.getScheme())) {
             // TODO: FFprobeKit doesn't accept encoded uri (like %20) (?!)
             path = uri.getSchemeSpecificPart();
