@@ -1089,7 +1089,7 @@ public class PlayerActivity extends Activity {
 
             Utils.markChapters(this, mPrefs.mediaUri, controlView);
 
-            player.setHandleAudioBecomingNoisy(true);
+            player.setHandleAudioBecomingNoisy(!isTvBox);
             mediaSession.setActive(true);
         } else {
             playerView.showController();

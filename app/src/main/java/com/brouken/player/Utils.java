@@ -405,8 +405,12 @@ class Utils {
                 // and has different precision than ffprobe (so do not mix that)
                 float frameRate = Format.NO_VALUE;
                 MediaInformation mediaInformation = getMediaInformation(activity, uri);
-                if (mediaInformation == null)
+                if (mediaInformation == null) {
+                    activity.runOnUiThread(() -> {
+                        playIfCan(activity, play);
+                    });
                     return;
+                }
                 List<StreamInformation> streamInformations = mediaInformation.getStreams();
                 for (StreamInformation streamInformation : streamInformations) {
                     if (streamInformation.getType().equals("video")) {
@@ -497,14 +501,18 @@ class Utils {
             }
 
             if (!switchingModes) {
-                if (play) {
-                    if (PlayerActivity.player != null)
-                        PlayerActivity.player.play();
-                    if (activity.playerView != null)
-                        activity.playerView.hideController();
-                }
+                playIfCan(activity, play);
             }
         });
+    }
+
+    private static void playIfCan(final PlayerActivity activity, boolean play) {
+        if (play) {
+            if (PlayerActivity.player != null)
+                PlayerActivity.player.play();
+            if (activity.playerView != null)
+                activity.playerView.hideController();
+        }
     }
 
     public static boolean alternativeChooser(PlayerActivity activity, Uri initialUri, boolean video) {
