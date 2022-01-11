@@ -634,7 +634,7 @@ class Utils {
         if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
             try {
                 path = FFmpegKitConfig.getSafParameterForRead(activity, uri);
-            } catch (NullPointerException e) {
+            } catch (Exception e) {
                 e.printStackTrace();
                 return null;
             }
