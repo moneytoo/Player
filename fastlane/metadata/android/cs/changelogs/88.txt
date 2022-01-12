@@ -1,0 +1,6 @@
+• Android TV: Tmavé téma při výběru souboru, přidání zoom módu (dlouze potržte tlačítko změny ořezu obrazovky, použijte tlačítka Nahoru/Dolů pro změnu)
+• Řada vylepšení a oprav zobrazení titulků (styly z předvoleb titulků, odsazení při použití pozadí atd.)
+• Vylepšení voleb rychlosti přehrávání (ukládání a obnovení, přidání 1,75×)
+• Ovládání hlasitosti kolečkem myši a joystickem gamepadu
+• Zobrazování kapitol na časovém pruhu
+• Další opravy a vylepšení

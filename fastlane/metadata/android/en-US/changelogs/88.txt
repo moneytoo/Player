@@ -1,0 +1,6 @@
+• Android TV: Dark theme for file chooser, add zoom mode (long tap the Resize button to activate, UP/DOWN to configure)
+• Various subtitle improvements and fixes (caption preference styling, background padding etc.)
+• Improve playback speed options (save and restore, add 1.75×)
+• Volume control using mouse wheel and gamepad joystick
+• Show chapters on time bar
+• Other improvements and fixes
