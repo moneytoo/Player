@@ -18,6 +18,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -265,6 +266,95 @@ public class FileUtil {
             e.printStackTrace();
         }
         return Environment.getExternalStorageDirectory().getAbsolutePath();
+    }
+
+    @NonNull
+    public static LinkedHashMap<String, String> getStoragePaths(Context context) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            return getStoragePathsLow(context);
+        } else {
+            return getStoragePaths24(context);
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.N)
+    @NonNull
+    public static LinkedHashMap<String, String> getStoragePaths24(Context context) {
+        LinkedHashMap<String, String> paths = new LinkedHashMap<>();
+        StorageManager storageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+        try {
+            List<StorageVolume> result = Objects.requireNonNull(storageManager).getStorageVolumes();
+            for (StorageVolume vol : result) {
+                Log.d("X", "  ---Object--" + vol + " | desc: " + vol.getDescription(context));
+                if (Build.VERSION.SDK_INT >= 30) {
+                    File dir = vol.getDirectory();
+                    if (dir == null) {
+                        continue;
+                    }
+                    paths.put(dir.getAbsolutePath(), formatPathAsLabel(dir.getAbsolutePath()));
+                } else {
+                    Method getPath = vol.getClass().getMethod("getPath");
+                    String path = (String) getPath.invoke(vol);
+                    Log.d("X", "    ---path--" + path);
+                    paths.put(path, formatPathAsLabel(path));
+                }
+            }
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+        if (paths.size() == 0) {
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+            paths.put(path, formatPathAsLabel(path));
+        }
+        return paths;
+    }
+
+    @NonNull
+    public static LinkedHashMap<String, String> getStoragePathsLow(Context context) {
+        LinkedHashMap<String, String> paths = new LinkedHashMap<>();
+        StorageManager storageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+        Class<?> storageVolumeClazz = null;
+        try {
+            storageVolumeClazz = Class.forName("android.os.storage.StorageVolume");
+            Method getVolumeList = storageManager.getClass().getMethod("getVolumeList");
+            Method getPath = storageVolumeClazz.getMethod("getPath");
+            Method isRemovableMtd = storageVolumeClazz.getMethod("isRemovable");
+            Object result = getVolumeList.invoke(storageManager);
+            final int length = Array.getLength(result);
+            Log.d("X", "---length--" + length);
+            for (int i = 0; i < length; i++) {
+                Object storageVolumeElement = Array.get(result, i);
+                Log.d("X", "  ---Object--" + storageVolumeElement + "i==" + i);
+                String path = (String) getPath.invoke(storageVolumeElement);
+                Log.d("X", "  ---path_total--" + path);
+                boolean removable = (Boolean) isRemovableMtd.invoke(storageVolumeElement);
+                Log.d("X", "    ---path--" + path);
+                paths.put(path, formatPathAsLabel(path));
+            }
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        if (paths.size() == 0) {
+            String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+            paths.put(path, formatPathAsLabel(path));
+        }
+        return paths;
+    }
+
+    public static String formatPathAsLabel(String path) {
+        return "[ " + path + " ]";
     }
 
     public static long readSDCard(Context context, Boolean isRemovable) {

@@ -46,8 +46,10 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static androidx.appcompat.widget.ListPopupWindow.MATCH_PARENT;
@@ -640,15 +642,14 @@ public class ChooserDialog implements AdapterView.OnItemClickListener, DialogInt
             }
             _list.setLayoutParams(param);
         } else {
-            if (removableRoot == null || primaryRoot == null) {
-                removableRoot = FileUtil.getStoragePath(_context, true);
-                primaryRoot = FileUtil.getStoragePath(_context, false);
+            if (roots == null) {
+                roots = FileUtil.getStoragePaths(_context).keySet();
             }
-            if (path.contains(removableRoot)) {
-                path = path.substring(displayRoot ? removableRoot.lastIndexOf('/') + 1 : removableRoot.length());
-            }
-            if (path.contains(primaryRoot)) {
-                path = path.substring(displayRoot ? primaryRoot.lastIndexOf('/') + 1 : primaryRoot.length());
+            for (String key : roots) {
+                if (path.contains(key)) {
+                    path = path.substring(displayRoot ? key.lastIndexOf('/') + 1 : key.length());
+                    break;
+                }
             }
             _pathView.setText(path);
 
@@ -689,8 +690,7 @@ public class ChooserDialog implements AdapterView.OnItemClickListener, DialogInt
         }
     }
 
-    private String removableRoot = null;
-    private String primaryRoot = null;
+    private Set<String> roots = null;
 
     private void listDirs() {
         _entries.clear();
@@ -703,15 +703,20 @@ public class ChooserDialog implements AdapterView.OnItemClickListener, DialogInt
         File[] files = _currentDir.listFiles(_fileFilter);
 
         // Add the ".." entry
-        if (removableRoot == null || primaryRoot == null) {
-            removableRoot = FileUtil.getStoragePath(_context, true);
-            primaryRoot = FileUtil.getStoragePath(_context, false);
+        LinkedHashMap<String, String> storagePaths = FileUtil.getStoragePaths(_context);
+        Set<String> storageKeys = storagePaths.keySet();
+        boolean listStorages = false;
+        for (String storageKey : storageKeys) {
+            if (_currentDir.getAbsolutePath().equals(storageKey)) {
+                listStorages = true;
+                break;
+            }
         }
-        if (!removableRoot.equals(primaryRoot)) {
-            if (_currentDir.getAbsolutePath().equals(primaryRoot)) {
-                _entries.add(new RootFile(removableRoot, sSdcardStorage)); //⇠
-            } else if (_currentDir.getAbsolutePath().equals(removableRoot)) {
-                _entries.add(new RootFile(primaryRoot, sPrimaryStorage)); //⇽
+        if (listStorages) {
+            for (String storageKey : storageKeys) {
+                if (!_currentDir.getAbsolutePath().equals(storageKey)) {
+                    _entries.add(new RootFile(storageKey, storagePaths.get(storageKey))); //⇠
+                }
             }
         }
         boolean displayPath = false;
