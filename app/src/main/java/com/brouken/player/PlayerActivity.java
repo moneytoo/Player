@@ -34,6 +34,7 @@ import android.provider.Settings;
 import android.support.v4.media.MediaMetadataCompat;
 import android.support.v4.media.session.MediaSessionCompat;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Rational;
 import android.util.TypedValue;
@@ -90,6 +91,7 @@ import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.StyledPlayerControlView;
 import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.ui.TimeBar;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
 import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -99,6 +101,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -114,6 +117,7 @@ public class PlayerActivity extends Activity {
 
     public CustomStyledPlayerView playerView;
     public static ExoPlayer player;
+    private YouTubeOverlay youTubeOverlay;
 
     private Object mPictureInPictureParamsBuilder;
 
@@ -563,6 +567,29 @@ public class PlayerActivity extends Activity {
                 }
             }
         });
+
+        youTubeOverlay = findViewById(R.id.youtube_overlay);
+        youTubeOverlay.performListener(new YouTubeOverlay.PerformListener() {
+            @Override
+            public void onAnimationStart() {
+                youTubeOverlay.setAlpha(1.0f);
+                youTubeOverlay.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd() {
+                youTubeOverlay.animate()
+                        .alpha(0.0f)
+                        .setDuration(300)
+                        .setListener(new AnimatorListenerAdapter() {
+                            @Override
+                            public void onAnimationEnd(Animator animation) {
+                                youTubeOverlay.setVisibility(View.GONE);
+                                youTubeOverlay.setAlpha(1.0f);
+                            }
+                        });
+            }
+        });
     }
 
     @Override
@@ -942,63 +969,59 @@ public class PlayerActivity extends Activity {
         boolean isNetworkUri = mPrefs.mediaUri != null && Utils.isSupportedNetworkUri(mPrefs.mediaUri);
         haveMedia = mPrefs.mediaUri != null && (Utils.fileExists(this, mPrefs.mediaUri) || isNetworkUri);
 
-        if (player == null) {
-            trackSelector = new DefaultTrackSelector(this);
-            if (mPrefs.tunneling) {
-                trackSelector.setParameters(trackSelector.buildUponParameters()
-                        .setTunnelingEnabled(true)
-                );
-            }
-            trackSelector.setParameters(trackSelector.buildUponParameters()
-                    .setPreferredAudioLanguages(Utils.getDeviceLanguages())
-            );
-            RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
-                    .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
-            // https://github.com/google/ExoPlayer/issues/8571
-            final DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory()
-                    .setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS)
-                    .setTsExtractorTimestampSearchBytes(1500 * TsExtractor.TS_PACKET_SIZE);
-            player = new ExoPlayer.Builder(this, renderersFactory)
-                    .setTrackSelector(trackSelector)
-                    .setMediaSourceFactory(new DefaultMediaSourceFactory(this, extractorsFactory))
-                    .build();
-            final AudioAttributes audioAttributes = new AudioAttributes.Builder()
-                    .setUsage(C.USAGE_MEDIA)
-                    .setContentType(C.CONTENT_TYPE_MOVIE)
-                    .build();
-            player.setAudioAttributes(audioAttributes, true);
-
-            if (mPrefs.skipSilence) {
-                player.setSkipSilenceEnabled(true);
-            }
-
-            final YouTubeOverlay youTubeOverlay = findViewById(R.id.youtube_overlay);
-
-            youTubeOverlay.performListener(new YouTubeOverlay.PerformListener() {
-                @Override
-                public void onAnimationStart() {
-                    youTubeOverlay.setAlpha(1.0f);
-                    youTubeOverlay.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onAnimationEnd() {
-                    youTubeOverlay.animate()
-                            .alpha(0.0f)
-                            .setDuration(300)
-                            .setListener(new AnimatorListenerAdapter() {
-                                @Override
-                                public void onAnimationEnd(Animator animation) {
-                                    youTubeOverlay.setVisibility(View.GONE);
-                                    youTubeOverlay.setAlpha(1.0f);
-                                }
-                            });
-                }
-            });
-
-            youTubeOverlay.player(player);
+        if (player != null) {
+            player.removeListener(playerListener);
+            player.clearMediaItems();
+            player.release();
+            player = null;
         }
 
+        trackSelector = new DefaultTrackSelector(this);
+        if (mPrefs.tunneling) {
+            trackSelector.setParameters(trackSelector.buildUponParameters()
+                    .setTunnelingEnabled(true)
+            );
+        }
+        trackSelector.setParameters(trackSelector.buildUponParameters()
+                .setPreferredAudioLanguages(Utils.getDeviceLanguages())
+        );
+        // https://github.com/google/ExoPlayer/issues/8571
+        DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory()
+                .setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS)
+                .setTsExtractorTimestampSearchBytes(1500 * TsExtractor.TS_PACKET_SIZE);
+        RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
+                .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
+
+        ExoPlayer.Builder playerBuilder = new ExoPlayer.Builder(this, renderersFactory)
+                .setTrackSelector(trackSelector)
+                .setMediaSourceFactory(new DefaultMediaSourceFactory(this, extractorsFactory));
+
+        if (haveMedia && isNetworkUri) {
+            if (mPrefs.mediaUri.getScheme().toLowerCase().startsWith("http")) {
+                HashMap<String, String> headers = new HashMap<>();
+                String userInfo = mPrefs.mediaUri.getUserInfo();
+                if (userInfo != null && userInfo.length() > 0 && userInfo.contains(":")) {
+                    headers.put("Authorization", "Basic " + Base64.encodeToString(userInfo.getBytes(),Base64.NO_WRAP));
+                    DefaultHttpDataSource.Factory defaultHttpDataSourceFactory = new DefaultHttpDataSource.Factory();
+                    defaultHttpDataSourceFactory.setDefaultRequestProperties(headers);
+                    playerBuilder.setMediaSourceFactory(new DefaultMediaSourceFactory(defaultHttpDataSourceFactory, extractorsFactory));
+                }
+            }
+        }
+
+        player = playerBuilder.build();
+
+        AudioAttributes audioAttributes = new AudioAttributes.Builder()
+                .setUsage(C.USAGE_MEDIA)
+                .setContentType(C.CONTENT_TYPE_MOVIE)
+                .build();
+        player.setAudioAttributes(audioAttributes, true);
+
+        if (mPrefs.skipSilence) {
+            player.setSkipSilenceEnabled(true);
+        }
+
+        youTubeOverlay.player(player);
         playerView.setPlayer(player);
 
         mediaSession = new MediaSessionCompat(this, getString(R.string.app_name));
