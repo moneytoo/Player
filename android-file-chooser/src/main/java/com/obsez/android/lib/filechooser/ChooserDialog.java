@@ -705,27 +705,30 @@ public class ChooserDialog implements AdapterView.OnItemClickListener, DialogInt
         // Add the ".." entry
         LinkedHashMap<String, String> storagePaths = FileUtil.getStoragePaths(_context);
         Set<String> storageKeys = storagePaths.keySet();
-        boolean listStorages = false;
+        boolean withinVolume = false;
         for (String storageKey : storageKeys) {
-            if (_currentDir.getAbsolutePath().equals(storageKey)) {
-                listStorages = true;
+            if (_currentDir.getAbsolutePath().startsWith(storageKey)) {
+                withinVolume = true;
                 break;
             }
         }
-        if (listStorages) {
+        if (!withinVolume) {
             for (String storageKey : storageKeys) {
-                if (!_currentDir.getAbsolutePath().equals(storageKey)) {
-                    _entries.add(new RootFile(storageKey, storagePaths.get(storageKey))); //⇠
-                }
+                _entries.add(new RootFile(storageKey, storagePaths.get(storageKey))); //⇠
             }
         }
         boolean displayPath = false;
-        if (_entries.isEmpty() && _currentDir.getParentFile() != null && _currentDir.getParentFile().canRead()) {
+        if (_entries.isEmpty() /*&& _currentDir.getParentFile() != null && _currentDir.getParentFile().canRead()*/) {
             _entries.add(new RootFile(_currentDir.getParentFile().getAbsolutePath(), ".."));
             displayPath = true;
         }
 
-        if (files == null) return;
+        if (files == null || !withinVolume) {
+            if (_alertDialog != null && _alertDialog.isShowing() && _displayPath) {
+                displayPath(null);
+            }
+            return;
+        }
 
         List<File> dirList = new LinkedList<>();
         List<File> fileList = new LinkedList<>();
@@ -802,7 +805,7 @@ public class ChooserDialog implements AdapterView.OnItemClickListener, DialogInt
         File file = _entries.get(position);
         if (file instanceof RootFile) {
             if (_folderNavUpCB == null) _folderNavUpCB = _defaultNavUpCB;
-            if (_folderNavUpCB.canUpTo(file)) {
+            /*if (_folderNavUpCB.canUpTo(file))*/ {
                 _currentDir = file;
                 _chooseMode = _chooseMode == CHOOSE_MODE_DELETE ? CHOOSE_MODE_NORMAL : _chooseMode;
                 if (_deleteModeIndicator != null) _deleteModeIndicator.run();
