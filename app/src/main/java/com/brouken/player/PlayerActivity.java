@@ -1029,6 +1029,8 @@ public class PlayerActivity extends Activity {
         mediaSessionConnector.setPlayer(player);
 
         mediaSessionConnector.setMediaMetadataProvider(player -> {
+            if (mPrefs.mediaUri == null)
+                return null;
             final String title = Utils.getFileName(PlayerActivity.this, mPrefs.mediaUri);
             if (title == null)
                 return null;
