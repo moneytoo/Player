@@ -680,6 +680,10 @@
                 android:resource="@xml/shortcuts" />
         </activity>
         <activity
+            android:name=".MediaStoreChooserActivity"
+            android:configChanges="orientation"
+            android:theme="@style/Transparent" />
+        <activity
             android:name=".SettingsActivity"
             android:exported="true"
             android:label="@string/pref_title"
