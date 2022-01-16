@@ -10,9 +10,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -70,6 +75,23 @@ public class SettingsActivity extends AppCompatActivity {
             Preference preferenceFrameRateMatching = findPreference("frameRateMatching");
             if (preferenceFrameRateMatching != null) {
                 preferenceFrameRateMatching.setEnabled(Build.VERSION.SDK_INT >= 23);
+            }
+            ListPreference listPreferenceFileAccess = findPreference("fileAccess");
+            if (listPreferenceFileAccess != null) {
+                List<String> entries = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.file_access_entries)));
+                List<String> values = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.file_access_values)));
+                if (Build.VERSION.SDK_INT < 30) {
+                    int index = values.indexOf("mediastore");
+                    entries.remove(index);
+                    values.remove(index);
+                }
+                if (!Utils.hasSAFChooser(getContext().getPackageManager())) {
+                    int index = values.indexOf("saf");
+                    entries.remove(index);
+                    values.remove(index);
+                }
+                listPreferenceFileAccess.setEntries(entries.toArray(new String[0]));
+                listPreferenceFileAccess.setEntryValues(values.toArray(new String[0]));
             }
         }
 

@@ -2,6 +2,14 @@
 
     <PreferenceCategory app:title="@string/pref_general_header">
 
+        <ListPreference
+            app:defaultValue="auto"
+            app:entries="@array/file_access_entries"
+            app:entryValues="@array/file_access_values"
+            app:key="fileAccess"
+            app:title="@string/pref_file_access"
+            app:useSimpleSummaryProvider="true" />
+
         <SwitchPreferenceCompat
             app:key="frameRateMatching"
             app:defaultValue="false"

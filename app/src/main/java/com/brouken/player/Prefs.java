@@ -41,6 +41,7 @@ class Prefs {
     private static final String PREF_KEY_FRAMERATE_MATCHING = "frameRateMatching";
     private static final String PREF_KEY_REPEAT_TOGGLE = "repeatToggle";
     private static final String PREF_KEY_SPEED = "speed";
+    private static final String PREF_KEY_FILE_ACCESS = "fileAccess";
 
     final Context mContext;
     final SharedPreferences mSharedPreferences;
@@ -66,6 +67,7 @@ class Prefs {
     public boolean skipSilence = false;
     public boolean frameRateMatching = false;
     public boolean repeatToggle = false;
+    public String fileAccess = "auto";
 
     private LinkedHashMap positions;
 
@@ -109,6 +111,7 @@ class Prefs {
         skipSilence = mSharedPreferences.getBoolean(PREF_KEY_SKIP_SILENCE, skipSilence);
         frameRateMatching = mSharedPreferences.getBoolean(PREF_KEY_FRAMERATE_MATCHING, frameRateMatching);
         repeatToggle = mSharedPreferences.getBoolean(PREF_KEY_REPEAT_TOGGLE, repeatToggle);
+        fileAccess = mSharedPreferences.getString(PREF_KEY_FILE_ACCESS, fileAccess);
     }
 
     public void updateMedia(final Context context, final Uri uri, final String type) {

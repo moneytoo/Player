@@ -362,10 +362,7 @@ class Utils {
         }
 
         // Missing Files app (DocumentsUI) means box (some boxes still have non functional app or stub)
-        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("video/*");
-        if (intent.resolveActivity(pm) == null) {
+        if (!hasSAFChooser(pm)) {
             return true;
         }
 
@@ -387,6 +384,13 @@ class Utils {
 
         // Default: No TV - use SAF
         return false;
+    }
+
+    public static boolean hasSAFChooser(final PackageManager pm) {
+        final Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("video/*");
+        return intent.resolveActivity(pm) != null;
     }
 
     public static int normRate(float rate) {

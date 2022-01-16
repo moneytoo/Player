@@ -33,4 +33,6 @@
     <string name="button_crop">Resize</string>
     <string name="button_rotate">Rotate</string>
     <string name="button_pip">Picture-in-picture</string>
+    <string name="pref_file_access">File access</string>
+    <string name="pref_file_access_auto">Auto</string>
 </resources>

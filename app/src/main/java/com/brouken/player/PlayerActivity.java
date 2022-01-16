@@ -1367,14 +1367,12 @@ public class PlayerActivity extends Activity {
     }
 
     private void openFile(Uri pickerInitialUri) {
-        if (isTvBox) {
-            int targetSdkVersion = getApplicationContext().getApplicationInfo().targetSdkVersion;
-            if (Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30) {
-                Intent intent = new Intent(this, MediaStoreChooserActivity.class);
-                startActivityForResult(intent, REQUEST_CHOOSER_VIDEO_MEDIASTORE);
-            } else {
-                Utils.alternativeChooser(this, pickerInitialUri, true);
-            }
+        final int targetSdkVersion = getApplicationContext().getApplicationInfo().targetSdkVersion;
+        if ((isTvBox && Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30 && mPrefs.fileAccess.equals("auto")) || mPrefs.fileAccess.equals("mediastore")) {
+            Intent intent = new Intent(this, MediaStoreChooserActivity.class);
+            startActivityForResult(intent, REQUEST_CHOOSER_VIDEO_MEDIASTORE);
+        } else if ((isTvBox && mPrefs.fileAccess.equals("auto")) || mPrefs.fileAccess.equals("legacy")) {
+            Utils.alternativeChooser(this, pickerInitialUri, true);
         } else {
             enableRotation();
 
@@ -1397,16 +1395,13 @@ public class PlayerActivity extends Activity {
 
     private void loadSubtitleFile(Uri pickerInitialUri) {
         Toast.makeText(PlayerActivity.this, R.string.open_subtitles, Toast.LENGTH_SHORT).show();
-
-        if (isTvBox) {
-            int targetSdkVersion = getApplicationContext().getApplicationInfo().targetSdkVersion;
-            if (Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30) {
-                Intent intent = new Intent(this, MediaStoreChooserActivity.class);
-                intent.putExtra(MediaStoreChooserActivity.SUBTITLES, true);
-                startActivityForResult(intent, REQUEST_CHOOSER_SUBTITLE_MEDIASTORE);
-            } else {
-                Utils.alternativeChooser(this, pickerInitialUri, false);
-            }
+        final int targetSdkVersion = getApplicationContext().getApplicationInfo().targetSdkVersion;
+        if ((isTvBox && Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30 && mPrefs.fileAccess.equals("auto")) || mPrefs.fileAccess.equals("mediastore")) {
+            Intent intent = new Intent(this, MediaStoreChooserActivity.class);
+            intent.putExtra(MediaStoreChooserActivity.SUBTITLES, true);
+            startActivityForResult(intent, REQUEST_CHOOSER_SUBTITLE_MEDIASTORE);
+        } else if ((isTvBox && mPrefs.fileAccess.equals("auto")) || mPrefs.fileAccess.equals("legacy")) {
+            Utils.alternativeChooser(this, pickerInitialUri, false);
         } else {
             enableRotation();
 
@@ -1992,7 +1987,11 @@ public class PlayerActivity extends Activity {
             Utils.setButtonEnabled(this, buttonPiP, enable);
         }
         Utils.setButtonEnabled(this, buttonAspectRatio, enable);
-        Utils.setButtonEnabled(this, exoSettings, enable);
+        if (isTvBox) {
+            Utils.setButtonEnabled(this, exoSettings, true);
+        } else {
+            Utils.setButtonEnabled(this, exoSettings, enable);
+        }
     }
 
     private void scaleStart() {
