@@ -21,6 +21,18 @@ android {
             //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    flavorDimensions "targetSdk"
+    productFlavors {
+        latest {
+            dimension "targetSdk"
+        }
+        legacy {
+            dimension "targetSdk"
+            applicationIdSuffix ".legacy"
+            versionNameSuffix "-legacy"
+            targetSdkVersion 29
+        }
+    }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
