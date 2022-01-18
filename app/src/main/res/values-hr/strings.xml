@@ -28,4 +28,10 @@
     <string name="shortcut_videos">Videozapisi</string>
     <string name="pref_repeat_toggle_summary">Dodatna kontrola koja omogućuje beskonačno ponavljanje videa (zahtijeva ponovno pokretanje programa)</string>
     <string name="pref_repeat_toggle">Ponovi uključivanje/isključivanje</string>
+    <string name="button_open">Otvori</string>
+    <string name="button_crop">Promijeni veličinu</string>
+    <string name="button_pip">Slika-u-slici</string>
+    <string name="button_rotate">Okreni</string>
+    <string name="pref_file_access">Pristup datotekama</string>
+    <string name="pref_file_access_auto">Automatski</string>
 </resources>

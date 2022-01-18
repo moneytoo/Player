@@ -32,4 +32,6 @@
     <string name="button_crop">Ridimensiona</string>
     <string name="button_rotate">Ruota</string>
     <string name="button_pip">Immagine nell’immagine</string>
+    <string name="pref_file_access">Accesso ai file</string>
+    <string name="pref_file_access_auto">Auto</string>
 </resources>

@@ -32,4 +32,6 @@
     <string name="button_crop">Αλλαγή μεγέθους</string>
     <string name="button_rotate">Περιστροφή</string>
     <string name="button_pip">Εικόνα σε εικόνα</string>
+    <string name="pref_file_access">Πρόσβαση σε αρχεία</string>
+    <string name="pref_file_access_auto">Αυτόματο</string>
 </resources>

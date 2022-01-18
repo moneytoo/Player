@@ -32,4 +32,6 @@
     <string name="button_crop">Größe ändern</string>
     <string name="button_rotate">Drehen</string>
     <string name="button_pip">Bild-im-Bild</string>
+    <string name="pref_file_access_auto">Auto</string>
+    <string name="pref_file_access">Dateizugriff</string>
 </resources>
