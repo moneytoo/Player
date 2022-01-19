@@ -625,13 +625,11 @@ public class PlayerActivity extends Activity {
         if (intentReturnResult) {
             Intent intent = new Intent();
             if (!playbackFinished) {
-                if (player.isCurrentMediaItemSeekable()) {
+                if (player != null && player.isCurrentMediaItemSeekable()) {
                     if (mPrefs.persistentMode) {
                         intent.putExtra(API_POSITION, (int) mPrefs.nonPersitentPosition);
                     } else {
-                        if (player != null) {
-                            intent.putExtra(API_POSITION, (int) player.getCurrentPosition());
-                        }
+                        intent.putExtra(API_POSITION, (int) player.getCurrentPosition());
                     }
                 }
             }

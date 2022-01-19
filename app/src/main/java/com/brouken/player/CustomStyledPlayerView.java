@@ -348,7 +348,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
         if (PlayerActivity.locked)
             return;
-        if (!PlayerActivity.player.isPlaying()) {
+        if (PlayerActivity.player != null && !PlayerActivity.player.isPlaying()) {
             showController();
         }
         restoreSurfaceView();
