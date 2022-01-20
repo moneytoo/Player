@@ -46,6 +46,7 @@ import com.arthenica.ffmpegkit.MediaInformationSession;
 import com.arthenica.ffmpegkit.StreamInformation;
 import com.google.android.exoplayer2.Format;
 import com.google.android.exoplayer2.ui.StyledPlayerControlView;
+import com.google.android.exoplayer2.util.MimeTypes;
 import com.obsez.android.lib.filechooser.ChooserDialog;
 
 import java.io.File;
@@ -58,6 +59,23 @@ class Utils {
 
     private static final String[] supportedExtensionsVideo = new String[] { "3gp", "m4v", "mkv", "mov", "mp4", "ts", "webm" };
     private static final String[] supportedExtensionsSubtitle = new String[] { "srt", "ssa", "ass", "vtt", "ttml", "dfxp", "xml" };
+
+    public static final String[] supportedMimeTypesVideo = new String[] {
+            MimeTypes.VIDEO_MATROSKA, // .mkv
+            MimeTypes.VIDEO_MP4, // .mp4, .m4v
+            MimeTypes.VIDEO_WEBM, // .webm
+            "video/quicktime", // .mov
+            "video/mp2ts", // .ts, but also incompatible .m2ts
+            MimeTypes.VIDEO_H263, // .3gp
+    };
+    public static final String[] supportedMimeTypesSubtitle = new String[] {
+            MimeTypes.APPLICATION_SUBRIP,
+            MimeTypes.TEXT_SSA,
+            MimeTypes.TEXT_VTT,
+            MimeTypes.APPLICATION_TTML,
+            "text/*",
+            "application/octet-stream"
+    };
 
     public static int dpToPx(int dp) {
         return (int) (dp * Resources.getSystem().getDisplayMetrics().density);

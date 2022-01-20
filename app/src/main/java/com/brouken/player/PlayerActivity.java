@@ -1381,6 +1381,7 @@ public class PlayerActivity extends Activity {
             final Intent intent = createBaseFileIntent(Intent.ACTION_OPEN_DOCUMENT, pickerInitialUri);
             intent.addCategory(Intent.CATEGORY_OPENABLE);
             intent.setType("video/*");
+            intent.putExtra(Intent.EXTRA_MIME_TYPES, Utils.supportedMimeTypesVideo);
 
             final ComponentName systemComponentName = Utils.getSystemComponent(this, intent);
             if (systemComponentName != null) {
