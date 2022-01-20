@@ -941,11 +941,7 @@ public class PlayerActivity extends Activity {
                     }
                 }
 
-                // Convert subtitles to UTF-8 if necessary
-                SubtitleUtils.clearCache(this);
-                uri = SubtitleUtils.convertToUTF(this, uri);
-
-                mPrefs.updateSubtitle(uri);
+                handleSubtitles(uri);
             }
         } else if (requestCode == REQUEST_CHOOSER_SCOPE_DIR) {
             if (resultCode == RESULT_OK) {
@@ -970,6 +966,13 @@ public class PlayerActivity extends Activity {
         if (resultCode == RESULT_OK && alive) {
             initializePlayer();
         }
+    }
+
+    private void handleSubtitles(Uri uri) {
+        // Convert subtitles to UTF-8 if necessary
+        SubtitleUtils.clearCache(this);
+        uri = SubtitleUtils.convertToUTF(this, uri);
+        mPrefs.updateSubtitle(uri);
     }
 
     public void initializePlayer() {
@@ -1761,10 +1764,7 @@ public class PlayerActivity extends Activity {
                 }
 
                 if (subtitle != null) {
-                    Uri subtitleUri = subtitle.getUri();
-                    SubtitleUtils.clearCache(this);
-                    subtitleUri = SubtitleUtils.convertToUTF(this, subtitleUri);
-                    mPrefs.updateSubtitle(subtitleUri);
+                    handleSubtitles(subtitle.getUri());
                 }
             }
         }
