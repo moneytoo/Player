@@ -10,8 +10,8 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 31
-        versionCode 94
-        versionName "0.94"
+        versionCode 95
+        versionName "0.95"
         archivesBaseName = "Just.Player.v${versionName}"
     }
 
@@ -72,11 +72,11 @@ dependencies {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
     }
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.1.0'
+    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation 'com.ibm.icu:icu4j:70.1'
     implementation 'com.arthenica:ffmpeg-kit-https:4.5.1.LTS'
-    implementation 'androidx.appcompat:appcompat:1.4.0'
+    implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'androidx.preference:preference:1.1.1'
     implementation 'com.squareup.okhttp3:okhttp:4.9.3'
     implementation project(path: ':doubletapplayerview')
