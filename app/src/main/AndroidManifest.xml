@@ -63,28 +63,6 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
-                <data
-                    android:scheme=""
-                    tools:ignore="AppLinkUrlError" /> <!-- External player compatibility in Kodi -->
-                <data android:scheme="content" />
-                <data android:scheme="file" />
-                <data android:mimeType="video/x-matroska" />
-                <data android:mimeType="video/mp4" />
-                <data android:mimeType="video/x-m4v" /> <!-- .m4v & X-plore -->
-                <data android:mimeType="video/m4v" /> <!-- .m4v & Solid Explorer -->
-                <data android:mimeType="video/webm" />
-                <data android:mimeType="video/quicktime" />
-                <data android:mimeType="video/mp2ts" />
-                <data android:mimeType="video/MP2T" tools:ignore="AppLinkUrlError" /> <!-- .ts & Solid Explorer -->
-                <data android:mimeType="video/mp2t" /> <!-- .ts & FX -->
-                <data android:mimeType="video/3gpp" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:scheme="rtsp" />
             </intent-filter>
             <intent-filter>
@@ -93,9 +71,11 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
 
+                <data android:scheme="" tools:ignore="AppLinkUrlError" /> <!-- External player compatibility in Kodi -->
+                <data android:scheme="content" />
+                <data android:scheme="file" />
                 <data android:scheme="http" />
                 <data android:scheme="https" />
-                <data android:host="*" />
                 <data android:mimeType="video/x-matroska" />
                 <data android:mimeType="video/mp4" />
                 <data android:mimeType="video/x-m4v" /> <!-- .m4v & X-plore -->
