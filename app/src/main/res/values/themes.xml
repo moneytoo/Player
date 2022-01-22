@@ -25,4 +25,10 @@
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
+
+    <style name="MediaStoreChooserDialog" parent="@android:style/Theme.Material.Dialog.Alert">
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
+        <item name="android:singleLine">true</item> <!-- When focused, line scrolls -->
+    </style>
 </resources>

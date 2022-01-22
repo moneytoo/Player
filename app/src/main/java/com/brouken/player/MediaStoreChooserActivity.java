@@ -137,7 +137,7 @@ public class MediaStoreChooserActivity extends Activity {
         Integer[] bucketIds = buckets.keySet().toArray(new Integer[0]);
         String[] bucketDisplayNames = buckets.values().toArray(new String[0]);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.MediaStoreChooserDialog);
         if (buckets.size() == 0) {
             alertDialogBuilder.setMessage(R.string.mediastore_empty);
         } else {
@@ -167,7 +167,7 @@ public class MediaStoreChooserActivity extends Activity {
         Integer[] ids = files.keySet().toArray(new Integer[0]);
         String[] displayNames = files.values().toArray(new String[0]);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.MediaStoreChooserDialog);
         if (title != null) {
             alertDialogBuilder.setTitle(title);
         }
