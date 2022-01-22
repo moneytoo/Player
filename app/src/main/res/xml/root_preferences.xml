@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory app:title="@string/pref_general_header">
 
@@ -42,6 +43,15 @@
             app:defaultValue="false"
             app:summary="@string/pref_repeat_toggle_summary"
             app:title="@string/pref_repeat_toggle" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/pref_shortcuts_header">
+
+        <Preference
+            app:title="@string/pref_captioning_preferences">
+            <intent android:action="android.settings.CAPTIONING_SETTINGS" />
+        </Preference>
 
     </PreferenceCategory>
 

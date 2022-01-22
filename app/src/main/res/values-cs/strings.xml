@@ -35,4 +35,6 @@
     <string name="pref_file_access">Přístup k souborům</string>
     <string name="pref_file_access_auto">Automaticky</string>
     <string name="mediastore_empty">Nebyly nalezeny žádné video soubory. Pro přístup k video souborům v daném úložišti, povolte automatické vyhledávání médii v systémovém nastavení.</string>
+    <string name="pref_shortcuts_header">Zkratky</string>
+    <string name="pref_captioning_preferences">Předvolby titulků</string>
 </resources>

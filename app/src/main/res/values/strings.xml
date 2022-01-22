@@ -36,4 +36,6 @@
     <string name="pref_file_access">File access</string>
     <string name="pref_file_access_auto">Auto</string>
     <string name="mediastore_empty">No indexed video files found. To access video files in given storage, enable automatic media scanning in system settings.</string>
+    <string name="pref_shortcuts_header">Shortcuts</string>
+    <string name="pref_captioning_preferences">Captioning preferences</string>
 </resources>

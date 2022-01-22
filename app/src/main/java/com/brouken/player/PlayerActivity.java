@@ -140,6 +140,7 @@ public class PlayerActivity extends Activity {
     private static final int REQUEST_CHOOSER_VIDEO_MEDIASTORE = 20;
     private static final int REQUEST_CHOOSER_SUBTITLE_MEDIASTORE = 21;
     private static final int REQUEST_SETTINGS = 100;
+    private static final int REQUEST_SYSTEM_CAPTIONS = 200;
     public static final int CONTROLLER_TIMEOUT = 3500;
     private static final String ACTION_MEDIA_CONTROL = "media_control";
     private static final String EXTRA_CONTROL_TYPE = "control_type";
@@ -495,6 +496,12 @@ public class PlayerActivity extends Activity {
             //askForScope(false, false);
             Intent intent = new Intent(this, SettingsActivity.class);
             startActivityForResult(intent, REQUEST_SETTINGS);
+            return true;
+        });
+
+        exoSubtitle.setOnLongClickListener(v -> {
+            enableRotation();
+            safelyStartActivityForResult(new Intent(Settings.ACTION_CAPTIONING_SETTINGS), REQUEST_SYSTEM_CAPTIONS);
             return true;
         });
 
