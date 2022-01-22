@@ -300,14 +300,9 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
             return false;
 
         if (canScale) {
-            final float previousScaleFactor = mScaleFactor;
-            mScaleFactor *= scaleGestureDetector.getScaleFactor();
-            mScaleFactor = Utils.normalizeScaleFactor(mScaleFactor);
-
-            if (isCrossingThreshold(previousScaleFactor, mScaleFactor, 1.0f) ||
-                    isCrossingThreshold(previousScaleFactor, mScaleFactor, mScaleFactorFit))
-                performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-
+            final float factor = scaleGestureDetector.getScaleFactor();
+            mScaleFactor *= factor + (1 - factor) / 3 * 2;
+            mScaleFactor = Utils.normalizeScaleFactor(mScaleFactor, mScaleFactorFit);
             setScale(mScaleFactor);
             restoreSurfaceView();
             clearIcon();
@@ -315,10 +310,6 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
             return true;
         }
         return false;
-    }
-
-    private boolean isCrossingThreshold(final float val1, final float val2, final float threshold) {
-        return (val1 < threshold && val2 >= threshold) || (val1 > threshold && val2 <= threshold);
     }
 
     @Override
@@ -360,7 +351,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
         }
     }
 
-    private float getScaleFit() {
+    public float getScaleFit() {
         return Math.min((float)getHeight() / (float)getVideoSurfaceView().getHeight(),
                 (float)getWidth() / (float)getVideoSurfaceView().getWidth());
     }

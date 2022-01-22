@@ -647,8 +647,8 @@ class Utils {
         return null;
     }
 
-    public static float normalizeScaleFactor(float scaleFactor) {
-        return Math.max(0.25f, Math.min(scaleFactor, 2.0f));
+    public static float normalizeScaleFactor(float scaleFactor, float min) {
+        return Math.max(min, Math.min(scaleFactor, 2.0f));
     }
 
     private static MediaInformation getMediaInformation(final Activity activity, final Uri uri) {

@@ -2031,7 +2031,7 @@ public class PlayerActivity extends Activity {
         } else {
             scaleFactor -= 0.01;
         }
-        scaleFactor = Utils.normalizeScaleFactor(scaleFactor);
+        scaleFactor = Utils.normalizeScaleFactor(scaleFactor, playerView.getScaleFit());
         playerView.setScale(scaleFactor);
         playerView.setCustomErrorMessage((int)(scaleFactor * 100) + "%");
     }
