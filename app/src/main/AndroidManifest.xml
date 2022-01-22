@@ -76,6 +76,7 @@
                 <data android:scheme="file" />
                 <data android:scheme="http" />
                 <data android:scheme="https" />
+
                 <data android:mimeType="video/x-matroska" />
                 <data android:mimeType="video/mp4" />
                 <data android:mimeType="video/x-m4v" /> <!-- .m4v & X-plore -->
@@ -86,6 +87,16 @@
                 <data android:mimeType="video/MP2T" tools:ignore="AppLinkUrlError" /> <!-- .ts & Solid Explorer -->
                 <data android:mimeType="video/mp2t" /> <!-- .ts & FX -->
                 <data android:mimeType="video/3gpp" />
+
+                <data android:mimeType="application/x-subrip" />
+                <data android:mimeType="text/plain" /> <!-- .srt & Solid Explorer -->
+                <data android:mimeType="text/x-ssa" />
+                <data android:mimeType="application/octet-stream" /> <!-- .ssa & Total Commander -->
+                <data android:mimeType="application/ass" /> <!-- .ass & X-plore -->
+                <data android:mimeType="application/ssa" /> <!-- .ssa & X-plore -->
+                <data android:mimeType="text/vtt" />
+                <data android:mimeType="application/vtt" /> <!-- .vtt & X-plore -->
+                <data android:mimeType="application/ttml+xml" />
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />

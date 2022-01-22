@@ -226,6 +226,34 @@ class SubtitleUtils {
                 || name.endsWith(".vtt") || name.endsWith(".ttml");
     }
 
+    public static boolean isSubtitle(Uri uri, String mimeType) {
+        if (mimeType != null) {
+            for (String mime : Utils.supportedMimeTypesSubtitle) {
+                if (mimeType.equals(mime)) {
+                    return true;
+                }
+            }
+            if (mimeType.equals("text/plain") || mimeType.equals("text/x-ssa") || mimeType.equals("application/octet-stream") ||
+                    mimeType.equals("application/ass") || mimeType.equals("application/ssa") || mimeType.equals("application/vtt")) {
+                return true;
+            }
+        }
+        if (uri != null) {
+            if (Utils.isSupportedNetworkUri(uri)) {
+                String path = uri.getPath();
+                if (path != null) {
+                    path = path.toLowerCase();
+                    for (String extension : Utils.supportedExtensionsSubtitle) {
+                        if (path.endsWith("." + extension)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
+    }
+
     public static void clearCache(Context context) {
         try {
             for (File file : context.getCacheDir().listFiles()) {

@@ -220,24 +220,30 @@ public class PlayerActivity extends Activity {
         if ("com.brouken.player.action.SHORTCUT_VIDEOS".equals(action)) {
             openFile(Utils.getMoviesFolderUri());
         } else if (launchIntent.getData() != null) {
-            Bundle bundle = launchIntent.getExtras();
-            if (bundle != null) {
-                apiAccess = bundle.containsKey(API_POSITION) || bundle.containsKey(API_RETURN_RESULT);
-                if (apiAccess)
-                    mPrefs.setPersistent(false);
-            }
+            final Uri uri = launchIntent.getData();
+            final String type = launchIntent.getType();
+            if (SubtitleUtils.isSubtitle(uri, type)) {
+                handleSubtitles(uri);
+            } else {
+                Bundle bundle = launchIntent.getExtras();
+                if (bundle != null) {
+                    apiAccess = bundle.containsKey(API_POSITION) || bundle.containsKey(API_RETURN_RESULT);
+                    if (apiAccess)
+                        mPrefs.setPersistent(false);
+                }
 
-            mPrefs.updateMedia(this, launchIntent.getData(), launchIntent.getType());
-            searchSubtitles();
-            focusPlay = true;
+                mPrefs.updateMedia(this, uri, type);
+                searchSubtitles();
 
-            if (bundle != null) {
-                intentReturnResult = bundle.getBoolean(API_RETURN_RESULT);
+                if (bundle != null) {
+                    intentReturnResult = bundle.getBoolean(API_RETURN_RESULT);
 
-                if (bundle.containsKey(API_POSITION)) {
-                    mPrefs.updatePosition((long) bundle.getInt(API_POSITION));
+                    if (bundle.containsKey(API_POSITION)) {
+                        mPrefs.updatePosition((long) bundle.getInt(API_POSITION));
+                    }
                 }
             }
+            focusPlay = true;
         }
 
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
@@ -644,8 +650,14 @@ public class PlayerActivity extends Activity {
         super.onNewIntent(intent);
 
         if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null) {
-            mPrefs.updateMedia(this, intent.getData(), intent.getType());
-            searchSubtitles();
+            final Uri uri = intent.getData();
+            final String type = intent.getType();
+            if (SubtitleUtils.isSubtitle(uri, type)) {
+                handleSubtitles(uri);
+            } else {
+                mPrefs.updateMedia(this, uri, type);
+                searchSubtitles();
+            }
             focusPlay = true;
             initializePlayer();
         }
