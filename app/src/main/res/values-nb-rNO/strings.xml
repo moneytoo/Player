@@ -34,4 +34,7 @@
     <string name="button_pip">Bilde-i-bilde</string>
     <string name="pref_repeat_toggle">Gjenta veksling</string>
     <string name="pref_repeat_toggle_summary">Ekstra kontroller for å tillate uendelig videogjentagelse (krever omstart av programmet)</string>
+    <string name="pref_shortcuts_header">Snarveier</string>
+    <string name="mediastore_empty">Fant ingen indekserte videofiler. For tilgang til videofiler på et gitt lagringsmedie kan du skru på automatisk mediaskanning i systeminnstillingene.</string>
+    <string name="pref_captioning_preferences">Undertekst-innstillinger</string>
 </resources>

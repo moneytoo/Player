@@ -34,4 +34,7 @@
     <string name="button_pip">画中画</string>
     <string name="pref_file_access_auto">自动</string>
     <string name="pref_file_access">文件访问</string>
+    <string name="mediastore_empty">没有找到索引的视频文件。要访问指定存储中的视频文件，请在系统设置中启用媒体自动扫描功能。</string>
+    <string name="pref_captioning_preferences">字幕选项</string>
+    <string name="pref_shortcuts_header">快捷方式</string>
 </resources>

@@ -34,4 +34,7 @@
     <string name="button_pip">Immagine nell’immagine</string>
     <string name="pref_file_access">Accesso ai file</string>
     <string name="pref_file_access_auto">Auto</string>
+    <string name="mediastore_empty">Nessun file video indicizzato trovato. Per accedere ai file video nella memoria data, abilita la scansione automatica dei media nelle impostazioni di sistema.</string>
+    <string name="pref_shortcuts_header">Scorciatoie</string>
+    <string name="pref_captioning_preferences">Preferenze per i sottotitoli</string>
 </resources>
