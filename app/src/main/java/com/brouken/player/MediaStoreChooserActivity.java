@@ -127,9 +127,9 @@ public class MediaStoreChooserActivity extends Activity {
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     void showBuckets() {
-        String selection = MediaStore.MediaColumns.MIME_TYPE + "!='video/avi'";
+        String selection = "";
         if (subtitles) {
-            selection += " AND " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=" + MediaStore.Files.FileColumns.MEDIA_TYPE_SUBTITLE;
+            selection += MediaStore.Files.FileColumns.MEDIA_TYPE + "=" + MediaStore.Files.FileColumns.MEDIA_TYPE_SUBTITLE;
         }
 
         HashMap<Integer, String> buckets = query(MediaStore.MediaColumns.BUCKET_ID, MediaStore.MediaColumns.BUCKET_DISPLAY_NAME, selection);
@@ -156,8 +156,7 @@ public class MediaStoreChooserActivity extends Activity {
 
     @RequiresApi(api = Build.VERSION_CODES.R)
     void showFiles(int bucketId) {
-        String selection = MediaStore.MediaColumns.BUCKET_ID + "=" + bucketId
-                + " AND " + MediaStore.MediaColumns.MIME_TYPE + "!='video/avi'";
+        String selection = MediaStore.MediaColumns.BUCKET_ID + "=" + bucketId;
 
         if (subtitles) {
             selection += " AND " + MediaStore.Files.FileColumns.MEDIA_TYPE + "=" + MediaStore.Files.FileColumns.MEDIA_TYPE_SUBTITLE;

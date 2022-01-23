@@ -59,7 +59,7 @@ import java.util.Locale;
 
 class Utils {
 
-    public static final String[] supportedExtensionsVideo = new String[] { "3gp", "m4v", "mkv", "mov", "mp4", "ts", "webm" };
+    public static final String[] supportedExtensionsVideo = new String[] { "3gp", "avi", "m4v", "mkv", "mov", "mp4", "ts", "webm" };
     public static final String[] supportedExtensionsSubtitle = new String[] { "srt", "ssa", "ass", "vtt", "ttml", "dfxp", "xml" };
 
     public static final String[] supportedMimeTypesVideo = new String[] {
@@ -69,6 +69,7 @@ class Utils {
             "video/quicktime", // .mov
             "video/mp2ts", // .ts, but also incompatible .m2ts
             MimeTypes.VIDEO_H263, // .3gp
+            "video/avi",
     };
     public static final String[] supportedMimeTypesSubtitle = new String[] {
             MimeTypes.APPLICATION_SUBRIP,
