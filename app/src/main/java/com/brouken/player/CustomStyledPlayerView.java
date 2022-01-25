@@ -49,6 +49,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     private boolean canScale = true;
     private boolean isHandledLongPress = false;
     public long keySeekStart = -1;
+    public int volumeUpsInRow = 0;
 
     private final ScaleGestureDetector mScaleDetector;
     private float mScaleFactor = 1.f;

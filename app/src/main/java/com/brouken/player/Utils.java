@@ -186,7 +186,13 @@ class Utils {
                 PlayerActivity.loudnessEnhancer.setEnabled(false);
             audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, raise ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
             final int volumeNew = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-            if (raise && volume == volumeNew && !isVolumeMin(audioManager)) {
+            // Custom volume step on Samsung devices (Sound Assistant)
+            if (raise && volume == volumeNew) {
+                playerView.volumeUpsInRow++;
+            } else {
+                playerView.volumeUpsInRow = 0;
+            }
+            if (playerView.volumeUpsInRow > 4 && !isVolumeMin(audioManager)) {
                 audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE | AudioManager.FLAG_SHOW_UI);
             } else {
                 volumeActive = volumeNew != 0;
