@@ -36,16 +36,13 @@ android {
         sourceCompatibility JAVA_COMPATIBILITY
         targetCompatibility JAVA_COMPATIBILITY
     }
-    lintOptions {
-        lintConfig rootProject.file('lint.xml')
-        quiet true
+    lint {
         abortOnError false
-        ignoreWarnings true
-        disable 'InvalidPackage'  // Some libraries have issues with this.
-        disable 'OldTargetApi'    // Lint gives this warning but SDK 20 would be Android L Beta.
-        disable 'IconDensities'   // For testing purpose. This is safe to remove.
-        disable 'deprecation'
         checkReleaseBuilds false
+        disable 'InvalidPackage', 'OldTargetApi', 'IconDensities', 'deprecation'
+        ignoreWarnings true
+        lintConfig file('lint.xml')
+        quiet true
     }
 
 }
