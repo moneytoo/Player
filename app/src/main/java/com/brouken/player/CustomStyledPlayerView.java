@@ -7,7 +7,6 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
-import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;

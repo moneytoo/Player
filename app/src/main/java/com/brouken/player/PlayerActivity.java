@@ -217,12 +217,21 @@ public class PlayerActivity extends Activity {
 
         final Intent launchIntent = getIntent();
         final String action = launchIntent.getAction();
+        final String type = launchIntent.getType();
 
         if ("com.brouken.player.action.SHORTCUT_VIDEOS".equals(action)) {
             openFile(Utils.getMoviesFolderUri());
+        } else if (Intent.ACTION_SEND.equals(action) && "text/plain".equals(type)) {
+            String text = launchIntent.getStringExtra(Intent.EXTRA_TEXT);
+            if (text != null) {
+                final Uri parsedUri = Uri.parse(text);
+                if (parsedUri.isAbsolute()) {
+                    mPrefs.updateMedia(this, parsedUri, null);
+                    focusPlay = true;
+                }
+            }
         } else if (launchIntent.getData() != null) {
             final Uri uri = launchIntent.getData();
-            final String type = launchIntent.getType();
             if (SubtitleUtils.isSubtitle(uri, type)) {
                 handleSubtitles(uri);
             } else {
@@ -656,17 +665,31 @@ public class PlayerActivity extends Activity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 
-        if (intent != null && Intent.ACTION_VIEW.equals(intent.getAction()) && intent.getData() != null) {
-            final Uri uri = intent.getData();
+        if (intent != null) {
+            final String action = intent.getAction();
             final String type = intent.getType();
-            if (SubtitleUtils.isSubtitle(uri, type)) {
-                handleSubtitles(uri);
-            } else {
-                mPrefs.updateMedia(this, uri, type);
-                searchSubtitles();
+            final Uri uri = intent.getData();
+
+            if (Intent.ACTION_VIEW.equals(action) && uri != null) {
+                if (SubtitleUtils.isSubtitle(uri, type)) {
+                    handleSubtitles(uri);
+                } else {
+                    mPrefs.updateMedia(this, uri, type);
+                    searchSubtitles();
+                }
+                focusPlay = true;
+                initializePlayer();
+            } else if (Intent.ACTION_SEND.equals(action) && "text/plain".equals(type)) {
+                String text = intent.getStringExtra(Intent.EXTRA_TEXT);
+                if (text != null) {
+                    final Uri parsedUri = Uri.parse(text);
+                    if (parsedUri.isAbsolute()) {
+                        mPrefs.updateMedia(this, parsedUri, null);
+                        focusPlay = true;
+                        initializePlayer();
+                    }
+                }
             }
-            focusPlay = true;
-            initializePlayer();
         }
     }
 
