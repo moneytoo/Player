@@ -32,4 +32,9 @@
     <string name="button_crop">Redimensionar</string>
     <string name="button_rotate">Girar</string>
     <string name="button_pip">Imagen en imagen</string>
+    <string name="pref_captioning_preferences">Preferencias de subtitulado</string>
+    <string name="pref_file_access">Acceso a archivos</string>
+    <string name="pref_file_access_auto">Auto</string>
+    <string name="mediastore_empty">No se han encontrado archivos de video indexados. Para acceder a los archivos de video en el almacenamiento dado, active la exploración automática de medios en la configuración del sistema.</string>
+    <string name="pref_shortcuts_header">Atajos</string>
 </resources>
