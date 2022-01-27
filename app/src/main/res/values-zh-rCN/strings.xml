@@ -37,4 +37,8 @@
     <string name="mediastore_empty">没有找到索引的视频文件。要访问指定存储中的视频文件，请在系统设置中启用媒体自动扫描功能。</string>
     <string name="pref_captioning_preferences">字幕选项</string>
     <string name="pref_shortcuts_header">快捷方式</string>
+    <string name="pref_decoder_priority_prefer_device">偏好设备解码器</string>
+    <string name="pref_decoder_priority">解码器优先级</string>
+    <string name="pref_decoder_priority_prefer_app">偏好应用解码器</string>
+    <string name="pref_decoder_priority_only_device">仅使用设备解码器</string>
 </resources>

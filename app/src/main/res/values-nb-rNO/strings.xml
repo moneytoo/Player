@@ -37,4 +37,8 @@
     <string name="pref_shortcuts_header">Snarveier</string>
     <string name="mediastore_empty">Fant ingen indekserte videofiler. For tilgang til videofiler på et gitt lagringsmedie kan du skru på automatisk mediaskanning i systeminnstillingene.</string>
     <string name="pref_captioning_preferences">Undertekst-innstillinger</string>
+    <string name="pref_decoder_priority_prefer_app">Foretrekk programdekoding</string>
+    <string name="pref_decoder_priority_only_device">Kun enhetsdekoding</string>
+    <string name="pref_decoder_priority">Dekoder-prioritet</string>
+    <string name="pref_decoder_priority_prefer_device">Foretrekk enhetsdekoding</string>
 </resources>

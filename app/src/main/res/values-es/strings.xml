@@ -37,4 +37,8 @@
     <string name="pref_file_access_auto">Auto</string>
     <string name="mediastore_empty">No se han encontrado archivos de video indexados. Para acceder a los archivos de video en el almacenamiento dado, active la exploración automática de medios en la configuración del sistema.</string>
     <string name="pref_shortcuts_header">Atajos</string>
+    <string name="pref_decoder_priority">Prioridad de decodificación</string>
+    <string name="pref_decoder_priority_prefer_device">Preferir decodificadores del dispositivo</string>
+    <string name="pref_decoder_priority_only_device">Sólo decodificadores del dispositivo</string>
+    <string name="pref_decoder_priority_prefer_app">Preferir decodificadores de la aplicación</string>
 </resources>

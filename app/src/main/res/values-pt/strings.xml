@@ -31,4 +31,14 @@
     <string name="button_open">Abrir</string>
     <string name="button_crop">Redimensionar</string>
     <string name="button_rotate">Rodar</string>
+    <string name="pref_shortcuts_header">Atalhos</string>
+    <string name="pref_captioning_preferences">Preferências de legenda</string>
+    <string name="pref_file_access">Acesso ao arquivo</string>
+    <string name="pref_file_access_auto">Auto</string>
+    <string name="button_pip">Imagem em imagem</string>
+    <string name="mediastore_empty">Nenhum arquivo de vídeo de índice encontrado. Para acessar arquivos de vídeo em determinado armazenamento, ative a verificação automática de mídia nas configurações do sistema.</string>
+    <string name="pref_decoder_priority_prefer_app">Prefira decodificadores de aplicativos</string>
+    <string name="pref_decoder_priority_prefer_device">Prefira decodificadores de dispositivos</string>
+    <string name="pref_decoder_priority">Prioridade do decodificador</string>
+    <string name="pref_decoder_priority_only_device">Apenas decodificadores de dispositivos</string>
 </resources>

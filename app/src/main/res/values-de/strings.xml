@@ -27,7 +27,7 @@
     <string name="pref_title">Einstellungen</string>
     <string name="pref_repeat_toggle">Wiederholung umschalten</string>
     <string name="pref_repeat_toggle_summary">Zusätzliches Steuerelement, um Videoschleifen auf unbestimmte Zeit zu ermöglichen (erfordert einen Neustart der Anwendung)</string>
-    <string name="shortcut_videos">Videos</string>
+    <string name="shortcut_videos">Filme</string>
     <string name="button_open">Öffnen</string>
     <string name="button_crop">Größe ändern</string>
     <string name="button_rotate">Drehen</string>
@@ -37,4 +37,8 @@
     <string name="mediastore_empty">Keine indizierten Videodateien gefunden. Um auf Videodateien im angegebenen Speicher zuzugreifen, aktivieren Sie die automatische Mediensuche in den Systemeinstellungen.</string>
     <string name="pref_shortcuts_header">Abkürzungen</string>
     <string name="pref_captioning_preferences">Untertitel-Einstellungen</string>
+    <string name="pref_decoder_priority_prefer_device">Bevorzugt Gerätedecoder</string>
+    <string name="pref_decoder_priority_prefer_app">App-Decoder bevorzugen</string>
+    <string name="pref_decoder_priority_only_device">Nur Gerätedecoder</string>
+    <string name="pref_decoder_priority">Priorität des Decoders</string>
 </resources>

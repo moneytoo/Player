@@ -37,4 +37,8 @@
     <string name="mediastore_empty">Δεν βρέθηκαν αρχεία βίντεο στο ευρετήριο. Για πρόσβαση σε αρχεία βίντεο στο συγκεκριμένο χώρο αποθήκευσης, ενεργοποιήστε την αυτόματη σάρωση πολυμέσων στις ρυθμίσεις του συστήματος.</string>
     <string name="pref_shortcuts_header">Συντομεύσεις</string>
     <string name="pref_captioning_preferences">Προτιμήσεις υπότιτλων</string>
+    <string name="pref_decoder_priority">Προτεραιότητα αποκωδικοποιητή</string>
+    <string name="pref_decoder_priority_prefer_app">Προτίμηση αποκωδικοποιητών εφαρμογής</string>
+    <string name="pref_decoder_priority_only_device">Μόνο αποκωδικοποιητές συσκευής</string>
+    <string name="pref_decoder_priority_prefer_device">Προτίμηση αποκωδικοποιητών συσκευής</string>
 </resources>
