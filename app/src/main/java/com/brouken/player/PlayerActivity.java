@@ -1041,8 +1041,8 @@ public class PlayerActivity extends Activity {
         DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory()
                 .setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS)
                 .setTsExtractorTimestampSearchBytes(1500 * TsExtractor.TS_PACKET_SIZE);
-        RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
-                .setExtensionRendererMode(DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON);
+        @SuppressLint("WrongConstant") RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
+                .setExtensionRendererMode(mPrefs.decoderPriority);
 
         ExoPlayer.Builder playerBuilder = new ExoPlayer.Builder(this, renderersFactory)
                 .setTrackSelector(trackSelector)

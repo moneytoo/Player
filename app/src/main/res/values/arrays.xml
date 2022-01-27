@@ -35,4 +35,16 @@
     <item>mediastore</item>
     <item>legacy</item>
   </string-array>
+
+  <string-array name="decoder_priority_entries">
+    <item>@string/pref_decoder_priority_prefer_device</item>
+    <item>@string/pref_decoder_priority_prefer_app</item>
+    <item>@string/pref_decoder_priority_only_device</item>
+  </string-array>
+
+  <string-array name="decoder_priority_values">
+    <item>1</item>
+    <item>2</item>
+    <item>0</item>
+  </string-array>
 </resources>

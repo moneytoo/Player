@@ -38,4 +38,8 @@
     <string name="mediastore_empty">No indexed video files found. To access video files in given storage, enable automatic media scanning in system settings.</string>
     <string name="pref_shortcuts_header">Shortcuts</string>
     <string name="pref_captioning_preferences">Captioning preferences</string>
+    <string name="pref_decoder_priority">Decoder priority</string>
+    <string name="pref_decoder_priority_prefer_device">Prefer device decoders</string>
+    <string name="pref_decoder_priority_prefer_app">Prefer app decoders</string>
+    <string name="pref_decoder_priority_only_device">Device decoders only</string>
 </resources>

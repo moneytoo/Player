@@ -11,6 +11,14 @@
             app:title="@string/pref_file_access"
             app:useSimpleSummaryProvider="true" />
 
+        <ListPreference
+            app:defaultValue="1"
+            app:entries="@array/decoder_priority_entries"
+            app:entryValues="@array/decoder_priority_values"
+            app:key="decoderPriority"
+            app:title="@string/pref_decoder_priority"
+            app:useSimpleSummaryProvider="true" />
+
         <SwitchPreferenceCompat
             app:key="frameRateMatching"
             app:defaultValue="false"

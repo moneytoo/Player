@@ -4,9 +4,9 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.Build;
 import android.preference.PreferenceManager;
 
+import com.google.android.exoplayer2.DefaultRenderersFactory;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 
 import java.io.FileInputStream;
@@ -42,6 +42,7 @@ class Prefs {
     private static final String PREF_KEY_REPEAT_TOGGLE = "repeatToggle";
     private static final String PREF_KEY_SPEED = "speed";
     private static final String PREF_KEY_FILE_ACCESS = "fileAccess";
+    private static final String PREF_KEY_DECODER_PRIORITY = "decoderPriority";
 
     final Context mContext;
     final SharedPreferences mSharedPreferences;
@@ -68,6 +69,7 @@ class Prefs {
     public boolean frameRateMatching = false;
     public boolean repeatToggle = false;
     public String fileAccess = "auto";
+    public int decoderPriority = DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON;
 
     private LinkedHashMap positions;
 
@@ -112,6 +114,7 @@ class Prefs {
         frameRateMatching = mSharedPreferences.getBoolean(PREF_KEY_FRAMERATE_MATCHING, frameRateMatching);
         repeatToggle = mSharedPreferences.getBoolean(PREF_KEY_REPEAT_TOGGLE, repeatToggle);
         fileAccess = mSharedPreferences.getString(PREF_KEY_FILE_ACCESS, fileAccess);
+        decoderPriority = Integer.parseInt(mSharedPreferences.getString(PREF_KEY_DECODER_PRIORITY, String.valueOf(decoderPriority)));
     }
 
     public void updateMedia(final Context context, final Uri uri, final String type) {
