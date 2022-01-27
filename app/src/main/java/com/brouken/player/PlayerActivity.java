@@ -702,7 +702,7 @@ public class PlayerActivity extends Activity {
                 break;
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
-                Utils.adjustVolume(mAudioManager, playerView, keyCode == KeyEvent.KEYCODE_VOLUME_UP, event.getRepeatCount() == 0);
+                Utils.adjustVolume(this, mAudioManager, playerView, keyCode == KeyEvent.KEYCODE_VOLUME_UP, event.getRepeatCount() == 0);
                 return true;
             case KeyEvent.KEYCODE_BUTTON_SELECT:
             case KeyEvent.KEYCODE_BUTTON_START:
@@ -851,7 +851,7 @@ public class PlayerActivity extends Activity {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_SCROLL:
                     final float value = event.getAxisValue(MotionEvent.AXIS_VSCROLL);
-                    Utils.adjustVolume(mAudioManager, playerView, value > 0.0f, Math.abs(value) > 1.0f);
+                    Utils.adjustVolume(this, mAudioManager, playerView, value > 0.0f, Math.abs(value) > 1.0f);
                     return true;
             }
         } else if ((event.getSource() & InputDevice.SOURCE_JOYSTICK) == InputDevice.SOURCE_JOYSTICK &&
@@ -865,7 +865,7 @@ public class PlayerActivity extends Activity {
                 }
             }
             if (Math.abs(value) == 1.0f) {
-                Utils.adjustVolume(mAudioManager, playerView, value < 0, true);
+                Utils.adjustVolume(this, mAudioManager, playerView, value < 0, true);
             }
         }
         return super.onGenericMotionEvent(event);

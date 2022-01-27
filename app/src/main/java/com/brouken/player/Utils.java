@@ -51,6 +51,8 @@ import com.obsez.android.lib.filechooser.ChooserDialog;
 
 import java.io.File;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -166,11 +168,11 @@ class Utils {
         return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == min;
     }
 
-    public static void adjustVolume(final AudioManager audioManager, final CustomStyledPlayerView playerView, final boolean raise, boolean canBoost) {
+    public static void adjustVolume(final Context context, final AudioManager audioManager, final CustomStyledPlayerView playerView, final boolean raise, boolean canBoost) {
         playerView.removeCallbacks(playerView.textClearRunnable);
 
-        final int volume = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
-        final int volumeMax = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        final int volume = getVolume(context,false, audioManager);
+        final int volumeMax = getVolume(context,true, audioManager);
         boolean volumeActive = volume != 0;
 
         // Handle volume changes outside the app (lose boost if volume is not maxed out)
@@ -185,7 +187,7 @@ class Utils {
             if (PlayerActivity.loudnessEnhancer != null)
                 PlayerActivity.loudnessEnhancer.setEnabled(false);
             audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, raise ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
-            final int volumeNew = audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+            final int volumeNew = getVolume(context, false, audioManager);
             // Custom volume step on Samsung devices (Sound Assistant)
             if (raise && volume == volumeNew) {
                 playerView.volumeUpsInRow++;
@@ -220,6 +222,39 @@ class Utils {
         playerView.setHighlight(PlayerActivity.boostLevel > 0);
 
         playerView.postDelayed(playerView.textClearRunnable, CustomStyledPlayerView.MESSAGE_TIMEOUT_KEY);
+    }
+
+    private static int getVolume(final Context context, final boolean max, final AudioManager audioManager) {
+        if (Build.VERSION.SDK_INT == 31 && Build.MANUFACTURER.equalsIgnoreCase("samsung")) {
+            try {
+                Method method;
+                Object result;
+                Class<?> clazz = Class.forName("com.samsung.android.media.SemSoundAssistantManager");
+                Constructor<?> constructor = clazz.getConstructor(Context.class);
+                final Method getMediaVolumeInterval = clazz.getDeclaredMethod("getMediaVolumeInterval");
+                result = getMediaVolumeInterval.invoke(constructor.newInstance(context));
+                if (result instanceof Integer) {
+                    int mediaVolumeInterval = (int) result;
+                    if (mediaVolumeInterval < 10) {
+                        method = AudioManager.class.getDeclaredMethod("semGetFineVolume", int.class);
+                        result = method.invoke(audioManager, AudioManager.STREAM_MUSIC);
+                        if (result instanceof Integer) {
+                            if (max) {
+                                return 150 / mediaVolumeInterval;
+                            } else {
+                                int fineVolume = (int) result;
+                                return fineVolume / mediaVolumeInterval;
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {}
+        }
+        if (max) {
+            return audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        } else {
+            return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC);
+        }
     }
 
     public static void setButtonEnabled(final Context context, final ImageButton button, final boolean enabled) {
