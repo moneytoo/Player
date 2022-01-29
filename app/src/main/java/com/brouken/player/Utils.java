@@ -225,7 +225,7 @@ class Utils {
     }
 
     private static int getVolume(final Context context, final boolean max, final AudioManager audioManager) {
-        if (Build.VERSION.SDK_INT == 31 && Build.MANUFACTURER.equalsIgnoreCase("samsung")) {
+        if (Build.VERSION.SDK_INT >= 30 && Build.VERSION.SDK_INT <= 31 && Build.MANUFACTURER.equalsIgnoreCase("samsung")) {
             try {
                 Method method;
                 Object result;
