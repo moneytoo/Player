@@ -1118,7 +1118,7 @@ public class PlayerActivity extends Activity {
             MediaItem.Builder mediaItemBuilder = new MediaItem.Builder()
                     .setUri(mPrefs.mediaUri)
                     .setMimeType(mPrefs.mediaType);
-            if (mPrefs.subtitleUri != null && Utils.fileExists(this, mPrefs.subtitleUri)) {
+            if (mPrefs.subtitleUri != null && (Utils.fileExists(this, mPrefs.subtitleUri) || Utils.isSupportedNetworkUri(mPrefs.subtitleUri))) {
                 MediaItem.SubtitleConfiguration subtitle = SubtitleUtils.buildSubtitle(this, mPrefs.subtitleUri);
                 mediaItemBuilder.setSubtitleConfigurations(Collections.singletonList(subtitle));
             }
