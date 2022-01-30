@@ -17,6 +17,7 @@ import java.util.concurrent.CountDownLatch;
 
 import okhttp3.Call;
 import okhttp3.Callback;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -58,6 +59,11 @@ public class SubtitleFinder {
     }
 
     public void start() {
+        // Prevent IllegalArgumentException in okhttp3.Request.Builder
+        if (HttpUrl.parse(baseUri.toString()) == null) {
+            return;
+        }
+
         new Thread(() -> {
             urls.put(buildUri("srt"), false);
             for (String language : Utils.getDeviceLanguages()) {
