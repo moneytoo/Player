@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 class SubtitleUtils {
@@ -266,10 +267,19 @@ class SubtitleUtils {
         }
     }
 
-    public static Uri convertToUTF(Context context, Uri subtitleUri) {
+    public static Uri convertToUTF(PlayerActivity activity, Uri subtitleUri) {
         try {
-            InputStream inputStream = context.getContentResolver().openInputStream(subtitleUri);
-            return convertInputStreamToUTF(context, subtitleUri, inputStream);
+            String scheme = subtitleUri.getScheme();
+            if (scheme != null && scheme.toLowerCase().startsWith("http")) {
+                LinkedHashMap<Uri, Boolean> urls = new LinkedHashMap<>();
+                urls.put(subtitleUri, false);
+                SubtitleFetcher subtitleFetcher = new SubtitleFetcher(activity, urls);
+                subtitleFetcher.start();
+                return null;
+            } else {
+                InputStream inputStream = activity.getContentResolver().openInputStream(subtitleUri);
+                return convertInputStreamToUTF(activity, subtitleUri, inputStream);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

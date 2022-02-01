@@ -1012,9 +1012,11 @@ public class PlayerActivity extends Activity {
 
     private void handleSubtitles(Uri uri) {
         // Convert subtitles to UTF-8 if necessary
-        SubtitleUtils.clearCache(this);
         uri = SubtitleUtils.convertToUTF(this, uri);
-        mPrefs.updateSubtitle(uri);
+        if (uri != null) {
+            SubtitleUtils.clearCache(this);
+            mPrefs.updateSubtitle(uri);
+        }
     }
 
     public void initializePlayer() {
