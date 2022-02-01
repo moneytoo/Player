@@ -50,8 +50,10 @@ HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
 
 To load external (non-embedded) subtitles, long press the file open action in the bottom bar. The first time you do that, you will be offered to select root video folder to enable automatic loading of external subtitles.
 
-Some advanced features can be configured in settings. To access it, long press the ⚙️ gear icon. (Alternatively, you can also enter this settings from App info screen.)
+Some advanced features can be enabled or configured in settings. To access it, long press the ⚙️ gear icon. (Alternatively, you can also enter this settings from App info screen.)
 
+ * File access mode. Use of Storage Access Framework / MediaStore / legacy file access.
+ * Decoder priority. Prefer device or app decoders.
  * Auto frame rate matching. (On Android 11+ and "compatible" displays, ExoPlayer supports [seamless refresh rate switching](https://source.android.com/devices/graphics/multiple-refresh-rate))
  * [Tunneled playback](https://medium.com/google-exoplayer/tunneled-video-playback-in-exoplayer-84f084a8094d). Enabling tunneling can improve playback of 4K/HDR content on Android TV.
  * Auto picture-in-picture. When you leave Just Player through the home button and video is playing, PiP will be activated automatically.
@@ -88,6 +90,8 @@ Just pause and resume playback once again.
 ### How do I change subtitle font, size or color?
 
 Open system [Caption preferences](https://support.google.com/accessibility/android/answer/6006554) on your device (usually in the _Accessibility_ section of _Settings_) and you will be able to fully customize the subtitle style. Just Player uses style defined in _Caption preferences_ even when the _Show captions_ option is turned off. If you want to apply additional formatting defined in subtitles, leave this option off.
+
+To quickly access the system _Caption preferences_ screen, long tap the subtitle button (CC).
 
 <img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/readmeScreenshots/caption_preferences_1.png" width="140"> <img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/readmeScreenshots/caption_preferences_2.png" width="140">
 
