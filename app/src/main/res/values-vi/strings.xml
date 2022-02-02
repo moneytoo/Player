@@ -34,4 +34,11 @@
     <string name="request_scope">Để tự động tải phụ đề bên ngoài hoặc cho phép bỏ qua tệp tin tiếp theo trong thư mục, hãy cấp cho %s quyền truy cập vào thư mục trên cùng chứa video của bạn (ví dụ: Phim).</string>
     <string name="pref_file_access">Truy cập file</string>
     <string name="pref_file_access_auto">Tự Động</string>
+    <string name="pref_shortcuts_header">Phím Tắt</string>
+    <string name="pref_captioning_preferences">Tùy chọn phụ đề</string>
+    <string name="pref_decoder_priority_prefer_device">Ưu tiên bộ giải mã thiết bị</string>
+    <string name="pref_decoder_priority_prefer_app">Ưu tiên bộ giải mã ứng dụng</string>
+    <string name="pref_decoder_priority_only_device">Chỉ bộ giải mã thiết bị</string>
+    <string name="mediastore_empty">Không tìm thấy tệp video được lập chỉ mục. Để truy cập các tệp video trong bộ nhớ, hãy bật tính năng quét phương tiện tự động trong cài đặt hệ thống.</string>
+    <string name="pref_decoder_priority">Bộ giải mã ưu tiên</string>
 </resources>
