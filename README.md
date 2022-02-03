@@ -7,7 +7,8 @@
 [![Google Play](https://img.shields.io/endpoint?color=green&logo=google-play&url=https%3A%2F%2Fplayshields.herokuapp.com%2Fplay%3Fi%3Dcom.brouken.player%26l%3Ddownloads%26m%3D%24installs)](https://play.google.com/store/apps/details?id=com.brouken.player)
 [![Google Play](https://img.shields.io/endpoint?color=green&logo=google-play&url=https%3A%2F%2Fplayshields.herokuapp.com%2Fplay%3Fi%3Dcom.brouken.player%26l%3Drating%26m%3D%24rating%252F5)](https://play.google.com/store/apps/details?id=com.brouken.player)
 [![ExoPlayer](https://img.shields.io/badge/ExoPlayer-v2.16.1-007ec6)](https://github.com/google/ExoPlayer)
-[![Translation Status](https://hosted.weblate.org/widgets/just-player/-/svg-badge.svg)](https://hosted.weblate.org/engage/just-player/)
+[![Weblate project translated](https://img.shields.io/weblate/progress/just-player?logo=weblate&logoColor=white)](https://hosted.weblate.org/engage/just-player/)
+[![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/JustPlayer?label=r%2FJustPlayer&logo=reddit&logoColor=white)](https://www.reddit.com/r/JustPlayer/)
 
 Android video player based on [ExoPlayer](https://github.com/google/ExoPlayer), compatible with Android 5+ and Android TV.
 
@@ -19,7 +20,7 @@ It properly syncs audio with video track when using Bluetooth earphones/speaker.
 
  * **Audio**: Vorbis, Opus, FLAC, ALAC, PCM/WAVE (μ-law, A-law), MP1, MP2, MP3, AMR (NB, WB), AAC (LC, ELD, HE; xHE on Android 9+), AC-3, E-AC-3, DTS, DTS-HD, TrueHD
  * **Video**: H.263, H.264 AVC (Baseline Profile; Main Profile on Android 6+), H.265 HEVC, MPEG-4 SP, VP8, VP9, AV1
- * **Containers**: MP4, MOV, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV
+ * **Containers**: MP4, MOV, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV, AVI (🚧)
  * **Streaming**: DASH, HLS, SmoothStreaming, RTSP
  * **Subtitles**: SRT, SSA, ASS, TTML, VTT, DVB
 
@@ -77,7 +78,7 @@ Translate: [Weblate](https://hosted.weblate.org/engage/just-player/)
 [<img src="https://brouken.com/img/get-it-on-amazon.png" alt="available at amazon" height="75">](https://www.amazon.com/gp/product/B091N8TTJH)
 [<img src="https://brouken.com/img/get-it-on-aptoide.png" alt="Get it on Aptoide" height="75">](https://just-player-marcel-dopita.en.aptoide.com/app)
 
-Also available on **OPPO App Market**, [**Xiaomi GetApps**](http://app.xiaomi.com/detail/1351636) ([for now](https://www.reddit.com/r/JustPlayer/comments/mqvtve/just_player_app_is_too_simple_for_xiaomi_failed/)) or [Uptodown](https://just-video-player.en.uptodown.com/android).
+Also available on **OPPO App Market**, **Xiaomi GetApps** or [Uptodown](https://just-video-player.en.uptodown.com/android).
 
 Other links/channels: application thread on [XDA Developers](https://forum.xda-developers.com/t/app-5-0-just-video-player-no-bluetooth-lag-exoplayer-ffmpeg-audio-codecs.4189183/), subreddit on [reddit](https://www.reddit.com/r/JustPlayer/), entry on [AlternativeTo](https://alternativeto.net/software/just-video-player/about/), git mirror on [GitLab](https://gitlab.com/moneytoo/Player)
 
@@ -97,7 +98,7 @@ To quickly access the system _Caption preferences_ screen, long tap the subtitle
 
 ### Are there any media formats it CANNOT play?
 
-Unfortunately, upstream ExoPlayer doesn't handle some older formats like [AVI container](https://github.com/google/ExoPlayer/issues/2092), WMV or [Theora](https://github.com/google/ExoPlayer/issues/4970). Majority of devices also cannot handle [10-bit AVC](https://github.com/moneytoo/Player/issues/87#issuecomment-816228143).
+Unfortunately, upstream ExoPlayer doesn't handle some older formats like ~~[AVI container](https://github.com/google/ExoPlayer/issues/2092)~~, WMV or [Theora](https://github.com/google/ExoPlayer/issues/4970). Majority of devices also cannot handle [10-bit AVC](https://github.com/moneytoo/Player/issues/87#issuecomment-816228143).
 
 Just Player focuses on playing videos so audio only playback isn't officialy supported ([request](https://github.com/moneytoo/Player/issues/55)).
 
