@@ -29,6 +29,7 @@ import android.media.audiofx.LoudnessEnhancer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.DocumentsContract;
 import android.provider.Settings;
 import android.support.v4.media.MediaMetadataCompat;
@@ -187,7 +188,11 @@ public class PlayerActivity extends Activity {
 
     static final String API_POSITION = "position";
     static final String API_RETURN_RESULT = "return_result";
+    static final String API_SUBS = "subs";
+    static final String API_SUBS_ENABLE = "subs.enable";
+    static final String API_TITLE = "title";
     boolean apiAccess;
+    String apiTitle;
     boolean intentReturnResult;
     boolean playbackFinished;
 
@@ -238,13 +243,32 @@ public class PlayerActivity extends Activity {
             } else {
                 Bundle bundle = launchIntent.getExtras();
                 if (bundle != null) {
-                    apiAccess = bundle.containsKey(API_POSITION) || bundle.containsKey(API_RETURN_RESULT);
-                    if (apiAccess)
+                    apiAccess = bundle.containsKey(API_POSITION) || bundle.containsKey(API_RETURN_RESULT) || bundle.containsKey(API_TITLE)
+                            || bundle.containsKey(API_SUBS) || bundle.containsKey(API_SUBS_ENABLE);
+                    if (apiAccess) {
                         mPrefs.setPersistent(false);
+                    }
+                    apiTitle = bundle.getString(API_TITLE);
                 }
 
                 mPrefs.updateMedia(this, uri, type);
-                searchSubtitles();
+
+                boolean apiSubs = false;
+                if (bundle != null) {
+                    if (bundle.containsKey(API_SUBS)) {
+                        apiSubs = true;
+                    }
+                    Parcelable[] subsEnable = bundle.getParcelableArray(API_SUBS_ENABLE);
+                    if (subsEnable != null && subsEnable.length > 0) {
+                        Uri sub = (Uri) subsEnable[0];
+                        mPrefs.updateSubtitle(sub);
+                        apiSubs = true;
+                    }
+                }
+
+                if (!apiSubs) {
+                    searchSubtitles();
+                }
 
                 if (bundle != null) {
                     intentReturnResult = bundle.getBoolean(API_RETURN_RESULT);
@@ -935,6 +959,10 @@ public class PlayerActivity extends Activity {
 
         if (requestCode == REQUEST_CHOOSER_VIDEO || requestCode == REQUEST_CHOOSER_VIDEO_MEDIASTORE) {
             if (resultCode == RESULT_OK) {
+                apiAccess = false;
+                apiTitle = null;
+                mPrefs.setPersistent(true);
+
                 final Uri uri = data.getData();
 
                 if (requestCode == REQUEST_CHOOSER_VIDEO) {
@@ -1121,7 +1149,8 @@ public class PlayerActivity extends Activity {
             MediaItem.Builder mediaItemBuilder = new MediaItem.Builder()
                     .setUri(mPrefs.mediaUri)
                     .setMimeType(mPrefs.mediaType);
-            if (mPrefs.subtitleUri != null && Utils.fileExists(this, mPrefs.subtitleUri)) {
+            if (mPrefs.subtitleUri != null && (Utils.fileExists(this, mPrefs.subtitleUri) ||
+                    (apiAccess && mPrefs.subtitleUri.toString().toLowerCase().startsWith("http") ))) {
                 MediaItem.SubtitleConfiguration subtitle = SubtitleUtils.buildSubtitle(this, mPrefs.subtitleUri);
                 mediaItemBuilder.setSubtitleConfigurations(Collections.singletonList(subtitle));
             }
@@ -1146,7 +1175,11 @@ public class PlayerActivity extends Activity {
                 play = true;
             }
 
-            titleView.setText(Utils.getFileName(this, mPrefs.mediaUri));
+            if (apiTitle != null) {
+                titleView.setText(apiTitle);
+            } else {
+                titleView.setText(Utils.getFileName(this, mPrefs.mediaUri));
+            }
             titleView.setVisibility(View.VISIBLE);
 
             updateButtons(true);
