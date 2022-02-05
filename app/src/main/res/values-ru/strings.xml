@@ -32,4 +32,13 @@
     <string name="button_crop">Изменить размер</string>
     <string name="button_rotate">Повернуть</string>
     <string name="button_pip">Картинка в картинке</string>
+    <string name="pref_file_access_auto">Авто</string>
+    <string name="pref_file_access">Доступ к файлам</string>
+    <string name="pref_captioning_preferences">Настройки субтитров</string>
+    <string name="pref_decoder_priority">Приоритет декодера</string>
+    <string name="pref_decoder_priority_prefer_device">Предпочтительные декодеры устройства</string>
+    <string name="pref_decoder_priority_prefer_app">Предпочитайте декодеры приложения</string>
+    <string name="pref_decoder_priority_only_device">Только декодеры устройства</string>
+    <string name="mediastore_empty">Не найдено проиндексированных видеофайлов. Чтобы получить доступ к видеофайлам в данном хранилище, включите автоматическое сканирование носителей в настройках системы.</string>
+    <string name="pref_shortcuts_header">Ярлыки</string>
 </resources>
