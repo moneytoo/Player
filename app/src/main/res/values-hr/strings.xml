@@ -34,4 +34,11 @@
     <string name="button_rotate">Okreni</string>
     <string name="pref_file_access">Pristup datotekama</string>
     <string name="pref_file_access_auto">Automatski</string>
+    <string name="pref_shortcuts_header">Prečaci</string>
+    <string name="mediastore_empty">Nije pronađena nijedna indeksirana video datoteka. Za pristup video datotekama u zadanom spremištu aktiviraj automatsko pretraživanje medija u postavkama sustava.</string>
+    <string name="pref_captioning_preferences">Postavke titlova</string>
+    <string name="pref_decoder_priority">Prioritet dekodera</string>
+    <string name="pref_decoder_priority_prefer_device">Daj prednost dekoderima uređaja</string>
+    <string name="pref_decoder_priority_prefer_app">Daj prednost dekoderima programa</string>
+    <string name="pref_decoder_priority_only_device">Samo dekoderi uređaja</string>
 </resources>
