@@ -187,12 +187,15 @@ public class PlayerActivity extends Activity {
     final Rational rationalLimitTall = new Rational(100, 239);
 
     static final String API_POSITION = "position";
+    static final String API_DURATION = "duration";
     static final String API_RETURN_RESULT = "return_result";
     static final String API_SUBS = "subs";
     static final String API_SUBS_ENABLE = "subs.enable";
+    static final String API_SUBS_NAME = "subs.name";
     static final String API_TITLE = "title";
     boolean apiAccess;
     String apiTitle;
+    List<MediaItem.SubtitleConfiguration> apiSubs = new ArrayList<>();
     boolean intentReturnResult;
     boolean playbackFinished;
 
@@ -237,6 +240,7 @@ public class PlayerActivity extends Activity {
                 }
             }
         } else if (launchIntent.getData() != null) {
+            resetApiAccess();
             final Uri uri = launchIntent.getData();
             if (SubtitleUtils.isSubtitle(uri, type)) {
                 handleSubtitles(uri);
@@ -253,20 +257,28 @@ public class PlayerActivity extends Activity {
 
                 mPrefs.updateMedia(this, uri, type);
 
-                boolean apiSubs = false;
                 if (bundle != null) {
-                    if (bundle.containsKey(API_SUBS)) {
-                        apiSubs = true;
-                    }
+                    Uri defaultSub = null;
                     Parcelable[] subsEnable = bundle.getParcelableArray(API_SUBS_ENABLE);
                     if (subsEnable != null && subsEnable.length > 0) {
-                        Uri sub = (Uri) subsEnable[0];
-                        mPrefs.updateSubtitle(sub);
-                        apiSubs = true;
+                        defaultSub = (Uri) subsEnable[0];
+                    }
+
+                    Parcelable[] subs = bundle.getParcelableArray(API_SUBS);
+                    String[] subsName = bundle.getStringArray(API_SUBS_NAME);
+                    if (subs != null && subs.length > 0) {
+                        for (int i = 0; i < subs.length; i++) {
+                            Uri sub = (Uri) subs[i];
+                            String name = null;
+                            if (subsName != null && subsName.length > i) {
+                                name = subsName[i];
+                            }
+                            apiSubs.add(SubtitleUtils.buildSubtitle(this, sub, name, sub.equals(defaultSub)));
+                        }
                     }
                 }
 
-                if (!apiSubs) {
+                if (apiSubs.isEmpty()) {
                     searchSubtitles();
                 }
 
@@ -672,11 +684,17 @@ public class PlayerActivity extends Activity {
         if (intentReturnResult) {
             Intent intent = new Intent();
             if (!playbackFinished) {
-                if (player != null && player.isCurrentMediaItemSeekable()) {
-                    if (mPrefs.persistentMode) {
-                        intent.putExtra(API_POSITION, (int) mPrefs.nonPersitentPosition);
-                    } else {
-                        intent.putExtra(API_POSITION, (int) player.getCurrentPosition());
+                if (player != null) {
+                    long duration = player.getDuration();
+                    if (duration != C.TIME_UNSET) {
+                        intent.putExtra(API_DURATION, (int) player.getDuration());
+                    }
+                    if (player.isCurrentMediaItemSeekable()) {
+                        if (mPrefs.persistentMode) {
+                            intent.putExtra(API_POSITION, (int) mPrefs.nonPersitentPosition);
+                        } else {
+                            intent.putExtra(API_POSITION, (int) player.getCurrentPosition());
+                        }
                     }
                 }
             }
@@ -942,6 +960,13 @@ public class PlayerActivity extends Activity {
         }
     }
 
+    void resetApiAccess() {
+        apiAccess = false;
+        apiTitle = null;
+        apiSubs.clear();
+        mPrefs.setPersistent(true);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         try {
@@ -959,9 +984,7 @@ public class PlayerActivity extends Activity {
 
         if (requestCode == REQUEST_CHOOSER_VIDEO || requestCode == REQUEST_CHOOSER_VIDEO_MEDIASTORE) {
             if (resultCode == RESULT_OK) {
-                apiAccess = false;
-                apiTitle = null;
-                mPrefs.setPersistent(true);
+                resetApiAccess();
 
                 final Uri uri = data.getData();
 
@@ -1149,9 +1172,10 @@ public class PlayerActivity extends Activity {
             MediaItem.Builder mediaItemBuilder = new MediaItem.Builder()
                     .setUri(mPrefs.mediaUri)
                     .setMimeType(mPrefs.mediaType);
-            if (mPrefs.subtitleUri != null && (Utils.fileExists(this, mPrefs.subtitleUri) ||
-                    (apiAccess && mPrefs.subtitleUri.toString().toLowerCase().startsWith("http") ))) {
-                MediaItem.SubtitleConfiguration subtitle = SubtitleUtils.buildSubtitle(this, mPrefs.subtitleUri);
+            if (apiAccess && apiSubs.size() > 0) {
+                mediaItemBuilder.setSubtitleConfigurations(apiSubs);
+            } else if (mPrefs.subtitleUri != null && Utils.fileExists(this, mPrefs.subtitleUri)) {
+                MediaItem.SubtitleConfiguration subtitle = SubtitleUtils.buildSubtitle(this, mPrefs.subtitleUri, null, true);
                 mediaItemBuilder.setSubtitleConfigurations(Collections.singletonList(subtitle));
             }
             player.setMediaItem(mediaItemBuilder.build(), mPrefs.getPosition());
@@ -1410,7 +1434,9 @@ public class PlayerActivity extends Activity {
                     if (mPrefs.speed <= 0.99f || mPrefs.speed >= 1.01f) {
                         player.setPlaybackSpeed(mPrefs.speed);
                     }
-                    setSelectedTracks(mPrefs.subtitleTrackId, mPrefs.audioTrackId);
+                    if (!apiAccess) {
+                        setSelectedTracks(mPrefs.subtitleTrackId, mPrefs.audioTrackId);
+                    }
                 }
             } else if (state == Player.STATE_ENDED) {
                 playbackFinished = true;

@@ -120,7 +120,7 @@ class SubtitleFetcher {
                     if (PlayerActivity.player != null) {
                         MediaItem mediaItem = PlayerActivity.player.getCurrentMediaItem();
                         if (mediaItem != null) {
-                            MediaItem.SubtitleConfiguration subtitle = SubtitleUtils.buildSubtitle(activity, convertedSubtitleUri);
+                            MediaItem.SubtitleConfiguration subtitle = SubtitleUtils.buildSubtitle(activity, convertedSubtitleUri, null, true);
                             mediaItem = mediaItem.buildUpon().setSubtitleConfigurations(Collections.singletonList(subtitle)).build();
                             PlayerActivity.player.setMediaItem(mediaItem, false);
                             if (BuildConfig.DEBUG) {

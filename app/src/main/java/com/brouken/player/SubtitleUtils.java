@@ -325,20 +325,21 @@ class SubtitleUtils {
         return subtitleUri;
     }
 
-    public static MediaItem.SubtitleConfiguration buildSubtitle(Context context, Uri uri) {
+    public static MediaItem.SubtitleConfiguration buildSubtitle(Context context, Uri uri, String subtitleName, boolean selected) {
         final String subtitleMime = SubtitleUtils.getSubtitleMime(uri);
         final String subtitleLanguage = SubtitleUtils.getSubtitleLanguage(uri);
-        String subtitleName = null;
-        if (subtitleLanguage == null)
+        if (subtitleLanguage == null && subtitleName == null)
             subtitleName = Utils.getFileName(context, uri);
 
-        return new MediaItem.SubtitleConfiguration.Builder(uri)
+        MediaItem.SubtitleConfiguration.Builder subtitleConfigurationBuilder = new MediaItem.SubtitleConfiguration.Builder(uri)
                 .setMimeType(subtitleMime)
                 .setLanguage(subtitleLanguage)
-                .setSelectionFlags(C.SELECTION_FLAG_DEFAULT)
                 .setRoleFlags(C.ROLE_FLAG_SUBTITLE)
-                .setLabel(subtitleName)
-                .build();
+                .setLabel(subtitleName);
+        if (selected) {
+            subtitleConfigurationBuilder.setSelectionFlags(C.SELECTION_FLAG_DEFAULT);
+        }
+        return subtitleConfigurationBuilder.build();
     }
 
     public static float normalizeFontScale(float fontScale) {
