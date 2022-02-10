@@ -20,4 +20,15 @@
     <string name="button_pip">ピクチャーインピクチャー</string>
     <string name="button_rotate">回転</string>
     <string name="pref_file_access_auto">自動</string>
+    <string name="button_crop">大きさ変更</string>
+    <string name="pref_tunneling">トンネリング再生</string>
+    <string name="pref_skip_silence">無音をとばす</string>
+    <string name="pref_framerate_matching_on">ディスプレイのリフレッシュレートを動画のフレームレートに切り替える</string>
+    <string name="pref_auto_pip_off">自動的にPiPに切り替えない</string>
+    <string name="pref_framerate_matching_off">ディスプレイのリフレッシュレートを変えない</string>
+    <string name="pref_framerate_matching">自動でフレームレートを合わせる</string>
+    <string name="pref_tunneling_summary">トンネリングは4KやHDRのコンテンツのために良いサポートを提供しますが、全ての端末では動作しないかもしれません</string>
+    <string name="pref_skip_silence_on">オーディオストリームで無音の部分をとばす</string>
+    <string name="pref_auto_pip">自動ピクチャーインピクチャー</string>
+    <string name="pref_auto_pip_on">アプリを離れるときにPiPに切り替える</string>
 </resources>
