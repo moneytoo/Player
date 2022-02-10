@@ -163,6 +163,7 @@ public class PlayerActivity extends Activity {
 
     private boolean restoreOrientationLock;
     private boolean restorePlayState;
+    private boolean restorePlayStateAllowed;
     private boolean play;
     private float subtitlesScale;
     private boolean isScrubbing;
@@ -664,6 +665,7 @@ public class PlayerActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+        restorePlayStateAllowed = true;
     }
 
     @Override
@@ -677,6 +679,12 @@ public class PlayerActivity extends Activity {
         super.onStop();
         alive = false;
         releasePlayer(false);
+    }
+
+    @Override
+    public void onBackPressed() {
+        restorePlayStateAllowed = false;
+        super.onBackPressed();
     }
 
     @Override
@@ -985,6 +993,7 @@ public class PlayerActivity extends Activity {
         if (requestCode == REQUEST_CHOOSER_VIDEO || requestCode == REQUEST_CHOOSER_VIDEO_MEDIASTORE) {
             if (resultCode == RESULT_OK) {
                 resetApiAccess();
+                restorePlayState = false;
 
                 final Uri uri = data.getData();
 
@@ -1276,7 +1285,7 @@ public class PlayerActivity extends Activity {
             mediaSession.setActive(false);
             mediaSession.release();
 
-            if (player.isPlaying()) {
+            if (player.isPlaying() && restorePlayStateAllowed) {
                 restorePlayState = true;
             }
             player.removeListener(playerListener);
