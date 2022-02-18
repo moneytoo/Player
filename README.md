@@ -123,7 +123,7 @@ Alternatively, some people choose to use the media library function of
 
 ### How to access videos on network storages (SMB, WebDAV, SFTP, etc.)?
 
-1. The default system file chooser allows access to any remote storage using appropriate _Document Provider_. I highly recommend [CIFS Documents Provider](https://github.com/wa2c/cifs-documents-provider) for accessing Samba shares. There are also providers like [WebDAV Provider](https://github.com/alexbakker/webdav-provider), [FileManagerUtils](https://github.com/rikyiso01/FileManagerUtils) (SFTP client) and [rcx](https://github.com/x0b/rcx) (file explorer). Sadly, Document providers are not supported on Android TV.
+1. The default system file chooser allows access to any remote storage using appropriate _Document Provider_. I highly recommend [CIFS Documents Provider](https://github.com/wa2c/cifs-documents-provider) for accessing Samba shares. There are also providers like [WebDAV Provider](https://github.com/alexbakker/webdav-provider)/[DAVx⁵](https://github.com/bitfireAT/davx5-ose) (WebDAV), [FileManagerUtils](https://github.com/rikyiso01/FileManagerUtils) (SFTP) and [rcx](https://github.com/x0b/rcx). Sadly, Document providers are not supported on Android TV.
 
 2. Open video directly from your favorite file explorer. _Solid Explorer_ works really well, especially if you also want to automatically load subtitles.
 
