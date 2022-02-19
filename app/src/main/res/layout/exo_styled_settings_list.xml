@@ -4,4 +4,6 @@
     android:layout_height="match_parent"
     android:background="@drawable/rounded_controls_background"
     android:padding="4dp"
+    android:fadeScrollbars="false"
+    android:scrollbarSize="3dp"
     android:scrollbars="vertical" />
