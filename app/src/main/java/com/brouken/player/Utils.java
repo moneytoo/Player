@@ -63,6 +63,7 @@ class Utils {
     public static final String[] supportedExtensionsSubtitle = new String[] { "srt", "ssa", "ass", "vtt", "ttml", "dfxp", "xml" };
 
     public static final String[] supportedMimeTypesVideo = new String[] {
+            // Local mime types on Android:
             MimeTypes.VIDEO_MATROSKA, // .mkv
             MimeTypes.VIDEO_MP4, // .mp4, .m4v
             MimeTypes.VIDEO_WEBM, // .webm
@@ -70,6 +71,8 @@ class Utils {
             "video/mp2ts", // .ts, but also incompatible .m2ts
             MimeTypes.VIDEO_H263, // .3gp
             "video/avi",
+            // For remote storages:
+            "video/x-m4v", // .m4v
     };
     public static final String[] supportedMimeTypesSubtitle = new String[] {
             MimeTypes.APPLICATION_SUBRIP,
