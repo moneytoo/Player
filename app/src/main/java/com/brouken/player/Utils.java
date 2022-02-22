@@ -59,6 +59,8 @@ import java.util.Locale;
 
 class Utils {
 
+    public static final String FEATURE_FIRE_TV = "amazon.hardware.fire_tv";
+
     public static final String[] supportedExtensionsVideo = new String[] { "3gp", "avi", "m4v", "mkv", "mov", "mp4", "ts", "webm" };
     public static final String[] supportedExtensionsSubtitle = new String[] { "srt", "ssa", "ass", "vtt", "ttml", "dfxp", "xml" };
 
@@ -424,6 +426,10 @@ class Utils {
             return true;
         }
 
+        if (pm.hasSystemFeature(FEATURE_FIRE_TV)) {
+            return true;
+        }
+
         // Missing Files app (DocumentsUI) means box (some boxes still have non functional app or stub)
         if (!hasSAFChooser(pm)) {
             return true;
@@ -630,7 +636,10 @@ class Utils {
     }
 
     public static boolean isPiPSupported(Context context) {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && context.getPackageManager().hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
+        PackageManager packageManager = context.getPackageManager();
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+                && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
+                && !packageManager.hasSystemFeature(FEATURE_FIRE_TV);
     }
 
     public static Uri getMoviesFolderUri() {
