@@ -21,7 +21,7 @@ android {
             //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    flavorDimensions "targetSdk"
+    flavorDimensions "targetSdk", "distribution"
     productFlavors {
         latest {
             dimension "targetSdk"
@@ -32,6 +32,25 @@ android {
             versionNameSuffix "-legacy"
             targetSdkVersion 29
         }
+
+        universal {
+            dimension "distribution"
+        }
+        amazon {
+            dimension "distribution"
+        }
+    }
+    variantFilter { variant ->
+        def names = variant.flavors*.name
+        if (names.contains("legacy") && names.contains("amazon")) {
+            setIgnore(true)
+        }
+    }
+    androidComponents {
+        onVariants(selector().withFlavor(new kotlin.Pair("distribution", "amazon")), {
+            packaging.dex.useLegacyPackaging.set(false)
+            packaging.jniLibs.excludes.add('lib/armeabi-v7a/*_neon.so')
+        })
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
