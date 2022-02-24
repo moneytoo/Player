@@ -43,7 +43,7 @@ android {
 }
 
 dependencies {
-    def exoplayerVersion = '2.16.1'
+    def exoplayerVersion = '2.17.0'
     implementation("com.google.android.exoplayer:exoplayer-datasource:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-common"
     }
@@ -68,9 +68,10 @@ dependencies {
     implementation("com.google.android.exoplayer:exoplayer-rtsp:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-core"
     }
-    api ('com.google.guava:guava:27.1-android') {
+    api ('com.google.guava:guava:31.0.1-android') {
         exclude group: 'com.google.code.findbugs', module: 'jsr305'
         exclude group: 'org.checkerframework', module: 'checker-compat-qual'
+        exclude group: 'org.checkerframework', module: 'checker-qual'
         exclude group: 'com.google.errorprone', module: 'error_prone_annotations'
         exclude group: 'com.google.j2objc', module: 'j2objc-annotations'
         exclude group: 'org.codehaus.mojo', module: 'animal-sniffer-annotations'
