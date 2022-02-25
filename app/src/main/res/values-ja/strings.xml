@@ -31,4 +31,7 @@
     <string name="pref_skip_silence_on">オーディオストリームで無音の部分をとばす</string>
     <string name="pref_auto_pip">自動ピクチャーインピクチャー</string>
     <string name="pref_auto_pip_on">アプリを離れるときにPiPに切り替える</string>
+    <string name="pref_decoder_priority_prefer_device">端末のデコーダーを優先</string>
+    <string name="pref_decoder_priority_only_device">端末のデコーダーのみ</string>
+    <string name="pref_decoder_priority_prefer_app">アプリのデコーダーを優先</string>
 </resources>
