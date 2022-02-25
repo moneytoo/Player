@@ -137,10 +137,12 @@ public class MediaStoreChooserActivity extends Activity {
         Integer[] bucketIds = buckets.keySet().toArray(new Integer[0]);
         String[] bucketDisplayNames = buckets.values().toArray(new String[0]);
 
-        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this, R.style.MediaStoreChooserDialog);
+        AlertDialog.Builder alertDialogBuilder;
         if (buckets.size() == 0) {
+            alertDialogBuilder = new AlertDialog.Builder(this);
             alertDialogBuilder.setMessage(R.string.mediastore_empty);
         } else {
+            alertDialogBuilder = new AlertDialog.Builder(this, R.style.MediaStoreChooserDialog);
             alertDialogBuilder.setTitle(getString(R.string.choose_file));
             alertDialogBuilder.setItems(bucketDisplayNames, (dialogInterface, i) -> {
                 Intent intent = new Intent(MediaStoreChooserActivity.this, MediaStoreChooserActivity.class);
