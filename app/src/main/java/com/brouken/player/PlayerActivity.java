@@ -678,6 +678,7 @@ public class PlayerActivity extends Activity {
     public void onStop() {
         super.onStop();
         alive = false;
+        playerView.setCustomErrorMessage(null);
         releasePlayer(false);
     }
 
