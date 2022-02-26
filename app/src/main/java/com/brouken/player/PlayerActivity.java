@@ -1498,9 +1498,11 @@ public class PlayerActivity extends Activity {
             intent.setType("video/*");
             intent.putExtra(Intent.EXTRA_MIME_TYPES, Utils.supportedMimeTypesVideo);
 
-            final ComponentName systemComponentName = Utils.getSystemComponent(this, intent);
-            if (systemComponentName != null) {
-                intent.setComponent(systemComponentName);
+            if (Build.VERSION.SDK_INT < 30) {
+                final ComponentName systemComponentName = Utils.getSystemComponent(this, intent);
+                if (systemComponentName != null) {
+                    intent.setComponent(systemComponentName);
+                }
             }
 
             safelyStartActivityForResult(intent, REQUEST_CHOOSER_VIDEO);
@@ -1533,9 +1535,11 @@ public class PlayerActivity extends Activity {
             };
             intent.putExtra(Intent.EXTRA_MIME_TYPES, supportedMimeTypes);
 
-            final ComponentName systemComponentName = Utils.getSystemComponent(this, intent);
-            if (systemComponentName != null) {
-                intent.setComponent(systemComponentName);
+            if (Build.VERSION.SDK_INT < 30) {
+                final ComponentName systemComponentName = Utils.getSystemComponent(this, intent);
+                if (systemComponentName != null) {
+                    intent.setComponent(systemComponentName);
+                }
             }
 
             safelyStartActivityForResult(intent, REQUEST_CHOOSER_SUBTITLE);
