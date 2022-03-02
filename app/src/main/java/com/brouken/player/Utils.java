@@ -637,9 +637,10 @@ class Utils {
 
     public static boolean isPiPSupported(Context context) {
         PackageManager packageManager = context.getPackageManager();
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE)
-                && !packageManager.hasSystemFeature(FEATURE_FIRE_TV);
+        if (BuildConfig.FLAVOR_distribution.equals("amazon") && packageManager.hasSystemFeature(FEATURE_FIRE_TV)) {
+            return false;
+        }
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE);
     }
 
     public static Uri getMoviesFolderUri() {
