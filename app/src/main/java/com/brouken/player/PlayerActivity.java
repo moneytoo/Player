@@ -205,6 +205,7 @@ public class PlayerActivity extends Activity {
     SubtitleFinder subtitleFinder;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Rotate ASAP, before super/inflating to avoid glitches with activity launch animation
@@ -1734,12 +1735,14 @@ public class PlayerActivity extends Activity {
         return false;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private boolean isInPip() {
         if (!Utils.isPiPSupported(this))
             return false;
         return isInPictureInPictureMode();
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
