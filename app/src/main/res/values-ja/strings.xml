@@ -34,4 +34,6 @@
     <string name="pref_decoder_priority_prefer_device">端末のデコーダーを優先</string>
     <string name="pref_decoder_priority_only_device">端末のデコーダーのみ</string>
     <string name="pref_decoder_priority_prefer_app">アプリのデコーダーを優先</string>
+    <string name="pref_repeat_toggle">繰り返しトグル</string>
+    <string name="pref_repeat_toggle_summary">ビデオを無限に繰り返しするのを許可する追加の制御(アプリの再起動が必要)</string>
 </resources>
