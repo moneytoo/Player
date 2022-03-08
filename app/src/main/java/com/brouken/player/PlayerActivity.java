@@ -1247,7 +1247,8 @@ public class PlayerActivity extends Activity {
         if (restorePlayState) {
             restorePlayState = false;
             playerView.showController();
-            player.play();
+            playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+            player.setPlayWhenReady(true);
         }
     }
 
