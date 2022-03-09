@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 32
     ndkVersion '21.4.7075529'
 
     defaultConfig {
         applicationId "com.brouken.player"
         minSdkVersion 21
-        targetSdkVersion 31
+        targetSdkVersion 32
         versionCode 105
         versionName "0.105"
         archivesBaseName = "Just.Player.v${versionName}"
