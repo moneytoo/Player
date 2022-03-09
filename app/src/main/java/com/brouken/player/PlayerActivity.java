@@ -46,6 +46,9 @@ import android.view.MotionEvent;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.accessibility.CaptioningManager;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
@@ -204,6 +207,11 @@ public class PlayerActivity extends Activity {
     DisplayManager.DisplayListener displayListener;
     SubtitleFinder subtitleFinder;
 
+    Runnable barsHider = () -> {
+        if (playerView != null) {
+            Utils.toggleSystemUi(PlayerActivity.this, playerView, false);
+        }
+    };
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -218,6 +226,18 @@ public class PlayerActivity extends Activity {
             setContentView(R.layout.activity_player_textureview);
         } else {
             setContentView(R.layout.activity_player);
+        }
+
+        if (Build.VERSION.SDK_INT >= 31) {
+            Window window = getWindow();
+            if (window != null) {
+                window.setDecorFitsSystemWindows(false);
+                WindowInsetsController windowInsetsController = window.getInsetsController();
+                if (windowInsetsController != null) {
+                    // On Android 12 BEHAVIOR_DEFAULT allows system gestures without visible system bars
+                    windowInsetsController.setSystemBarsBehavior(WindowInsetsController.BEHAVIOR_DEFAULT);
+                }
+            }
         }
 
         isTvBox = Utils.isTvBox(this);
@@ -455,6 +475,15 @@ public class PlayerActivity extends Activity {
         controlView = playerView.findViewById(R.id.exo_controller);
         controlView.setOnApplyWindowInsetsListener((view, windowInsets) -> {
             if (windowInsets != null) {
+                if (Build.VERSION.SDK_INT >= 31) {
+                    boolean visibleBars = windowInsets.isVisible(WindowInsets.Type.statusBars());
+                    if (visibleBars && !controllerVisible) {
+                        playerView.postDelayed(barsHider, 2500);
+                    } else {
+                        playerView.removeCallbacks(barsHider);
+                    }
+                }
+
                 view.setPadding(0, windowInsets.getSystemWindowInsetTop(),
                         0, windowInsets.getSystemWindowInsetBottom());
 
@@ -594,12 +623,10 @@ public class PlayerActivity extends Activity {
                 }
 
                 // https://developer.android.com/training/system-ui/immersive
+                Utils.toggleSystemUi(PlayerActivity.this, playerView, visibility == View.VISIBLE);
                 if (visibility == View.VISIBLE) {
-                    Utils.showSystemUi(playerView);
                     // Because when using dpad controls, focus resets to first item in bottom controls bar
                     findViewById(R.id.exo_play_pause).requestFocus();
-                } else {
-                    Utils.hideSystemUi(playerView);
                 }
 
                 if (controllerVisible && playerView.isControllerFullyVisible()) {
@@ -660,6 +687,10 @@ public class PlayerActivity extends Activity {
         super.onStart();
         alive = true;
         updateSubtitleStyle();
+        if (Build.VERSION.SDK_INT >= 31) {
+            playerView.removeCallbacks(barsHider);
+            Utils.toggleSystemUi(this, playerView, true);
+        }
         initializePlayer();
     }
 
@@ -679,6 +710,9 @@ public class PlayerActivity extends Activity {
     public void onStop() {
         super.onStop();
         alive = false;
+        if (Build.VERSION.SDK_INT >= 31) {
+            playerView.removeCallbacks(barsHider);
+        }
         playerView.setCustomErrorMessage(null);
         releasePlayer(false);
     }
@@ -963,7 +997,7 @@ public class PlayerActivity extends Activity {
             playerView.setControllerAutoShow(true);
             if (player != null) {
                 if (player.isPlaying())
-                    Utils.hideSystemUi(playerView);
+                    Utils.toggleSystemUi(this, playerView, false);
                 else
                     playerView.showController();
             }
