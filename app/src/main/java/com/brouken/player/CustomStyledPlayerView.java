@@ -32,6 +32,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     private long seekStart;
     private long seekChange;
     private long seekMax;
+    public boolean seekProgress;
     private boolean canBoostVolume = false;
     private boolean canSetAutoBrightness = false;
 
@@ -136,6 +137,11 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
                     }
 
                     setControllerAutoShow(true);
+
+                    if (seekProgress) {
+                        seekProgress = false;
+                        hideControllerImmediately();
+                    }
                     break;
                 }
         }
@@ -216,6 +222,11 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
                     seekStart = PlayerActivity.player.getCurrentPosition();
                     seekChange = 0L;
                     seekMax = PlayerActivity.player.getDuration();
+
+                    if (!isControllerFullyVisible()) {
+                        seekProgress = true;
+                        showProgress();
+                    }
                 }
 
                 gestureOrientation = Orientation.HORIZONTAL;
