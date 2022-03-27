@@ -31,9 +31,9 @@ public class SubtitleFinder {
         return false;
     }
 
-    private void addLanguage(String lang) {
-        urls.put(buildUri(lang + ".srt"), false);
-        urls.put(buildUri(Util.normalizeLanguageCode(lang) + ".srt"), false);
+    private void addLanguage(String lang, String suffix) {
+        urls.put(buildUri(lang + "." + suffix), false);
+        urls.put(buildUri(Util.normalizeLanguageCode(lang) + "." + suffix), false);
     }
 
     private Uri buildUri(String suffix) {
@@ -47,12 +47,12 @@ public class SubtitleFinder {
             return;
         }
 
-        urls.put(buildUri("srt"), false);
-        for (String language : Utils.getDeviceLanguages()) {
-            addLanguage(language);
+        for (String suffix : new String[] { "srt", "ssa", "ass" }) {
+            urls.put(buildUri(suffix), false);
+            for (String language : Utils.getDeviceLanguages()) {
+                addLanguage(language, suffix);
+            }
         }
-        urls.put(buildUri("ssa"), false);
-        urls.put(buildUri("ass"), false);
         urls.put(buildUri("vtt"), false);
 
         SubtitleFetcher subtitleFetcher = new SubtitleFetcher(activity, urls);
