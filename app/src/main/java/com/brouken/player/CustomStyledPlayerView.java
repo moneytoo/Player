@@ -276,7 +276,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
                 if (motionEvent.getX() < (float)(getWidth() / 2)) {
                     brightnessControl.changeBrightness(this, gestureScrollY > 0, canSetAutoBrightness);
                 } else {
-                    Utils.adjustVolume(getContext(), mAudioManager, this, gestureScrollY > 0, canBoostVolume);
+                    Utils.adjustVolume(getContext(), mAudioManager, this, gestureScrollY > 0, canBoostVolume, false);
                 }
 
                 gestureScrollY = 0.0001f;

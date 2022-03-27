@@ -182,7 +182,7 @@ class Utils {
         return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == min;
     }
 
-    public static void adjustVolume(final Context context, final AudioManager audioManager, final CustomStyledPlayerView playerView, final boolean raise, boolean canBoost) {
+    public static void adjustVolume(final Context context, final AudioManager audioManager, final CustomStyledPlayerView playerView, final boolean raise, boolean canBoost, boolean clear) {
         playerView.removeCallbacks(playerView.textClearRunnable);
 
         final int volume = getVolume(context,false, audioManager);
@@ -235,7 +235,9 @@ class Utils {
             PlayerActivity.loudnessEnhancer.setEnabled(PlayerActivity.boostLevel > 0);
         playerView.setHighlight(PlayerActivity.boostLevel > 0);
 
-        playerView.postDelayed(playerView.textClearRunnable, CustomStyledPlayerView.MESSAGE_TIMEOUT_KEY);
+        if (clear) {
+            playerView.postDelayed(playerView.textClearRunnable, CustomStyledPlayerView.MESSAGE_TIMEOUT_KEY);
+        }
     }
 
     private static int getVolume(final Context context, final boolean max, final AudioManager audioManager) {
