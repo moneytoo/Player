@@ -726,7 +726,7 @@ public class PlayerActivity extends Activity {
     @Override
     public void finish() {
         if (intentReturnResult) {
-            Intent intent = new Intent();
+            Intent intent = new Intent("com.brouken.player.result");
             if (!playbackFinished) {
                 if (player != null) {
                     long duration = player.getDuration();
