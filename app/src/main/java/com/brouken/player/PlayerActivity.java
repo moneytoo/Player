@@ -2043,6 +2043,7 @@ public class PlayerActivity extends Activity {
             }
 
             Rational rational = Utils.getRational(format);
+            // TODO: Android 13: Use setExpandedAspectRatio
             if (rational.floatValue() > rationalLimitWide.floatValue())
                 rational = rationalLimitWide;
             else if (rational.floatValue() < rationalLimitTall.floatValue())
