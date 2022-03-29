@@ -760,4 +760,8 @@ class Utils {
         });
         activity.chaptersThread.start();
     }
+
+    public static boolean isTablet(Context context) {
+        return context.getResources().getConfiguration().smallestScreenWidthDp >= 720;
+    }
 }

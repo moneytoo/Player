@@ -346,26 +346,29 @@ class SubtitleUtils {
         return subtitleConfigurationBuilder.build();
     }
 
-    public static float normalizeFontScale(float fontScale) {
+    public static float normalizeFontScale(float fontScale, boolean small) {
+        // https://bbc.github.io/subtitle-guidelines/#Presentation-font-size
+        float newScale;
         // ¯\_(ツ)_/¯
         if (fontScale > 1.01f) {
             if (fontScale >= 1.99f) {
                 // 2.0
-                return 1.2f;
+                newScale = (small ? 1.15f : 1.2f);
             } else {
                 // 1.5
-                return 1.1f;
+                newScale = (small ? 1.0f : 1.1f);
             }
         } else if (fontScale < 0.99f) {
             if (fontScale <= 0.26f) {
                 // 0.25
-                return 0.8f;
+                newScale = (small ? 0.65f : 0.8f);
             } else {
                 // 0.5
-                return 0.9f;
+                newScale = (small ? 0.75f : 0.9f);
             }
         } else {
-            return 1.0f;
+            newScale = (small ? 0.85f : 1.0f);
         }
+        return newScale;
     }
 }

@@ -686,7 +686,7 @@ public class PlayerActivity extends Activity {
     public void onStart() {
         super.onStart();
         alive = true;
-        updateSubtitleStyle();
+        updateSubtitleStyle(this);
         if (Build.VERSION.SDK_INT >= 31) {
             playerView.removeCallbacks(barsHider);
             Utils.toggleSystemUi(this, playerView, true);
@@ -1841,10 +1841,11 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    void updateSubtitleStyle() {
+    void updateSubtitleStyle(final Context context) {
         final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
         final SubtitleView subtitleView = playerView.getSubtitleView();
-        subtitlesScale = SubtitleUtils.normalizeFontScale(captioningManager.getFontScale());
+        final boolean isTablet = Utils.isTablet(context);
+        subtitlesScale = SubtitleUtils.normalizeFontScale(captioningManager.getFontScale(), isTvBox || isTablet);
         if (subtitleView != null) {
             final CaptioningManager.CaptionStyle userStyle = captioningManager.getUserStyle();
             final CaptionStyleCompat userStyleCompat = CaptionStyleCompat.createFromCaptionStyle(userStyle);
