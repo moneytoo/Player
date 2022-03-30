@@ -686,7 +686,9 @@ public class PlayerActivity extends Activity {
     public void onStart() {
         super.onStart();
         alive = true;
-        updateSubtitleStyle(this);
+        if (!(isTvBox && Build.VERSION.SDK_INT >= 31)) {
+            updateSubtitleStyle(this);
+        }
         if (Build.VERSION.SDK_INT >= 31) {
             playerView.removeCallbacks(barsHider);
             Utils.toggleSystemUi(this, playerView, true);
@@ -698,6 +700,9 @@ public class PlayerActivity extends Activity {
     public void onResume() {
         super.onResume();
         restorePlayStateAllowed = true;
+        if (isTvBox && Build.VERSION.SDK_INT >= 31) {
+            updateSubtitleStyle(this);
+        }
     }
 
     @Override
