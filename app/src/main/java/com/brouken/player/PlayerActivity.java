@@ -182,7 +182,7 @@ public class PlayerActivity extends Activity {
     public Thread frameRateSwitchThread;
     public Thread chaptersThread;
     private long lastScrubbingPosition;
-    public long[] chapterStarts;
+    public static long[] chapterStarts;
 
     public static boolean restoreControllerTimeout = false;
     public static boolean shortControllerTimeout = false;

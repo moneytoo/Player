@@ -7,6 +7,7 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
+import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -32,6 +33,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     private long seekStart;
     private long seekChange;
     private long seekMax;
+    private long seekLastPosition;
     public boolean seekProgress;
     private boolean canBoostVolume = false;
     private boolean canSetAutoBrightness = false;
@@ -219,7 +221,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
                         PlayerActivity.player.pause();
                     }
                     clearIcon();
-                    seekStart = PlayerActivity.player.getCurrentPosition();
+                    seekLastPosition = seekStart = PlayerActivity.player.getCurrentPosition();
                     seekChange = 0L;
                     seekMax = PlayerActivity.player.getDuration();
 
@@ -253,6 +255,12 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
                             PlayerActivity.player.seekTo(position);
                         }
                     }
+                    for (long start : PlayerActivity.chapterStarts) {
+                        if ((seekLastPosition < start && position >= start) || (seekLastPosition > start && position <= start)) {
+                            performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
+                        }
+                    }
+                    seekLastPosition = position;
                     String message = Utils.formatMilisSign(seekChange);
                     if (!isControllerFullyVisible()) {
                         message += "\n" + Utils.formatMilis(position);
