@@ -126,6 +126,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
                 }
                 break;
             case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
                 if (handleTouch) {
                     if (gestureOrientation == Orientation.HORIZONTAL) {
                         setCustomErrorMessage(null);
