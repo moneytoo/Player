@@ -208,7 +208,7 @@ public class PlayerActivity extends Activity {
     SubtitleFinder subtitleFinder;
 
     Runnable barsHider = () -> {
-        if (playerView != null) {
+        if (playerView != null && !controllerVisible) {
             Utils.toggleSystemUi(PlayerActivity.this, playerView, false);
         }
     };
