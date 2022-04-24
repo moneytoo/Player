@@ -92,7 +92,7 @@ Just pause and resume playback once again.
 
 Open system [Caption preferences](https://support.google.com/accessibility/android/answer/6006554) on your device (usually in the _Accessibility_ section of _Settings_) and you will be able to fully customize the subtitle style. Just Player uses style defined in _Caption preferences_ even when the _Show captions_ option is turned off. If you want to apply additional formatting defined in subtitles, leave this option off.
 
-To quickly access the system _Caption preferences_ screen, long tap the subtitle button (CC).
+To quickly access the system _Caption preferences_ screen, long tap the subtitle button.
 
 <img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/readmeScreenshots/caption_preferences_1.png" width="140"> <img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/readmeScreenshots/caption_preferences_2.png" width="140">
 

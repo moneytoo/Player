@@ -11,6 +11,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.core.view.GestureDetectorCompat;
@@ -351,6 +352,8 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
             mScaleFactorFit = getScaleFit();
             canScale = true;
         }
+        ImageButton buttonAspectRatio = findViewById(Integer.MAX_VALUE - 100);
+        buttonAspectRatio.setImageResource(R.drawable.ic_fit_screen_24dp);
         hideController();
         return true;
     }
@@ -359,6 +362,13 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
         if (PlayerActivity.locked)
             return;
+        if (mScaleFactor - mScaleFactorFit < 0.001) {
+            setScale(1.f);
+            setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+
+            ImageButton buttonAspectRatio = findViewById(Integer.MAX_VALUE - 100);
+            buttonAspectRatio.setImageResource(R.drawable.ic_aspect_ratio_24dp);
+        }
         if (PlayerActivity.player != null && !PlayerActivity.player.isPlaying()) {
             showController();
         }

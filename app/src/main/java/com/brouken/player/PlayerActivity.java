@@ -158,6 +158,7 @@ public class PlayerActivity extends Activity {
     private ImageButton buttonOpen;
     private ImageButton buttonPiP;
     private ImageButton buttonAspectRatio;
+    private ImageButton buttonRotation;
     private ImageButton exoSettings;
     private ImageButton exoPlayPause;
     private ProgressBar loadingProgressBar;
@@ -409,8 +410,9 @@ public class PlayerActivity extends Activity {
         }
 
         buttonAspectRatio = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
+        buttonAspectRatio.setId(Integer.MAX_VALUE - 100);
         buttonAspectRatio.setContentDescription(getString(R.string.button_crop));
-        buttonAspectRatio.setImageResource(R.drawable.ic_aspect_ratio_24dp);
+        updatebuttonAspectRatioIcon();
         buttonAspectRatio.setOnClickListener(view -> {
             playerView.setScale(1.f);
             if (playerView.getResizeMode() == AspectRatioFrameLayout.RESIZE_MODE_FIT) {
@@ -421,6 +423,7 @@ public class PlayerActivity extends Activity {
                 playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
                 Utils.showText(playerView, getString(R.string.video_resize_fit));
             }
+            updatebuttonAspectRatioIcon();
             resetHideCallbacks();
         });
         if (isTvBox && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -429,11 +432,12 @@ public class PlayerActivity extends Activity {
                 return true;
             });
         }
-        ImageButton buttonRotation = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
+        buttonRotation = new ImageButton(this, null, 0, R.style.ExoStyledControls_Button_Bottom);
         buttonRotation.setContentDescription(getString(R.string.button_rotate));
-        buttonRotation.setImageResource(R.drawable.ic_auto_rotate_24dp);
+        updateButtonRotation();
         buttonRotation.setOnClickListener(view -> {
             mPrefs.orientation = Utils.getNextOrientation(mPrefs.orientation);
+            updateButtonRotation();
             Utils.setOrientation(PlayerActivity.this, mPrefs.orientation);
             Utils.showText(playerView, getString(mPrefs.orientation.description), 2500);
             resetHideCallbacks();
@@ -1217,6 +1221,7 @@ public class PlayerActivity extends Activity {
             } else {
                 playerView.setScale(1.f);
             }
+            updatebuttonAspectRatioIcon();
 
             MediaItem.Builder mediaItemBuilder = new MediaItem.Builder()
                     .setUri(mPrefs.mediaUri)
@@ -2184,6 +2189,22 @@ public class PlayerActivity extends Activity {
         playerView.postDelayed(playerView.textClearRunnable, 200);
         if (!player.isPlaying()) {
             playerView.showController();
+        }
+    }
+
+    private void updatebuttonAspectRatioIcon() {
+        if (playerView.getResizeMode() == AspectRatioFrameLayout.RESIZE_MODE_ZOOM) {
+            buttonAspectRatio.setImageResource(R.drawable.ic_fit_screen_24dp);
+        } else {
+            buttonAspectRatio.setImageResource(R.drawable.ic_aspect_ratio_24dp);
+        }
+    }
+
+    private void updateButtonRotation() {
+        if (mPrefs.orientation == Utils.Orientation.SENSOR) {
+            buttonRotation.setImageResource(R.drawable.ic_screen_rotation_24dp);
+        } else {
+            buttonRotation.setImageResource(R.drawable.ic_screen_lock_rotation_24dp);
         }
     }
 }
