@@ -429,6 +429,7 @@ public class PlayerActivity extends Activity {
         if (isTvBox && Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             buttonAspectRatio.setOnLongClickListener(v -> {
                 scaleStart();
+                updatebuttonAspectRatioIcon();
                 return true;
             });
         }
@@ -2190,6 +2191,11 @@ public class PlayerActivity extends Activity {
         if (!player.isPlaying()) {
             playerView.showController();
         }
+        if (Math.abs(playerView.getScaleFit() - scaleFactor) < 0.01 / 2) {
+            playerView.setScale(1.f);
+            playerView.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
+        }
+        updatebuttonAspectRatioIcon();
     }
 
     private void updatebuttonAspectRatioIcon() {
