@@ -2146,7 +2146,11 @@ public class PlayerActivity extends Activity {
         if (active) {
             intent.putExtra(AudioEffect.EXTRA_CONTENT_TYPE, AudioEffect.CONTENT_TYPE_MOVIE);
         }
-        sendBroadcast(intent);
+        try {
+            sendBroadcast(intent);
+        } catch (SecurityException e) {
+            e.printStackTrace();
+        }
     }
 
     void updateButtons(final boolean enable) {
