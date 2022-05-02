@@ -4,7 +4,8 @@ import android.net.Uri;
 
 import com.google.android.exoplayer2.util.Util;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.HttpUrl;
 
@@ -13,14 +14,14 @@ public class SubtitleFinder {
     private PlayerActivity activity;
     private Uri baseUri;
     private String path;
-    private final LinkedHashMap<Uri, Boolean> urls;
+    private final List<Uri> urls;
 
     public SubtitleFinder(PlayerActivity activity, Uri uri) {
         this.activity = activity;
         path = uri.getPath();
         path = path.substring(0, path.lastIndexOf('.'));
         baseUri = uri;
-        urls = new LinkedHashMap<>();
+        urls = new ArrayList<>();
     }
 
     public static boolean isUriCompatible(Uri uri) {
@@ -32,8 +33,8 @@ public class SubtitleFinder {
     }
 
     private void addLanguage(String lang, String suffix) {
-        urls.put(buildUri(lang + "." + suffix), false);
-        urls.put(buildUri(Util.normalizeLanguageCode(lang) + "." + suffix), false);
+        urls.add(buildUri(lang + "." + suffix));
+        urls.add(buildUri(Util.normalizeLanguageCode(lang) + "." + suffix));
     }
 
     private Uri buildUri(String suffix) {
@@ -48,12 +49,12 @@ public class SubtitleFinder {
         }
 
         for (String suffix : new String[] { "srt", "ssa", "ass" }) {
-            urls.put(buildUri(suffix), false);
+            urls.add(buildUri(suffix));
             for (String language : Utils.getDeviceLanguages()) {
                 addLanguage(language, suffix);
             }
         }
-        urls.put(buildUri("vtt"), false);
+        urls.add(buildUri("vtt"));
 
         SubtitleFetcher subtitleFetcher = new SubtitleFetcher(activity, urls);
         subtitleFetcher.start();

@@ -22,7 +22,6 @@ import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 class SubtitleUtils {
@@ -275,8 +274,8 @@ class SubtitleUtils {
         try {
             String scheme = subtitleUri.getScheme();
             if (scheme != null && scheme.toLowerCase().startsWith("http")) {
-                LinkedHashMap<Uri, Boolean> urls = new LinkedHashMap<>();
-                urls.put(subtitleUri, false);
+                List<Uri> urls = new ArrayList<>();
+                urls.add(subtitleUri);
                 SubtitleFetcher subtitleFetcher = new SubtitleFetcher(activity, urls);
                 subtitleFetcher.start();
                 return null;
