@@ -52,7 +52,7 @@ class Prefs {
     public Uri scopeUri;
     public String mediaType;
     public int resizeMode = AspectRatioFrameLayout.RESIZE_MODE_FIT;
-    public Utils.Orientation orientation = Utils.Orientation.VIDEO;
+    public Utils.Orientation orientation = Utils.Orientation.UNSPECIFIED;
     public float scale = 1.f;
     public float speed = 1.f;
 
@@ -98,7 +98,7 @@ class Prefs {
             subtitleTrackId = mSharedPreferences.getString(PREF_KEY_SUBTITLE_TRACK_ID, subtitleTrackId);
         if (mSharedPreferences.contains(PREF_KEY_RESIZE_MODE))
             resizeMode = mSharedPreferences.getInt(PREF_KEY_RESIZE_MODE, resizeMode);
-        orientation = Utils.Orientation.values()[mSharedPreferences.getInt(PREF_KEY_ORIENTATION, 1)];
+        orientation = Utils.Orientation.values()[mSharedPreferences.getInt(PREF_KEY_ORIENTATION, orientation.value)];
         scale = mSharedPreferences.getFloat(PREF_KEY_SCALE, scale);
         if (mSharedPreferences.contains(PREF_KEY_SCOPE_URI))
             scopeUri = Uri.parse(mSharedPreferences.getString(PREF_KEY_SCOPE_URI, null));

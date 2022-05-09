@@ -5,6 +5,7 @@
     <string name="video_resize_crop">Crop</string>
     <string name="video_orientation_video">Video orientation</string>
     <string name="video_orientation_sensor">Auto-rotate</string>
+    <string name="video_orientation_system">Device orientation</string>
     <string name="onboarding_open_title">Choose a video to play</string>
     <string name="onboarding_open_description">Tap to open a video file. Long tap to load external subtitles.</string>
     <string name="open_subtitles">Load subtitles</string>

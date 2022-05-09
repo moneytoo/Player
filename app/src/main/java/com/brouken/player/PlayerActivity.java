@@ -438,8 +438,8 @@ public class PlayerActivity extends Activity {
         updateButtonRotation();
         buttonRotation.setOnClickListener(view -> {
             mPrefs.orientation = Utils.getNextOrientation(mPrefs.orientation);
-            updateButtonRotation();
             Utils.setOrientation(PlayerActivity.this, mPrefs.orientation);
+            updateButtonRotation();
             Utils.showText(playerView, getString(mPrefs.orientation.description), 2500);
             resetHideCallbacks();
         });
@@ -700,6 +700,7 @@ public class PlayerActivity extends Activity {
             Utils.toggleSystemUi(this, playerView, true);
         }
         initializePlayer();
+        updateButtonRotation();
     }
 
     @Override
@@ -1417,6 +1418,11 @@ public class PlayerActivity extends Activity {
                 if (videoLoading) {
                     videoLoading = false;
 
+                    if (mPrefs.orientation == Utils.Orientation.UNSPECIFIED) {
+                        mPrefs.orientation = Utils.getNextOrientation(mPrefs.orientation);
+                        Utils.setOrientation(PlayerActivity.this, mPrefs.orientation);
+                    }
+
                     final Format format = player.getVideoFormat();
 
                     if (format != null) {
@@ -1426,6 +1432,7 @@ public class PlayerActivity extends Activity {
                             } else {
                                 PlayerActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                             }
+                            updateButtonRotation();
                         }
 
                         updateSubtitleViewMargin(format);
@@ -1798,6 +1805,8 @@ public class PlayerActivity extends Activity {
             setSubtitleTextSize(newConfig.orientation);
         }
         updateSubtitleViewMargin();
+
+        updateButtonRotation();
     }
 
     void showError(ExoPlaybackException error) {
@@ -2211,10 +2220,30 @@ public class PlayerActivity extends Activity {
     }
 
     private void updateButtonRotation() {
-        if (mPrefs.orientation == Utils.Orientation.SENSOR) {
-            buttonRotation.setImageResource(R.drawable.ic_screen_rotation_24dp);
+        boolean portrait = getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+        boolean auto = false;
+        try {
+            auto = Settings.System.getInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION) == 1;
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        if (mPrefs.orientation == Utils.Orientation.VIDEO) {
+            if (auto) {
+                buttonRotation.setImageResource(R.drawable.ic_screen_lock_rotation_24dp);
+            } else if (portrait) {
+                buttonRotation.setImageResource(R.drawable.ic_screen_lock_portrait_24dp);
+            } else {
+                buttonRotation.setImageResource(R.drawable.ic_screen_lock_landscape_24dp);
+            }
         } else {
-            buttonRotation.setImageResource(R.drawable.ic_screen_lock_rotation_24dp);
+            if (auto) {
+                buttonRotation.setImageResource(R.drawable.ic_screen_rotation_24dp);
+            } else if (portrait) {
+                buttonRotation.setImageResource(R.drawable.ic_screen_portrait_24dp);
+            } else {
+                buttonRotation.setImageResource(R.drawable.ic_screen_landscape_24dp);
+            }
         }
     }
 }

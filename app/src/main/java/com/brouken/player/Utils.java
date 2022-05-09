@@ -294,7 +294,8 @@ class Utils {
 
     public enum Orientation {
         VIDEO(0, R.string.video_orientation_video),
-        SENSOR(1, R.string.video_orientation_sensor);
+        SYSTEM(1, R.string.video_orientation_system),
+        UNSPECIFIED(2, R.string.video_orientation_system);
 
         public final int value;
         public final int description;
@@ -320,11 +321,11 @@ class Utils {
                 }
 
                 break;
-            case SENSOR:
-                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-                break;
-            /*case SYSTEM:
+            case SYSTEM:
                 activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
+                break;
+            /*case SENSOR:
+                activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                 break;*/
         }
     }
@@ -332,8 +333,8 @@ class Utils {
     public static Orientation getNextOrientation(Orientation orientation) {
         switch (orientation) {
             case VIDEO:
-                return Orientation.SENSOR;
-            case SENSOR:
+                return Orientation.SYSTEM;
+            case SYSTEM:
             default:
                 return Orientation.VIDEO;
         }
