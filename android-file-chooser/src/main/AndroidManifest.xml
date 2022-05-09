@@ -1,5 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.obsez.android.lib.filechooser">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application android:allowBackup="true">
         <activity

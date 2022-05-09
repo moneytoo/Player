@@ -11,6 +11,7 @@ def ANDROID_MIN_SDK_VERSION = Integer.parseInt(project.ANDROID_MIN_SDK_VERSION)
 def JAVA_COMPATIBILITY =  JavaVersion.valueOf(project.JAVA_COMPATIBILITY)
 
 android {
+    namespace 'com.obsez.android.lib.filechooser'
     compileSdkVersion ANDROID_COMPILE_SDK_VERSION
     //buildToolsVersion ANDROID_BUILD_TOOLS_VERSION
     resourcePrefix "obsez_fc__"
@@ -44,7 +45,6 @@ android {
         lintConfig file('lint.xml')
         quiet true
     }
-
 }
 
 dependencies {

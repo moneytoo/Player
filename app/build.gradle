@@ -3,6 +3,7 @@ plugins {
 }
 
 android {
+    namespace 'com.brouken.player'
     compileSdkVersion 32
     ndkVersion '21.4.7075529'
 
