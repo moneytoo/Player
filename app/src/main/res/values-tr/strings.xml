@@ -41,4 +41,5 @@
     <string name="pref_decoder_priority">Kod çözücü önceliği</string>
     <string name="pref_decoder_priority_prefer_app">Uygulama kod çözücülerini tercih et</string>
     <string name="pref_decoder_priority_only_device">Yalnızca aygıt kod çözücüleri</string>
+    <string name="video_orientation_system">Aygıt yönü</string>
 </resources>
