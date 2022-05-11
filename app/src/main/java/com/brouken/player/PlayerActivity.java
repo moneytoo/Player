@@ -198,6 +198,7 @@ public class PlayerActivity extends Activity {
     static final String API_SUBS_ENABLE = "subs.enable";
     static final String API_SUBS_NAME = "subs.name";
     static final String API_TITLE = "title";
+    static final String API_END_BY = "end_by";
     boolean apiAccess;
     String apiTitle;
     List<MediaItem.SubtitleConfiguration> apiSubs = new ArrayList<>();
@@ -738,7 +739,8 @@ public class PlayerActivity extends Activity {
     @Override
     public void finish() {
         if (intentReturnResult) {
-            Intent intent = new Intent("com.brouken.player.result");
+            Intent intent = new Intent("com.mxtech.intent.result.VIEW");
+            intent.putExtra(API_END_BY, playbackFinished ? "playback_completion" : "user");
             if (!playbackFinished) {
                 if (player != null) {
                     long duration = player.getDuration();
