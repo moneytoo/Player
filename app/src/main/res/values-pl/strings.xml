@@ -10,4 +10,21 @@
     <string name="onboarding_open_title">Wybierz wideo do odtworzenia</string>
     <string name="error_files_missing">Aplikacja Pliki jest wyłączona lub jej brakuje</string>
     <string name="shortcut_videos">Filmy</string>
+    <string name="delete_query">Czy chcesz usunąć ten plik\?</string>
+    <string name="delete_confirmation">Usuń</string>
+    <string name="request_scope">Aby automatycznie ładować napisy lub włączyć przewijanie do następnego pliku w folderze, zezwol %s na dostęp do folderu zawierającego twoje filmy (np. Movies).</string>
+    <string name="pref_title">Ustawienia</string>
+    <string name="pref_general_header">Główne</string>
+    <string name="video_orientation_system">Orientacja urządzenia</string>
+    <string name="pref_auto_pip_off">Nie aktywuj PiP automatycznie</string>
+    <string name="pref_auto_pip_on">Aktywuj PiP po wyjściu z aplikacji</string>
+    <string name="pref_skip_silence">Pomiń sekcje bez dźwięku</string>
+    <string name="button_open">Otwórz</string>
+    <string name="pref_framerate_matching_off">Nie zmieniaj częstotliwości ekranu</string>
+    <string name="pref_auto_pip">Automatyczne picture-in-picture</string>
+    <string name="pref_skip_silence_on">Pomiń sekcje bez dźwięku w ścieżce dźwiękowej</string>
+    <string name="pref_skip_silence_off">Włączaj filmy bez zmian</string>
+    <string name="pref_repeat_toggle_summary">Dodatkowa opcja zezwalająca na ciągłe powtarzanie filmu (wymaga restartu aplikacji)</string>
+    <string name="button_rotate">Obróć</string>
+    <string name="button_pip">Picture-in-picture</string>
 </resources>
