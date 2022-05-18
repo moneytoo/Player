@@ -1,2 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="onboarding_open_title">Pilih video untuk dimainkan</string>
+    <string name="open_subtitles">Muat sari kata</string>
+    <string name="pref_framerate_matching">Penyerasian kadar bidang automatik</string>
+    <string name="pref_framerate_matching_off">Jangan ubah kadar segar semula paparan</string>
+    <string name="pref_framerate_matching_on">Ubah kadar segar semula paparan supaya sama dengan kadar bidang video</string>
+    <string name="pref_auto_pip">Mod tetingkap automatik</string>
+    <string name="pref_tunneling">Main balik terowong</string>
+    <string name="pref_tunneling_summary">Terowong memberikan sokongan yang lebih baik untuk kandungan 4K / HDR, tetapi mungkin tidak berfungsi pada semua peranti</string>
+    <string name="pref_repeat_toggle">Ulang togol</string>
+    <string name="button_pip">Mod tetingkap</string>
+    <string name="pref_file_access_auto">Automatik</string>
+    <string name="pref_shortcuts_header">Pintasan</string>
+    <string name="pref_captioning_preferences">Keutamaan kapsyen</string>
+    <string name="pref_decoder_priority">Keutamaan penyahkod</string>
+    <string name="pref_decoder_priority_prefer_app">Utamakan penyahkod aplikasi</string>
+    <string name="pref_decoder_priority_only_device">Penyahkod peranti sahaja</string>
+    <string name="video_orientation_system">Putaran peranti</string>
+    <string name="error_details">Perincian</string>
+    <string name="pref_auto_pip_off">Jangan ubah ke mod tetingkap secara automatik</string>
+    <string name="pref_skip_silence">Langkau kesunyian</string>
+    <string name="video_resize_fit">Padan</string>
+    <string name="video_orientation_sensor">Putaran auto</string>
+    <string name="pref_general_header">Umum</string>
+    <string name="video_resize_crop">Pangkas</string>
+    <string name="video_orientation_video">Orientasi video</string>
+    <string name="onboarding_open_description">Sentuh untuk membuka fail video. Sentuh lama untuk memuatkan sari kata luaran.</string>
+    <string name="error_files_missing">Fail apl dinyahdayakan ataupun hilang</string>
+    <string name="delete_query">Padam fail ini\?</string>
+    <string name="pref_auto_pip_on">Ubah ke mod tetingkap ketika keluar apl</string>
+    <string name="pref_skip_silence_off">Mainkan kandungan seperti adanya</string>
+    <string name="mediastore_empty">Tiada video yang terindeks. Untuk mengakses fail video pada storan yang ada, hidupkan pengimbasan media automatik pada tetapan sistem.</string>
+    <string name="delete_confirmation">Padam</string>
+    <string name="request_scope">Untuk memuatkan sari kata luaran atau menghidupkkan pelangkauan ke fail seterusnya di dalam direktori, benarkan %s akses ke folder paling atas yang mempunyai video anda (cth. Wagam).</string>
+    <string name="pref_title">Tetapan</string>
+    <string name="pref_skip_silence_on">Langkau bahagian yang sunyi pada aliran audio</string>
+    <string name="button_rotate">Putar</string>
+    <string name="pref_file_access">Akses fail</string>
+    <string name="pref_repeat_toggle_summary">Kawalan tambahan untuk menghidupkan ulangan video tanpa had (apl perlu dimulakan semula)</string>
+    <string name="shortcut_videos">Video</string>
+    <string name="button_open">Buka</string>
+    <string name="button_crop">Saiz semula</string>
+    <string name="pref_decoder_priority_prefer_device">Utamakan penyahkod peranti</string>
+</resources>
