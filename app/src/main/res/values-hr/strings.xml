@@ -41,4 +41,5 @@
     <string name="pref_decoder_priority_prefer_device">Daj prednost dekoderima uređaja</string>
     <string name="pref_decoder_priority_prefer_app">Daj prednost dekoderima programa</string>
     <string name="pref_decoder_priority_only_device">Samo dekoderi uređaja</string>
+    <string name="video_orientation_system">Usmjerenje uređaja</string>
 </resources>
