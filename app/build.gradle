@@ -11,8 +11,8 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 32
-        versionCode 114
-        versionName "0.114"
+        versionCode 115
+        versionName "0.115"
         archivesBaseName = "Just.Player.v${versionName}"
     }
 
@@ -97,7 +97,7 @@ dependencies {
         exclude group: 'org.codehaus.mojo', module: 'animal-sniffer-annotations'
     }
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
-    implementation 'com.google.android.material:material:1.5.0'
+    implementation 'com.google.android.material:material:1.6.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation 'com.ibm.icu:icu4j:71.1'
     implementation 'com.arthenica:ffmpeg-kit-https:4.5.1-1.LTS'
