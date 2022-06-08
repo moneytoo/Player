@@ -4,13 +4,13 @@ plugins {
 
 android {
     namespace 'com.brouken.player'
-    compileSdkVersion 32
+    compileSdkVersion 33
     ndkVersion '21.4.7075529'
 
     defaultConfig {
         applicationId "com.brouken.player"
         minSdkVersion 21
-        targetSdkVersion 32
+        targetSdkVersion 33
         versionCode 115
         versionName "0.115"
         archivesBaseName = "Just.Player.v${versionName}"

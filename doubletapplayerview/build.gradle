@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     namespace 'com.github.vkay94.dtpv'
-    compileSdkVersion 32
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 16
