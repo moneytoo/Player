@@ -39,6 +39,7 @@
         android:largeHeap="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true"
+        android:enableOnBackInvokedCallback="true"
         android:supportsRtl="true"
         android:theme="@style/Theme.Player"
         tools:replace="android:allowBackup"
