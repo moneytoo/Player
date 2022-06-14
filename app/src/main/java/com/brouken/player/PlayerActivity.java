@@ -1,5 +1,7 @@
 package com.brouken.player;
 
+import static android.content.pm.PackageManager.FEATURE_EXPANDED_PICTURE_IN_PICTURE;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
@@ -2067,7 +2069,11 @@ public class PlayerActivity extends Activity {
             }
 
             Rational rational = Utils.getRational(format);
-            // TODO: Android 13: Use setExpandedAspectRatio
+            if (Build.VERSION.SDK_INT >= 33 &&
+                    getPackageManager().hasSystemFeature(FEATURE_EXPANDED_PICTURE_IN_PICTURE) &&
+                    (rational.floatValue() > rationalLimitWide.floatValue() || rational.floatValue() < rationalLimitTall.floatValue())) {
+                ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setExpandedAspectRatio(rational);
+            }
             if (rational.floatValue() > rationalLimitWide.floatValue())
                 rational = rationalLimitWide;
             else if (rational.floatValue() < rationalLimitTall.floatValue())
