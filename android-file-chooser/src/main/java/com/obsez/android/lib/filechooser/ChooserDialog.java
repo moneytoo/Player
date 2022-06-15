@@ -545,7 +545,8 @@ public class ChooserDialog implements AdapterView.OnItemClickListener, DialogInt
                 public void onPermissionGranted(String[] permissions) {
                     boolean show = false;
                     for (String permission : permissions) {
-                        if (permission.equals(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                        if (permission.equals(Manifest.permission.READ_EXTERNAL_STORAGE)
+                                || (Build.VERSION.SDK_INT >= 33 && permission.equals(Manifest.permission.READ_MEDIA_VIDEO))) {
                             show = true;
                             break;
                         }
@@ -578,10 +579,14 @@ public class ChooserDialog implements AdapterView.OnItemClickListener, DialogInt
             };
         }
 
-        final String[] permissions =
+        String[] permissions =
             /*_enableOptions ?*/ new String[]{Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE}
                 /*: new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}*/;
+
+        if (Build.VERSION.SDK_INT >= 33 && _context.getApplicationInfo().targetSdkVersion >= 33) {
+            permissions = new String[]{Manifest.permission.READ_MEDIA_VIDEO};
+        }
 
         PermissionsUtil.checkPermissions(_context, _permissionListener, permissions);
 

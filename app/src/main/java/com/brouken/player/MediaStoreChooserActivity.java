@@ -48,10 +48,15 @@ public class MediaStoreChooserActivity extends Activity {
         this.subtitles = intent.getBooleanExtra(SUBTITLES, false);
         this.title = intent.getStringExtra(TITLE);
 
-        if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+        String permission = Manifest.permission.WRITE_EXTERNAL_STORAGE;
+        if (Build.VERSION.SDK_INT >= 33 && getApplicationContext().getApplicationInfo().targetSdkVersion >= 33) {
+            permission = Manifest.permission.READ_MEDIA_VIDEO;
+        }
+
+        if (checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED) {
             start();
         } else {
-            requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST_PERMISSION_STORAGE);
+            requestPermissions(new String[]{permission}, REQUEST_PERMISSION_STORAGE);
         }
     }
 
