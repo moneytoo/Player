@@ -63,7 +63,7 @@ android {
 }
 
 dependencies {
-    def exoplayerVersion = '2.17.1'
+    def exoplayerVersion = '2.18.0'
     implementation("com.google.android.exoplayer:exoplayer-datasource:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-common"
     }

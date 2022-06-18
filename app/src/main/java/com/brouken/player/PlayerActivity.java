@@ -80,7 +80,7 @@ import com.google.android.exoplayer2.PlaybackException;
 import com.google.android.exoplayer2.Player;
 import com.google.android.exoplayer2.RenderersFactory;
 import com.google.android.exoplayer2.SeekParameters;
-import com.google.android.exoplayer2.TracksInfo;
+import com.google.android.exoplayer2.Tracks;
 import com.google.android.exoplayer2.audio.AudioAttributes;
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
 import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
@@ -89,12 +89,13 @@ import com.google.android.exoplayer2.extractor.ts.TsExtractor;
 import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
 import com.google.android.exoplayer2.source.TrackGroup;
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelectionOverrides;
+import com.google.android.exoplayer2.trackselection.TrackSelectionOverride;
 import com.google.android.exoplayer2.trackselection.TrackSelectionParameters;
 import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
 import com.google.android.exoplayer2.ui.CaptionStyleCompat;
 import com.google.android.exoplayer2.ui.DefaultTimeBar;
 import com.google.android.exoplayer2.ui.StyledPlayerControlView;
+import com.google.android.exoplayer2.ui.StyledPlayerView;
 import com.google.android.exoplayer2.ui.SubtitleView;
 import com.google.android.exoplayer2.ui.TimeBar;
 import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
@@ -616,9 +617,9 @@ public class PlayerActivity extends Activity {
             horizontalScrollView.setOnScrollChangeListener((view, i, i1, i2, i3) -> resetHideCallbacks());
         }
 
-        playerView.setControllerVisibilityListener(new StyledPlayerControlView.VisibilityListener() {
+        playerView.setControllerVisibilityListener(new StyledPlayerView.ControllerVisibilityListener() {
             @Override
-            public void onVisibilityChange(int visibility) {
+            public void onVisibilityChanged(int visibility) {
                 controllerVisible = visibility == View.VISIBLE;
                 controllerVisibleFully = playerView.isControllerFullyVisible();
 
@@ -1178,7 +1179,7 @@ public class PlayerActivity extends Activity {
 
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setUsage(C.USAGE_MEDIA)
-                .setContentType(C.CONTENT_TYPE_MOVIE)
+                .setContentType(C.AUDIO_CONTENT_TYPE_MOVIE)
                 .build();
         player.setAudioAttributes(audioAttributes, true);
 
@@ -1635,9 +1636,9 @@ public class PlayerActivity extends Activity {
         if ((id == null && trackType == C.TRACK_TYPE_AUDIO ) || player == null) {
             return null;
         }
-        for (TracksInfo.TrackGroupInfo groupInfo : player.getCurrentTracksInfo().getTrackGroupInfos()) {
-            if (groupInfo.getTrackType() == trackType) {
-                final TrackGroup trackGroup = groupInfo.getTrackGroup();
+        for (Tracks.Group group : player.getCurrentTracks().getGroups()) {
+            if (group.getType() == trackType) {
+                final TrackGroup trackGroup = group.getMediaTrackGroup();
                 final Format format = trackGroup.getFormat(0);
                 if (Objects.equals(id, format.id)) {
                     return trackGroup;
@@ -1658,26 +1659,31 @@ public class PlayerActivity extends Activity {
         TrackGroup subtitleGroup = getTrackGroupFromFormatId(C.TRACK_TYPE_TEXT, subtitleId);
         TrackGroup audioGroup = getTrackGroupFromFormatId(C.TRACK_TYPE_AUDIO, audioId);
 
-        TrackSelectionOverrides.Builder overridesBuilder = new TrackSelectionOverrides.Builder();
+        TrackSelectionParameters.Builder overridesBuilder = new TrackSelectionParameters.Builder(this);
+        TrackSelectionOverride trackSelectionOverride = null;
         final List<Integer> tracks = new ArrayList<>(); tracks.add(0);
         if (subtitleGroup != null) {
-            overridesBuilder.addOverride(new TrackSelectionOverrides.TrackSelectionOverride(subtitleGroup, tracks));
+            trackSelectionOverride = new TrackSelectionOverride(subtitleGroup, tracks);
+            overridesBuilder.addOverride(trackSelectionOverride);
         }
         if (audioGroup != null) {
-            overridesBuilder.addOverride(new TrackSelectionOverrides.TrackSelectionOverride(audioGroup, tracks));
+            trackSelectionOverride = new TrackSelectionOverride(audioGroup, tracks);
+            overridesBuilder.addOverride(trackSelectionOverride);
         }
 
         if (player != null) {
             TrackSelectionParameters.Builder trackSelectionParametersBuilder = player.getTrackSelectionParameters().buildUpon();
-            trackSelectionParametersBuilder.setTrackSelectionOverrides(overridesBuilder.build());
+            if (trackSelectionOverride != null) {
+                trackSelectionParametersBuilder.setOverrideForType(trackSelectionOverride);
+            }
             player.setTrackSelectionParameters(trackSelectionParametersBuilder.build());
         }
     }
 
     private boolean hasOverrideType(final int trackType) {
         TrackSelectionParameters trackSelectionParameters = player.getTrackSelectionParameters();
-        for (TrackSelectionOverrides.TrackSelectionOverride override : trackSelectionParameters.trackSelectionOverrides.asList()) {
-            if (override.getTrackType() == trackType)
+        for (TrackSelectionOverride override : trackSelectionParameters.overrides.values()) {
+            if (override.getType() == trackType)
                 return true;
         }
         return false;
@@ -1687,10 +1693,10 @@ public class PlayerActivity extends Activity {
         if (player == null) {
             return null;
         }
-        TracksInfo tracksInfo = player.getCurrentTracksInfo();
+        Tracks tracks = player.getCurrentTracks();
 
         // Disabled (e.g. selected subtitle "None" - different than default)
-        if (!tracksInfo.isTypeSelected(trackType)) {
+        if (!tracks.isTypeSelected(trackType)) {
             return "#none";
         }
 
@@ -1701,9 +1707,9 @@ public class PlayerActivity extends Activity {
             }
         }
 
-        for (TracksInfo.TrackGroupInfo groupInfo : tracksInfo.getTrackGroupInfos()) {
-            if (groupInfo.isSelected() && groupInfo.getTrackType() == trackType) {
-                Format format = groupInfo.getTrackGroup().getFormat(0);
+        for (Tracks.Group group : tracks.getGroups()) {
+            if (group.isSelected() && group.getType() == trackType) {
+                Format format = group.getMediaTrackGroup().getFormat(0);
                 return format.id;
             }
         }
