@@ -937,7 +937,7 @@ public class PlayerActivity extends Activity {
             return true;
         }
 
-        if (isTvBox && controllerVisible && !controllerVisibleFully) {
+        if (isTvBox && !controllerVisibleFully) {
             if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 onKeyDown(event.getKeyCode(), event);
             } else if (event.getAction() == KeyEvent.ACTION_UP) {
