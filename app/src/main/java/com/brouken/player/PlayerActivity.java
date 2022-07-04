@@ -874,6 +874,8 @@ public class PlayerActivity extends Activity {
                     if (controllerVisible && player != null && player.isPlaying()) {
                         playerView.hideController();
                         return true;
+                    } else {
+                        onBackPressed();
                     }
                 }
                 break;
