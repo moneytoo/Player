@@ -41,4 +41,5 @@
     <string name="pref_decoder_priority_prefer_device">Prefira decodificadores de dispositivos</string>
     <string name="pref_decoder_priority">Prioridade do decodificador</string>
     <string name="pref_decoder_priority_only_device">Apenas decodificadores de dispositivos</string>
+    <string name="video_orientation_system">Orientação do dispositivo</string>
 </resources>
