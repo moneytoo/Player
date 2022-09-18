@@ -26,6 +26,8 @@ It properly syncs audio with video track when using Bluetooth earphones/speaker.
 
 HDR (HDR10+ and Dolby Vision) video playback on compatible/supported hardware.
 
+AC-4 audio is supported on devices providing such system decoder (e.g. the Samsung Galaxy S21 serie and later).
+
 ## Screenshots
 
 <img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/phoneScreenshots/1.png" width="806"> <img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/phoneScreenshots/2.png" width="400"> <img src="https://raw.githubusercontent.com/moneytoo/Player/master/fastlane/metadata/android/en-US/images/phoneScreenshots/3.png" width="400">
