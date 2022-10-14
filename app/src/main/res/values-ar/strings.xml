@@ -26,4 +26,19 @@
     <string name="onboarding_open_description">انقر لفتح ملف فيديو. اضغط ضغطة مطوّلة لتحميل الترجمات الخارجية.</string>
     <string name="onboarding_open_title">اختر مقطع فيديو لتشغيله</string>
     <string name="shortcut_videos">الفيديوهات</string>
+    <string name="pref_repeat_toggle">تكرار</string>
+    <string name="pref_decoder_priority">أولوية التشفير</string>
+    <string name="video_orientation_system">مسار الجهاز</string>
+    <string name="pref_shortcuts_header">الاختصارت</string>
+    <string name="pref_repeat_toggle_summary">تحكم إضافي للسماح بتكرار حلقة الفيديو إلى أجل غير مسمى ( يجب إعادة تشغيل التطبيق)</string>
+    <string name="button_crop">تغير الحجم</string>
+    <string name="button_open">فتح</string>
+    <string name="button_rotate">تدوير</string>
+    <string name="button_pip">صورة داخل صورة</string>
+    <string name="pref_file_access">الوصول إلى الملف</string>
+    <string name="pref_file_access_auto">تلقائي</string>
+    <string name="pref_captioning_preferences">تفضيلات الترجمة</string>
+    <string name="pref_decoder_priority_prefer_device">تفضيل تشفير الجهاز</string>
+    <string name="pref_decoder_priority_prefer_app">تفضيل تشفير التطبيق</string>
+    <string name="pref_decoder_priority_only_device">تشفير الجهاز فقط</string>
 </resources>
