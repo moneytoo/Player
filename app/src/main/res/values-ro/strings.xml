@@ -1,2 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="video_resize_fit">Încăpea</string>
+    <string name="video_resize_crop">Cultură</string>
+    <string name="video_orientation_video">Orientare video</string>
+    <string name="video_orientation_sensor">Rotire automată</string>
+    <string name="video_orientation_system">Orientarea dispozitivului</string>
+    <string name="onboarding_open_title">Alegeți un videoclip pentru a reda</string>
+    <string name="onboarding_open_description">Atingeți pentru a deschide un fișier video. Atingeți lung pentru a încărca subtitrări externe.</string>
+    <string name="open_subtitles">Încărcați subtitrări</string>
+    <string name="error_details">Detalii</string>
+    <string name="error_files_missing">Aplicația Files este dezactivată sau lipsește</string>
+    <string name="request_scope">Pentru a încărca automat subtitrări externe sau pentru a permite săriți la următorul fișier dintr-un director, acordați %s acces la folderul cel mai de sus care conține videoclipurile (de exemplu, Movies).</string>
+    <string name="delete_query">Ștergeți acest fișier\?</string>
+    <string name="delete_confirmation">Șterge</string>
+    <string name="pref_title">Setări</string>
+    <string name="pref_general_header">General</string>
+    <string name="pref_framerate_matching">Potrivire automată a ratei de cadre</string>
+    <string name="pref_framerate_matching_on">Comutați rata de reîmprospătare a afișajului pentru a se potrivi cu rata de cadre video</string>
+    <string name="pref_framerate_matching_off">Nu modificați rata de reîmprospătare a ecranului</string>
+    <string name="pref_auto_pip">Imagine în imagine automată</string>
+    <string name="pref_auto_pip_on">Comutați la PiP când părăsiți aplicația</string>
+    <string name="pref_skip_silence_off">Redă conținutul așa cum este</string>
+    <string name="shortcut_videos">Videoclipuri</string>
+    <string name="pref_auto_pip_off">Nu comutați automat la PiP</string>
+    <string name="pref_repeat_toggle">Repetați comutatorul</string>
+    <string name="pref_repeat_toggle_summary">Control suplimentar pentru a permite looping video pe termen nelimitat (necesită repornirea aplicației)</string>
+    <string name="button_pip">Imagine-în-imagine</string>
+    <string name="pref_file_access">Acces la fișiere</string>
+    <string name="pref_file_access_auto">Auto</string>
+    <string name="mediastore_empty">Nu s-au găsit fișiere video indexate. Pentru a accesa fișierele video în spațiul de stocare dat, activați scanarea automată a suporturilor media în setările de sistem.</string>
+    <string name="pref_captioning_preferences">Preferințe pentru subtitrări</string>
+    <string name="pref_decoder_priority">Prioritate decodor</string>
+    <string name="pref_decoder_priority_prefer_device">Preferați decodoarele pentru dispozitive</string>
+    <string name="pref_decoder_priority_prefer_app">Prefer decodorele de aplicații</string>
+    <string name="pref_decoder_priority_only_device">Numai decodoare de dispozitiv</string>
+    <string name="pref_shortcuts_header">Comenzi rapide</string>
+    <string name="pref_skip_silence">Sari peste tăcere</string>
+    <string name="button_crop">Redimensiona</string>
+    <string name="pref_tunneling">Redare tunelizată</string>
+    <string name="button_rotate">Roti</string>
+    <string name="pref_skip_silence_on">Săriți părțile cu tăcere pe fluxul audio</string>
+    <string name="button_open">Deschide</string>
+    <string name="pref_tunneling_summary">Tunelarea oferă suport mai bun pentru conținutul 4K/HDR, dar este posibil să nu funcționeze pe toate dispozitivele</string>
+</resources>
