@@ -11,8 +11,8 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 124
-        versionName "0.124"
+        versionCode 125
+        versionName "0.${versionCode}"
         archivesBaseName = "Just.Player.v${versionName}"
     }
 
@@ -63,7 +63,7 @@ android {
 }
 
 dependencies {
-    def exoplayerVersion = '2.18.1'
+    def exoplayerVersion = '2.18.2'
     implementation("com.google.android.exoplayer:exoplayer-datasource:$exoplayerVersion") {
         exclude group: "com.google.android.exoplayer", module: "exoplayer-common"
     }
