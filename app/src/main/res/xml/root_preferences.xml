@@ -33,6 +33,13 @@
             app:title="@string/pref_tunneling" />
 
         <SwitchPreferenceCompat
+            app:key="mapDV7ToHevc"
+            app:defaultValue="false"
+            app:summaryOn="@string/pref_map_dv7_on"
+            app:summaryOff="@string/pref_map_dv7_off"
+            app:title="@string/pref_map_dv7" />
+
+        <SwitchPreferenceCompat
             app:key="autoPiP"
             app:defaultValue="false"
             app:summaryOn="@string/pref_auto_pip_on"

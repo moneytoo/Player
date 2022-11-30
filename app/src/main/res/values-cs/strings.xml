@@ -28,6 +28,9 @@
     <string name="pref_skip_silence_off">Přehrávat obsah tak, jak je</string>
     <string name="pref_repeat_toggle">Přepínač opakování</string>
     <string name="pref_repeat_toggle_summary">Extra tlačítko na nekonečné přehrávání videa dokola (vyžaduje restart aplikace)</string>
+    <string name="pref_map_dv7">Dolby Vision profil 7</string>
+    <string name="pref_map_dv7_on">Přehrávat obsah s Dolby Vision profil 7 na HDR displejích</string>
+    <string name="pref_map_dv7_off">Přehrávat UHD Blu-ray obsah s Dolby Vision tak, jak je</string>
     <string name="shortcut_videos">Videa</string>
     <string name="button_open">Otevřít</string>
     <string name="button_crop">Změnit velikost</string>

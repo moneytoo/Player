@@ -43,6 +43,7 @@ class Prefs {
     private static final String PREF_KEY_SPEED = "speed";
     private static final String PREF_KEY_FILE_ACCESS = "fileAccess";
     private static final String PREF_KEY_DECODER_PRIORITY = "decoderPriority";
+    private static final String PREF_KEY_MAP_DV7 = "mapDV7ToHevc";
 
     final Context mContext;
     final SharedPreferences mSharedPreferences;
@@ -70,6 +71,7 @@ class Prefs {
     public boolean repeatToggle = false;
     public String fileAccess = "auto";
     public int decoderPriority = DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON;
+    public boolean mapDV7ToHevc = false;
 
     private LinkedHashMap positions;
 
@@ -115,6 +117,7 @@ class Prefs {
         repeatToggle = mSharedPreferences.getBoolean(PREF_KEY_REPEAT_TOGGLE, repeatToggle);
         fileAccess = mSharedPreferences.getString(PREF_KEY_FILE_ACCESS, fileAccess);
         decoderPriority = Integer.parseInt(mSharedPreferences.getString(PREF_KEY_DECODER_PRIORITY, String.valueOf(decoderPriority)));
+        mapDV7ToHevc = mSharedPreferences.getBoolean(PREF_KEY_MAP_DV7, mapDV7ToHevc);
     }
 
     public void updateMedia(final Context context, final Uri uri, final String type) {

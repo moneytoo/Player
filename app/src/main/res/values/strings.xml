@@ -29,6 +29,9 @@
     <string name="pref_skip_silence_off">Play content as is</string>
     <string name="pref_repeat_toggle">Repeat toggle</string>
     <string name="pref_repeat_toggle_summary">Extra control to allow indefinitely loop video (requires app restart)</string>
+    <string name="pref_map_dv7">Dolby Vision profile 7 fallback</string>
+    <string name="pref_map_dv7_on">Play Dolby Vision profile 7 content on HDR displays</string>
+    <string name="pref_map_dv7_off">Play UHD Blu-ray content containing Dolby Vision as is</string>
     <string name="shortcut_videos">Videos</string>
     <string name="button_open">Open</string>
     <string name="button_crop">Resize</string>

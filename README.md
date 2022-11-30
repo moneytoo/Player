@@ -59,6 +59,7 @@ Some advanced features can be enabled or configured in settings. To access it, l
  * Decoder priority. Prefer device or app decoders.
  * Auto frame rate matching. (On Android 11+ and "compatible" displays, ExoPlayer supports [seamless refresh rate switching](https://source.android.com/devices/graphics/multiple-refresh-rate))
  * [Tunneled playback](https://medium.com/google-exoplayer/tunneled-video-playback-in-exoplayer-84f084a8094d). Enabling tunneling can improve playback of 4K/HDR content on Android TV.
+ * Playback of Dolby Vision profile 7 (UHD Blu-ray) as HDR HEVC
  * Auto picture-in-picture. When you leave Just Player through the home button and video is playing, PiP will be activated automatically.
  * Skip silence
  * Repeat toggle
