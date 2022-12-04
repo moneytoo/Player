@@ -11,33 +11,12 @@
             app:title="@string/pref_file_access"
             app:useSimpleSummaryProvider="true" />
 
-        <ListPreference
-            app:defaultValue="1"
-            app:entries="@array/decoder_priority_entries"
-            app:entryValues="@array/decoder_priority_values"
-            app:key="decoderPriority"
-            app:title="@string/pref_decoder_priority"
-            app:useSimpleSummaryProvider="true" />
-
         <SwitchPreferenceCompat
             app:key="frameRateMatching"
             app:defaultValue="false"
             app:summaryOn="@string/pref_framerate_matching_on"
             app:summaryOff="@string/pref_framerate_matching_off"
             app:title="@string/pref_framerate_matching" />
-
-        <SwitchPreferenceCompat
-            app:key="tunneling"
-            app:defaultValue="false"
-            app:summary="@string/pref_tunneling_summary"
-            app:title="@string/pref_tunneling" />
-
-        <SwitchPreferenceCompat
-            app:key="mapDV7ToHevc"
-            app:defaultValue="false"
-            app:summaryOn="@string/pref_map_dv7_on"
-            app:summaryOff="@string/pref_map_dv7_off"
-            app:title="@string/pref_map_dv7" />
 
         <SwitchPreferenceCompat
             app:key="autoPiP"
@@ -58,6 +37,35 @@
             app:defaultValue="false"
             app:summary="@string/pref_repeat_toggle_summary"
             app:title="@string/pref_repeat_toggle" />
+
+    </PreferenceCategory>
+
+    <PreferenceCategory app:title="@string/pref_dangerous_header">
+
+        <Preference
+            app:selectable="false"
+            app:summary="@string/pref_dangerous_warning" />
+
+        <ListPreference
+            app:defaultValue="1"
+            app:entries="@array/decoder_priority_entries"
+            app:entryValues="@array/decoder_priority_values"
+            app:key="decoderPriority"
+            app:title="@string/pref_decoder_priority"
+            app:useSimpleSummaryProvider="true" />
+
+        <SwitchPreferenceCompat
+            app:key="tunneling"
+            app:defaultValue="false"
+            app:summary="@string/pref_tunneling_summary"
+            app:title="@string/pref_tunneling" />
+
+        <SwitchPreferenceCompat
+            app:key="mapDV7ToHevc"
+            app:defaultValue="false"
+            app:summaryOn="@string/pref_map_dv7_on"
+            app:summaryOff="@string/pref_map_dv7_off"
+            app:title="@string/pref_map_dv7" />
 
     </PreferenceCategory>
 
