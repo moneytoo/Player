@@ -67,6 +67,7 @@ import androidx.media3.common.AudioAttributes;
 import androidx.media3.common.C;
 import androidx.media3.common.Format;
 import androidx.media3.common.MediaItem;
+import androidx.media3.common.MediaMetadata;
 import androidx.media3.common.MimeTypes;
 import androidx.media3.common.PlaybackException;
 import androidx.media3.common.Player;
@@ -1208,22 +1209,6 @@ public class PlayerActivity extends Activity {
 
         mediaSession = new MediaSession.Builder(this, player).build();
 
-//        MediaSessionConnector mediaSessionConnector = new MediaSessionConnector(mediaSession);
-//        mediaSessionConnector.setPlayer(player);
-//
-//        mediaSessionConnector.setMediaMetadataProvider(player -> {
-//            if (mPrefs.mediaUri == null)
-//                return null;
-//            final String title = Utils.getFileName(PlayerActivity.this, mPrefs.mediaUri);
-//            if (title == null)
-//                return null;
-//            else
-//                return new MediaMetadataCompat.Builder()
-//                        .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
-//                        .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-//                        .build();
-//        });
-
         playerView.setControllerShowTimeoutMs(-1);
 
         locked = false;
@@ -1250,6 +1235,19 @@ public class PlayerActivity extends Activity {
             MediaItem.Builder mediaItemBuilder = new MediaItem.Builder()
                     .setUri(mPrefs.mediaUri)
                     .setMimeType(mPrefs.mediaType);
+            String title;
+            if (apiTitle != null) {
+                title = apiTitle;
+            } else {
+                title = Utils.getFileName(PlayerActivity.this, mPrefs.mediaUri);
+            }
+            if (title != null) {
+                final MediaMetadata mediaMetadata = new MediaMetadata.Builder()
+                        .setTitle(title)
+                        .setDisplayTitle(title)
+                        .build();
+                mediaItemBuilder.setMediaMetadata(mediaMetadata);
+            }
             if (apiAccess && apiSubs.size() > 0) {
                 mediaItemBuilder.setSubtitleConfigurations(apiSubs);
             } else if (mPrefs.subtitleUri != null && Utils.fileExists(this, mPrefs.subtitleUri)) {
