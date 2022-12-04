@@ -6,8 +6,7 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
-
-import com.google.android.exoplayer2.ui.DefaultTimeBar;
+import androidx.media3.ui.DefaultTimeBar;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

@@ -2,7 +2,7 @@ package com.brouken.player;
 
 import android.net.Uri;
 
-import com.google.android.exoplayer2.util.Util;
+import androidx.media3.common.util.Util;
 
 import java.util.ArrayList;
 import java.util.List;

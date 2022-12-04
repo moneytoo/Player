@@ -2,9 +2,9 @@ package com.brouken.player;
 
 import android.content.res.Resources;
 
-import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.ui.DefaultTrackNameProvider;
-import com.google.android.exoplayer2.util.MimeTypes;
+import androidx.media3.common.Format;
+import androidx.media3.common.MimeTypes;
+import androidx.media3.ui.DefaultTrackNameProvider;
 
 class CustomDefaultTrackNameProvider extends DefaultTrackNameProvider {
     public CustomDefaultTrackNameProvider(Resources resources) {

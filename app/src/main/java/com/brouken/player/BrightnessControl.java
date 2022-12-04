@@ -23,7 +23,7 @@ class BrightnessControl {
         activity.getWindow().setAttributes(lp);
     }
 
-    public void changeBrightness(final CustomStyledPlayerView playerView, final boolean increase, final boolean canSetAuto) {
+    public void changeBrightness(final CustomPlayerView playerView, final boolean increase, final boolean canSetAuto) {
         int newBrightnessLevel = (increase ? currentBrightnessLevel + 1 : currentBrightnessLevel - 1);
 
         if (canSetAuto && newBrightnessLevel < 0)

@@ -18,6 +18,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 import androidx.core.widget.TextViewCompat;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.SeekParameters;
 
 import com.brouken.player.PlayerActivity;
 import com.brouken.player.R;
@@ -26,8 +28,6 @@ import com.brouken.player.dtpv.PlayerDoubleTapListener;
 import com.brouken.player.dtpv.SeekListener;
 import com.brouken.player.dtpv.youtube.views.CircleClipTapView;
 import com.brouken.player.dtpv.youtube.views.SecondsView;
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.SeekParameters;
 
 /**
  * Overlay for [DoubleTapPlayerView] to create a similar UI/UX experience like the official

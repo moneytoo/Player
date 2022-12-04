@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:keep="@layout/exo_styled_player_view">
 
-    <com.google.android.exoplayer2.ui.AspectRatioFrameLayout android:id="@id/exo_content_frame"
+    <androidx.media3.ui.AspectRatioFrameLayout android:id="@id/exo_content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center">
@@ -42,9 +42,9 @@
             android:paddingTop="@dimen/exo_error_message_text_padding_vertical"
             android:paddingBottom="@dimen/exo_error_message_text_padding_vertical"/>
 
-    </com.google.android.exoplayer2.ui.AspectRatioFrameLayout>
+    </androidx.media3.ui.AspectRatioFrameLayout>
 
-    <com.google.android.exoplayer2.ui.SubtitleView android:id="@id/exo_subtitles"
+    <androidx.media3.ui.SubtitleView android:id="@id/exo_subtitles"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 

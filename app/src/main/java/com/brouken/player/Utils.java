@@ -39,6 +39,9 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.media3.common.Format;
+import androidx.media3.common.MimeTypes;
+import androidx.media3.ui.PlayerControlView;
 
 import com.arthenica.ffmpegkit.Chapter;
 import com.arthenica.ffmpegkit.FFmpegKitConfig;
@@ -46,9 +49,6 @@ import com.arthenica.ffmpegkit.FFprobeKit;
 import com.arthenica.ffmpegkit.MediaInformation;
 import com.arthenica.ffmpegkit.MediaInformationSession;
 import com.arthenica.ffmpegkit.StreamInformation;
-import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.ui.StyledPlayerControlView;
-import com.google.android.exoplayer2.util.MimeTypes;
 import com.obsez.android.lib.filechooser.ChooserDialog;
 
 import java.io.File;
@@ -117,7 +117,7 @@ class Utils {
         }
     }
 
-    public static void toggleSystemUi(final Activity activity, final CustomStyledPlayerView playerView, final boolean show) {
+    public static void toggleSystemUi(final Activity activity, final CustomPlayerView playerView, final boolean show) {
         if (Build.VERSION.SDK_INT >= 31) {
             Window window = activity.getWindow();
             if (window != null) {
@@ -182,7 +182,7 @@ class Utils {
         return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == min;
     }
 
-    public static void adjustVolume(final Context context, final AudioManager audioManager, final CustomStyledPlayerView playerView, final boolean raise, boolean canBoost, boolean clear) {
+    public static void adjustVolume(final Context context, final AudioManager audioManager, final CustomPlayerView playerView, final boolean raise, boolean canBoost, boolean clear) {
         playerView.removeCallbacks(playerView.textClearRunnable);
 
         final int volume = getVolume(context,false, audioManager);
@@ -236,7 +236,7 @@ class Utils {
         playerView.setHighlight(PlayerActivity.boostLevel > 0);
 
         if (clear) {
-            playerView.postDelayed(playerView.textClearRunnable, CustomStyledPlayerView.MESSAGE_TIMEOUT_KEY);
+            playerView.postDelayed(playerView.textClearRunnable, CustomPlayerView.MESSAGE_TIMEOUT_KEY);
         }
     }
 
@@ -281,14 +281,14 @@ class Utils {
                 );
     }
 
-    public static void showText(final CustomStyledPlayerView playerView, final String text, final long timeout) {
+    public static void showText(final CustomPlayerView playerView, final String text, final long timeout) {
         playerView.removeCallbacks(playerView.textClearRunnable);
         playerView.clearIcon();
         playerView.setCustomErrorMessage(text);
         playerView.postDelayed(playerView.textClearRunnable, timeout);
     }
 
-    public static void showText(final CustomStyledPlayerView playerView, final String text) {
+    public static void showText(final CustomPlayerView playerView, final String text) {
         showText(playerView, text, 1200);
     }
 
@@ -736,7 +736,7 @@ class Utils {
         return mediaInformationSession.getMediaInformation();
     }
 
-    public static void markChapters(final PlayerActivity activity, final Uri uri, StyledPlayerControlView controlView) {
+    public static void markChapters(final PlayerActivity activity, final Uri uri, PlayerControlView controlView) {
         if (activity.chaptersThread != null) {
             activity.chaptersThread.interrupt();
         }

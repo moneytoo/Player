@@ -11,13 +11,13 @@ import android.view.View;
 
 import androidx.core.view.GestureDetectorCompat;
 
-import com.brouken.player.CustomStyledPlayerView;
+import com.brouken.player.CustomPlayerView;
 import com.brouken.player.R;
 
 /**
  * Custom player class for Double-Tapping listening
  */
-public class DoubleTapPlayerView extends CustomStyledPlayerView {
+public class DoubleTapPlayerView extends CustomPlayerView {
 
     private final GestureDetectorCompat gestureDetector;
     private final DoubleTapPlayerView.DoubleTapGestureListener gestureListener;
@@ -190,7 +190,7 @@ public class DoubleTapPlayerView extends CustomStyledPlayerView {
             doubleTapDelay = var1;
         }
 
-        private final CustomStyledPlayerView rootView;
+        private final CustomPlayerView rootView;
 
         public final PlayerDoubleTapListener getControls() {
             return controls;
@@ -289,7 +289,7 @@ public class DoubleTapPlayerView extends CustomStyledPlayerView {
             return super.onDoubleTapEvent(e);
         }
 
-        public DoubleTapGestureListener(CustomStyledPlayerView rootView) {
+        public DoubleTapGestureListener(CustomPlayerView rootView) {
             super();
             this.rootView = rootView;
             mHandler = new Handler();

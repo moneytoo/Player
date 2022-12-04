@@ -34,8 +34,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.DocumentsContract;
 import android.provider.Settings;
-import android.support.v4.media.MediaMetadataCompat;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.DisplayMetrics;
@@ -65,41 +63,41 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.media3.common.AudioAttributes;
+import androidx.media3.common.C;
+import androidx.media3.common.Format;
+import androidx.media3.common.MediaItem;
+import androidx.media3.common.MimeTypes;
+import androidx.media3.common.PlaybackException;
+import androidx.media3.common.Player;
+import androidx.media3.common.TrackGroup;
+import androidx.media3.common.TrackSelectionOverride;
+import androidx.media3.common.TrackSelectionParameters;
+import androidx.media3.common.Tracks;
+import androidx.media3.datasource.DefaultHttpDataSource;
+import androidx.media3.exoplayer.DefaultRenderersFactory;
+import androidx.media3.exoplayer.ExoPlaybackException;
+import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.RenderersFactory;
+import androidx.media3.exoplayer.SeekParameters;
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
+import androidx.media3.exoplayer.trackselection.DefaultTrackSelector;
+import androidx.media3.extractor.DefaultExtractorsFactory;
+import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory;
+import androidx.media3.extractor.ts.TsExtractor;
+import androidx.media3.session.MediaSession;
+import androidx.media3.ui.AspectRatioFrameLayout;
+import androidx.media3.ui.CaptionStyleCompat;
+import androidx.media3.ui.DefaultTimeBar;
+import androidx.media3.ui.PlayerControlView;
+import androidx.media3.ui.PlayerView;
+import androidx.media3.ui.SubtitleView;
+import androidx.media3.ui.TimeBar;
 
 import com.brouken.player.dtpv.DoubleTapPlayerView;
 import com.brouken.player.dtpv.youtube.YouTubeOverlay;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.DefaultRenderersFactory;
-import com.google.android.exoplayer2.ExoPlaybackException;
-import com.google.android.exoplayer2.ExoPlayer;
-import com.google.android.exoplayer2.Format;
-import com.google.android.exoplayer2.MediaItem;
-import com.google.android.exoplayer2.PlaybackException;
-import com.google.android.exoplayer2.Player;
-import com.google.android.exoplayer2.RenderersFactory;
-import com.google.android.exoplayer2.SeekParameters;
-import com.google.android.exoplayer2.Tracks;
-import com.google.android.exoplayer2.audio.AudioAttributes;
-import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector;
-import com.google.android.exoplayer2.extractor.DefaultExtractorsFactory;
-import com.google.android.exoplayer2.extractor.ts.DefaultTsPayloadReaderFactory;
-import com.google.android.exoplayer2.extractor.ts.TsExtractor;
-import com.google.android.exoplayer2.source.DefaultMediaSourceFactory;
-import com.google.android.exoplayer2.source.TrackGroup;
-import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
-import com.google.android.exoplayer2.trackselection.TrackSelectionOverride;
-import com.google.android.exoplayer2.trackselection.TrackSelectionParameters;
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
-import com.google.android.exoplayer2.ui.CaptionStyleCompat;
-import com.google.android.exoplayer2.ui.DefaultTimeBar;
-import com.google.android.exoplayer2.ui.StyledPlayerControlView;
-import com.google.android.exoplayer2.ui.StyledPlayerView;
-import com.google.android.exoplayer2.ui.SubtitleView;
-import com.google.android.exoplayer2.ui.TimeBar;
-import com.google.android.exoplayer2.upstream.DefaultHttpDataSource;
-import com.google.android.exoplayer2.util.MimeTypes;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
@@ -118,11 +116,11 @@ public class PlayerActivity extends Activity {
     private PlayerListener playerListener;
     private BroadcastReceiver mReceiver;
     private AudioManager mAudioManager;
-    private MediaSessionCompat mediaSession;
+    private MediaSession mediaSession;
     private DefaultTrackSelector trackSelector;
     public static LoudnessEnhancer loudnessEnhancer;
 
-    public CustomStyledPlayerView playerView;
+    public CustomPlayerView playerView;
     public static ExoPlayer player;
     private YouTubeOverlay youTubeOverlay;
 
@@ -165,7 +163,7 @@ public class PlayerActivity extends Activity {
     private ImageButton exoSettings;
     private ImageButton exoPlayPause;
     private ProgressBar loadingProgressBar;
-    private StyledPlayerControlView controlView;
+    private PlayerControlView controlView;
     private CustomDefaultTimeBar timeBar;
 
     private boolean restoreOrientationLock;
@@ -537,7 +535,7 @@ public class PlayerActivity extends Activity {
 
         try {
             CustomDefaultTrackNameProvider customDefaultTrackNameProvider = new CustomDefaultTrackNameProvider(getResources());
-            final Field field = StyledPlayerControlView.class.getDeclaredField("trackNameProvider");
+            final Field field = PlayerControlView.class.getDeclaredField("trackNameProvider");
             field.setAccessible(true);
             field.set(controlView, customDefaultTrackNameProvider);
         } catch (NoSuchFieldException | IllegalAccessException e) {
@@ -617,7 +615,7 @@ public class PlayerActivity extends Activity {
             horizontalScrollView.setOnScrollChangeListener((view, i, i1, i2, i3) -> resetHideCallbacks());
         }
 
-        playerView.setControllerVisibilityListener(new StyledPlayerView.ControllerVisibilityListener() {
+        playerView.setControllerVisibilityListener(new PlayerView.ControllerVisibilityListener() {
             @Override
             public void onVisibilityChanged(int visibility) {
                 controllerVisible = visibility == View.VISIBLE;
@@ -905,7 +903,7 @@ public class PlayerActivity extends Activity {
         switch (keyCode) {
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
-                playerView.postDelayed(playerView.textClearRunnable, CustomStyledPlayerView.MESSAGE_TIMEOUT_KEY);
+                playerView.postDelayed(playerView.textClearRunnable, CustomPlayerView.MESSAGE_TIMEOUT_KEY);
                 return true;
             case KeyEvent.KEYCODE_DPAD_LEFT:
             case KeyEvent.KEYCODE_BUTTON_L2:
@@ -1204,22 +1202,23 @@ public class PlayerActivity extends Activity {
         youTubeOverlay.player(player);
         playerView.setPlayer(player);
 
-        mediaSession = new MediaSessionCompat(this, getString(R.string.app_name));
-        MediaSessionConnector mediaSessionConnector = new MediaSessionConnector(mediaSession);
-        mediaSessionConnector.setPlayer(player);
+        mediaSession = new MediaSession.Builder(this, player).build();
 
-        mediaSessionConnector.setMediaMetadataProvider(player -> {
-            if (mPrefs.mediaUri == null)
-                return null;
-            final String title = Utils.getFileName(PlayerActivity.this, mPrefs.mediaUri);
-            if (title == null)
-                return null;
-            else
-                return new MediaMetadataCompat.Builder()
-                        .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
-                        .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
-                        .build();
-        });
+//        MediaSessionConnector mediaSessionConnector = new MediaSessionConnector(mediaSession);
+//        mediaSessionConnector.setPlayer(player);
+//
+//        mediaSessionConnector.setMediaMetadataProvider(player -> {
+//            if (mPrefs.mediaUri == null)
+//                return null;
+//            final String title = Utils.getFileName(PlayerActivity.this, mPrefs.mediaUri);
+//            if (title == null)
+//                return null;
+//            else
+//                return new MediaMetadataCompat.Builder()
+//                        .putString(MediaMetadataCompat.METADATA_KEY_DISPLAY_TITLE, title)
+//                        .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title)
+//                        .build();
+//        });
 
         playerView.setControllerShowTimeoutMs(-1);
 
@@ -1302,7 +1301,7 @@ public class PlayerActivity extends Activity {
             Utils.markChapters(this, mPrefs.mediaUri, controlView);
 
             player.setHandleAudioBecomingNoisy(!isTvBox);
-            mediaSession.setActive(true);
+//            mediaSession.setActive(true);
         } else {
             playerView.showController();
         }
@@ -1349,7 +1348,7 @@ public class PlayerActivity extends Activity {
         if (player != null) {
             notifyAudioSessionUpdate(false);
 
-            mediaSession.setActive(false);
+//            mediaSession.setActive(false);
             mediaSession.release();
 
             if (player.isPlaying() && restorePlayStateAllowed) {
@@ -2158,7 +2157,7 @@ public class PlayerActivity extends Activity {
             methodName = "dispatchPause";
         }
         try {
-            final Method method = StyledPlayerControlView.class.getDeclaredMethod(methodName, Player.class);
+            final Method method = PlayerControlView.class.getDeclaredMethod(methodName, Player.class);
             method.setAccessible(true);
             method.invoke(controlView, (Player) player);
         } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {

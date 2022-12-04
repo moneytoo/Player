@@ -15,15 +15,14 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.core.view.GestureDetectorCompat;
-
-import com.google.android.exoplayer2.C;
-import com.google.android.exoplayer2.SeekParameters;
-import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
-import com.google.android.exoplayer2.ui.StyledPlayerView;
+import androidx.media3.common.C;
+import androidx.media3.exoplayer.SeekParameters;
+import androidx.media3.ui.AspectRatioFrameLayout;
+import androidx.media3.ui.PlayerView;
 
 import java.util.Collections;
 
-public class CustomStyledPlayerView extends StyledPlayerView implements GestureDetector.OnGestureListener, ScaleGestureDetector.OnScaleGestureListener {
+public class CustomPlayerView extends PlayerView implements GestureDetector.OnGestureListener, ScaleGestureDetector.OnScaleGestureListener {
 
     private final GestureDetectorCompat mDetector;
 
@@ -71,15 +70,15 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
     private final TextView exoErrorMessage;
     private final View exoProgress;
 
-    public CustomStyledPlayerView(Context context) {
+    public CustomPlayerView(Context context) {
         this(context, null);
     }
 
-    public CustomStyledPlayerView(Context context, AttributeSet attrs) {
+    public CustomPlayerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public CustomStyledPlayerView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CustomPlayerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mDetector = new GestureDetectorCompat(context,this);
 
@@ -94,7 +93,7 @@ public class CustomStyledPlayerView extends StyledPlayerView implements GestureD
             exoErrorMessage.setOnClickListener(v -> {
                 if (PlayerActivity.locked) {
                     PlayerActivity.locked = false;
-                    Utils.showText(CustomStyledPlayerView.this, "", MESSAGE_TIMEOUT_LONG);
+                    Utils.showText(CustomPlayerView.this, "", MESSAGE_TIMEOUT_LONG);
                     setIconLock(false);
                 }
             });

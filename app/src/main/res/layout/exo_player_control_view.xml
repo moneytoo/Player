@@ -124,12 +124,12 @@
 
     <ImageButton android:id="@+id/delete"
         style="@style/ExoStyledControls.Button.Center.Secondary"
-        android:src="@drawable/exo_styled_controls_delete"/>
+        android:src="@drawable/exo_controls_delete"/>
 
     <ImageButton android:id="@+id/exo_prev"
         style="@style/ExoStyledControls.Button.Center.Previous"/>
 
-    <include layout="@layout/exo_styled_player_control_rewind_button" />
+    <include layout="@layout/exo_player_control_rewind_button" />
 
     <ImageButton android:id="@+id/exo_play_pause"
         style="@style/ExoStyledControls.Button.Center.PlayPause"/>
@@ -140,14 +140,14 @@
         android:layout_height="wrap_content"
         android:visibility="gone"/>
 
-    <include layout="@layout/exo_styled_player_control_ffwd_button" />
+    <include layout="@layout/exo_player_control_ffwd_button" />
 
     <ImageButton android:id="@+id/exo_next"
         style="@style/ExoStyledControls.Button.Center.Next"/>
 
     <ImageButton android:id="@+id/next"
         style="@style/ExoStyledControls.Button.Center.Secondary"
-        android:src="@drawable/exo_styled_controls_next"/>
+        android:src="@drawable/exo_controls_next"/>
 
   </LinearLayout>
 
