@@ -1202,6 +1202,10 @@ public class PlayerActivity extends Activity {
         youTubeOverlay.player(player);
         playerView.setPlayer(player);
 
+        if (mediaSession != null) {
+            mediaSession.release();
+        }
+
         mediaSession = new MediaSession.Builder(this, player).build();
 
 //        MediaSessionConnector mediaSessionConnector = new MediaSessionConnector(mediaSession);
