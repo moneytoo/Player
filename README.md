@@ -1,13 +1,13 @@
 # Just (Video) Player 
 
 [![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/moneytoo/Player.svg?logo=github&label=GitHub&cacheSeconds=3600)](https://github.com/moneytoo/Player/releases/latest)
-[![Google Play](https://img.shields.io/endpoint?label=Google%20Play&logo=google-play&color=green&cacheSeconds=65536&url=https%3A%2F%2Fplayshields.herokuapp.com%2Fplay%3Fi%3Dcom.brouken.player%26l%3DGoogle%2520Play%26m%3Dv%24version&cacheSeconds=3600)](https://play.google.com/store/apps/details?id=com.brouken.player)
+[![Google Play](https://img.shields.io/endpoint?color=green&logo=google-play&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcom.brouken.player%26l%3DGoogle%2520Play%26m%3Dv%24version)](https://play.google.com/store/apps/details?id=com.brouken.player)
 [![F-Droid](https://img.shields.io/f-droid/v/com.brouken.player.svg?logo=f-droid&label=F-Droid&cacheSeconds=3600)](https://f-droid.org/packages/com.brouken.player/)
 [![GitHub all releases](https://img.shields.io/github/downloads/moneytoo/Player/total?logo=github&cacheSeconds=3600)](https://github.com/moneytoo/Player/releases/latest)
-[![Google Play](https://img.shields.io/endpoint?color=green&logo=google-play&url=https%3A%2F%2Fplayshields.herokuapp.com%2Fplay%3Fi%3Dcom.brouken.player%26l%3Ddownloads%26m%3D%24installs&cacheSeconds=3600)](https://play.google.com/store/apps/details?id=com.brouken.player)
-[![Google Play](https://img.shields.io/endpoint?color=green&logo=google-play&url=https%3A%2F%2Fplayshields.herokuapp.com%2Fplay%3Fi%3Dcom.brouken.player%26l%3Drating%26m%3D%24rating%252F5&cacheSeconds=3600)](https://play.google.com/store/apps/details?id=com.brouken.player)
+[![Google Play](https://img.shields.io/endpoint?color=green&logo=google-play&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcom.brouken.player%26l%3DGoogle%2520Play%26m%3D%24totalinstalls)](https://play.google.com/store/apps/details?id=com.brouken.player)
+[![Google Play](https://img.shields.io/endpoint?color=green&logo=google-play&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcom.brouken.player%26l%3DGoogle%2520Play%26m%3D%25E2%2598%2585%2520%24rating)](https://play.google.com/store/apps/details?id=com.brouken.player)
 [![ExoPlayer](https://img.shields.io/badge/ExoPlayer-v2.18.2-007ec6?cacheSeconds=3600)](https://github.com/google/ExoPlayer)
-[![Weblate project translated](https://img.shields.io/weblate/progress/just-player?logo=weblate&logoColor=white&cacheSeconds=3600)](https://hosted.weblate.org/engage/just-player/)
+[![Weblate project translated](https://img.shields.io/weblate/progress/just-player?logo=weblate&logoColor=white&cacheSeconds=36000)](https://hosted.weblate.org/engage/just-player/)
 [![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/JustPlayer?label=r%2FJustPlayer&logo=reddit&logoColor=white&cacheSeconds=3600)](https://www.reddit.com/r/JustPlayer/)
 
 Android video player based on [ExoPlayer](https://github.com/google/ExoPlayer), compatible with Android 5+ and Android TV.
