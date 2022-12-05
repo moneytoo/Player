@@ -51,8 +51,6 @@ AC-4 audio is supported on devices providing such system decoder (e.g. Samsung G
  * Pause playback when disconnecting headphones
  * No ads, tracking or excessive permissions
 
-To load external (non-embedded) subtitles, long press the file open action in the bottom bar. The first time you do that, you will be offered to select root video folder to enable automatic loading of external subtitles.
-
 Some advanced features can be enabled or configured in settings. To access it, long press the ⚙️ gear icon. (Alternatively, you can also enter this settings from App info screen.)
 
  * Default subtitle and audio tracks. Set specific language, prefer device language, media file defaults or none (in case of subtitles).
@@ -88,9 +86,13 @@ Other links/channels: application thread on [XDA Developers](https://forum.xda-d
 
 ## FAQ
 
-### What to do if Bluetooth audio is not in sync with video?
+### How do I open subtitle file (e.g. .srt)?
 
-Just pause and resume playback once again.
+To load external (non-embedded) subtitles, long press the 📁 file open action in the bottom bar. The first time you do that, you will be offered to select root video folder to enable automatic loading of external subtitles.
+
+💡📺 Because of [limitations on Android TV](https://github.com/moneytoo/Player/issues/248#issuecomment-1019565204), Just Player is also able to open subtitle files from external file managers. You can open video file from your file manager, then return back and also  open subtitle file in Just Player. Subtitle will be available in the last selected video.
+
+Just Player is also able to detect some subtitle files when accessing videos over HTTP/HTTPS. Just use the [same naming](https://github.com/moneytoo/Player/issues/173) for video files as well as subtitles (e.g. `video.mkv` and `video.srt`).
 
 ### How do I change subtitle font, size or color?
 
@@ -134,6 +136,10 @@ Alternatively, some people choose to use the media library function of
 ### How to zoom in to get rid of black bars?
 
 If your device has a touchscreen you can use the pinch-to-zoom gesture or just tap the Resize button for a Crop. **Android TV**: Long tap the Resize button to enter Zoom mode. Then use Up and Down keys for precise zoom.
+
+### What to do if Bluetooth audio is not in sync with video?
+
+Just pause and resume playback once again.
 
 ### Why is the APK so big?
 
