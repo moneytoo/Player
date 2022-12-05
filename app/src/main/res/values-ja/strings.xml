@@ -6,7 +6,7 @@
     <string name="error_files_missing">ファイルアプリが無効化された、または見つからない</string>
     <string name="error_details">詳細</string>
     <string name="open_subtitles">字幕を読み込む</string>
-    <string name="onboarding_open_description">タップして動画ファイルを開く。長くタップして外部の字幕を読み込む。</string>
+    <string name="onboarding_open_description">タップして動画ファイルを開く。長押して外部の字幕を読み込む。</string>
     <string name="onboarding_open_title">再生する動画を選択</string>
     <string name="video_orientation_sensor">自動回転</string>
     <string name="video_orientation_video">映像の向き</string>
@@ -35,7 +35,7 @@
     <string name="pref_decoder_priority_only_device">端末のデコーダーのみ</string>
     <string name="pref_decoder_priority_prefer_app">アプリのデコーダーを優先</string>
     <string name="pref_repeat_toggle">繰り返しトグル</string>
-    <string name="pref_repeat_toggle_summary">ビデオを無限に繰り返しするのを許可する追加の制御(アプリの再起動が必要)</string>
+    <string name="pref_repeat_toggle_summary">動画の無限ループを許可する追加の制御 (アプリの再起動が必要)</string>
     <string name="pref_captioning_preferences">字幕の設定</string>
     <string name="pref_skip_silence_off">コンテンツをそのまま再生する</string>
     <string name="pref_general_header">全般</string>
