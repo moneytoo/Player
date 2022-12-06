@@ -1144,8 +1144,8 @@ public class PlayerActivity extends Activity {
     }
 
     public void initializePlayer() {
-        boolean isNetworkUri = mPrefs.mediaUri != null && Utils.isSupportedNetworkUri(mPrefs.mediaUri);
-        haveMedia = mPrefs.mediaUri != null && (Utils.fileExists(this, mPrefs.mediaUri) || isNetworkUri);
+        boolean isNetworkUri = Utils.isSupportedNetworkUri(mPrefs.mediaUri);
+        haveMedia = mPrefs.mediaUri != null;
 
         if (player != null) {
             player.removeListener(playerListener);
@@ -1534,6 +1534,10 @@ public class PlayerActivity extends Activity {
             updateLoading(false);
             if (error instanceof ExoPlaybackException) {
                 final ExoPlaybackException exoPlaybackException = (ExoPlaybackException) error;
+                if (exoPlaybackException.type == ExoPlaybackException.TYPE_SOURCE && exoPlaybackException.errorCode == ExoPlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND) {
+                    releasePlayer(false);
+                    return;
+                }
                 if (controllerVisible && controllerVisibleFully) {
                     showError(exoPlaybackException);
                 } else {
