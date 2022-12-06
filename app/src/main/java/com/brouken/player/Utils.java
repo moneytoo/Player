@@ -422,6 +422,8 @@ class Utils {
     }
 
     public static boolean isSupportedNetworkUri(final Uri uri) {
+        if (uri == null)
+            return false;
         final String scheme = uri.getScheme();
         if (scheme == null)
             return false;
