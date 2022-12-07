@@ -1570,7 +1570,7 @@ public class PlayerActivity extends Activity {
         } else {
             enableRotation();
 
-            if (pickerInitialUri == null || Utils.isSupportedNetworkUri(pickerInitialUri) || !Utils.fileExists(this, pickerInitialUri)) {
+            if (pickerInitialUri == null || Utils.isSupportedNetworkUri(pickerInitialUri)) {
                 pickerInitialUri = Utils.getMoviesFolderUri();
             }
 
