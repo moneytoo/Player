@@ -146,7 +146,7 @@ class Prefs {
                 sharedPreferencesEditor.remove(PREF_KEY_MEDIA_TYPE);
             else
                 sharedPreferencesEditor.putString(PREF_KEY_MEDIA_TYPE, mediaType);
-            sharedPreferencesEditor.commit();
+            sharedPreferencesEditor.apply();
         }
     }
 
@@ -160,7 +160,7 @@ class Prefs {
             else
                 sharedPreferencesEditor.putString(PREF_KEY_SUBTITLE_URI, uri.toString());
             sharedPreferencesEditor.remove(PREF_KEY_SUBTITLE_TRACK_ID);
-            sharedPreferencesEditor.commit();
+            sharedPreferencesEditor.apply();
         }
     }
 
@@ -184,7 +184,7 @@ class Prefs {
             this.brightness = brightness;
             final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
             sharedPreferencesEditor.putInt(PREF_KEY_BRIGHTNESS, brightness);
-            sharedPreferencesEditor.commit();
+            sharedPreferencesEditor.apply();
         }
     }
 
@@ -192,14 +192,14 @@ class Prefs {
         this.firstRun = false;
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         sharedPreferencesEditor.putBoolean(PREF_KEY_FIRST_RUN, false);
-        sharedPreferencesEditor.commit();
+        sharedPreferencesEditor.apply();
     }
 
     public void markScopeAsked() {
         this.askScope = false;
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         sharedPreferencesEditor.putBoolean(PREF_KEY_ASK_SCOPE, false);
-        sharedPreferencesEditor.commit();
+        sharedPreferencesEditor.apply();
     }
 
     private void savePositions() {
@@ -261,7 +261,7 @@ class Prefs {
     public void updateOrientation() {
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         sharedPreferencesEditor.putInt(PREF_KEY_ORIENTATION, orientation.value);
-        sharedPreferencesEditor.commit();
+        sharedPreferencesEditor.apply();
     }
 
     public void updateMeta(final String audioTrackId, final String subtitleTrackId, final int resizeMode, final float scale, final float speed) {
@@ -283,7 +283,7 @@ class Prefs {
             sharedPreferencesEditor.putInt(PREF_KEY_RESIZE_MODE, resizeMode);
             sharedPreferencesEditor.putFloat(PREF_KEY_SCALE, scale);
             sharedPreferencesEditor.putFloat(PREF_KEY_SPEED, speed);
-            sharedPreferencesEditor.commit();
+            sharedPreferencesEditor.apply();
         }
     }
 
@@ -294,7 +294,7 @@ class Prefs {
             sharedPreferencesEditor.remove(PREF_KEY_SCOPE_URI);
         else
             sharedPreferencesEditor.putString(PREF_KEY_SCOPE_URI, uri.toString());
-        sharedPreferencesEditor.commit();
+        sharedPreferencesEditor.apply();
     }
 
     public void setPersistent(boolean persistentMode) {
