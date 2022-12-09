@@ -1536,7 +1536,7 @@ public class PlayerActivity extends Activity {
             updateLoading(false);
             if (error instanceof ExoPlaybackException) {
                 final ExoPlaybackException exoPlaybackException = (ExoPlaybackException) error;
-                if (exoPlaybackException.type == ExoPlaybackException.TYPE_SOURCE && exoPlaybackException.errorCode == ExoPlaybackException.ERROR_CODE_IO_FILE_NOT_FOUND) {
+                if (exoPlaybackException.type == ExoPlaybackException.TYPE_SOURCE) {
                     releasePlayer(false);
                     return;
                 }
