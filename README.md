@@ -84,7 +84,7 @@ Also available on **OPPO App Market**, **Xiaomi GetApps** or [Uptodown](https://
 
 Other links/channels: application thread on [XDA Developers](https://forum.xda-developers.com/t/app-5-0-just-video-player-no-bluetooth-lag-exoplayer-ffmpeg-audio-codecs.4189183/), subreddit on [reddit](https://www.reddit.com/r/JustPlayer/), entry on [AlternativeTo](https://alternativeto.net/software/just-video-player/about/), git mirror on [GitLab](https://gitlab.com/moneytoo/Player)
 
-## FAQ
+## ❓FAQ
 
 ### How do I open subtitle file (e.g. .srt)?
 
@@ -132,6 +132,12 @@ Alternatively, some people choose to use the media library function of
 1. The default system file chooser allows access to any remote storage using appropriate _Document Provider_. I highly recommend [CIFS Documents Provider](https://github.com/wa2c/cifs-documents-provider) for accessing Samba shares. There are also providers like [WebDAV Provider](https://github.com/alexbakker/webdav-provider)/[DAVx⁵](https://github.com/bitfireAT/davx5-ose) (WebDAV), [FileManagerUtils](https://github.com/rikyiso01/FileManagerUtils) (SFTP) and [rcx](https://github.com/x0b/rcx). Sadly, Document providers are not supported on Android TV.
 
 2. Open video directly from your favorite file explorer. _Solid Explorer_ works really well, especially if you also want to automatically load subtitles.
+
+### How do I open a streaming link, where do I enter an url?
+
+Just Player does not have any UI to enter internet addresses, but it is registered for handling all compatible streaming links. When opening/tapping links in other apps, Just Player should be generally offered as an option. (Though this may not work in all situations, especially on Android 12+.)
+
+Alternatively, select the text url in the source app, choose _Share_ and find Just Player to play it.
 
 ### How to zoom in to get rid of black bars?
 
