@@ -44,6 +44,12 @@ class Prefs {
     private static final String PREF_KEY_FILE_ACCESS = "fileAccess";
     private static final String PREF_KEY_DECODER_PRIORITY = "decoderPriority";
     private static final String PREF_KEY_MAP_DV7 = "mapDV7ToHevc";
+    private static final String PREF_KEY_LANGUAGE_SUBTITLE = "languageSubtitle";
+    private static final String PREF_KEY_LANGUAGE_AUDIO = "languageAudio";
+
+    public static final String TRACK_DEFAULT = "default";
+    public static final String TRACK_DEVICE = "device";
+    public static final String TRACK_NONE = "none";
 
     final Context mContext;
     final SharedPreferences mSharedPreferences;
@@ -72,6 +78,8 @@ class Prefs {
     public String fileAccess = "auto";
     public int decoderPriority = DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON;
     public boolean mapDV7ToHevc = false;
+    public String languageSubtitle = TRACK_DEFAULT;
+    public String languageAudio = TRACK_DEVICE;
 
     private LinkedHashMap positions;
 
@@ -118,6 +126,8 @@ class Prefs {
         fileAccess = mSharedPreferences.getString(PREF_KEY_FILE_ACCESS, fileAccess);
         decoderPriority = Integer.parseInt(mSharedPreferences.getString(PREF_KEY_DECODER_PRIORITY, String.valueOf(decoderPriority)));
         mapDV7ToHevc = mSharedPreferences.getBoolean(PREF_KEY_MAP_DV7, mapDV7ToHevc);
+        languageSubtitle = mSharedPreferences.getString(PREF_KEY_LANGUAGE_SUBTITLE, languageSubtitle);
+        languageAudio = mSharedPreferences.getString(PREF_KEY_LANGUAGE_AUDIO, languageAudio);
     }
 
     public void updateMedia(final Context context, final Uri uri, final String type) {

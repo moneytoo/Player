@@ -40,6 +40,22 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/pref_language_header">
+
+        <ListPreference
+            app:key="languageSubtitle"
+            android:defaultValue="default"
+            app:title="@string/pref_language_subtitle"
+            app:useSimpleSummaryProvider="true" />
+
+        <ListPreference
+            app:key="languageAudio"
+            android:defaultValue="device"
+            app:title="@string/pref_language_audio"
+            app:useSimpleSummaryProvider="true" />
+
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/pref_dangerous_header">
 
         <Preference

@@ -1161,9 +1161,37 @@ public class PlayerActivity extends Activity {
                     .setTunnelingEnabled(true)
             );
         }
-        trackSelector.setParameters(trackSelector.buildUponParameters()
-                .setPreferredAudioLanguages(Utils.getDeviceLanguages())
-        );
+        switch (mPrefs.languageAudio) {
+            case Prefs.TRACK_DEFAULT:
+                break;
+            case Prefs.TRACK_DEVICE:
+                trackSelector.setParameters(trackSelector.buildUponParameters()
+                        .setPreferredAudioLanguages(Utils.getDeviceLanguages())
+                );
+                break;
+            default:
+                trackSelector.setParameters(trackSelector.buildUponParameters()
+                        .setPreferredAudioLanguages(mPrefs.languageAudio)
+                );
+        }
+        switch (mPrefs.languageSubtitle) {
+            case Prefs.TRACK_DEFAULT:
+                break;
+            case Prefs.TRACK_DEVICE:
+                trackSelector.setParameters(trackSelector.buildUponParameters()
+                        .setPreferredTextLanguages(Utils.getDeviceLanguages())
+                );
+                break;
+            case Prefs.TRACK_NONE:
+                trackSelector.setParameters(trackSelector.buildUponParameters()
+                        .setIgnoredTextSelectionFlags(C.SELECTION_FLAG_DEFAULT | C.SELECTION_FLAG_FORCED)
+                );
+                break;
+            default:
+                trackSelector.setParameters(trackSelector.buildUponParameters()
+                        .setPreferredTextLanguage(mPrefs.languageSubtitle)
+                );
+        }
         // https://github.com/google/ExoPlayer/issues/8571
         AviExtractorsFactory aviExtractorsFactory = new AviExtractorsFactory();
         aviExtractorsFactory.getDefaultExtractorsFactory()

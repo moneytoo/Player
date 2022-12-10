@@ -48,4 +48,10 @@
     <string name="pref_decoder_priority_prefer_device">Prefer device decoders (default)</string>
     <string name="pref_decoder_priority_prefer_app">Prefer app decoders</string>
     <string name="pref_decoder_priority_only_device">Device decoders only</string>
+    <string name="pref_language_header">Language</string>
+    <string name="pref_language_subtitle">Default subtitle track</string>
+    <string name="pref_language_audio">Default audio track</string>
+    <string name="pref_language_track_none">None</string>
+    <string name="pref_language_track_device">Device languages</string>
+    <string name="pref_language_track_default">Media file default</string>
 </resources>

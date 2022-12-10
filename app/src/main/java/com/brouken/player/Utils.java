@@ -56,8 +56,12 @@ import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 class Utils {
 
@@ -766,5 +770,14 @@ class Utils {
 
     public static boolean isTablet(Context context) {
         return context.getResources().getConfiguration().smallestScreenWidthDp >= 720;
+    }
+
+    public static <K, V> void orderByValue(LinkedHashMap<K, V> m, final Comparator<? super V> c) {
+        List<Map.Entry<K, V>> entries = new ArrayList<>(m.entrySet());
+        Collections.sort(entries, (lhs, rhs) -> c.compare(lhs.getValue(), rhs.getValue()));
+        m.clear();
+        for(Map.Entry<K, V> e : entries) {
+            m.put(e.getKey(), e.getValue());
+        }
     }
 }
