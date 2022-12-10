@@ -37,9 +37,20 @@
     <string name="mediastore_empty">没有找到索引的视频文件。要访问指定存储中的视频文件，请在系统设置中启用媒体自动扫描功能。</string>
     <string name="pref_captioning_preferences">字幕选项</string>
     <string name="pref_shortcuts_header">快捷方式</string>
-    <string name="pref_decoder_priority_prefer_device">偏好设备解码器</string>
+    <string name="pref_decoder_priority_prefer_device">偏好设备解码器（默认）</string>
     <string name="pref_decoder_priority">解码器优先级</string>
     <string name="pref_decoder_priority_prefer_app">偏好应用解码器</string>
     <string name="pref_decoder_priority_only_device">仅使用设备解码器</string>
     <string name="video_orientation_system">设备方向</string>
+    <string name="pref_map_dv7_off">按原样播放包含杜比视界的超高清蓝光内容</string>
+    <string name="pref_dangerous_header">危险 ⚠️</string>
+    <string name="pref_dangerous_warning">切换此类别中的选项可能会破坏正常兼容内容的播放</string>
+    <string name="pref_language_header">语言</string>
+    <string name="pref_language_subtitle">默认字幕轨道</string>
+    <string name="pref_language_audio">默认音轨</string>
+    <string name="pref_language_track_none">无</string>
+    <string name="pref_language_track_device">设备语言</string>
+    <string name="pref_language_track_default">媒体文件默认</string>
+    <string name="pref_map_dv7">杜比视界配置文件 7 后备</string>
+    <string name="pref_map_dv7_on">在 HDR 显示器上播放杜比视界配置 7 内容</string>
 </resources>
