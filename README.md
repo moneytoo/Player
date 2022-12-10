@@ -55,6 +55,7 @@ To load external (non-embedded) subtitles, long press the file open action in th
 
 Some advanced features can be enabled or configured in settings. To access it, long press the ⚙️ gear icon. (Alternatively, you can also enter this settings from App info screen.)
 
+ * Default subtitle and audio tracks. Set specific language, prefer device language, media file defaults or none (in case of subtitles).
  * File access mode. Use of Storage Access Framework / MediaStore / legacy file access.
  * Decoder priority. Prefer device or app decoders.
  * Auto frame rate matching. (On Android 11+ and "compatible" displays, ExoPlayer supports [seamless refresh rate switching](https://source.android.com/devices/graphics/multiple-refresh-rate))
