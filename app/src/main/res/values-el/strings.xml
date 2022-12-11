@@ -40,6 +40,17 @@
     <string name="pref_decoder_priority">Προτεραιότητα αποκωδικοποιητή</string>
     <string name="pref_decoder_priority_prefer_app">Προτίμηση αποκωδικοποιητών εφαρμογής</string>
     <string name="pref_decoder_priority_only_device">Μόνο αποκωδικοποιητές συσκευής</string>
-    <string name="pref_decoder_priority_prefer_device">Προτίμηση αποκωδικοποιητών συσκευής</string>
+    <string name="pref_decoder_priority_prefer_device">Προτίμηση αποκωδικοποιητών συσκευής (προεπιλογή)</string>
     <string name="video_orientation_system">Προσανατολισμός συσκευής</string>
+    <string name="pref_language_subtitle">Προεπιλεγμένο κομμάτι υπότιτλων</string>
+    <string name="pref_language_track_none">Κανένα</string>
+    <string name="pref_dangerous_header">Επικίνδυνο ⚠️</string>
+    <string name="pref_map_dv7">Dolby Vision προφίλ 7 εναλλακτικό</string>
+    <string name="pref_map_dv7_on">Αναπαραγωγή περιεχομένου Dolby Vision προφίλ 7 σε οθόνες HDR</string>
+    <string name="pref_map_dv7_off">Αναπαραγωγή περιεχομένου UHD Blu-ray που περιέχει Dolby Vision ως έχει</string>
+    <string name="pref_dangerous_warning">Η εναλλαγή επιλογών σε αυτήν την κατηγορία ενδέχεται να διακόψει την αναπαραγωγή κανονικά συμβατού περιεχομένου</string>
+    <string name="pref_language_header">Γλώσσα</string>
+    <string name="pref_language_audio">Προεπιλεγμένο κομμάτι ήχου</string>
+    <string name="pref_language_track_device">Γλώσσες συσκευής</string>
+    <string name="pref_language_track_default">Προεπιλογή αρχείου πολυμέσων</string>
 </resources>
