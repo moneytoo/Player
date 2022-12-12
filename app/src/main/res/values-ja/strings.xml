@@ -31,7 +31,7 @@
     <string name="pref_skip_silence_on">オーディオストリームで無音の部分をとばす</string>
     <string name="pref_auto_pip">自動ピクチャーインピクチャー</string>
     <string name="pref_auto_pip_on">アプリを離れるときにPiPに切り替える</string>
-    <string name="pref_decoder_priority_prefer_device">端末のデコーダーを優先</string>
+    <string name="pref_decoder_priority_prefer_device">端末のデコーダーを優先 (デフォルト)</string>
     <string name="pref_decoder_priority_only_device">端末のデコーダーのみ</string>
     <string name="pref_decoder_priority_prefer_app">アプリのデコーダーを優先</string>
     <string name="pref_repeat_toggle">繰り返しトグル</string>
@@ -40,5 +40,16 @@
     <string name="pref_skip_silence_off">コンテンツをそのまま再生する</string>
     <string name="pref_general_header">全般</string>
     <string name="pref_decoder_priority">優先するデコーダー</string>
-    <string name="video_orientation_system">デバイスの向き</string>
+    <string name="video_orientation_system">端末の向き</string>
+    <string name="pref_map_dv7">Dolby Vision profile 7の縮退運用</string>
+    <string name="pref_map_dv7_on">Dolby Vision profile 7のコンテンツをHDRディスプレイで再生する</string>
+    <string name="pref_map_dv7_off">Dolby Visionを含むUHD Blu-rayコンテンツをそのまま再生する</string>
+    <string name="pref_dangerous_header">危険 ⚠️</string>
+    <string name="pref_language_header">言語</string>
+    <string name="pref_language_subtitle">デフォルトの字幕トラック</string>
+    <string name="pref_language_audio">デフォルトの音声トラック</string>
+    <string name="pref_language_track_none">なし</string>
+    <string name="pref_language_track_default">メディアファイルのデフォルト</string>
+    <string name="pref_dangerous_warning">このカテゴリのオプションを切り替えると、対応するコンテンツの再生が中断される場合があります</string>
+    <string name="pref_language_track_device">端末の言語</string>
 </resources>
