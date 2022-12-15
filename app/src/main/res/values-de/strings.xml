@@ -42,4 +42,11 @@
     <string name="pref_decoder_priority_only_device">Nur Gerätedecoder</string>
     <string name="pref_decoder_priority">Priorität des Decoders</string>
     <string name="video_orientation_system">Geräteausrichtung</string>
+    <string name="pref_dangerous_header">Gefährlich ⚠️</string>
+    <string name="pref_language_header">Sprache</string>
+    <string name="pref_language_subtitle">Standardmäßige Untertitelspur</string>
+    <string name="pref_language_audio">Standard-Audiospur</string>
+    <string name="pref_language_track_none">Keine</string>
+    <string name="pref_language_track_default">Standardeinstellung für Mediendateien</string>
+    <string name="pref_language_track_device">Gerätesprachen</string>
 </resources>
