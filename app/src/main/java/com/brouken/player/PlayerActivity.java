@@ -1235,6 +1235,7 @@ public class PlayerActivity extends Activity {
 
         if (mediaSession != null) {
             mediaSession.release();
+            mediaSession = null;
         }
 
         mediaSession = new MediaSession.Builder(this, player).build();
