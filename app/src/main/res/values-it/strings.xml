@@ -38,8 +38,16 @@
     <string name="pref_shortcuts_header">Scorciatoie</string>
     <string name="pref_captioning_preferences">Preferenze per i sottotitoli</string>
     <string name="pref_decoder_priority">Priorità al decoder</string>
-    <string name="pref_decoder_priority_prefer_device">Preferire i decodificatori dei dispositivi</string>
+    <string name="pref_decoder_priority_prefer_device">Preferisci i decodificatori di dispositivi (predefiniti)</string>
     <string name="pref_decoder_priority_prefer_app">Preferire i decoder delle app</string>
     <string name="pref_decoder_priority_only_device">Solo decoder per dispositivi</string>
     <string name="video_orientation_system">Orientamento del dispositivo</string>
+    <string name="pref_dangerous_header">Pericoloso ⚠️</string>
+    <string name="pref_dangerous_warning">Il passaggio da un\'opzione all\'altra in questa categoria potrebbe interrompere la riproduzione di contenuti normalmente compatibili</string>
+    <string name="pref_language_header">Lingua</string>
+    <string name="pref_language_subtitle">Traccia sottotitoli predefinita</string>
+    <string name="pref_language_audio">Traccia audio predefinita</string>
+    <string name="pref_language_track_none">Nessuna</string>
+    <string name="pref_language_track_device">Lingue del dispositivo</string>
+    <string name="pref_language_track_default">Impostazione predefinita del file multimediale</string>
 </resources>
