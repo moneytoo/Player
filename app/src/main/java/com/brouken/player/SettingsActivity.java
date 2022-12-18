@@ -21,6 +21,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.MissingResourceException;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -130,14 +131,19 @@ public class SettingsActivity extends AppCompatActivity {
         LinkedHashMap<String, String> getLanguages() {
             LinkedHashMap<String, String> languages = new LinkedHashMap<>();
             for (Locale locale : Locale.getAvailableLocales()) {
-                String key = locale.getISO3Language();
-                String language = locale.getDisplayLanguage();
-                int length = language.offsetByCodePoints(0, 1);
-                if (!language.isEmpty()) {
-                    language = language.substring(0, length).toUpperCase(locale) + language.substring(length);
+                try {
+                    // MissingResourceException: Couldn't find 3-letter language code for zz
+                    String key = locale.getISO3Language();
+                    String language = locale.getDisplayLanguage();
+                    int length = language.offsetByCodePoints(0, 1);
+                    if (!language.isEmpty()) {
+                        language = language.substring(0, length).toUpperCase(locale) + language.substring(length);
+                    }
+                    String value = language + " [" + key + "]";
+                    languages.put(key, value);
+                } catch (MissingResourceException e) {
+                    e.printStackTrace();
                 }
-                String value = language + " [" + key + "]";
-                languages.put(key, value);
             }
             Collator collator = Collator.getInstance();
             collator.setStrength(Collator.PRIMARY);
