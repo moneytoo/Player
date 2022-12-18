@@ -136,7 +136,9 @@ public class CustomPlayerView extends PlayerView implements GestureDetector.OnGe
 
                     if (restorePlayState) {
                         restorePlayState = false;
-                        PlayerActivity.player.play();
+                        if (PlayerActivity.player != null) {
+                            PlayerActivity.player.play();
+                        }
                     }
 
                     setControllerAutoShow(true);
