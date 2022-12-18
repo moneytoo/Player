@@ -1920,7 +1920,9 @@ public class PlayerActivity extends Activity {
         }
         if (frameRendered) {
             frameRendered = false;
-            player.seekTo(position);
+            if (player != null) {
+                player.seekTo(position);
+            }
         }
     }
 
