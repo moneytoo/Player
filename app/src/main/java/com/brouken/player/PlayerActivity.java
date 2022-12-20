@@ -1212,7 +1212,7 @@ public class PlayerActivity extends Activity {
                 HashMap<String, String> headers = new HashMap<>();
                 String userInfo = mPrefs.mediaUri.getUserInfo();
                 if (userInfo != null && userInfo.length() > 0 && userInfo.contains(":")) {
-                    headers.put("Authorization", "Basic " + Base64.encodeToString(userInfo.getBytes(),Base64.NO_WRAP));
+                    headers.put("Authorization", "Basic " + Base64.encodeToString(userInfo.getBytes(), Base64.NO_WRAP));
                     DefaultHttpDataSource.Factory defaultHttpDataSourceFactory = new DefaultHttpDataSource.Factory();
                     defaultHttpDataSourceFactory.setDefaultRequestProperties(headers);
                     playerBuilder.setMediaSourceFactory(new DefaultMediaSourceFactory(defaultHttpDataSourceFactory, aviExtractorsFactory));
@@ -1239,10 +1239,12 @@ public class PlayerActivity extends Activity {
             mediaSession.release();
         }
 
-        try {
-            mediaSession = new MediaSession.Builder(this, player).build();
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
+        if (player.canAdvertiseSession()) {
+            try {
+                mediaSession = new MediaSession.Builder(this, player).build();
+            } catch (IllegalStateException e) {
+                e.printStackTrace();
+            }
         }
 
         playerView.setControllerShowTimeoutMs(-1);
