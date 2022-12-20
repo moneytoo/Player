@@ -1237,10 +1237,13 @@ public class PlayerActivity extends Activity {
 
         if (mediaSession != null) {
             mediaSession.release();
-            mediaSession = null;
         }
 
-        mediaSession = new MediaSession.Builder(this, player).build();
+        try {
+            mediaSession = new MediaSession.Builder(this, player).build();
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        }
 
         playerView.setControllerShowTimeoutMs(-1);
 
@@ -1384,7 +1387,9 @@ public class PlayerActivity extends Activity {
             notifyAudioSessionUpdate(false);
 
 //            mediaSession.setActive(false);
-            mediaSession.release();
+            if (mediaSession != null) {
+                mediaSession.release();
+            }
 
             if (player.isPlaying() && restorePlayStateAllowed) {
                 restorePlayState = true;
