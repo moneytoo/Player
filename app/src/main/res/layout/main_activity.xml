@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Button
+        android:id="@+id/btnLocalVideo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Local play"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tilRemoteVideo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp">
+    </TextView>
+
+    <EditText
+        android:id="@+id/etRemoteVideo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="remote"
+        android:inputType="textUri"
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/btnRemoteVideo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Remote"
+        android:textColor="@android:color/white"
+        android:textSize="18sp" />
+
+    <ListView
+        android:id="@+id/video_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

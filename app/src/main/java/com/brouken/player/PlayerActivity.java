@@ -218,6 +218,16 @@ public class PlayerActivity extends Activity {
         }
     };
 
+    public static void start(Context context, String path) {
+        start(context, Uri.parse(path));
+    }
+
+    public static void start(Context context, Uri uri) {
+        Intent intent = new Intent(context, PlayerActivity.class);
+        intent.setData(uri);
+        context.startActivity(intent);
+    }
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
