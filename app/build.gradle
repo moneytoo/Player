@@ -90,7 +90,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
-    implementation project(path: ':doubletapplayerview')
+//    implementation project(path: ':doubletapplayerview')
     implementation project(path: ':android-file-chooser')
     implementation fileTree(dir: "libs", include: ["lib-*.aar"])
 }
