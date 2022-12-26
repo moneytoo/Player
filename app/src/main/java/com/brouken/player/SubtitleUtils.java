@@ -196,7 +196,11 @@ class SubtitleUtils {
     }
 
     public static DocumentFile findNext(DocumentFile video, DocumentFile dir) {
-        DocumentFile list[] = dir.listFiles();
+        if (dir == null) {
+            return null;
+        }
+
+        DocumentFile[] list = dir.listFiles();
         try {
             Arrays.sort(list, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
         } catch (NullPointerException e) {
