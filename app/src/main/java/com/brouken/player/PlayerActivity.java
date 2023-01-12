@@ -2276,7 +2276,7 @@ public class PlayerActivity extends Activity {
     private void scaleEnd() {
         isScaling = false;
         playerView.postDelayed(playerView.textClearRunnable, 200);
-        if (!player.isPlaying()) {
+        if (player != null && !player.isPlaying()) {
             playerView.showController();
         }
         if (Math.abs(playerView.getScaleFit() - scaleFactor) < 0.01 / 2) {
