@@ -38,7 +38,19 @@
     <string name="pref_file_access">الوصول إلى الملف</string>
     <string name="pref_file_access_auto">تلقائي</string>
     <string name="pref_captioning_preferences">تفضيلات الترجمة</string>
-    <string name="pref_decoder_priority_prefer_device">تفضيل تشفير الجهاز</string>
+    <string name="pref_decoder_priority_prefer_device">تفضل أجهزة فك ترميز الجهاز (افتراضي)</string>
     <string name="pref_decoder_priority_prefer_app">تفضيل تشفير التطبيق</string>
     <string name="pref_decoder_priority_only_device">تشفير الجهاز فقط</string>
+    <string name="pref_language_subtitle">مسار الترجمة الافتراضي</string>
+    <string name="pref_language_track_none">لا شيء</string>
+    <string name="pref_language_track_device">لغات الجهاز</string>
+    <string name="pref_language_header">اللغة</string>
+    <string name="pref_map_dv7">ملف تعريف Dolby Vision 7 احتياطي</string>
+    <string name="pref_language_audio">المسار الصوتي الافتراضي</string>
+    <string name="pref_language_track_default">ملف الوسائط الافتراضي</string>
+    <string name="pref_dangerous_warning">قد يؤدي تبديل الخيارات في هذه الفئة إلى تعطيل تشغيل المحتوى المتوافق عادة</string>
+    <string name="pref_map_dv7_on">قم بتشغيل محتوى ملف تعريف Dolby Vision 7 على شاشات HDR</string>
+    <string name="pref_map_dv7_off">قم بتشغيل محتوى UHD Blu-ray الذي يحتوي على Dolby Vision كما هو</string>
+    <string name="pref_dangerous_header">خطير ⚠️</string>
+    <string name="mediastore_empty">لم يتم العثور على ملفات فيديو مفهرسة. للوصول إلى ملفات الفيديو في مساحة تخزين معينة ، قم بتمكين الفحص التلقائي للوسائط في إعدادات النظام.</string>
 </resources>
