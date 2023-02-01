@@ -31,7 +31,7 @@
     <string name="mediastore_empty">Nu s-au găsit fișiere video indexate. Pentru a accesa fișierele video în spațiul de stocare dat, activați scanarea automată a suporturilor media în setările de sistem.</string>
     <string name="pref_captioning_preferences">Preferințe pentru subtitrări</string>
     <string name="pref_decoder_priority">Prioritate decodor</string>
-    <string name="pref_decoder_priority_prefer_device">Preferați decodoarele pentru dispozitive</string>
+    <string name="pref_decoder_priority_prefer_device">Preferați decodoarele dispozitivului (implicit)</string>
     <string name="pref_decoder_priority_prefer_app">Prefer decodorele de aplicații</string>
     <string name="pref_decoder_priority_only_device">Numai decodoare de dispozitiv</string>
     <string name="pref_shortcuts_header">Comenzi rapide</string>
@@ -42,4 +42,15 @@
     <string name="pref_skip_silence_on">Săriți părțile cu tăcere pe fluxul audio</string>
     <string name="button_open">Deschide</string>
     <string name="pref_tunneling_summary">Tunelarea oferă suport mai bun pentru conținutul 4K/HDR, dar este posibil să nu funcționeze pe toate dispozitivele</string>
+    <string name="pref_map_dv7">Dolby Vision profil 7 rezervă</string>
+    <string name="pref_dangerous_header">Periculos ⚠️</string>
+    <string name="pref_dangerous_warning">Comutarea opțiunilor din această categorie poate întrerupe redarea conținutului compatibil în mod normal</string>
+    <string name="pref_map_dv7_off">Redați conținut Blu-ray UHD care conține Dolby Vision așa cum este</string>
+    <string name="pref_map_dv7_on">Redă conținut Dolby Vision profil 7 pe ecrane HDR</string>
+    <string name="pref_language_header">Limbă</string>
+    <string name="pref_language_subtitle">Pistă de subtitrare implicită</string>
+    <string name="pref_language_track_device">Limbile dispozitivului</string>
+    <string name="pref_language_track_default">Fișier media implicit</string>
+    <string name="pref_language_track_none">Niciunul</string>
+    <string name="pref_language_audio">Pistă audio implicită</string>
 </resources>
