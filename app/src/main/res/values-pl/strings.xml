@@ -52,4 +52,5 @@
     <string name="pref_language_track_default">Domyślny plik multimedialny</string>
     <string name="pref_language_subtitle">Domyślna ścieżka napisów</string>
     <string name="pref_decoder_priority_prefer_device">Preferuj dekodery urządzeń (domyślnie)</string>
+    <string name="button_crop">Zmień rozmiar</string>
 </resources>
