@@ -59,6 +59,7 @@ android {
     }
     lint {
         disable 'MissingTranslation'
+        disable 'UnsafeOptInUsageError'
     }
 }
 
