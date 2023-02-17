@@ -28,6 +28,9 @@
     <string name="pref_skip_silence_off">Відтворювати контент як є</string>
     <string name="pref_repeat_toggle">Переключення повтору</string>
     <string name="pref_repeat_toggle_summary">Додатковий контроль, що дозволяє необмежений цикл відео (потрібно перезапустити додаток)</string>
+    <string name="pref_map_dv7">Резервний варіант Dolby Vision profile 7</string>
+    <string name="pref_map_dv7_on">Відтворення контенту Dolby Vision profile 7 на дисплеях HDR</string>
+    <string name="pref_map_dv7_off">Відтворення вмісту UHD Blu-ray, що містить Dolby Vision, як є</string>
     <string name="shortcut_videos">Відео</string>
     <string name="button_open">Відкрити</string>
     <string name="button_crop">Змінити розмір</string>
@@ -36,10 +39,18 @@
     <string name="pref_file_access">Доступ до файлів</string>
     <string name="pref_file_access_auto">Автоматично</string>
     <string name="mediastore_empty">Не знайдено проіндексованих відеофайлів. Щоб отримати доступ до відеофайлів у певному сховищі, увімкніть автоматичне сканування медіа в налаштуваннях системи.</string>
+    <string name="pref_dangerous_header">Увага⚠️</string>
+    <string name="pref_dangerous_warning">Перемикання параметрів у цій категорії може порушити відтворення звичайно сумісного контенту</string>
     <string name="pref_shortcuts_header">Ярлики</string>
     <string name="pref_captioning_preferences">Налаштування субтитрів</string>
     <string name="pref_decoder_priority">Пріоритет декодера</string>
     <string name="pref_decoder_priority_prefer_device">Надавати перевагу декодерам пристрою</string>
     <string name="pref_decoder_priority_prefer_app">Надавати перевагу декодерам додатку</string>
     <string name="pref_decoder_priority_only_device">Лише декодери пристрою</string>
+    <string name="pref_language_header">Мова</string>
+    <string name="pref_language_subtitle">Доріжка субтитрів за замовчуванням</string>
+    <string name="pref_language_audio">Звукова доріжка за замовчуванням</string>
+    <string name="pref_language_track_none">Жодної</string>
+    <string name="pref_language_track_device">Мови пристрою</string>
+    <string name="pref_language_track_default">Медіафайл за замовчуванням</string>
 </resources>
