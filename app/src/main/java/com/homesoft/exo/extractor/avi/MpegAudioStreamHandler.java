@@ -34,6 +34,9 @@ import java.io.IOException;
  * 2. That some codecs can't handle multiple or partial frames (Pixels)
  */
 public class MpegAudioStreamHandler extends AudioStreamHandler {
+  // Number of samples in a typical MP3 Frame.
+  // Usually expressed as 144 since it's multiplied by 8 bits per byte
+  private static final int SAMPLES_PER_FRAME_L3_V1 = 1152;
   private final MpegAudioUtil.Header header = new MpegAudioUtil.Header();
   private final ParsableByteArray scratch = new ParsableByteArray(8);
   private final int samplesPerSecond;
@@ -48,6 +51,8 @@ public class MpegAudioStreamHandler extends AudioStreamHandler {
                          int samplesPerSecond) {
     super(id, durationUs, trackOutput);
     this.samplesPerSecond = samplesPerSecond;
+    //Default samples per frame to handle blank leading chunks.
+    header.samplesPerFrame = SAMPLES_PER_FRAME_L3_V1;
   }
 
   @Override
@@ -58,17 +63,20 @@ public class MpegAudioStreamHandler extends AudioStreamHandler {
   @Override
   public boolean read(@NonNull ExtractorInput input) throws IOException {
     if (readSize == 0) {
-      //TODO: How to handle empty frame?
+      //Empty frame, just advance the clock
+      advanceTime(0);
       return true;
     }
     if (frameRemaining == 0) {
       //Find the next frame
       if (!findFrame(input)) {
         if (scratch.limit() >= readSize) {
-          scratch.setPosition(0);
-          trackOutput.sampleData(scratch, readSize);
+          // Couldn't find an MPEG audio frame header in chunk.
+          // Might be ID3 or leading 0s
+          // Dump the chunk as it can mess up the (Pixel) decoder
           scratch.reset(0);
-          sendMetadata(readSize);
+          // Not sure if this is the right thing to do.  Maybe nothing
+          advanceTime(0);
         }
         return readComplete();
       }

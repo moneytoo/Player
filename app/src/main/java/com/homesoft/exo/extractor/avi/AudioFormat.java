@@ -22,13 +22,14 @@ import androidx.media3.common.MimeTypes;
 import java.nio.ByteBuffer;
 
 /**
- * Wrapper for the WAVEFORMATEX structure
+ * Wrapper for the WAVEFORMAT structure
  */
 public class AudioFormat {
+  private static final int WAVE_FORMAT_MPEGLAYER3=0x55;
   private static final SparseArray<String> FORMAT_MAP = new SparseArray<>();
   static {
     FORMAT_MAP.put(0x1, MimeTypes.AUDIO_RAW);    // WAVE_FORMAT_PCM
-    FORMAT_MAP.put(0x55, MimeTypes.AUDIO_MPEG);  // WAVE_FORMAT_MPEGLAYER3
+    FORMAT_MAP.put(WAVE_FORMAT_MPEGLAYER3, MimeTypes.AUDIO_MPEG);
     FORMAT_MAP.put(0xff, MimeTypes.AUDIO_AAC);   // WAVE_FORMAT_AAC
     FORMAT_MAP.put(0x2000, MimeTypes.AUDIO_AC3); // WAVE_FORMAT_DVM - AC3
     FORMAT_MAP.put(0x2001, MimeTypes.AUDIO_DTS); // WAVE_FORMAT_DTS2
@@ -41,11 +42,11 @@ public class AudioFormat {
   }
 
   public String getMimeType() {
-    return FORMAT_MAP.get(getFormatTag() & 0xffff);
+    return FORMAT_MAP.get(getFormatTag());
   }
 
-  public short getFormatTag() {
-    return byteBuffer.getShort(0);
+  public int getFormatTag() {
+    return byteBuffer.getShort(0) & AviExtractor.USHORT_MASK;
   }
   public short getChannels() {
     return byteBuffer.getShort(2);
@@ -56,13 +57,32 @@ public class AudioFormat {
   public int getAvgBytesPerSec() {
     return byteBuffer.getInt(8);
   }
-  // 12 - nBlockAlign
+  public int getBlockAlign() {
+    return byteBuffer.getShort(12) & AviExtractor.USHORT_MASK;
+  }
   public short getBitsPerSample() {
     return byteBuffer.getShort(14);
   }
   public int getCbSize() {
-    return byteBuffer.getShort(16) & 0xffff;
+    return byteBuffer.getShort(16) & AviExtractor.USHORT_MASK;
   }
+
+  // Only valid for MPEGLAYER3WAVEFORMAT
+  public short getId() {
+    return byteBuffer.getShort(18);
+  }
+  public int getFlags() {
+    return byteBuffer.getInt(20);
+  }
+  public int getBlockSize() {
+    return byteBuffer.getShort(24) & AviExtractor.USHORT_MASK;
+  }
+
+  public int getFramesPerBlock() {
+    return byteBuffer.getShort(26) & AviExtractor.USHORT_MASK;
+  }
+
+
   public byte[] getCodecData() {
     final int size = getCbSize();
     final ByteBuffer temp = byteBuffer.duplicate();
@@ -72,5 +92,36 @@ public class AudioFormat {
     final byte[] data = new byte[size];
     temp.get(data);
     return data;
+  }
+
+  @Override
+  public String toString() {
+    final int formatTag = getFormatTag();
+    final StringBuilder sb = new StringBuilder(
+      "AudioFormat{" +
+            "formatTag=" + formatTag +
+            ", channels=" + getChannels() +
+            ", samplesPerSecond=" + getSamplesPerSecond() +
+            ", avgBytesPerSecond=" + getAvgBytesPerSec() +
+            ", blockAlign=" + getBlockAlign() +
+            ", bitsPerSample=" + getBitsPerSample());
+    if (byteBuffer.capacity() > 16) {
+      // WAVEFORMATEX
+      sb.append(", cbSize=");
+      sb.append(getCbSize());
+      if (formatTag == WAVE_FORMAT_MPEGLAYER3) {
+        sb.append(", ID=");
+        sb.append(getId());
+        sb.append(", flags=");
+        sb.append(getFlags());
+        sb.append(", blockSize=");
+        sb.append(getBlockSize());
+        sb.append(", framesPerBlock=");
+        sb.append(getFramesPerBlock());
+      }
+
+    }
+    sb.append('}');
+    return sb.toString();
   }
 }

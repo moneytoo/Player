@@ -15,6 +15,8 @@
  */
 package com.homesoft.exo.extractor.avi;
 
+import android.os.Build;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 
@@ -46,6 +48,10 @@ public class Mp4VStreamHandler extends NalStreamHandler {
   static final int Extended_PAR = 0xf;
 
   private final Format.Builder formatBuilder;
+
+  // This chipset(device?) seems to correct the clock for B-Frame inside the codec.
+  // Not sure if it's the whole series (MediaTek P35) or just this chipset.
+  private static boolean enableStreamClock = !Build.HARDWARE.equals("mt6765"); //Samsung A7 Lite
 
   @VisibleForTesting()
   float pixelWidthHeightRatio = 1f;
@@ -171,7 +177,7 @@ public class Mp4VStreamHandler extends NalStreamHandler {
         break;
       } else if (nalType == SEQUENCE_START_CODE) {
         final byte profile_and_level_indication = buffer[nalTypeOffset + 1];
-        useStreamClock = (profile_and_level_indication & SIMPLE_PROFILE_MASK) != profile_and_level_indication;
+        useStreamClock = enableStreamClock && (profile_and_level_indication & SIMPLE_PROFILE_MASK) != profile_and_level_indication;
       } else if ((nalType & 0xf0) == LAYER_START_CODE) {
         //Read the whole NAL into the buffer
         seekNextNal(input, nalTypeOffset);

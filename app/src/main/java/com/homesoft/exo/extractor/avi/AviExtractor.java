@@ -48,6 +48,7 @@ public class AviExtractor implements Extractor {
   //Minimum time between keyframes in the AviSeekMap
   static final long MIN_KEY_FRAME_RATE_US = 2_000_000L;
   static final long UINT_MASK = 0xffffffffL;
+  static final int USHORT_MASK = 0xffff;
   private static final int RELOAD_MINIMUM_SEEK_DISTANCE = 256 * 1024;
 
   static long getUInt(@NonNull ByteBuffer byteBuffer) {
