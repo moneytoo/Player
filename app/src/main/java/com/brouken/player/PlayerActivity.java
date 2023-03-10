@@ -1486,7 +1486,7 @@ public class PlayerActivity extends Activity {
                     final Format format = player.getVideoFormat();
 
                     if (format != null) {
-                        if (mPrefs.orientation == Utils.Orientation.VIDEO) {
+                        if (!isTvBox && mPrefs.orientation == Utils.Orientation.VIDEO) {
                             if (Utils.isPortrait(format)) {
                                 PlayerActivity.this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT);
                             } else {
