@@ -81,6 +81,7 @@ class Utils {
             "video/avi",
             // For remote storages:
             "video/x-m4v", // .m4v
+            "text/*",
     };
     public static final String[] supportedMimeTypesSubtitle = new String[] {
             MimeTypes.APPLICATION_SUBRIP,
