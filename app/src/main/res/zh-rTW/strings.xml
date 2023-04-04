@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="video_resize_fit">符合視窗</string>
+    <string name="video_resize_crop">裁剪畫面</string>
+    <string name="video_orientation_video">影片方向</string>
+    <string name="video_orientation_sensor">自動旋轉</string>
+    <string name="video_orientation_system">裝置方向</string>
+    <string name="onboarding_open_title">選擇要播放的影片</string>
+    <string name="onboarding_open_description">輕觸即可開啟影片檔案，按住即可載入外掛字幕。</string>
+    <string name="open_subtitles">載入字幕</string>
+    <string name="error_details">資訊</string>
+    <string name="error_files_missing">檔案應用程式已被停用或遺失。</string>
+    <string name="request_scope">如要自動載入字幕或啟用播放下個檔案功能，請授予 %s 存取您影片的頂層資料夾權限 (例如 Movies)。</string>
+    <string name="delete_query">要刪除這個檔案嗎？</string>
+    <string name="delete_confirmation">刪除</string>
+    <string name="pref_title">設定</string>
+    <string name="pref_general_header">一般</string>
+    <string name="pref_framerate_matching">自動偵測影格速率</string>
+    <string name="pref_framerate_matching_on">變更螢幕更新頻率以符合影片速率</string>
+    <string name="pref_framerate_matching_off">停用變更螢幕更新頻率</string>
+    <string name="pref_tunneling">隧道式播放</string>
+    <string name="pref_tunneling_summary">隧道模式能夠提升 4K 和 HDR 播放體驗，但可能不適用於所有裝置</string>
+    <string name="pref_auto_pip">自動子母畫面</string>
+    <string name="pref_auto_pip_on">離開時切換至子母畫面</string>
+    <string name="pref_auto_pip_off">停用自動切換子母畫面</string>
+    <string name="pref_skip_silence">略過無聲</string>
+    <string name="pref_skip_silence_on">跳過音訊串流中的無聲段落</string>
+    <string name="pref_skip_silence_off">播放所有內容</string>
+    <string name="pref_repeat_toggle">重複播放控制項</string>
+    <string name="pref_repeat_toggle_summary">啟用額外的循環播放控制項 (須重新啟動應用程式)</string>
+    <string name="pref_map_dv7">Dolby Vision profile 7 配置</string>
+    <string name="pref_map_dv7_on">在 HDR 顯示器播放 Dolby Vision profile 7 內容</string>
+    <string name="pref_map_dv7_off">播放包含 Dolby Vision 的超高畫質藍光內容</string>
+    <string name="shortcut_videos">影片</string>
+    <string name="button_open">開啟</string>
+    <string name="button_crop">調整大小</string>
+    <string name="button_rotate">旋轉</string>
+    <string name="button_pip">子母畫面</string>
+    <string name="pref_file_access">檔案存取</string>
+    <string name="pref_file_access_auto">自動</string>
+    <string name="mediastore_empty">"找不到已索引的影片檔案。
+
+如要存取指定儲存空間中的檔案，請前往系統設定並啟用自動媒體掃描。"</string>
+    <string name="pref_dangerous_header">實驗性 ⚠️</string>
+    <string name="pref_dangerous_warning">變更這個類別的項目可能會導致播放異常。</string>
+    <string name="pref_shortcuts_header">捷徑</string>
+    <string name="pref_captioning_preferences">字幕設定</string>
+    <string name="pref_decoder_priority">解碼器使用順序</string>
+    <string name="pref_decoder_priority_prefer_device">裝置解碼器優先 (預設)</string>
+    <string name="pref_decoder_priority_prefer_app">應用程式解碼器優先</string>
+    <string name="pref_decoder_priority_only_device">僅使用裝置解碼器</string>
+    <string name="pref_language_header">語言</string>
+    <string name="pref_language_subtitle">預設字幕軌道</string>
+    <string name="pref_language_audio">預設音訊軌道</string>
+    <string name="pref_language_track_none">無</string>
+    <string name="pref_language_track_device">裝置語言</string>
+    <string name="pref_language_track_default">媒體檔案預設</string>
+</resources>
