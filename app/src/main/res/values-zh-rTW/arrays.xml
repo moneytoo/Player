@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string-array name="file_access_entries">
+    <item>@string/pref_file_access_auto</item>
+    <item>儲存空間存取架構</item>
+    <item>媒體資料庫</item>
+    <item>舊版</item>
+  </string-array>
+</resources>
