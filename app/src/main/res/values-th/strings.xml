@@ -13,4 +13,17 @@
     <string name="delete_query">ลบไฟล์นี้ \?</string>
     <string name="request_scope">ในการโหลดคำบรรยายภายนอกโดยอัตโนมัติ หรือ เปิดใช้งานการข้ามไปยังไฟล์ถัดไปในไดเร็กทอรี ให้ %s เข้าถึงโฟลเดอร์นอกสุดที่มีวิดีโอของคุณ (เช่น ภาพยนตร์)</string>
     <string name="shortcut_videos">วิดีโอ</string>
+    <string name="pref_general_header">ทั่วไป</string>
+    <string name="pref_title">การตั้งค่า</string>
+    <string name="button_open">เปิด</string>
+    <string name="button_crop">ปรับขนาด</string>
+    <string name="pref_file_access">การเข้าถึงไฟล์</string>
+    <string name="pref_file_access_auto">อัตโนมัติ</string>
+    <string name="pref_dangerous_header">อันตราย ⚠️</string>
+    <string name="pref_captioning_preferences">ค่ากำหนดคำบรรยาย</string>
+    <string name="pref_language_header">ภาษา</string>
+    <string name="pref_language_track_none">ไม่มี</string>
+    <string name="pref_language_track_device">ภาษาของอุปกรณ์</string>
+    <string name="pref_auto_pip_on">สลับเป็นโหมดภาพซ้อนภาพในภาพเมื่อออกจากแอป</string>
+    <string name="video_orientation_system">ปรับทิศตามอุปกรณ์</string>
 </resources>
