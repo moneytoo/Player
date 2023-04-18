@@ -84,7 +84,7 @@ dependencies {
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
     implementation 'com.google.android.material:material:1.8.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
-    implementation 'com.ibm.icu:icu4j:72.1'
+    implementation 'com.ibm.icu:icu4j:73.1'
     implementation 'com.arthenica:ffmpeg-kit-https:5.1.LTS'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.preference:preference:1.2.0'
