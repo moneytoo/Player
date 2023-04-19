@@ -15,10 +15,10 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: recursive
-    - name: set up JDK 11
+    - name: set up JDK 17
       uses: actions/setup-java@v1
       with:
-        java-version: 11
+        java-version: 17
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
