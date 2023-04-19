@@ -88,8 +88,6 @@ dependencies {
     implementation 'com.arthenica:ffmpeg-kit-https:5.1.LTS'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.preference:preference:1.2.0'
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.5.1'
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
     implementation 'com.squareup.okhttp3:okhttp:4.10.0'
     implementation project(path: ':doubletapplayerview')
     implementation project(path: ':android-file-chooser')
