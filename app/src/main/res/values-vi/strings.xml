@@ -42,4 +42,15 @@
     <string name="mediastore_empty">Không tìm thấy tệp video được lập chỉ mục. Để truy cập các tệp video trong bộ nhớ, hãy bật tính năng quét phương tiện tự động trong cài đặt hệ thống.</string>
     <string name="pref_decoder_priority">Bộ giải mã ưu tiên</string>
     <string name="video_orientation_system">Hướng thiết bị</string>
+    <string name="pref_map_dv7">Dự phòng Dolby Vision profile 7</string>
+    <string name="pref_map_dv7_on">Phát nội dung Dolby Vision profile 7 trên màn hình hỗ trợ HDR</string>
+    <string name="pref_map_dv7_off">Phát nội dung UHD Blu-ray Dolby Vision</string>
+    <string name="pref_dangerous_header">Nguy hiểm</string>
+    <string name="pref_dangerous_warning">Các tùy chọn trong danh mục này có thể làm ảnh hưởng đến khả năng phát lại</string>
+    <string name="pref_language_header">Ngôn ngữ</string>
+    <string name="pref_language_subtitle">Ngôn ngữ phụ đề được ưu tiên</string>
+    <string name="pref_language_audio">Ngôn ngữ âm thanh được ưu tiên</string>
+    <string name="pref_language_track_none">Không có</string>
+    <string name="pref_language_track_device">Ngôn ngữ của thiết bị</string>
+    <string name="pref_language_track_default">Mặc định của tệp tin</string>
 </resources>
