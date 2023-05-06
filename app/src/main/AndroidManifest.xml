@@ -45,7 +45,7 @@
         tools:targetApi="n">
         <activity
             android:name=".PlayerActivity"
-            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode"
+            android:configChanges="keyboard|keyboardHidden|navigation|orientation|screenSize|screenLayout|smallestScreenSize|uiMode|touchscreen"
             android:exported="true"
             android:launchMode="singleTask"
             android:supportsPictureInPicture="true"
