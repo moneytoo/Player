@@ -203,6 +203,7 @@ public class PlayerActivity extends Activity {
     static final String API_TITLE = "title";
     static final String API_END_BY = "end_by";
     boolean apiAccess;
+    boolean apiAccessPartial;
     String apiTitle;
     List<MediaItem.SubtitleConfiguration> apiSubs = new ArrayList<>();
     boolean intentReturnResult;
@@ -274,10 +275,12 @@ public class PlayerActivity extends Activity {
             } else {
                 Bundle bundle = launchIntent.getExtras();
                 if (bundle != null) {
-                    apiAccess = bundle.containsKey(API_POSITION) || bundle.containsKey(API_RETURN_RESULT) || bundle.containsKey(API_TITLE)
+                    apiAccess = bundle.containsKey(API_POSITION) || bundle.containsKey(API_RETURN_RESULT)
                             || bundle.containsKey(API_SUBS) || bundle.containsKey(API_SUBS_ENABLE);
                     if (apiAccess) {
                         mPrefs.setPersistent(false);
+                    } else if (bundle.containsKey(API_TITLE)) {
+                        apiAccessPartial = true;
                     }
                     apiTitle = bundle.getString(API_TITLE);
                 }
@@ -1038,6 +1041,7 @@ public class PlayerActivity extends Activity {
 
     void resetApiAccess() {
         apiAccess = false;
+        apiAccessPartial = false;
         apiTitle = null;
         apiSubs.clear();
         mPrefs.setPersistent(true);
@@ -1309,7 +1313,7 @@ public class PlayerActivity extends Activity {
 
             updateLoading(true);
 
-            if (mPrefs.getPosition() == 0L || apiAccess) {
+            if (mPrefs.getPosition() == 0L || apiAccess || apiAccessPartial) {
                 play = true;
             }
 
