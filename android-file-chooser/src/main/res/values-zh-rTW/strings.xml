@@ -15,9 +15,9 @@
  * limitations under the License.
  -->
 <resources>
-  <string name="empty_directory">空目錄</string>
-  <string name="storage_removed">存儲卡已被移除或卸載。</string>
-  <string name="choose_file">選擇一個文件</string>
-  <string name="error_selecting_file">選擇文件發生了錯誤</string>
-  <string name="internal_storage">內部存儲</string>
+  <string name="empty_directory">空的資料夾</string>
+  <string name="storage_removed">儲存空間已被移除或卸載。</string>
+  <string name="choose_file">請選擇一個檔案</string>
+  <string name="error_selecting_file">選取檔案時發生錯誤。</string>
+  <string name="internal_storage">內部儲存空間</string>
 </resources>
