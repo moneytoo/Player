@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name" translatable="false">Just Player</string>
     <string name="video_resize_fit">符合視窗</string>
     <string name="video_resize_crop">裁剪畫面</string>
     <string name="video_orientation_video">影片方向</string>
