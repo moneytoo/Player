@@ -100,12 +100,9 @@ import com.brouken.player.dtpv.youtube.YouTubeOverlay;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.material.snackbar.Snackbar;
-import com.homesoft.exo.extractor.AviExtractorsFactory;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -1199,8 +1196,7 @@ public class PlayerActivity extends Activity {
                 );
         }
         // https://github.com/google/ExoPlayer/issues/8571
-        AviExtractorsFactory aviExtractorsFactory = new AviExtractorsFactory();
-        aviExtractorsFactory.getDefaultExtractorsFactory()
+        DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory()
                 .setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS)
                 .setTsExtractorTimestampSearchBytes(1500 * TsExtractor.TS_PACKET_SIZE);
         @SuppressLint("WrongConstant") RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
@@ -1209,7 +1205,7 @@ public class PlayerActivity extends Activity {
 
         ExoPlayer.Builder playerBuilder = new ExoPlayer.Builder(this, renderersFactory)
                 .setTrackSelector(trackSelector)
-                .setMediaSourceFactory(new DefaultMediaSourceFactory(this, aviExtractorsFactory));
+                .setMediaSourceFactory(new DefaultMediaSourceFactory(this, extractorsFactory));
 
         if (haveMedia && isNetworkUri) {
             if (mPrefs.mediaUri.getScheme().toLowerCase().startsWith("http")) {
@@ -1219,7 +1215,7 @@ public class PlayerActivity extends Activity {
                     headers.put("Authorization", "Basic " + Base64.encodeToString(userInfo.getBytes(), Base64.NO_WRAP));
                     DefaultHttpDataSource.Factory defaultHttpDataSourceFactory = new DefaultHttpDataSource.Factory();
                     defaultHttpDataSourceFactory.setDefaultRequestProperties(headers);
-                    playerBuilder.setMediaSourceFactory(new DefaultMediaSourceFactory(defaultHttpDataSourceFactory, aviExtractorsFactory));
+                    playerBuilder.setMediaSourceFactory(new DefaultMediaSourceFactory(defaultHttpDataSourceFactory, extractorsFactory));
                 }
             }
         }
@@ -2201,19 +2197,11 @@ public class PlayerActivity extends Activity {
             return;
 
         @Player.State int state = player.getPlaybackState();
-        String methodName;
         if (state == Player.STATE_IDLE || state == Player.STATE_ENDED || !player.getPlayWhenReady()) {
-            methodName = "dispatchPlay";
             shortControllerTimeout = true;
+            androidx.media3.common.util.Util.handlePlayButtonAction(player);
         } else {
-            methodName = "dispatchPause";
-        }
-        try {
-            final Method method = PlayerControlView.class.getDeclaredMethod(methodName, Player.class);
-            method.setAccessible(true);
-            method.invoke(controlView, (Player) player);
-        } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-            e.printStackTrace();
+            androidx.media3.common.util.Util.handlePauseButtonAction(player);
         }
     }
 
