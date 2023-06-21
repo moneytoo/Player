@@ -53,5 +53,9 @@
     <string name="pref_language_audio">Default audio track</string>
     <string name="pref_language_track_none">None</string>
     <string name="pref_language_track_device">Device languages</string>
-    <string name="pref_language_track_default">Media file default</string>
+    <string name="pref_language_track_default">Default</string>
+    <string name="pref_subtitle_header">Subtitle</string>
+    <string name="pref_subtitle_style_embedded">Embedded styles</string>
+    <string name="pref_subtitle_style_embedded_on">Apply embedded subtitle styles</string>
+    <string name="pref_subtitle_style_embedded_off">Do not apply embedded subtitle styles</string>
 </resources>

@@ -56,6 +56,22 @@
 
     </PreferenceCategory>
 
+    <PreferenceCategory app:title="@string/pref_subtitle_header">
+
+        <SwitchPreferenceCompat
+            app:key="subtitleStyleEmbedded"
+            app:defaultValue="true"
+            android:summaryOn="@string/pref_subtitle_style_embedded_on"
+            android:summaryOff="@string/pref_subtitle_style_embedded_off"
+            app:title="@string/pref_subtitle_style_embedded" />
+
+        <Preference
+            app:title="@string/pref_captioning_preferences">
+            <intent android:action="android.settings.CAPTIONING_SETTINGS" />
+        </Preference>
+
+    </PreferenceCategory>
+
     <PreferenceCategory app:title="@string/pref_dangerous_header">
 
         <Preference
@@ -82,15 +98,6 @@
             app:summaryOn="@string/pref_map_dv7_on"
             app:summaryOff="@string/pref_map_dv7_off"
             app:title="@string/pref_map_dv7" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/pref_shortcuts_header">
-
-        <Preference
-            app:title="@string/pref_captioning_preferences">
-            <intent android:action="android.settings.CAPTIONING_SETTINGS" />
-        </Preference>
 
     </PreferenceCategory>
 

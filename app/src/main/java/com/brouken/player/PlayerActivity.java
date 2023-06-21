@@ -1179,6 +1179,12 @@ public class PlayerActivity extends Activity {
         }
         switch (mPrefs.languageSubtitle) {
             case Prefs.TRACK_DEFAULT:
+                final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
+                if (!captioningManager.isEnabled()) {
+                    trackSelector.setParameters(trackSelector.buildUponParameters()
+                            .setIgnoredTextSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+                    );
+                }
                 break;
             case Prefs.TRACK_DEVICE:
                 trackSelector.setParameters(trackSelector.buildUponParameters()
@@ -1949,17 +1955,7 @@ public class PlayerActivity extends Activity {
                     userStyle.hasEdgeColor() ? userStyleCompat.edgeColor : Color.BLACK,
                     userStyleCompat.typeface != null ? userStyleCompat.typeface : Typeface.DEFAULT_BOLD);
             subtitleView.setStyle(captionStyle);
-
-            if (captioningManager.isEnabled()) {
-                // Do not apply embedded style as currently the only supported color style is PrimaryColour
-                // https://github.com/google/ExoPlayer/issues/8435#issuecomment-762449001
-                // This may result in poorly visible text (depending on user's selected edgeColor)
-                // The same can happen with style provided using setStyle but enabling CaptioningManager should be a way to change the behavior
-                subtitleView.setApplyEmbeddedStyles(false);
-            } else {
-                subtitleView.setApplyEmbeddedStyles(true);
-            }
-
+            subtitleView.setApplyEmbeddedStyles(mPrefs.subtitleStyleEmbedded);
             subtitleView.setBottomPaddingFraction(SubtitleView.DEFAULT_BOTTOM_PADDING_FRACTION * 2f / 3f);
         }
         setSubtitleTextSize();
