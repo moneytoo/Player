@@ -47,10 +47,7 @@
     <string name="pref_dangerous_warning">Comutarea opțiunilor din această categorie poate întrerupe redarea conținutului compatibil în mod normal</string>
     <string name="pref_map_dv7_off">Redați conținut Blu-ray UHD care conține Dolby Vision așa cum este</string>
     <string name="pref_map_dv7_on">Redă conținut Dolby Vision profil 7 pe ecrane HDR</string>
-    <string name="pref_language_header">Limbă</string>
-    <string name="pref_language_subtitle">Pistă de subtitrare implicită</string>
     <string name="pref_language_track_device">Limbile dispozitivului</string>
     <string name="pref_language_track_default">Fișier media implicit</string>
-    <string name="pref_language_track_none">Niciunul</string>
     <string name="pref_language_audio">Pistă audio implicită</string>
 </resources>

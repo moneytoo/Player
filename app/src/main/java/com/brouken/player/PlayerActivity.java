@@ -107,6 +107,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -1177,29 +1178,17 @@ public class PlayerActivity extends Activity {
                         .setPreferredAudioLanguages(mPrefs.languageAudio)
                 );
         }
-        switch (mPrefs.languageSubtitle) {
-            case Prefs.TRACK_DEFAULT:
-                final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
-                if (!captioningManager.isEnabled()) {
-                    trackSelector.setParameters(trackSelector.buildUponParameters()
-                            .setIgnoredTextSelectionFlags(C.SELECTION_FLAG_DEFAULT)
-                    );
-                }
-                break;
-            case Prefs.TRACK_DEVICE:
-                trackSelector.setParameters(trackSelector.buildUponParameters()
-                        .setPreferredTextLanguages(Utils.getDeviceLanguages())
-                );
-                break;
-            case Prefs.TRACK_NONE:
-                trackSelector.setParameters(trackSelector.buildUponParameters()
-                        .setIgnoredTextSelectionFlags(C.SELECTION_FLAG_DEFAULT | C.SELECTION_FLAG_FORCED)
-                );
-                break;
-            default:
-                trackSelector.setParameters(trackSelector.buildUponParameters()
-                        .setPreferredTextLanguage(mPrefs.languageSubtitle)
-                );
+        final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
+        if (!captioningManager.isEnabled()) {
+            trackSelector.setParameters(trackSelector.buildUponParameters()
+                    .setIgnoredTextSelectionFlags(C.SELECTION_FLAG_DEFAULT)
+            );
+        }
+        Locale locale = captioningManager.getLocale();
+        if (locale != null) {
+            trackSelector.setParameters(trackSelector.buildUponParameters()
+                    .setPreferredTextLanguage(locale.getISO3Language())
+            );
         }
         // https://github.com/google/ExoPlayer/issues/8571
         DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory()

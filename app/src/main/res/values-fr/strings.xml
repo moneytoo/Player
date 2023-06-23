@@ -46,10 +46,7 @@
     <string name="pref_map_dv7_on">Lire du contenu Dolby Vision profile 7 sur des écrans HDR</string>
     <string name="pref_dangerous_header">Dangereux ⚠️</string>
     <string name="pref_dangerous_warning">Le changement d\'option dans cette catégorie peut interrompre la lecture d\'un contenu normalement compatible</string>
-    <string name="pref_language_header">Langue</string>
-    <string name="pref_language_subtitle">Piste de sous-titres par défaut</string>
     <string name="pref_language_audio">Piste audio par défaut</string>
-    <string name="pref_language_track_none">Aucun</string>
     <string name="pref_language_track_device">Langues de l\'appareil</string>
     <string name="pref_map_dv7_off">Lire du contenu Blu-ray UHD contenant Dolby Vision tel quel</string>
     <string name="pref_language_track_default">Fichier multimédia par défaut</string>

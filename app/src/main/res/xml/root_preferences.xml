@@ -11,6 +11,12 @@
             app:title="@string/pref_file_access"
             app:useSimpleSummaryProvider="true" />
 
+        <ListPreference
+            app:key="languageAudio"
+            android:defaultValue="device"
+            app:title="@string/pref_language_audio"
+            app:useSimpleSummaryProvider="true" />
+
         <SwitchPreferenceCompat
             app:key="frameRateMatching"
             app:defaultValue="false"
@@ -37,22 +43,6 @@
             app:defaultValue="false"
             app:summary="@string/pref_repeat_toggle_summary"
             app:title="@string/pref_repeat_toggle" />
-
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/pref_language_header">
-
-        <ListPreference
-            app:key="languageSubtitle"
-            android:defaultValue="default"
-            app:title="@string/pref_language_subtitle"
-            app:useSimpleSummaryProvider="true" />
-
-        <ListPreference
-            app:key="languageAudio"
-            android:defaultValue="device"
-            app:title="@string/pref_language_audio"
-            app:useSimpleSummaryProvider="true" />
 
     </PreferenceCategory>
 

@@ -45,10 +45,7 @@
     <string name="pref_map_dv7_off">按原样播放包含杜比视界的超高清蓝光内容</string>
     <string name="pref_dangerous_header">危险 ⚠️</string>
     <string name="pref_dangerous_warning">切换此类别中的选项可能会破坏正常兼容内容的播放</string>
-    <string name="pref_language_header">语言</string>
-    <string name="pref_language_subtitle">默认字幕轨道</string>
     <string name="pref_language_audio">默认音轨</string>
-    <string name="pref_language_track_none">无</string>
     <string name="pref_language_track_device">设备语言</string>
     <string name="pref_language_track_default">媒体文件默认</string>
     <string name="pref_map_dv7">杜比视界配置文件 7 后备</string>

@@ -41,10 +41,7 @@
     <string name="pref_decoder_priority_prefer_device">تفضل أجهزة فك ترميز الجهاز (افتراضي)</string>
     <string name="pref_decoder_priority_prefer_app">تفضيل تشفير التطبيق</string>
     <string name="pref_decoder_priority_only_device">تشفير الجهاز فقط</string>
-    <string name="pref_language_subtitle">مسار الترجمة الافتراضي</string>
-    <string name="pref_language_track_none">لا شيء</string>
     <string name="pref_language_track_device">لغات الجهاز</string>
-    <string name="pref_language_header">اللغة</string>
     <string name="pref_map_dv7">ملف تعريف Dolby Vision 7 احتياطي</string>
     <string name="pref_language_audio">المسار الصوتي الافتراضي</string>
     <string name="pref_language_track_default">ملف الوسائط الافتراضي</string>

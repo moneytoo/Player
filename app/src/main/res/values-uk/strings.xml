@@ -47,10 +47,7 @@
     <string name="pref_decoder_priority_prefer_device">Надавати перевагу декодерам пристрою</string>
     <string name="pref_decoder_priority_prefer_app">Надавати перевагу декодерам додатку</string>
     <string name="pref_decoder_priority_only_device">Лише декодери пристрою</string>
-    <string name="pref_language_header">Мова</string>
-    <string name="pref_language_subtitle">Доріжка субтитрів за замовчуванням</string>
     <string name="pref_language_audio">Звукова доріжка за замовчуванням</string>
-    <string name="pref_language_track_none">Жодної</string>
     <string name="pref_language_track_device">Мови пристрою</string>
     <string name="pref_language_track_default">Медіафайл за замовчуванням</string>
 </resources>

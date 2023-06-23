@@ -47,10 +47,7 @@
     <string name="pref_map_dv7_off">Phát nội dung UHD Blu-ray Dolby Vision</string>
     <string name="pref_dangerous_header">Nguy hiểm</string>
     <string name="pref_dangerous_warning">Các tùy chọn trong danh mục này có thể làm ảnh hưởng đến khả năng phát lại</string>
-    <string name="pref_language_header">Ngôn ngữ</string>
-    <string name="pref_language_subtitle">Ngôn ngữ phụ đề được ưu tiên</string>
     <string name="pref_language_audio">Ngôn ngữ âm thanh được ưu tiên</string>
-    <string name="pref_language_track_none">Không có</string>
     <string name="pref_language_track_device">Ngôn ngữ của thiết bị</string>
     <string name="pref_language_track_default">Mặc định của tệp tin</string>
 </resources>

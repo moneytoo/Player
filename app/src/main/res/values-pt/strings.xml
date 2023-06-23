@@ -48,9 +48,6 @@
     <string name="pref_map_dv7_on">Reproduzir o conteúdo do Dolby Vision perfil 7 em monitores HDR</string>
     <string name="pref_dangerous_header">Perigoso ⚠️</string>
     <string name="pref_dangerous_warning">Alternando as opções nesta categoria pode quebrar a reprodução de conteúdo normalmente compatível</string>
-    <string name="pref_language_header">Idioma</string>
-    <string name="pref_language_subtitle">Faixa de legenda padrão</string>
-    <string name="pref_language_track_none">Nenhuma</string>
     <string name="pref_language_track_device">Idiomas do aparelho</string>
     <string name="pref_language_track_default">Ficheiro de mídia padrão</string>
 </resources>

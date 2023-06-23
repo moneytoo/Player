@@ -42,15 +42,12 @@
     <string name="mediastore_empty">Не найдено проиндексированных видеофайлов. Чтобы получить доступ к видеофайлам в данном хранилище, включите автоматическое сканирование носителей в настройках системы.</string>
     <string name="pref_shortcuts_header">Ярлыки</string>
     <string name="video_orientation_system">Ориентация устройства</string>
-    <string name="pref_language_header">Язык</string>
     <string name="pref_map_dv7_off">Воспроизведение содержимого UHD Blu-ray, содержащего Dolby Vision, как есть</string>
     <string name="pref_map_dv7">Резервный вариант профиля 7 Dolby Vision</string>
     <string name="pref_dangerous_header">Опасный⚠️</string>
     <string name="pref_dangerous_warning">Переключение параметров в этой категории может нарушить воспроизведение обычно совместимого контента</string>
-    <string name="pref_language_subtitle">Трек субтитров по умолчанию</string>
     <string name="pref_language_audio">Звуковая дорожка по умолчанию</string>
     <string name="pref_language_track_device">Языки устройства</string>
     <string name="pref_language_track_default">Медиафайл по умолчанию</string>
     <string name="pref_map_dv7_on">Воспроизведение контента Dolby Vision profile 7 на дисплеях HDR</string>
-    <string name="pref_language_track_none">None</string>
 </resources>

@@ -44,10 +44,7 @@
     <string name="video_orientation_system">Usmjerenje uređaja</string>
     <string name="pref_map_dv7">Dolby Vision profile 7 rezerva</string>
     <string name="pref_map_dv7_on">Reproduciraj Dolby Vision profile 7 sadržaj na HDR ekranima</string>
-    <string name="pref_language_header">Jezik</string>
-    <string name="pref_language_subtitle">Standardna traka titlova</string>
     <string name="pref_language_audio">Standardna audio traka</string>
-    <string name="pref_language_track_none">Ništa</string>
     <string name="pref_language_track_default">Standard za medijske datoteke</string>
     <string name="pref_language_track_device">Jezik uređaja</string>
     <string name="pref_dangerous_header">Opasno ⚠️</string>

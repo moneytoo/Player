@@ -43,10 +43,7 @@
     <string name="pref_repeat_toggle">Alternância de repetição</string>
     <string name="pref_captioning_preferences">Preferências de legenda</string>
     <string name="pref_dangerous_header">Perigoso ⚠️</string>
-    <string name="pref_language_header">Idioma</string>
-    <string name="pref_language_subtitle">Faixa de legenda padrão</string>
     <string name="pref_language_audio">Faixa de áudio padrão</string>
-    <string name="pref_language_track_none">Nenhuma</string>
     <string name="pref_language_track_device">Idiomas do dispositivo</string>
     <string name="pref_language_track_default">Arquivo de mídia padrão</string>
     <string name="pref_map_dv7">Fallback do Dolby Vision perfil 7</string>

@@ -98,17 +98,6 @@ public class SettingsActivity extends AppCompatActivity {
                 listPreferenceFileAccess.setEntryValues(values.toArray(new String[0]));
             }
 
-            ListPreference listPreferenceLanguageSub = findPreference("languageSubtitle");
-            if (listPreferenceLanguageSub != null) {
-                LinkedHashMap<String, String> entries = new LinkedHashMap<>();
-                entries.put(Prefs.TRACK_DEFAULT, getString(R.string.pref_language_track_default));
-                entries.put(Prefs.TRACK_DEVICE, getString(R.string.pref_language_track_device));
-                entries.put(Prefs.TRACK_NONE, getString(R.string.pref_language_track_none));
-                entries.putAll(getLanguages());
-                listPreferenceLanguageSub.setEntries(entries.values().toArray(new String[0]));
-                listPreferenceLanguageSub.setEntryValues(entries.keySet().toArray(new String[0]));
-            }
-
             ListPreference listPreferenceLanguageAudio = findPreference("languageAudio");
             if (listPreferenceLanguageAudio != null) {
                 LinkedHashMap<String, String> entries = new LinkedHashMap<>();

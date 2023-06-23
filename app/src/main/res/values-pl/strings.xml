@@ -35,9 +35,7 @@
     <string name="pref_map_dv7_off">Odtwórz bezpośrednio zawartość UHD Blu-ray z Dolby Vision</string>
     <string name="pref_dangerous_header">Niebezpieczne ⚠️</string>
     <string name="pref_decoder_priority_only_device">Tylko sprzętowe dekodery</string>
-    <string name="pref_language_header">Język</string>
     <string name="pref_dangerous_warning">Przełączanie opcji w tej kategorii może przerwać odtwarzanie normalnie zgodnej zawartości</string>
-    <string name="pref_language_track_none">Brak</string>
     <string name="pref_language_track_device">Języki urządzenia</string>
     <string name="pref_tunneling">Odtwarzanie tunelowe</string>
     <string name="pref_tunneling_summary">Tunelowanie zapewnia lepsze wsparcie treści 4K/HDR, jednak może nie działać poprawnie na wszystkich urządzeniach</string>
@@ -50,7 +48,6 @@
     <string name="pref_decoder_priority_prefer_app">Preferuj dekodery aplikacji</string>
     <string name="pref_language_audio">Domyślna ścieżka audio</string>
     <string name="pref_language_track_default">Domyślny plik multimedialny</string>
-    <string name="pref_language_subtitle">Domyślna ścieżka napisów</string>
     <string name="pref_decoder_priority_prefer_device">Preferuj dekodery urządzeń (domyślnie)</string>
     <string name="button_crop">Zmień rozmiar</string>
 </resources>

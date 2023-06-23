@@ -45,10 +45,7 @@
     <string name="pref_map_dv7_on">Dolby Vision profile 7のコンテンツをHDRディスプレイで再生する</string>
     <string name="pref_map_dv7_off">Dolby Visionを含むUHD Blu-rayコンテンツをそのまま再生する</string>
     <string name="pref_dangerous_header">危険 ⚠️</string>
-    <string name="pref_language_header">言語</string>
-    <string name="pref_language_subtitle">デフォルトの字幕トラック</string>
     <string name="pref_language_audio">デフォルトの音声トラック</string>
-    <string name="pref_language_track_none">なし</string>
     <string name="pref_language_track_default">メディアファイルのデフォルト</string>
     <string name="pref_dangerous_warning">このカテゴリのオプションを切り替えると、対応するコンテンツの再生が中断される場合があります</string>
     <string name="pref_language_track_device">端末の言語</string>

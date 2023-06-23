@@ -44,10 +44,7 @@
     <string name="video_orientation_system">Orientamento del dispositivo</string>
     <string name="pref_dangerous_header">Pericoloso ⚠️</string>
     <string name="pref_dangerous_warning">Il passaggio da un\'opzione all\'altra in questa categoria potrebbe interrompere la riproduzione di contenuti normalmente compatibili</string>
-    <string name="pref_language_header">Lingua</string>
-    <string name="pref_language_subtitle">Traccia sottotitoli predefinita</string>
     <string name="pref_language_audio">Traccia audio predefinita</string>
-    <string name="pref_language_track_none">Nessuna</string>
     <string name="pref_language_track_device">Lingue del dispositivo</string>
     <string name="pref_language_track_default">Impostazione predefinita del file multimediale</string>
 </resources>
