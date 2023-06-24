@@ -893,6 +893,8 @@ public class PlayerActivity extends Activity {
                     }
                 }
                 break;
+            case KeyEvent.KEYCODE_UNKNOWN:
+                return super.onKeyDown(keyCode, event);
             default:
                 if (!controllerVisibleFully) {
                     playerView.showController();
