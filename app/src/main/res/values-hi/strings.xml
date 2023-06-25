@@ -1,2 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="video_resize_crop">काटना</string>
+    <string name="video_orientation_sensor">ऑटो-रोटेट</string>
+    <string name="video_orientation_system">डिवाइस ओरिएंटेशन</string>
+    <string name="onboarding_open_title">चलाने के लिए कोई वीडियो चुनें</string>
+    <string name="video_resize_fit">फिट</string>
+    <string name="video_orientation_video">वीडियो ओरिएंटेशन</string>
+    <string name="onboarding_open_description">वीडियो फ़ाइल खोलने के लिए टैप करें. बाहरी उपशीर्षक लोड करने के लिए लंबे टैप करें।</string>
+</resources>
