@@ -49,7 +49,6 @@ class Prefs {
 
     public static final String TRACK_DEFAULT = "default";
     public static final String TRACK_DEVICE = "device";
-    public static final String TRACK_NONE = "none";
 
     final Context mContext;
     final SharedPreferences mSharedPreferences;

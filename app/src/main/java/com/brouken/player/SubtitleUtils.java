@@ -9,17 +9,7 @@ import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MimeTypes;
 
-import com.ibm.icu.text.CharsetDetector;
-import com.ibm.icu.text.CharsetMatch;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -273,64 +263,6 @@ class SubtitleUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static Uri convertToUTF(PlayerActivity activity, Uri subtitleUri) {
-        try {
-            String scheme = subtitleUri.getScheme();
-            if (scheme != null && scheme.toLowerCase().startsWith("http")) {
-                List<Uri> urls = new ArrayList<>();
-                urls.add(subtitleUri);
-                SubtitleFetcher subtitleFetcher = new SubtitleFetcher(activity, urls);
-                subtitleFetcher.start();
-                return null;
-            } else {
-                InputStream inputStream = activity.getContentResolver().openInputStream(subtitleUri);
-                return convertInputStreamToUTF(activity, subtitleUri, inputStream);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return subtitleUri;
-    }
-
-    public static Uri convertInputStreamToUTF(Context context, Uri subtitleUri, InputStream inputStream) {
-        try {
-            final CharsetDetector detector = new CharsetDetector();
-            final BufferedInputStream bufferedInputStream = new BufferedInputStream(inputStream);
-            detector.setText(bufferedInputStream);
-            final CharsetMatch charsetMatch = detector.detect();
-
-            if (!StandardCharsets.UTF_8.displayName().equals(charsetMatch.getName())) {
-                String filename = subtitleUri.getPath();
-                filename = filename.substring(filename.lastIndexOf("/") + 1);
-                final File file = new File(context.getCacheDir(), filename);
-                final BufferedReader bufferedReader = new BufferedReader(charsetMatch.getReader());
-                final BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
-                char[] buffer = new char[512];
-                int num;
-                int pass = 0;
-                boolean success = true;
-                while ((num = bufferedReader.read(buffer)) != -1) {
-                    bufferedWriter.write(buffer, 0, num);
-                    pass++;
-                    if (pass * 512 > 2_000_000) {
-                        success = false;
-                        break;
-                    }
-                }
-                bufferedWriter.close();
-                bufferedReader.close();
-                if (success) {
-                    subtitleUri = Uri.fromFile(file);
-                } else {
-                    subtitleUri = null;
-                }
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return subtitleUri;
     }
 
     public static MediaItem.SubtitleConfiguration buildSubtitle(Context context, Uri uri, String subtitleName, boolean selected) {

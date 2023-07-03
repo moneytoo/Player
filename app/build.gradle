@@ -11,7 +11,7 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 147
+        versionCode 148
         versionName "0.${versionCode}"
         archivesBaseName = "Just.Player.v${versionName}"
     }
@@ -22,7 +22,7 @@ android {
             //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    flavorDimensions "targetSdk", "distribution"
+    flavorDimensions "targetSdk", "distribution", "feature"
     productFlavors {
         latest {
             dimension "targetSdk"
@@ -39,6 +39,13 @@ android {
         }
         amazon {
             dimension "distribution"
+        }
+        full {
+            dimension "feature"
+        }
+        lite {
+            dimension "feature"
+            versionNameSuffix "-lite"
         }
     }
     variantFilter { variant ->
@@ -87,8 +94,8 @@ dependencies {
     implementation 'com.google.android.material:material:1.9.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation "androidx.core:core:$androidxCoreVersion"
-    implementation 'com.ibm.icu:icu4j:73.2'
-    implementation 'com.arthenica:ffmpeg-kit-https:5.1.LTS'
+    fullImplementation 'com.ibm.icu:icu4j:73.2'
+    fullImplementation 'com.arthenica:ffmpeg-kit-https:5.1.LTS'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.preference:preference:1.2.0'
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'

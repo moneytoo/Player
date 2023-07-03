@@ -1146,7 +1146,7 @@ public class PlayerActivity extends Activity {
     private void handleSubtitles(Uri uri) {
         // Convert subtitles to UTF-8 if necessary
         SubtitleUtils.clearCache(this);
-        uri = SubtitleUtils.convertToUTF(this, uri);
+        uri = UtilsFeature.convertToUTF(this, uri);
         mPrefs.updateSubtitle(uri);
     }
 
@@ -1335,7 +1335,7 @@ public class PlayerActivity extends Activity {
                 nextUriThread.start();
             }
 
-            Utils.markChapters(this, mPrefs.mediaUri, controlView);
+            UtilsFeature.markChapters(this, mPrefs.mediaUri, controlView);
 
             player.setHandleAudioBecomingNoisy(!isTvBox);
 //            mediaSession.setActive(true);
@@ -1536,7 +1536,7 @@ public class PlayerActivity extends Activity {
                             }
                             displayManager.registerDisplayListener(displayListener, null);
                         }
-                        switched = Utils.switchFrameRate(PlayerActivity.this, mPrefs.mediaUri, play);
+                        switched = UtilsFeature.switchFrameRate(PlayerActivity.this, mPrefs.mediaUri, play);
                     }
                     if (!switched) {
                         if (displayManager != null) {
