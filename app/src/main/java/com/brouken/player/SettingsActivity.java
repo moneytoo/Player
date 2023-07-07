@@ -78,7 +78,7 @@ public class SettingsActivity extends AppCompatActivity {
             }
             Preference preferenceFrameRateMatching = findPreference("frameRateMatching");
             if (preferenceFrameRateMatching != null) {
-                preferenceFrameRateMatching.setVisible(BuildConfig.FLAVOR_distribution.equals("full"));
+                preferenceFrameRateMatching.setVisible(BuildConfig.FLAVOR_feature.equals("full"));
                 preferenceFrameRateMatching.setEnabled(Build.VERSION.SDK_INT >= 23);
             }
             ListPreference listPreferenceFileAccess = findPreference("fileAccess");
