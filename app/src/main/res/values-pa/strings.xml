@@ -1,2 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="video_resize_crop">ਕਰੌਪ ਕਰੋ</string>
+    <string name="video_orientation_video">ਵੀਡੀਓ ਓਰੀਐਂਟੇਸ਼ਨ</string>
+    <string name="video_orientation_sensor">ਆਪਣੇ-ਆਪ ਘੁਮਾਓ</string>
+    <string name="onboarding_open_title">ਚਲਾਉਣ ਲਈ ਇੱਕ ਵੀਡੀਓ ਚੁਣੋ</string>
+    <string name="open_subtitles">ਉਪਸਿਰਲੇਖ ਲੋਡ ਕਰੋ</string>
+    <string name="error_details">ਵੇਰਵੇ</string>
+    <string name="error_files_missing">Files ਐਪ ਡਿਸ-ਏਬਲ ਜਾਂ ਗੈਰ-ਮੌਜੂਦ ਹੈ</string>
+    <string name="delete_confirmation">ਮਿਟਾਓ</string>
+    <string name="pref_title">ਸੈਟਿੰਗਾਂ</string>
+    <string name="delete_query">ਕੀ ਇਸ ਫ਼ਾਈਲ ਨੂੰ ਮਿਟਾਉਣਾ ਹੈ\?</string>
+    <string name="pref_framerate_matching">ਆਟੋ ਫਰੇਮ ਰੇਟ ਮੈਚਿੰਗ</string>
+    <string name="pref_skip_silence_off">ਕੰਟੈਂਟ ਨੂੰ ਜਿਵੇਂ ਹੈ, ਚਲਾਓ</string>
+    <string name="pref_repeat_toggle">ਰਿਪੀਟ ਟੌਗਲ</string>
+    <string name="pref_repeat_toggle_summary">ਅਣਮਿੱਥੇ ਸਮੇਂ ਲਈ ਵੀਡੀਓ ਲੂਪ ਦੀ ਆਗਿਆ ਦੇਣ ਲਈ ਵਾਧੂ ਨਿਯੰਤਰਣ (ਐਪ ਰੀਸਟਾਰਟ ਦੀ ਲੋੜ ਹੈ)</string>
+    <string name="pref_map_dv7">ਡੌਲਬੀ ਵਿਜ਼ਨ ਪ੍ਰੋਫਾਈਲ 7 ਫਾਲਬੈਕ</string>
+    <string name="pref_map_dv7_on">HDR ਡਿਸਪਲੇ \'ਤੇ ਡੌਲਬੀ ਵਿਜ਼ਨ ਪ੍ਰੋਫਾਈਲ 7 ਸਮੱਗਰੀ ਚਲਾਓ</string>
+    <string name="pref_map_dv7_off">ਡੌਲਬੀ ਵਿਜ਼ਨ ਵਾਲੇ UHD ਬਲੂ-ਰੇ ਕੰਟੈਂਟ ਨੂੰ ਉਵੇਂ ਚਲਾਓ</string>
+    <string name="shortcut_videos">ਵੀਡੀਓ</string>
+    <string name="button_open">ਖੋਲ੍ਹੋ</string>
+    <string name="button_crop">ਆਕਾਰ ਬਦਲੋ</string>
+    <string name="button_rotate">ਘੁੰਮਾਓ</string>
+    <string name="button_pip">ਪਿਕਚਰ-ਇਨ-ਪਿਕਚਰ</string>
+    <string name="pref_file_access">ਫਾਈਲ ਐਕਸੈਸ</string>
+    <string name="pref_file_access_auto">ਆਟੋ</string>
+    <string name="mediastore_empty">ਕੋਈ ਇੰਡੈਕਸਡ ਵੀਡੀਓ ਫਾਈਲਾਂ ਨਹੀਂ ਮਿਲੀਆਂ। ਦਿੱਤੇ ਗਏ ਸਟੋਰੇਜ ਵਿੱਚ ਵੀਡੀਓ ਫਾਈਲਾਂ ਤੱਕ ਪਹੁੰਚ ਕਰਨ ਲਈ, ਸਿਸਟਮ ਸੈਟਿੰਗਾਂ ਵਿੱਚ ਆਟੋਮੈਟਿਕ ਮੀਡੀਆ ਸਕੈਨਿੰਗ ਨੂੰ ਸਮਰੱਥ ਬਣਾਓ।</string>
+    <string name="pref_dangerous_header">ਖ਼ਤਰਨਾਕ ⚠️</string>
+    <string name="pref_shortcuts_header">ਸ਼ਾਰਟਕਟ</string>
+    <string name="pref_dangerous_warning">ਇਸ ਸ਼੍ਰੇਣੀ ਵਿੱਚ ਵਿਕਲਪ ਬਦਲਣਾ ਆਮ ਤੌਰ \'ਤੇ ਅਨੁਕੂਲ ਕੰਟੈਂਟ ਦੇ ਪਲੇਬੈਕ ਨੂੰ ਬੰਦ ਕਰ ਸਕਦਾ ਹੈ</string>
+    <string name="pref_captioning_preferences">ਕੈਪਸ਼ਨਿੰਗ ਤਰਜੀਹਾਂ</string>
+    <string name="pref_decoder_priority">ਡੀਕੋਡਰ ਤਰਜੀਹਾਂ</string>
+    <string name="pref_decoder_priority_prefer_device">ਡਿਵਾਈਸ ਡੀਕੋਡਰਾਂ ਨੂੰ ਤਰਜੀਹ ਦਿਓ (ਡਿਫ਼ਾਲਟ)</string>
+    <string name="pref_decoder_priority_prefer_app">ਐਪ ਡੀਕੋਡਰਾਂ ਨੂੰ ਤਰਜੀਹ ਦਿਓ</string>
+    <string name="pref_decoder_priority_only_device">ਸਿਰਫ਼ ਡਿਵਾਈਸ ਡੀਕੋਡਰ</string>
+    <string name="pref_language_header">ਭਾਸ਼ਾ</string>
+    <string name="pref_language_subtitle">ਡਿਫ਼ਾਲਟ ਉਪਸਿਰਲੇਖ ਟਰੈਕ</string>
+    <string name="pref_language_audio">ਡਿਫ਼ਾਲਟ ਆਡੀਓ ਟ੍ਰੈਕ</string>
+    <string name="pref_language_track_none">ਕੋਈ ਨਹੀਂ</string>
+    <string name="pref_language_track_device">ਡਿਵਾਈਸ ਭਾਸ਼ਾਵਾਂ</string>
+    <string name="pref_language_track_default">ਮੀਡੀਆ ਫਾਈਲ ਡਿਫ਼ਾਲਟ</string>
+    <string name="video_resize_fit">ਫਿੱਟ</string>
+    <string name="pref_tunneling">ਟਨਲ ਕੀਤਾ ਪਲੇਬੈਕ</string>
+    <string name="video_orientation_system">ਡਿਵਾਈਸ ਓਰੀਐਂਟੇਸ਼ਨ</string>
+    <string name="request_scope">ਬਾਹਰੀ ਉਪਸਿਰਲੇਖਾਂ ਨੂੰ ਸਵੈਚਲਿਤ ਤੌਰ \'ਤੇ ਲੋਡ ਕਰਨ ਲਈ ਜਾਂ ਡਾਇਰੈਕਟਰੀ ਵਿੱਚ ਅਗਲੀ ਫਾਈਲ \'ਤੇ ਜਾਣ ਲਈ, %s ਨੂੰ ਤੁਹਾਡੇ ਵੀਡੀਓਜ਼ (ਉਦਾਹਰਨ ਲਈ ਮੂਵੀਜ਼) ਵਾਲੇ ਸਭ ਤੋਂ ਉੱਚੇ ਫੋਲਡਰ ਤੱਕ ਪਹੁੰਚ ਦਿਓ।</string>
+    <string name="onboarding_open_description">ਵੀਡੀਓ ਫਾਈਲ ਖੋਲ੍ਹਣ ਲਈ ਟੈਪ ਕਰੋ। ਬਾਹਰੀ ਉਪਸਿਰਲੇਖਾਂ ਨੂੰ ਲੋਡ ਕਰਨ ਲਈ ਲੰਬਾ ਟੈਪ ਕਰੋ।</string>
+    <string name="pref_skip_silence">ਚੁੱਪ ਛੱਡੋ</string>
+    <string name="pref_skip_silence_on">ਆਡੀਓ ਸਟ੍ਰੀਮ \'ਤੇ ਚੁੱਪ ਵਾਲੇ ਹਿੱਸਿਆਂ ਨੂੰ ਛੱਡੋ</string>
+    <string name="pref_general_header">ਆਮ</string>
+    <string name="pref_framerate_matching_on">ਵੀਡੀਓ ਫਰੇਮ ਰੇਟ ਨਾਲ ਮੇਲ ਕਰਨ ਲਈ ਡਿਸਪਲੇ ਰਿਫ੍ਰੈਸ਼ ਰੇਟ ਨੂੰ ਬਦਲੋ</string>
+    <string name="pref_framerate_matching_off">ਡਿਸਪਲੇ ਰਿਫਰੈਸ਼ ਰੇਟ ਨਾ ਬਦਲੋ</string>
+    <string name="pref_tunneling_summary">ਟਨਲਿੰਗ 4K/HDR ਸਮੱਗਰੀ ਲਈ ਬਿਹਤਰ ਸਹਾਇਤਾ ਪ੍ਰਦਾਨ ਕਰਦੀ ਹੈ, ਪਰ ਹੋ ਸਕਦਾ ਹੈ ਕਿ ਸਾਰੀਆਂ ਡਿਵਾਈਸਾਂ \'ਤੇ ਕੰਮ ਨਾ ਕਰੇ</string>
+    <string name="pref_auto_pip_off">ਆਪਣੇ ਆਪ ਹੀ PiP \'ਤੇ ਨਾ ਬਦਲੋ</string>
+    <string name="pref_auto_pip">ਆਟੋ ਪਿਕਚਰ ਇਨ ਪਿਕਚਰ</string>
+    <string name="pref_auto_pip_on">ਐਪ ਛੱਡਣ ਵੇਲੇ PiP \'ਤੇ ਸਵਿਚ ਕਰੋ</string>
+</resources>
