@@ -11,7 +11,7 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 33
-        versionCode 149
+        versionCode 150
         versionName "0.${versionCode}"
         archivesBaseName = "Just.Player.v${versionName}"
     }
@@ -97,7 +97,7 @@ dependencies {
     fullImplementation 'com.ibm.icu:icu4j:73.2'
     fullImplementation 'com.arthenica:ffmpeg-kit-https:5.1.LTS'
     implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'androidx.preference:preference:1.2.0'
+    implementation 'androidx.preference:preference:1.2.1'
     implementation 'com.squareup.okhttp3:okhttp:4.11.0'
     implementation project(path: ':doubletapplayerview')
     implementation project(path: ':android-file-chooser')
