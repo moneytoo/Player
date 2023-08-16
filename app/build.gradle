@@ -4,13 +4,13 @@ plugins {
 
 android {
     namespace 'com.brouken.player'
-    compileSdkVersion 33
+    compileSdk 34
     ndkVersion '21.4.7075529'
 
     defaultConfig {
         applicationId "com.brouken.player"
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 34
         versionCode 150
         versionName "0.${versionCode}"
         archivesBaseName = "Just.Player.v${versionName}"
@@ -71,7 +71,7 @@ android {
 }
 
 dependencies {
-    def media3_version = '1.1.0'
+    def media3_version = '1.1.1'
     def androidxCoreVersion = '1.8.0'
     implementation "androidx.media3:media3-session:$media3_version"
     implementation "androidx.media3:media3-datasource:$media3_version"
