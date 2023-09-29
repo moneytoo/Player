@@ -33,10 +33,7 @@
     <string name="pref_decoder_priority_prefer_device">ਡਿਵਾਈਸ ਡੀਕੋਡਰਾਂ ਨੂੰ ਤਰਜੀਹ ਦਿਓ (ਡਿਫ਼ਾਲਟ)</string>
     <string name="pref_decoder_priority_prefer_app">ਐਪ ਡੀਕੋਡਰਾਂ ਨੂੰ ਤਰਜੀਹ ਦਿਓ</string>
     <string name="pref_decoder_priority_only_device">ਸਿਰਫ਼ ਡਿਵਾਈਸ ਡੀਕੋਡਰ</string>
-    <string name="pref_language_header">ਭਾਸ਼ਾ</string>
-    <string name="pref_language_subtitle">ਡਿਫ਼ਾਲਟ ਉਪਸਿਰਲੇਖ ਟਰੈਕ</string>
     <string name="pref_language_audio">ਡਿਫ਼ਾਲਟ ਆਡੀਓ ਟ੍ਰੈਕ</string>
-    <string name="pref_language_track_none">ਕੋਈ ਨਹੀਂ</string>
     <string name="pref_language_track_device">ਡਿਵਾਈਸ ਭਾਸ਼ਾਵਾਂ</string>
     <string name="pref_language_track_default">ਮੀਡੀਆ ਫਾਈਲ ਡਿਫ਼ਾਲਟ</string>
     <string name="video_resize_fit">ਫਿੱਟ</string>

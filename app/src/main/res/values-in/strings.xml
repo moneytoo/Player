@@ -29,7 +29,6 @@
     <string name="pref_repeat_toggle_summary">Kendali tambahan untuk mengaktifkan video loop tanpa batas (memerlukan restart aplikasi)</string>
     <string name="shortcut_videos">Video</string>
     <string name="button_open">Buka</string>
-    <string name="pref_language_track_none">Tidak ada</string>
     <string name="pref_language_track_device">Bahasa perangkat</string>
     <string name="pref_language_track_default">Default file media</string>
     <string name="button_crop">Ubah ukuran</string>
@@ -41,11 +40,9 @@
     <string name="pref_file_access">Akses file</string>
     <string name="video_orientation_system">Orientasi perangkat</string>
     <string name="pref_decoder_priority_only_device">Hanya dekoder perangkat</string>
-    <string name="pref_language_header">Bahasa</string>
     <string name="pref_dangerous_warning">Mengganti opsi dalam kategori ini dapat merusak pemutaran konten yang biasanya kompatibel</string>
     <string name="pref_captioning_preferences">Preferensi teks</string>
     <string name="button_rotate">Putar</string>
-    <string name="pref_language_subtitle">Trek subtitle default</string>
     <string name="pref_map_dv7_on">Putar konten profil Dolby Vision 7 pada layar HDR</string>
     <string name="pref_map_dv7">Profil Dolby Vision 7 fallback</string>
     <string name="pref_dangerous_header">Berbahaya ⚠️</string>

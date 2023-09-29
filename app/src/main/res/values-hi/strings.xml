@@ -40,10 +40,7 @@
     <string name="pref_decoder_priority_prefer_device">डिवाइस डिकोडर्स को प्राथमिकता दें (डिफ़ॉल्ट)</string>
     <string name="pref_decoder_priority_prefer_app">ऐप डिकोडर्स को प्राथमिकता दें</string>
     <string name="pref_decoder_priority_only_device">केवल डिवाइस डिकोडर्स</string>
-    <string name="pref_language_header">भाषा</string>
-    <string name="pref_language_subtitle">डिफ़ॉल्ट सबटाइटल ट्रैक</string>
     <string name="pref_language_audio">डिफ़ॉल्ट ऑडियो ट्रैक</string>
-    <string name="pref_language_track_none">कोई नहीं</string>
     <string name="pref_language_track_device">डिवाइस भाषाएँ</string>
     <string name="request_scope">बाहरी उपशीर्षकों को स्वचालित रूप से लोड करने या किसी डायरेक्टरी में अगली फ़ाइल पर जाने को सक्षम करने के लिए, %s को अपने वीडियो (जैसे मूवीज़) वाले सबसे ऊपरी फ़ोल्डर तक पहुंच प्रदान करें।</string>
     <string name="pref_framerate_matching_on">वीडियो फ्रेम दर से मेल खाने के लिए डिस्प्ले रिफ्रेश रेट स्विच करें</string>
