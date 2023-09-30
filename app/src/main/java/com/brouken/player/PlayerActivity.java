@@ -1133,6 +1133,7 @@ public class PlayerActivity extends Activity {
             }
         } else if (requestCode == REQUEST_SETTINGS) {
             mPrefs.loadUserPreferences();
+            updateSubtitleStyle(this);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -1945,7 +1946,8 @@ public class PlayerActivity extends Activity {
                     userStyle.hasWindowColor() ? userStyleCompat.windowColor : Color.TRANSPARENT,
                     userStyle.hasEdgeType() ? userStyleCompat.edgeType : CaptionStyleCompat.EDGE_TYPE_OUTLINE,
                     userStyle.hasEdgeColor() ? userStyleCompat.edgeColor : Color.BLACK,
-                    userStyleCompat.typeface != null ? userStyleCompat.typeface : Typeface.DEFAULT_BOLD);
+                    Typeface.create(userStyleCompat.typeface != null ? userStyleCompat.typeface : Typeface.DEFAULT,
+                            mPrefs.subtitleStyleBold ? Typeface.BOLD : Typeface.NORMAL));
             subtitleView.setStyle(captionStyle);
             subtitleView.setApplyEmbeddedStyles(mPrefs.subtitleStyleEmbedded);
             subtitleView.setBottomPaddingFraction(SubtitleView.DEFAULT_BOTTOM_PADDING_FRACTION * 2f / 3f);

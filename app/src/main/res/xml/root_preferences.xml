@@ -55,6 +55,13 @@
             android:summaryOff="@string/pref_subtitle_style_embedded_off"
             app:title="@string/pref_subtitle_style_embedded" />
 
+        <SwitchPreferenceCompat
+            app:key="subtitleStyleBold"
+            app:defaultValue="false"
+            android:summaryOn="@string/pref_subtitle_style_bold_on"
+            android:summaryOff="@string/pref_subtitle_style_bold_off"
+            app:title="@string/pref_subtitle_style_bold" />
+
         <Preference
             app:title="@string/pref_captioning_preferences">
             <intent android:action="android.settings.CAPTIONING_SETTINGS" />

@@ -54,4 +54,7 @@
     <string name="pref_subtitle_style_embedded">Styly v titulcích</string>
     <string name="pref_subtitle_style_embedded_on">Aplikovat styly definované v titulcích</string>
     <string name="pref_subtitle_style_embedded_off">Neaplikovat styly definované v titulcích</string>
+    <string name="pref_subtitle_style_bold">Tučné písmo</string>
+    <string name="pref_subtitle_style_bold_on">Použít tučný styl písma</string>
+    <string name="pref_subtitle_style_bold_off">Použít výchozí styl písma</string>
 </resources>

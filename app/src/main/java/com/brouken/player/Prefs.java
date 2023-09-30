@@ -46,6 +46,7 @@ class Prefs {
     private static final String PREF_KEY_MAP_DV7 = "mapDV7ToHevc";
     private static final String PREF_KEY_LANGUAGE_AUDIO = "languageAudio";
     private static final String PREF_KEY_SUBTITLE_STYLE_EMBEDDED = "subtitleStyleEmbedded";
+    private static final String PREF_KEY_SUBTITLE_STYLE_BOLD = "subtitleStyleBold";
 
     public static final String TRACK_DEFAULT = "default";
     public static final String TRACK_DEVICE = "device";
@@ -79,6 +80,7 @@ class Prefs {
     public boolean mapDV7ToHevc = false;
     public String languageAudio = TRACK_DEVICE;
     public boolean subtitleStyleEmbedded = true;
+    public boolean subtitleStyleBold = false;
 
     private LinkedHashMap positions;
 
@@ -127,6 +129,7 @@ class Prefs {
         mapDV7ToHevc = mSharedPreferences.getBoolean(PREF_KEY_MAP_DV7, mapDV7ToHevc);
         languageAudio = mSharedPreferences.getString(PREF_KEY_LANGUAGE_AUDIO, languageAudio);
         subtitleStyleEmbedded = mSharedPreferences.getBoolean(PREF_KEY_SUBTITLE_STYLE_EMBEDDED, subtitleStyleEmbedded);
+        subtitleStyleBold = mSharedPreferences.getBoolean(PREF_KEY_SUBTITLE_STYLE_BOLD, subtitleStyleBold);
     }
 
     public void updateMedia(final Context context, final Uri uri, final String type) {
