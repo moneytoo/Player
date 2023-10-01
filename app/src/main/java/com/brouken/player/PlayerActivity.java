@@ -75,6 +75,8 @@ import androidx.media3.common.TrackGroup;
 import androidx.media3.common.TrackSelectionOverride;
 import androidx.media3.common.TrackSelectionParameters;
 import androidx.media3.common.Tracks;
+import androidx.media3.common.util.Util;
+import androidx.media3.datasource.DataSource;
 import androidx.media3.datasource.DefaultHttpDataSource;
 import androidx.media3.exoplayer.DefaultRenderersFactory;
 import androidx.media3.exoplayer.ExoPlaybackException;
@@ -82,6 +84,7 @@ import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.RenderersFactory;
 import androidx.media3.exoplayer.SeekParameters;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
+import androidx.media3.exoplayer.source.MediaSource;
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector;
 import androidx.media3.extractor.DefaultExtractorsFactory;
 import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory;
@@ -97,6 +100,10 @@ import androidx.media3.ui.TimeBar;
 
 import com.brouken.player.dtpv.DoubleTapPlayerView;
 import com.brouken.player.dtpv.youtube.YouTubeOverlay;
+import com.brouken.player.encrypt.EncryptUtil;
+import com.brouken.player.encrypt.EncryptedDataSourceFactory;
+import com.brouken.player.encrypt.NyFileUtil;
+import com.brouken.player.encrypt.OnlineEncryptedDataSourceFactory;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.material.snackbar.Snackbar;
@@ -112,6 +119,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
 
 public class PlayerActivity extends Activity {
 
@@ -346,7 +356,7 @@ public class PlayerActivity extends Activity {
         playerView.setControllerHideOnTouch(false);
         playerView.setControllerAutoShow(true);
 
-        ((DoubleTapPlayerView)playerView).setDoubleTapEnabled(false);
+        ((DoubleTapPlayerView) playerView).setDoubleTapEnabled(false);
 
         timeBar = playerView.findViewById(R.id.exo_progress);
         timeBar.addListener(new TimeBar.OnScrubListener() {
@@ -1156,6 +1166,7 @@ public class PlayerActivity extends Activity {
         mPrefs.updateSubtitle(uri);
     }
 
+    //TODO ny
     public void initializePlayer() {
         boolean isNetworkUri = Utils.isSupportedNetworkUri(mPrefs.mediaUri);
         haveMedia = mPrefs.mediaUri != null;
@@ -1209,15 +1220,24 @@ public class PlayerActivity extends Activity {
         aviExtractorsFactory.getDefaultExtractorsFactory()
                 .setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS)
                 .setTsExtractorTimestampSearchBytes(1500 * TsExtractor.TS_PACKET_SIZE);
-        @SuppressLint("WrongConstant") RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
+
+        String path = NyFileUtil.getPath(this, mPrefs.mediaUri);
+
+        DataSource.Factory encryptedFactory = null;
+        if (path.contains("_NY")) encryptedFactory = getEncryptedMediaSource(this, path);
+
+        @SuppressLint("WrongConstant")
+        RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
                 .setExtensionRendererMode(mPrefs.decoderPriority)
                 .setMapDV7ToHevc(mPrefs.mapDV7ToHevc);
 
+        //TODO ny
         ExoPlayer.Builder playerBuilder = new ExoPlayer.Builder(this, renderersFactory)
-                .setTrackSelector(trackSelector)
-                .setMediaSourceFactory(new DefaultMediaSourceFactory(this, aviExtractorsFactory));
+                .setTrackSelector(trackSelector);
 
-        if (haveMedia && isNetworkUri) {
+        if (encryptedFactory != null)
+            playerBuilder.setMediaSourceFactory(new DefaultMediaSourceFactory(encryptedFactory));
+        else if (haveMedia && isNetworkUri) {
             if (mPrefs.mediaUri.getScheme().toLowerCase().startsWith("http")) {
                 HashMap<String, String> headers = new HashMap<>();
                 String userInfo = mPrefs.mediaUri.getUserInfo();
@@ -1228,7 +1248,9 @@ public class PlayerActivity extends Activity {
                     playerBuilder.setMediaSourceFactory(new DefaultMediaSourceFactory(defaultHttpDataSourceFactory, aviExtractorsFactory));
                 }
             }
-        }
+        } else
+            playerBuilder.setMediaSourceFactory(new DefaultMediaSourceFactory(this, aviExtractorsFactory));
+
 
         player = playerBuilder.build();
 
@@ -1332,7 +1354,7 @@ public class PlayerActivity extends Activity {
 
             updateButtons(true);
 
-            ((DoubleTapPlayerView)playerView).setDoubleTapEnabled(true);
+            ((DoubleTapPlayerView) playerView).setDoubleTapEnabled(true);
 
             if (!apiAccess) {
                 if (nextUriThread != null) {
@@ -1365,6 +1387,30 @@ public class PlayerActivity extends Activity {
             playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
             player.setPlayWhenReady(true);
         }
+    }
+
+
+    public DataSource.Factory getEncryptedMediaSource(Context context, String path) {
+        String password = EncryptUtil.getPasswordFromFileName(path);
+        EncryptUtil.CTRnoPadding mCES = EncryptUtil.LevelCipherPackage(password);
+        //  LevelCipherPackage(encryptLevel);
+        DataSource.Factory dataSourceFactory;
+        String useragent = Util.getUserAgent(context, "com.nytaiji.app");
+
+        if (NyFileUtil.isOnline(path)) {
+            //  dataSourceFactory = new OkHttpDataSourceFactory(mCES, new OkHttpClient(), useragent, null);
+            dataSourceFactory = new OnlineEncryptedDataSourceFactory(mCES.cipher, mCES.secretKeySpec, mCES.ivParameterSpec, (Call.Factory) new OkHttpClient(), useragent, null);
+            // Log.e(TAG, "---------------OnlineEncryptedDataSourceFactory");
+            //online  cache before passed to decript
+           /* String url = NyFileUtil.getPath(context, contentUri);
+            cacheServer = getCacheServer(context);
+            String proxyVideoUrl = cacheServer.getProxyUrl(url, true);
+            contentUri = Uri.parse(proxyVideoUrl);*/
+        } else {
+            //  Log.e(TAG, "-----------EncryptedDataSourceFactory");
+            dataSourceFactory = new EncryptedDataSourceFactory(context, mCES.cipher, mCES.secretKeySpec, mCES.ivParameterSpec, null);
+        }
+        return dataSourceFactory;
     }
 
     private void savePlayer() {
@@ -1608,6 +1654,7 @@ public class PlayerActivity extends Activity {
         }
     }
 
+    //TODO ny
     private void openFile(Uri pickerInitialUri) {
         final int targetSdkVersion = getApplicationContext().getApplicationInfo().targetSdkVersion;
         if ((isTvBox && Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30 && mPrefs.fileAccess.equals("auto")) || mPrefs.fileAccess.equals("mediastore")) {
@@ -1702,7 +1749,7 @@ public class PlayerActivity extends Activity {
     }
 
     private TrackGroup getTrackGroupFromFormatId(int trackType, String id) {
-        if ((id == null && trackType == C.TRACK_TYPE_AUDIO ) || player == null) {
+        if ((id == null && trackType == C.TRACK_TYPE_AUDIO) || player == null) {
             return null;
         }
         for (Tracks.Group group : player.getCurrentTracks().getGroups()) {
@@ -1730,7 +1777,8 @@ public class PlayerActivity extends Activity {
 
         TrackSelectionParameters.Builder overridesBuilder = new TrackSelectionParameters.Builder(this);
         TrackSelectionOverride trackSelectionOverride = null;
-        final List<Integer> tracks = new ArrayList<>(); tracks.add(0);
+        final List<Integer> tracks = new ArrayList<>();
+        tracks.add(0);
         if (subtitleGroup != null) {
             trackSelectionOverride = new TrackSelectionOverride(subtitleGroup, tracks);
             overridesBuilder.addOverride(trackSelectionOverride);
@@ -1799,7 +1847,7 @@ public class PlayerActivity extends Activity {
                 size = SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * subtitlesScale;
             } else {
                 DisplayMetrics metrics = getResources().getDisplayMetrics();
-                float ratio = ((float)metrics.heightPixels / (float)metrics.widthPixels);
+                float ratio = ((float) metrics.heightPixels / (float) metrics.widthPixels);
                 if (ratio < 1)
                     ratio = 1 / ratio;
                 size = SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * subtitlesScale / ratio;
@@ -2111,7 +2159,7 @@ public class PlayerActivity extends Activity {
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onUserLeaveHint() {
-        if (mPrefs!= null && mPrefs.autoPiP && player != null && player.isPlaying() && Utils.isPiPSupported(this))
+        if (mPrefs != null && mPrefs.autoPiP && player != null && player.isPlaying() && Utils.isPiPSupported(this))
             enterPiP();
         else
             super.onUserLeaveHint();
@@ -2142,23 +2190,23 @@ public class PlayerActivity extends Activity {
             // TODO: Test/disable on Android 11+
             final View videoSurfaceView = playerView.getVideoSurfaceView();
             if (videoSurfaceView instanceof SurfaceView) {
-                ((SurfaceView)videoSurfaceView).getHolder().setFixedSize(format.width, format.height);
+                ((SurfaceView) videoSurfaceView).getHolder().setFixedSize(format.width, format.height);
             }
 
             Rational rational = Utils.getRational(format);
             if (Build.VERSION.SDK_INT >= 33 &&
                     getPackageManager().hasSystemFeature(FEATURE_EXPANDED_PICTURE_IN_PICTURE) &&
                     (rational.floatValue() > rationalLimitWide.floatValue() || rational.floatValue() < rationalLimitTall.floatValue())) {
-                ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setExpandedAspectRatio(rational);
+                ((PictureInPictureParams.Builder) mPictureInPictureParamsBuilder).setExpandedAspectRatio(rational);
             }
             if (rational.floatValue() > rationalLimitWide.floatValue())
                 rational = rationalLimitWide;
             else if (rational.floatValue() < rationalLimitTall.floatValue())
                 rational = rationalLimitTall;
 
-            ((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).setAspectRatio(rational);
+            ((PictureInPictureParams.Builder) mPictureInPictureParamsBuilder).setAspectRatio(rational);
         }
-        enterPictureInPictureMode(((PictureInPictureParams.Builder)mPictureInPictureParamsBuilder).build());
+        enterPictureInPictureMode(((PictureInPictureParams.Builder) mPictureInPictureParamsBuilder).build());
     }
 
     void setEndControlsVisible(boolean visible) {
@@ -2182,7 +2230,8 @@ public class PlayerActivity extends Activity {
                 skipToNext();
             }
         });
-        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
+        builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {
+        });
         final AlertDialog dialog = builder.create();
         dialog.show();
     }
@@ -2267,7 +2316,7 @@ public class PlayerActivity extends Activity {
         scaleFactor = playerView.getVideoSurfaceView().getScaleX();
         playerView.removeCallbacks(playerView.textClearRunnable);
         playerView.clearIcon();
-        playerView.setCustomErrorMessage((int)(scaleFactor * 100) + "%");
+        playerView.setCustomErrorMessage((int) (scaleFactor * 100) + "%");
         playerView.hideController();
         isScaleStarting = true;
     }
@@ -2280,7 +2329,7 @@ public class PlayerActivity extends Activity {
         }
         scaleFactor = Utils.normalizeScaleFactor(scaleFactor, playerView.getScaleFit());
         playerView.setScale(scaleFactor);
-        playerView.setCustomErrorMessage((int)(scaleFactor * 100) + "%");
+        playerView.setCustomErrorMessage((int) (scaleFactor * 100) + "%");
     }
 
     private void scaleEnd() {
