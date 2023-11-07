@@ -886,7 +886,7 @@ public class PlayerActivity extends Activity {
                 break;
             case KeyEvent.KEYCODE_BACK:
                 if (isTvBox) {
-                    if (controllerVisible && player != null && player.isPlaying()) {
+                    if (controllerVisible && player != null) {
                         playerView.hideController();
                         return true;
                     } else {
