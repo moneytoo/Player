@@ -12,14 +12,14 @@
     <string name="request_scope">Για την αυτόματη φόρτωση εξωτερικών υποτίτλων ή την ενεργοποίηση της παράβλεψης μετάβασης στο επόμενο αρχείο σε έναν κατάλογο, παραχωρήστε στο %s πρόσβαση στον ριζικό φάκελο που περιέχει τα βίντεό σας (π.χ. Movies).</string>
     <string name="delete_confirmation">Διαγραφή</string>
     <string name="delete_query">Διαγραφή αυτού του αρχείου;</string>
-    <string name="pref_tunneling_summary">Η συντονισμένη αναπαραγωγή παρέχει καλύτερη υποστήριξη περιεχομένου 4K/HDR, αλλά ενδέχεται να μην λειτουργεί σε όλες τις συσκευές</string>
+    <string name="pref_tunneling_summary">Η αναπαραγωγή σήραγγας (tunneling) παρέχει καλύτερη υποστήριξη περιεχομένου 4K/HDR, αλλά ενδέχεται να μη λειτουργεί σε όλες τις συσκευές</string>
     <string name="pref_skip_silence_off">Αναπαραγωγή περιεχομένου ως έχει</string>
     <string name="pref_skip_silence_on">Παράλειψη τμημάτων με σιωπή στη ροή ήχου</string>
     <string name="pref_skip_silence">Παράλειψη σιωπής</string>
     <string name="pref_auto_pip_off">Χωρίς αυτόματη εναλλαγή σε εικόνα-εντός-εικόνας</string>
     <string name="pref_auto_pip_on">Εναλλαγή σε εικόνα-εντός-εικόνας κατά την έξοδο από την εφαρμογή</string>
     <string name="pref_auto_pip">Αυτόματη εικόνα-εντός-εικόνας</string>
-    <string name="pref_tunneling">Συντονισμένη αναπαραγωγή</string>
+    <string name="pref_tunneling">Αναπαραγωγή \"σήραγγας\"</string>
     <string name="pref_framerate_matching_off">Χωρίς αλλαγή του ρυθμού ανανέωσης της οθόνης</string>
     <string name="pref_framerate_matching_on">Εναλλαγή του ρυθμού ανανέωσης της οθόνης για να ταιριάζει με το ρυθμό καρέ του βίντεο</string>
     <string name="pref_framerate_matching">Αυτόματη αντιστοίχιση ρυθμού καρέ</string>
