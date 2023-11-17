@@ -49,5 +49,12 @@
     <string name="pref_language_track_device">Idiomas del dispositivo</string>
     <string name="pref_map_dv7_off">Reproducir contenido UHD Blu-ray con Dolby Vision tal cual</string>
     <string name="pref_language_audio">Pista de audio por defecto</string>
-    <string name="pref_language_track_default">Por defecto del archivo multimedia</string>
+    <string name="pref_language_track_default">Por defecto</string>
+    <string name="pref_subtitle_style_embedded">Estilos integrados</string>
+    <string name="pref_subtitle_style_embedded_on">Aplicar los estilos de los subtítulos incrustados</string>
+    <string name="pref_subtitle_style_embedded_off">No aplicar los estilos de los subtítulos incrustados</string>
+    <string name="pref_subtitle_style_bold_off">Utilizar el tipo de letra normal por defecto</string>
+    <string name="pref_subtitle_header">Subtítulo</string>
+    <string name="pref_subtitle_style_bold">Estilo negrita</string>
+    <string name="pref_subtitle_style_bold_on">Usar negrita como letra habitual</string>
 </resources>
