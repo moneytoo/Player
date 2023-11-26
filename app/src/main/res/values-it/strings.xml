@@ -47,4 +47,14 @@
     <string name="pref_language_audio">Traccia audio predefinita</string>
     <string name="pref_language_track_device">Lingue del dispositivo</string>
     <string name="pref_language_track_default">Impostazione predefinita del file multimediale</string>
+    <string name="pref_subtitle_style_embedded">Stili incorporati</string>
+    <string name="pref_subtitle_style_embedded_on">Applica stili di sottotitoli incorporati</string>
+    <string name="pref_subtitle_style_embedded_off">Non applicare stili di sottotitoli incorporati</string>
+    <string name="pref_subtitle_style_bold_off">Usa il carattere regolare predefinito</string>
+    <string name="pref_map_dv7_on">Riproduci contenuti del profilo 7 Dolby Vision su display HDR</string>
+    <string name="pref_map_dv7">Retrocompatibilità del profilo 7 Dolby Vision</string>
+    <string name="pref_subtitle_header">Sottotitoli</string>
+    <string name="pref_map_dv7_off">Riproduci contenuti Blu-ray UHD contenenti Dolby Vision così come sono</string>
+    <string name="pref_subtitle_style_bold">Stile grassetto</string>
+    <string name="pref_subtitle_style_bold_on">Utilizza il carattere grassetto come regolare</string>
 </resources>
