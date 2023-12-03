@@ -74,13 +74,11 @@ Translate: [Weblate](https://hosted.weblate.org/engage/just-player/)
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="75">](https://play.google.com/store/apps/details?id=com.brouken.player)
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="75">](https://f-droid.org/packages/com.brouken.player/)
 [<img src="https://raw.githubusercontent.com/andOTP/andOTP/master/assets/badges/get-it-on-github.png" alt="Get it on GitHub" height="75">](https://github.com/moneytoo/Player/releases/latest)
-[<img src="https://brouken.com/img/get-it-on-gitlab.png" alt="Get it on GitLab" height="75">](https://gitlab.com/moneytoo/Player/-/releases)
-[<img src="https://brouken.com/img/galaxy-store.png" alt="Available on Galaxy Store" height="75">](https://galaxy.store/justplay)
 [<img src="https://brouken.com/img/huawei-appgallery.png" alt="Explore it on AppGallery" height="75">](https://appgallery.cloud.huawei.com/ag/n/app/C104147921)
-[<img src="https://brouken.com/img/get-it-on-amazon.png" alt="available at amazon" height="75">](https://www.amazon.com/gp/product/B091N8TTJH)
+[<img src="https://brouken.com/img/get-it-on-mi_app_mall.png" alt="Get it on Mi App Mall" height="75">](https://global.app.mi.com/details?id=com.brouken.player)
 [<img src="https://brouken.com/img/get-it-on-aptoide.png" alt="Get it on Aptoide" height="75">](https://just-player-marcel-dopita.en.aptoide.com/app)
-
-Also available on **OPPO App Market**, **Xiaomi GetApps** or [Uptodown](https://just-video-player.en.uptodown.com/android).
+[<img src="https://brouken.com/img/get-it-on-amazon.png" alt="available at amazon" height="75">](https://www.amazon.com/gp/product/B091N8TTJH)
+[<img src="https://brouken.com/img/get-it-from-microsoft.png" alt="Get it from Microsoft" height="75">](https://apps.microsoft.com/detail/XP9CXN248RXQ55)
 
 Other links/channels: application thread on [XDA Developers](https://forum.xda-developers.com/t/app-5-0-just-video-player-no-bluetooth-lag-exoplayer-ffmpeg-audio-codecs.4189183/), subreddit on [reddit](https://www.reddit.com/r/JustPlayer/), entry on [AlternativeTo](https://alternativeto.net/software/just-video-player/about/), git mirror on [GitLab](https://gitlab.com/moneytoo/Player)
 
@@ -164,7 +162,7 @@ Here's a comparison table presenting all available and significant open source v
 | [Kodi](https://github.com/xbmc/xbmc)                              | ?                                                                                                                                                                       | 🔴 No                     | 🔴 No  | 🔴 No          | 🟢 Yes     |
 | [mpv](https://github.com/mpv-android/mpv-android)                 | [libmpv](https://github.com/mpv-player/mpv)                                                                                                                             | 🟢 Seek/Volume/Brightness | 🟢 Yes | 🟢 Yes         | 🟢 Yes     |
 | [Next Player](https://github.com/anilbeesetti/nextplayer)         | [ExoPlayer](https://exoplayer.dev/)                                                                                                                                     | 🟢 Seek/Volume/Brightness | 🔴 No  | 🟢 Yes         | 🔴 No      |
-| [Nova Video Player](https://github.com/nova-video-player/aos-AVP) | MediaPlayer                                                                                                                                                             | 🔴 No                     | 🟢 Yes | 🟢 Yes         | 🟢 Yes     |
+| [Nova Video Player](https://github.com/nova-video-player/aos-AVP) | MediaPlayer                                                                                                                                                             | 🟡 Volume/Brightness      | 🟢 Yes | 🟢 Yes         | 🟢 Yes     |
 | [VLC](https://code.videolan.org/videolan/vlc-android)             | [libVLC](https://www.videolan.org/vlc/libvlc.html)                                                                                                                      | 🟢 Seek/Volume/Brightness | 🟢 Yes | 🟢 Yes         | 🟢 Yes     |
 
 To find other video players (including non-FOSS), check out [a list on IzzyOnDroid](https://android.izzysoft.de/applists/category/named/multimedia_video_player).
