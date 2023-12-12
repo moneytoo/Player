@@ -35,7 +35,7 @@
     <string name="pref_decoder_priority_only_device">ਸਿਰਫ਼ ਡਿਵਾਈਸ ਡੀਕੋਡਰ</string>
     <string name="pref_language_audio">ਡਿਫ਼ਾਲਟ ਆਡੀਓ ਟ੍ਰੈਕ</string>
     <string name="pref_language_track_device">ਡਿਵਾਈਸ ਭਾਸ਼ਾਵਾਂ</string>
-    <string name="pref_language_track_default">ਮੀਡੀਆ ਫਾਈਲ ਡਿਫ਼ਾਲਟ</string>
+    <string name="pref_language_track_default">ਡਿਫ਼ਾਲਟ</string>
     <string name="video_resize_fit">ਫਿੱਟ</string>
     <string name="pref_tunneling">ਟਨਲ ਕੀਤਾ ਪਲੇਬੈਕ</string>
     <string name="video_orientation_system">ਡਿਵਾਈਸ ਓਰੀਐਂਟੇਸ਼ਨ</string>
@@ -50,4 +50,11 @@
     <string name="pref_auto_pip_off">ਆਪਣੇ ਆਪ ਹੀ PiP \'ਤੇ ਨਾ ਬਦਲੋ</string>
     <string name="pref_auto_pip">ਆਟੋ ਪਿਕਚਰ ਇਨ ਪਿਕਚਰ</string>
     <string name="pref_auto_pip_on">ਐਪ ਛੱਡਣ ਵੇਲੇ PiP \'ਤੇ ਸਵਿਚ ਕਰੋ</string>
+    <string name="pref_subtitle_style_embedded">ਏਮਬੈਡਡ ਸਟਾਈਲ</string>
+    <string name="pref_subtitle_style_embedded_on">ਏਮਬੈਡਡ ਸਬਟਾਈਟਲ ਸ਼ੈਲੀਆਂ ਲਾਗੂ ਕਰੋ</string>
+    <string name="pref_subtitle_style_embedded_off">ਏਮਬੈਡਡ ਸਬਟਾਈਟਲ ਸ਼ੈਲੀਆਂ ਨੂੰ ਲਾਗੂ ਨਾ ਕਰੋ</string>
+    <string name="pref_subtitle_style_bold_off">ਡਿਫ਼ਾਲਟ ਨਿਯਮਤ ਟਾਈਪਫੇਸ ਦੀ ਵਰਤੋਂ ਕਰੋ</string>
+    <string name="pref_subtitle_header">ਸਬਟਾਈਟਲ</string>
+    <string name="pref_subtitle_style_bold">ਬੋਲਡ ਸ਼ੈਲੀ</string>
+    <string name="pref_subtitle_style_bold_on">ਨਿਯਮਤ ਤੌਰ \'ਤੇ ਬੋਲਡ ਟਾਈਪਫੇਸ ਦੀ ਵਰਤੋਂ ਕਰੋ</string>
 </resources>
