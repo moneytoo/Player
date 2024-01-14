@@ -11,7 +11,7 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 154
+        versionCode 155
         versionName "0.${versionCode}"
         archivesBaseName = "Just.Player.v${versionName}"
     }
@@ -91,14 +91,14 @@ dependencies {
         exclude group: "androidx.media3", module: "media3-exoplayer"
     }
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
-    implementation 'com.google.android.material:material:1.10.0'
+    implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation "androidx.core:core:$androidxCoreVersion"
-    fullImplementation 'com.ibm.icu:icu4j:74.1'
+    fullImplementation 'com.ibm.icu:icu4j:74.2'
     fullImplementation 'com.arthenica:ffmpeg-kit-https:6.0-2.LTS'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.preference:preference:1.2.1'
-    implementation 'com.squareup.okhttp3:okhttp:4.11.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation project(path: ':doubletapplayerview')
     implementation project(path: ':android-file-chooser')
     implementation fileTree(dir: "libs", include: ["lib-*.aar"])

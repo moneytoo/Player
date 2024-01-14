@@ -49,5 +49,12 @@
     <string name="pref_dangerous_header">Perigoso ⚠️</string>
     <string name="pref_dangerous_warning">Alternando as opções nesta categoria pode quebrar a reprodução de conteúdo normalmente compatível</string>
     <string name="pref_language_track_device">Idiomas do aparelho</string>
-    <string name="pref_language_track_default">Ficheiro de mídia padrão</string>
+    <string name="pref_language_track_default">Predefinição</string>
+    <string name="pref_subtitle_style_embedded_on">Aplicar estilos de legendas incorporados</string>
+    <string name="pref_subtitle_header">Legenda</string>
+    <string name="pref_subtitle_style_embedded">Estilos embutidos</string>
+    <string name="pref_subtitle_style_embedded_off">Não aplicar estilos de legendas embutidos</string>
+    <string name="pref_subtitle_style_bold_on">Usar o tipo negrito como regular</string>
+    <string name="pref_subtitle_style_bold">Estilo negrito</string>
+    <string name="pref_subtitle_style_bold_off">Usar o tipo regular padrão</string>
 </resources>

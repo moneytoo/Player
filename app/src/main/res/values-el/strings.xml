@@ -49,5 +49,12 @@
     <string name="pref_dangerous_warning">Η εναλλαγή των επιλογών σε αυτήν την κατηγορία ενδέχεται να διακόψει την αναπαραγωγή κανονικά συμβατού περιεχομένου</string>
     <string name="pref_language_audio">Προεπιλεγμένο κομμάτι ήχου</string>
     <string name="pref_language_track_device">Γλώσσες συσκευής</string>
-    <string name="pref_language_track_default">Προεπιλογή αρχείου πολυμέσων</string>
+    <string name="pref_language_track_default">Προεπιλογή</string>
+    <string name="pref_subtitle_style_embedded">Ενσωματωμένο στυλ</string>
+    <string name="pref_subtitle_style_embedded_on">Εφαρμογή στυλ ενσωματωμένων υποτίτλων</string>
+    <string name="pref_subtitle_style_embedded_off">Μη εφαρμογή στυλ ενσωματωμένων υποτίτλων</string>
+    <string name="pref_subtitle_style_bold_off">Χρήση προεπιλεγμένης κανονικής γραμματοσειράς</string>
+    <string name="pref_subtitle_header">Υπότιτλοι</string>
+    <string name="pref_subtitle_style_bold">Έντονοι</string>
+    <string name="pref_subtitle_style_bold_on">Χρήση έντονης γραμματοσειράς ως κανονική</string>
 </resources>

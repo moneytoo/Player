@@ -49,5 +49,12 @@
     <string name="pref_map_dv7_on">एचडीआर डिस्प्ले पर डॉल्बी विजन प्रोफाइल 7 सामग्री चलाएं</string>
     <string name="mediastore_empty">कोई इंडेक्स हुई वीडियो फ़ाइल नहीं मिली। दिए गए स्टोरेज में वीडियो फ़ाइलों तक पहुंचने के लिए, सिस्टम सेटिंग्स में स्वचालित मीडिया स्कैनिंग सक्षम करें।</string>
     <string name="pref_captioning_preferences">कैप्शनिंग प्राथमिकताएँ</string>
-    <string name="pref_language_track_default">मीडिया फ़ाइल डिफ़ॉल्ट</string>
+    <string name="pref_language_track_default">डिफ़ॉल्ट</string>
+    <string name="pref_subtitle_style_embedded">एंबेडेड शैलियाँ</string>
+    <string name="pref_subtitle_style_embedded_on">एम्बेडेड उपशीर्षक शैलियाँ लागू करें</string>
+    <string name="pref_subtitle_style_embedded_off">एम्बेडेड उपशीर्षक शैलियाँ लागू न करें</string>
+    <string name="pref_subtitle_style_bold_off">डिफ़ॉल्ट नियमित टाइपफ़ेस का उपयोग करें</string>
+    <string name="pref_subtitle_header">उपशीर्षक</string>
+    <string name="pref_subtitle_style_bold">बोल्ड शैली</string>
+    <string name="pref_subtitle_style_bold_on">नियमित रूप से बोल्ड टाइपफेस का प्रयोग करें</string>
 </resources>

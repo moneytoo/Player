@@ -47,7 +47,14 @@
     <string name="pref_shortcuts_header">Skróty</string>
     <string name="pref_decoder_priority_prefer_app">Preferuj dekodery aplikacji</string>
     <string name="pref_language_audio">Domyślna ścieżka audio</string>
-    <string name="pref_language_track_default">Domyślny plik multimedialny</string>
+    <string name="pref_language_track_default">Domyślne</string>
     <string name="pref_decoder_priority_prefer_device">Preferuj dekodery urządzeń (domyślnie)</string>
     <string name="button_crop">Zmień rozmiar</string>
+    <string name="pref_subtitle_style_embedded">Wbudowane style</string>
+    <string name="pref_subtitle_style_embedded_on">Zastosuj wbudowane style napisów</string>
+    <string name="pref_subtitle_style_embedded_off">Nie stosuj wbudowanych styli napisów</string>
+    <string name="pref_subtitle_style_bold_off">Użyj domyślnej normalnej czcionki</string>
+    <string name="pref_subtitle_header">Napisy</string>
+    <string name="pref_subtitle_style_bold">Pogrubiony styl</string>
+    <string name="pref_subtitle_style_bold_on">Użyj pogrubionej czcionki jako normalnej</string>
 </resources>
