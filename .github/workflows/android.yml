@@ -2,24 +2,57 @@ name: Android CI
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master feature/**]
   pull_request:
     branches: [ master ]
+  workflow_dispatch:
 
 jobs:
   build:
+    name: Android CI
 
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
+    environment: Release
 
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: recursive
-    - name: set up JDK 17
-      uses: actions/setup-java@v1
-      with:
-        java-version: 17
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
+      - uses: actions/checkout@v4
+      - name: Set current date as env variable
+        run: echo "date_today=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Set repository name as env variable
+        run: echo "repository_name=$(echo '${{ github.repository }}' | awk -F '/' '{print $2}')" >> $GITHUB_ENV
+
+      - name: set up JDK 8
+        uses: actions/setup-java@v4
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+      - name: Build gradle project
+        env:
+          PLAYER_STORE_PASSWORD: ${{ secrets.PLAYER_STORE_PASSWORD }}
+          PLAYER_KEY_PASSWORD: ${{ secrets.PLAYER_KEY_PASSWORD }}
+        run: ./gradlew build
+      - name: AssembleRelease
+        env:
+          PLAYER_STORE_PASSWORD: ${{ secrets.PLAYER_STORE_PASSWORD }}
+          PLAYER_KEY_PASSWORD: ${{ secrets.PLAYER_KEY_PASSWORD }}
+        run: ./gradlew :android-file-chooser:assembleRelease :app:assembleLatestUniversalFullRelease :doubletapplayerview:assembleRelease
+      - name: Build app bundle release (AAB) - ${{ env.main_project_module }} module
+        env:
+          PLAYER_STORE_PASSWORD: ${{ secrets.PLAYER_STORE_PASSWORD }}
+          PLAYER_KEY_PASSWORD: ${{ secrets.PLAYER_KEY_PASSWORD }}
+        run: ./gradlew ${{ env.main_project_module }}:bundleRelease
+      - name: Upload APK Release - ${{ env.repository_name }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - APK(s) release generated
+          path: ${{ env.main_project_module }}/build/outputs/apk/release/
+      - name: Upload AAB (App Bundle) Release - ${{ env.repository_name }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.date_today }} - ${{ env.playstore_name }} - ${{ env.repository_name }} - App bundle(s) AAB release generated
+          path: ${{ env.main_project_module }}/build/outputs/bundle/release/
