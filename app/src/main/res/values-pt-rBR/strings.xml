@@ -50,4 +50,5 @@
     <string name="pref_map_dv7_on">Reproduzir o conteúdo do Dolby Vision perfil 7 em monitores HDR</string>
     <string name="pref_map_dv7_off">Reproduzir o conteúdo em Blu-ray UHD contendo Dolby Vision como está</string>
     <string name="pref_dangerous_warning">Alternando as opções nesta categoria pode quebrar a reprodução de conteúdo normalmente compatível</string>
+    <string name="pref_subtitle_header">Legenda</string>
 </resources>
