@@ -1,2 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <string name="delete_confirmation">ഇല്ലാതാക്കുക</string>
+    <string name="video_resize_crop">വെട്ടുക</string>
+    <string name="onboarding_open_title">കളിക്കാനായി ഒരു വീഡിയോ തിരഞ്ഞെടുക്കുക</string>
+    <string name="button_open">തുറക്കുക</string>
+    <string name="button_crop">വലുപ്പം മാറ്റുക</string>
+    <string name="button_rotate">തിരിക്കുക</string>
+    <string name="button_pip">ചിത്രത്തിൽ ചിത്രം</string>
+    <string name="pref_skip_silence">നിശബ്ദത ഒഴിവാക്കുക</string>
+    <string name="pref_auto_pip">യാന്ത്രിക ചിത്രത്തിൽ ചിത്രം</string>
+    <string name="pref_file_access_auto">യാന്ത്രികം</string>
+    <string name="pref_dangerous_header">അപകടകരം ⚠️</string>
+    <string name="pref_language_track_device">ഉപകരണ ഭാഷകൾ</string>
+    <string name="pref_language_track_default">സ്ഥിരസ്ഥിതി</string>
+    <string name="pref_subtitle_header">ഉപശീർഷകം</string>
+    <string name="pref_subtitle_style_bold">വിശദമായ ശൈലി</string>
+    <string name="pref_captioning_preferences">അടിക്കുറിപ്പ് മുൻഗണനകൾ</string>
+    <string name="pref_shortcuts_header">കുറുക്കുവഴികൾ</string>
+    <string name="video_resize_fit">അനുയോജ്യം</string>
+    <string name="error_details">വിശദാംശങ്ങൾ</string>
+    <string name="pref_title">ക്രമീകരണങ്ങൾ</string>
+    <string name="pref_general_header">പൊതുവായ</string>
+    <string name="video_orientation_sensor">സ്വയം തിരിയുക</string>
+    <string name="pref_skip_silence_off">ഉള്ളടക്കം അതേപടി കളിക്കുക</string>
+</resources>
