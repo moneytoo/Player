@@ -10,7 +10,7 @@
     <string name="open_subtitles">Завантажити субтитри</string>
     <string name="error_details">Детально</string>
     <string name="error_files_missing">Додаток \"Файли\" вимкнено або відсутній</string>
-    <string name="request_scope">Щоб автоматично завантажити субтитри, або увімкнути пропускання до наступного файлу в теці, надайте %s доступ до головної теки з вашими відеофайлами (наприклад \"Відео\").</string>
+    <string name="request_scope">Щоб автоматично завантажити субтитри, або увімкнути перехід до наступного файлу в теці, надайте %s доступ до головної теки з вашими відеофайлами (наприклад \"Відео\").</string>
     <string name="delete_query">Видалити файл\?</string>
     <string name="delete_confirmation">Видалити</string>
     <string name="pref_title">Налаштування</string>
@@ -21,7 +21,7 @@
     <string name="pref_tunneling">Тунельне відтворення</string>
     <string name="pref_tunneling_summary">Тунелювання забезпечує кращу підтримку вмісту 4K/HDR, але може працювати не на всіх пристроях</string>
     <string name="pref_auto_pip">Автоматичний режим PiP</string>
-    <string name="pref_auto_pip_on">Перемикати автоматично на режим PiP, коли виходите з додатку</string>
+    <string name="pref_auto_pip_on">Перемикати автоматично на режим PiP при виході з додатку</string>
     <string name="pref_auto_pip_off">Не перемикатися автоматично на режим PiP</string>
     <string name="pref_skip_silence">Пропускати тишу</string>
     <string name="pref_skip_silence_on">Пропускати частини з тишею в аудіопотоці</string>
@@ -40,7 +40,7 @@
     <string name="pref_file_access_auto">Автоматично</string>
     <string name="mediastore_empty">Не знайдено проіндексованих відеофайлів. Щоб отримати доступ до відеофайлів у певному сховищі, увімкніть автоматичне сканування медіа в налаштуваннях системи.</string>
     <string name="pref_dangerous_header">Увага⚠️</string>
-    <string name="pref_dangerous_warning">Перемикання параметрів у цій категорії може порушити відтворення звичайно сумісного контенту</string>
+    <string name="pref_dangerous_warning">Перемикання параметрів у цій категорії може порушити відтворення зазвичай сумісного контенту</string>
     <string name="pref_shortcuts_header">Ярлики</string>
     <string name="pref_captioning_preferences">Налаштування субтитрів</string>
     <string name="pref_decoder_priority">Пріоритет декодера</string>
@@ -48,7 +48,7 @@
     <string name="pref_decoder_priority_prefer_app">Надавати перевагу декодерам додатку</string>
     <string name="pref_decoder_priority_only_device">Лише декодери пристрою</string>
     <string name="pref_language_audio">Звукова доріжка за замовчуванням</string>
-    <string name="pref_language_track_device">Мови пристрою</string>
+    <string name="pref_language_track_device">Мова пристрою</string>
     <string name="pref_language_track_default">За замовчуванням</string>
     <string name="pref_subtitle_header">Субтитри</string>
     <string name="pref_subtitle_style_embedded">Вбудовані стилі</string>
