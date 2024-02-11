@@ -23,4 +23,8 @@
     <string name="pref_general_header">പൊതുവായ</string>
     <string name="video_orientation_sensor">സ്വയം തിരിയുക</string>
     <string name="pref_skip_silence_off">ഉള്ളടക്കം അതേപടി കളിക്കുക</string>
+    <string name="shortcut_videos">വീഡിയോകൾ</string>
+    <string name="pref_subtitle_style_embedded">ഉൾച്ചേർത്ത ശൈലികൾ</string>
+    <string name="pref_subtitle_style_embedded_on">ഉൾച്ചേർത്ത ഉപശീർഷക ശൈലികൾ പ്രയോഗിക്കുക</string>
+    <string name="pref_subtitle_style_embedded_off">ഉൾച്ചേർത്ത ഉപശീർഷക ശൈലികൾ പ്രയോഗിക്കരുത്</string>
 </resources>
