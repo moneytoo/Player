@@ -120,11 +120,8 @@ class Utils {
                 WindowInsetsController windowInsetsController = window.getInsetsController();
                 if (windowInsetsController != null) {
                     if (show) {
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
                         windowInsetsController.show(WindowInsets.Type.systemBars());
                     } else {
-                        // Requirement to utilize full screen on Samsung DeX
-                        window.addFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
                         windowInsetsController.hide(WindowInsets.Type.systemBars());
                     }
                 }
