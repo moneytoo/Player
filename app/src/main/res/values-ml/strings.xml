@@ -27,4 +27,5 @@
     <string name="pref_subtitle_style_embedded">ഉൾച്ചേർത്ത ശൈലികൾ</string>
     <string name="pref_subtitle_style_embedded_on">ഉൾച്ചേർത്ത ഉപശീർഷക ശൈലികൾ പ്രയോഗിക്കുക</string>
     <string name="pref_subtitle_style_embedded_off">ഉൾച്ചേർത്ത ഉപശീർഷക ശൈലികൾ പ്രയോഗിക്കരുത്</string>
+    <string name="pref_framerate_matching_off">ഡിസ്പ്ലേ പുതുക്കൽ നിരക്ക് മാറ്റരുത്</string>
 </resources>
