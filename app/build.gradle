@@ -95,7 +95,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.11.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation "androidx.core:core:$androidxCoreVersion"
-    fullImplementation 'com.ibm.icu:icu4j:74.2'
+    fullImplementation 'com.ibm.icu:icu4j:75.1'
     fullImplementation 'com.arthenica:ffmpeg-kit-https:6.0-2.LTS'
     implementation 'androidx.appcompat:appcompat:1.6.1'
     implementation 'androidx.preference:preference:1.2.1'
