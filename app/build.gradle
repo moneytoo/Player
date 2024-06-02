@@ -90,14 +90,14 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer-rtsp:$media3_version") {
         exclude group: "androidx.media3", module: "media3-exoplayer"
     }
-    implementation 'androidx.recyclerview:recyclerview:1.3.0'
+    implementation 'androidx.recyclerview:recyclerview:1.3.2'
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
-    implementation 'com.google.android.material:material:1.11.0'
+    implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation "androidx.core:core:$androidxCoreVersion"
     fullImplementation 'com.ibm.icu:icu4j:75.1'
     fullImplementation 'com.arthenica:ffmpeg-kit-https:6.0-2.LTS'
-    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation project(path: ':doubletapplayerview')
