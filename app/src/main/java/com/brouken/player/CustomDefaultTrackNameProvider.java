@@ -16,10 +16,15 @@ class CustomDefaultTrackNameProvider extends DefaultTrackNameProvider {
         String trackName = super.getTrackName(format);
         if (format.sampleMimeType != null) {
             String sampleFormat = formatNameFromMime(format.sampleMimeType);
-            if (BuildConfig.DEBUG && sampleFormat == null) {
+            if (sampleFormat == null) {
+                sampleFormat = formatNameFromMime(format.codecs);
+            }
+            if (sampleFormat == null) {
                 sampleFormat = format.sampleMimeType;
             }
-            trackName += " (" + sampleFormat + ")";
+            if (sampleFormat != null) {
+                trackName += " (" + sampleFormat + ")";
+            }
         }
         if (format.label != null) {
             if (!trackName.startsWith(format.label)) { // HACK
