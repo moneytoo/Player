@@ -35,6 +35,9 @@ class CustomDefaultTrackNameProvider extends DefaultTrackNameProvider {
     }
 
     private String formatNameFromMime(final String mimeType) {
+        if (mimeType == null) {
+            return null;
+        }
         switch (mimeType) {
             case MimeTypes.AUDIO_DTS:
                 return "DTS";
