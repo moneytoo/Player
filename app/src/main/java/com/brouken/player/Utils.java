@@ -447,7 +447,7 @@ class Utils {
         // Legacy storage no longer works on Android 11 (level 30)
         if (Build.VERSION.SDK_INT < 30) {
             // (Some boxes still report touchscreen feature)
-            if (!pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN)) {
+            if (!pm.hasSystemFeature(PackageManager.FEATURE_TOUCHSCREEN) && !pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)) {
                 return true;
             }
 
