@@ -49,5 +49,12 @@
     <string name="pref_dangerous_warning">Các tùy chọn trong danh mục này có thể làm ảnh hưởng đến khả năng phát lại</string>
     <string name="pref_language_audio">Ngôn ngữ âm thanh được ưu tiên</string>
     <string name="pref_language_track_device">Ngôn ngữ của thiết bị</string>
-    <string name="pref_language_track_default">Mặc định của tệp tin</string>
+    <string name="pref_language_track_default">Mặc định</string>
+    <string name="pref_subtitle_style_embedded">Kiểu nhúng</string>
+    <string name="pref_subtitle_header">Phụ đề</string>
+    <string name="pref_subtitle_style_embedded_off">Không áp dụng kiểu phụ đề nhúng</string>
+    <string name="pref_subtitle_style_embedded_on">Áp dụng kiểu phụ đề nhúng</string>
+    <string name="pref_subtitle_style_bold">Im đậm</string>
+    <string name="pref_subtitle_style_bold_on">Sử dụng kiểu chữ in đậm</string>
+    <string name="pref_subtitle_style_bold_off">Sử dụng kiểu chữ mặc định</string>
 </resources>
