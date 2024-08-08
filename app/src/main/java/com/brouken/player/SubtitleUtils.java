@@ -190,24 +190,24 @@ class SubtitleUtils {
             return null;
         }
 
-        DocumentFile[] list = dir.listFiles();
         try {
+            DocumentFile[] list = dir.listFiles();
             Arrays.sort(list, (a, b) -> a.getName().compareToIgnoreCase(b.getName()));
-        } catch (NullPointerException e) {
-            return null;
-        }
 
-        final String videoName = video.getName();
-        boolean matchFound = false;
+            final String videoName = video.getName();
+            boolean matchFound = false;
 
-        for (DocumentFile file : list) {
-            if (file.getName().equals(videoName)) {
-                matchFound = true;
-            } else if (matchFound) {
-                if (isVideoFile(file)) {
-                    return file;
+            for (DocumentFile file : list) {
+                if (file.getName().equals(videoName)) {
+                    matchFound = true;
+                } else if (matchFound) {
+                    if (isVideoFile(file)) {
+                        return file;
+                    }
                 }
             }
+        } catch (NullPointerException e) {
+            e.printStackTrace();
         }
 
         return null;
