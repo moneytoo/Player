@@ -119,6 +119,8 @@ public class MediaStoreChooserActivity extends Activity {
                     }
                 } while (cursor.moveToNext());
             }
+        } catch (Exception x) {
+            x.printStackTrace();
         }
         // Sort map by value
         List<Map.Entry<Integer, String>> list = new LinkedList<>(hashMap.entrySet());
