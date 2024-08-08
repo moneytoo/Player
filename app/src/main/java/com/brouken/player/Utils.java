@@ -190,12 +190,23 @@ class Utils {
             PlayerActivity.boostLevel = 0;
         }
 
-        if (PlayerActivity.loudnessEnhancer == null)
+        try {
+            if (PlayerActivity.loudnessEnhancer == null || !PlayerActivity.loudnessEnhancer.hasControl()) {
+                canBoost = false;
+            }
+        } catch (Exception e) {
             canBoost = false;
+            e.printStackTrace();
+        }
 
         if (volume != volumeMax || (PlayerActivity.boostLevel == 0 && !raise)) {
-            if (PlayerActivity.loudnessEnhancer != null)
-                PlayerActivity.loudnessEnhancer.setEnabled(false);
+            if (PlayerActivity.loudnessEnhancer != null) {
+                try {
+                    PlayerActivity.loudnessEnhancer.setEnabled(false);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
             audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, raise ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
             final int volumeNew = getVolume(context, false, audioManager);
             // Custom volume step on Samsung devices (Sound Assistant)
@@ -219,7 +230,7 @@ class Utils {
             if (PlayerActivity.loudnessEnhancer != null) {
                 try {
                     PlayerActivity.loudnessEnhancer.setTargetGain(PlayerActivity.boostLevel * 200);
-                } catch (RuntimeException e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -227,8 +238,13 @@ class Utils {
         }
 
         playerView.setIconVolume(volumeActive);
-        if (PlayerActivity.loudnessEnhancer != null)
-            PlayerActivity.loudnessEnhancer.setEnabled(PlayerActivity.boostLevel > 0);
+        if (PlayerActivity.loudnessEnhancer != null) {
+            try {
+                PlayerActivity.loudnessEnhancer.setEnabled(PlayerActivity.boostLevel > 0);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         playerView.setHighlight(PlayerActivity.boostLevel > 0);
 
         if (clear) {
