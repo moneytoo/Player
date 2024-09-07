@@ -694,6 +694,12 @@ public class PlayerActivity extends Activity {
                         });
             }
         });
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (useMediaStore()) {
+                Utils.scanMediaStorage(this);
+            }
+        }
     }
 
     @Override
@@ -1597,9 +1603,13 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    private void openFile(Uri pickerInitialUri) {
+    boolean useMediaStore() {
         final int targetSdkVersion = getApplicationContext().getApplicationInfo().targetSdkVersion;
-        if ((isTvBox && Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30 && mPrefs.fileAccess.equals("auto")) || mPrefs.fileAccess.equals("mediastore")) {
+        return (isTvBox && Build.VERSION.SDK_INT >= 30 && targetSdkVersion >= 30 && mPrefs.fileAccess.equals("auto")) || mPrefs.fileAccess.equals("mediastore");
+    }
+
+    private void openFile(Uri pickerInitialUri) {
+        if (useMediaStore()) {
             Intent intent = new Intent(this, MediaStoreChooserActivity.class);
             startActivityForResult(intent, REQUEST_CHOOSER_VIDEO_MEDIASTORE);
         } else if ((isTvBox && mPrefs.fileAccess.equals("auto")) || mPrefs.fileAccess.equals("legacy")) {

@@ -19,10 +19,13 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.media.AudioManager;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.LocaleList;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.provider.DocumentsContract;
 import android.provider.OpenableColumns;
 import android.util.Log;
@@ -704,5 +707,19 @@ class Utils {
         for(Map.Entry<K, V> e : entries) {
             m.put(e.getKey(), e.getValue());
         }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.R)
+    public static void scanMediaStorage(Context context) {
+        StorageManager storageManager = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+        List<StorageVolume> storageVolumes = storageManager.getStorageVolumes();
+        List<String> storagePaths = new ArrayList<>();
+        for (StorageVolume volume : storageVolumes) {
+            File directory = volume.getDirectory();
+            if (directory != null) {
+                storagePaths.add(directory.getAbsolutePath());
+            }
+        }
+        MediaScannerConnection.scanFile(context, storagePaths.toArray(new String[0]), new String[]{"*/*"}, null);
     }
 }

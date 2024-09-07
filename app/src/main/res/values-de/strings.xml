@@ -34,7 +34,7 @@
     <string name="button_pip">Bild-im-Bild</string>
     <string name="pref_file_access_auto">Automatisch</string>
     <string name="pref_file_access">Dateizugriff</string>
-    <string name="mediastore_empty">Keine indizierten Videodateien gefunden. Um auf Videodateien im angegebenen Speicher zuzugreifen, aktivieren Sie die automatische Mediensuche in den Systemeinstellungen.</string>
+    <string name="mediastore_empty">Keine Videodateien gefunden</string>
     <string name="pref_shortcuts_header">Verknüpfungen</string>
     <string name="pref_captioning_preferences">Untertitel-Einstellungen</string>
     <string name="pref_decoder_priority_prefer_device">Gerätedecoder bevorzugen (Standard)</string>

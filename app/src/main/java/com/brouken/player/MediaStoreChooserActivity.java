@@ -76,6 +76,7 @@ public class MediaStoreChooserActivity extends Activity {
     @RequiresApi(api = Build.VERSION_CODES.R)
     private void start() {
         if (bucketId == null) {
+            Utils.scanMediaStorage(this);
             showBuckets();
         } else {
             showFiles(bucketId);
