@@ -50,7 +50,7 @@ android {
     }
     variantFilter { variant ->
         def names = variant.flavors*.name
-        if (names.contains("legacy") && names.contains("amazon")) {
+        if ((names.contains("legacy") || names.contains("lite")) && names.contains("amazon")) {
             setIgnore(true)
         }
     }
