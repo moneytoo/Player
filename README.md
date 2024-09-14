@@ -73,6 +73,7 @@ Translate: [Weblate](https://hosted.weblate.org/engage/just-player/)
 
 [<img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" alt="Get it on Google Play" height="75">](https://play.google.com/store/apps/details?id=com.brouken.player)
 [<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="75">](https://f-droid.org/packages/com.brouken.player/)
+[<img src="https://accrescent.app/badges/get-it-on.png" alt="Get it on Accrescent" height="75">](https://accrescent.app/app/com.brouken.player)
 [<img src="https://raw.githubusercontent.com/andOTP/andOTP/master/assets/badges/get-it-on-github.png" alt="Get it on GitHub" height="75">](https://github.com/moneytoo/Player/releases/latest)
 [<img src="https://brouken.com/img/huawei-appgallery.png" alt="Explore it on AppGallery" height="75">](https://appgallery.cloud.huawei.com/ag/n/app/C104147921)
 [<img src="https://brouken.com/img/get-it-on-mi_app_mall.png" alt="Get it on Mi App Mall" height="75">](https://global.app.mi.com/details?id=com.brouken.player)
