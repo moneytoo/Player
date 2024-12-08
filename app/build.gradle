@@ -8,12 +8,30 @@ android {
     ndkVersion '21.4.7075529'
 
     defaultConfig {
+        def abiFilter = project.findProperty("abiFilter")
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 177
+        versionCode 178
         versionName "0.${versionCode}"
         archivesBaseName = "Just.Player.v${versionName}"
+        switch (abiFilter) {
+            case "x86":
+                versionCode = versionCode * 10 + 1
+                break
+            case "x86_64":
+                versionCode = versionCode * 10 + 2
+                break
+            case "armeabi-v7a":
+                versionCode = versionCode * 10 + 3
+                break
+            case "arm64-v8a":
+                versionCode = versionCode * 10 + 4
+                break
+        }
+        ndk {
+            abiFilters = abiFilter ? [abiFilter] : []
+        }
     }
 
     buildTypes {
