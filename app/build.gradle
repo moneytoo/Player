@@ -12,7 +12,7 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 178
+        versionCode 179
         versionName "0.${versionCode}"
         archivesBaseName = "Just.Player.v${versionName}"
         switch (abiFilter) {
