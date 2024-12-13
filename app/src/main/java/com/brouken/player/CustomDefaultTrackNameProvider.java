@@ -77,6 +77,8 @@ class CustomDefaultTrackNameProvider extends DefaultTrackNameProvider {
                 return "AMR-NB";
             case MimeTypes.AUDIO_AMR_WB:
                 return "AMR-WB";
+            case MimeTypes.AUDIO_IAMF:
+                return "IAMF";
 
             case MimeTypes.APPLICATION_PGS:
                 return "PGS";
