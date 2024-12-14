@@ -1,0 +1,35 @@
+name: Android Build APK
+
+on:
+  push:
+    tags:
+      - 'v0.[0-9]+'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${GITHUB_WORKSPACE}/keystore.jks
+
+      - run: ./gradlew assembleRelease
+          -Pandroid.injected.signing.store.file=${GITHUB_WORKSPACE}/keystore.jks
+          -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }}
+          -Pandroid.injected.signing.key.alias=key
+          -Pandroid.injected.signing.key.password=${{ secrets.KEYSTORE_PASSWORD }}
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            app/build/outputs/apk/latestUniversalFull/release/*.apk
+            app/build/outputs/apk/legacyUniversalFull/release/*.apk
+          prerelease: true
+          draft: true
