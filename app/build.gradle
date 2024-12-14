@@ -15,25 +15,14 @@ android {
         versionCode 180
         versionName "0.${versionCode}"
         archivesBaseName = "Just.Player.v${versionName}"
-        switch (abiFilter) {
-            case "x86":
-                versionCode = versionCode * 10 + 1
-                break
-            case "x86_64":
-                versionCode = versionCode * 10 + 2
-                break
-            case "armeabi-v7a":
-                versionCode = versionCode * 10 + 3
-                break
-            case "arm64-v8a":
-                versionCode = versionCode * 10 + 4
-                break
-        }
-        ndk {
-            abiFilters = abiFilter ? [abiFilter] : []
+        if (abiFilter) {
+            def abiCodeMap = ["x86": 1, "x86_64": 2, "armeabi-v7a": 3, "arm64-v8a": 4]
+            versionCode = versionCode * 10 + abiCodeMap[abiFilter]
+            ndk {
+                abiFilters abiFilter
+            }
         }
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -75,8 +64,20 @@ android {
             setIgnore(true)
         }
     }
+    applicationVariants.all { variant ->
+        if (variant.buildType.name == "release" && variant.flavorName == "latestUniversalFull") {
+            variant.outputs.all { output ->
+                output.outputFileName = "${archivesBaseName}.apk"
+            }
+        }
+        if (variant.buildType.name == "release" && variant.flavorName == "legacyUniversalFull") {
+            variant.outputs.all { output ->
+                output.outputFileName = "${archivesBaseName}-legacy.apk"
+            }
+        }
+    }
     androidComponents {
-        onVariants(selector().withFlavor(new kotlin.Pair("distribution", "amazon")), {
+        onVariants(selector().withFlavor("distribution", "amazon"), {
             packaging.dex.useLegacyPackaging.set(false)
             packaging.jniLibs.excludes.add('lib/armeabi-v7a/*_neon.so')
         })
