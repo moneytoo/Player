@@ -12,7 +12,7 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 180
+        versionCode 181
         versionName "0.${versionCode}"
         archivesBaseName = "Just.Player.v${versionName}"
         if (abiFilter) {
@@ -93,7 +93,7 @@ android {
 }
 
 dependencies {
-    def media3_version = '1.5.0'
+    def media3_version = '1.5.1'
     def androidxCoreVersion = '1.8.0'
     implementation "androidx.media3:media3-session:$media3_version"
     implementation "androidx.media3:media3-datasource:$media3_version"
@@ -117,7 +117,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation "androidx.core:core:$androidxCoreVersion"
-    fullImplementation 'com.ibm.icu:icu4j:75.1'
+    fullImplementation 'com.ibm.icu:icu4j:76.1'
     fullImplementation 'com.arthenica:ffmpeg-kit-https:6.0-2.LTS'
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.preference:preference:1.2.1'
