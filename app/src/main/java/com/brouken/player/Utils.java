@@ -46,11 +46,19 @@ import androidx.media3.common.Format;
 import androidx.media3.common.MimeTypes;
 
 import com.obsez.android.lib.filechooser.ChooserDialog;
+import com.sigpwned.chardet4j.Chardet;
+import com.sigpwned.chardet4j.io.DecodedInputStreamReader;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -603,7 +611,7 @@ class Utils {
                         } else {
                             // Convert subtitles to UTF-8 if necessary
                             SubtitleUtils.clearCache(activity);
-                            uri = UtilsFeature.convertToUTF(activity, uri);
+                            uri = Utils.convertToUTF(activity, uri);
 
                             activity.mPrefs.updateSubtitle(uri);
                         }
@@ -623,6 +631,61 @@ class Utils {
         chooserDialog.build().show();
 
         return true;
+    }
+
+    public static Uri convertToUTF(PlayerActivity activity, Uri subtitleUri) {
+        try {
+            String scheme = subtitleUri.getScheme();
+            if (scheme != null && scheme.toLowerCase().startsWith("http")) {
+                List<Uri> urls = new ArrayList<>();
+                urls.add(subtitleUri);
+                SubtitleFetcher subtitleFetcher = new SubtitleFetcher(activity, urls);
+                subtitleFetcher.start();
+                return null;
+            } else {
+                InputStream inputStream = activity.getContentResolver().openInputStream(subtitleUri);
+                return convertInputStreamToUTF(activity, subtitleUri, inputStream);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return subtitleUri;
+    }
+
+    public static Uri convertInputStreamToUTF(Context context, Uri subtitleUri, InputStream inputStream) {
+        try {
+            DecodedInputStreamReader decodedInputStreamReader = Chardet.decode(inputStream, StandardCharsets.UTF_8);
+            Charset charset = decodedInputStreamReader.charset();
+            if (!StandardCharsets.UTF_8.equals(charset)) {
+                String filename = subtitleUri.getPath();
+                filename = filename.substring(filename.lastIndexOf("/") + 1);
+                final File file = new File(context.getCacheDir(), filename);
+                final BufferedReader bufferedReader = new BufferedReader(decodedInputStreamReader);
+                final BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+                char[] buffer = new char[512];
+                int num;
+                int pass = 0;
+                boolean success = true;
+                while ((num = bufferedReader.read(buffer)) != -1) {
+                    bufferedWriter.write(buffer, 0, num);
+                    pass++;
+                    if (pass * 512 > 2_000_000) {
+                        success = false;
+                        break;
+                    }
+                }
+                bufferedWriter.close();
+                bufferedReader.close();
+                if (success) {
+                    subtitleUri = Uri.fromFile(file);
+                } else {
+                    subtitleUri = null;
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return subtitleUri;
     }
 
     public static boolean isPiPSupported(Context context) {

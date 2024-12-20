@@ -108,7 +108,7 @@ class SubtitleFetcher {
                 }
 
                 InputStream inputStream = responseBody.byteStream();
-                Uri convertedSubtitleUri = UtilsFeature.convertInputStreamToUTF(activity, subtitleUri, inputStream);
+                Uri convertedSubtitleUri = Utils.convertInputStreamToUTF(activity, subtitleUri, inputStream);
 
                 if (convertedSubtitleUri == null) {
                     return;

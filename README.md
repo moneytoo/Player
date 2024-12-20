@@ -148,7 +148,7 @@ Just pause and resume playback once again.
 
 ### Why is the APK so big?
 
-The APK available here contains native libraries for all supported architectures (`armeabi-v7a`/`armeabi-v7a-neon`/`arm64-v8a`/`x86`/`x86_64`), which is what takes the most space. Although Just Player relies mostly on device decoders, it packs _FFmpeg_ for some advanced features (video chapters and frame rate detection). The second largest dependency is [ICU4J](https://github.com/moneytoo/Player/issues/76) - 10 MB only for charset detection of subtitle files. 🤷
+The APK available here contains native libraries for all supported architectures (`armeabi-v7a`/`armeabi-v7a-neon`/`arm64-v8a`/`x86`/`x86_64`), which is what takes the most space. Although Just Player relies mostly on device decoders, it packs _FFmpeg_ for some advanced features (video chapters and frame rate detection).
 
 Please note that installs and updates made through Google Play are significantly smaller thanks to Android App Bundles and delta updates.
 
