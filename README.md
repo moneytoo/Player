@@ -6,7 +6,7 @@
 [![GitHub all releases](https://img.shields.io/github/downloads/moneytoo/Player/total?logo=github&cacheSeconds=3600)](https://github.com/moneytoo/Player/releases/latest)
 [![Google Play](https://img.shields.io/endpoint?color=green&logo=google-play&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcom.brouken.player%26l%3Ddownloads%26m%3D%24totalinstalls)](https://play.google.com/store/apps/details?id=com.brouken.player)
 [![Google Play](https://img.shields.io/endpoint?color=green&logo=google-play&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcom.brouken.player%26l%3Drating%26m%3D%25E2%2598%2585%2520%24rating)](https://play.google.com/store/apps/details?id=com.brouken.player)
-[![Media3](https://img.shields.io/badge/Media3-1.5.1-007ec6?cacheSeconds=3600)](https://github.com/androidx/media/releases/tag/1.5.1)
+[![Media3](https://img.shields.io/badge/Media3-1.6.0--alpha01-007ec6?cacheSeconds=3600)](https://github.com/androidx/media/releases/tag/1.6.0-alpha01)
 [![Weblate project translated](https://img.shields.io/weblate/progress/just-player?logo=weblate&logoColor=white&cacheSeconds=36000)](https://hosted.weblate.org/engage/just-player/)
 [![Subreddit subscribers](https://img.shields.io/reddit/subreddit-subscribers/JustPlayer?label=r%2FJustPlayer&logo=reddit&logoColor=white&cacheSeconds=3600)](https://www.reddit.com/r/JustPlayer/)
 
@@ -18,7 +18,7 @@ It properly syncs audio with video track when using Bluetooth earphones/speaker.
 
 ## Supported formats
 
- * **Audio**: Vorbis, Opus, FLAC, ALAC, PCM/WAVE (μ-law, A-law), MP1, MP2, MP3, AMR (NB, WB), AAC (LC, ELD, HE; xHE on Android 9+), AC-3, E-AC-3, DTS, DTS-HD, TrueHD, IAMF
+ * **Audio**: Vorbis, Opus, FLAC, ALAC, PCM/WAVE (μ-law, A-law), MP1, MP2, MP3, AMR (NB, WB), AAC (LC, ELD, HE; xHE on Android 9+), AC-3, E-AC-3, DTS, DTS-HD, TrueHD, IAMF, MPEG-H
  * **Video**: H.263, H.264 AVC (Baseline Profile; Main Profile on Android 6+), H.265 HEVC, MPEG-4 SP, VP8, VP9, AV1
  * **Containers**: MP4, MOV, WebM, MKV, Ogg, MPEG-TS, MPEG-PS, FLV, AVI (🚧)
  * **Streaming**: DASH, HLS, SmoothStreaming, RTSP
