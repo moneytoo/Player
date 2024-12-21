@@ -800,7 +800,7 @@ class Utils {
                 String mimeType = format.getString(MediaFormat.KEY_MIME);
                 if (mimeType != null && mimeType.startsWith("video/")) {
                     mediaExtractor.selectTrack(i);
-                    while (timestamps.size() < 1000 + ignoreSamples) {
+                    while (timestamps.size() < 350 + ignoreSamples) {
                         long timestamp = mediaExtractor.getSampleTime();
                         if (timestamp < 0) {
                             break;
