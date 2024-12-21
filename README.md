@@ -146,12 +146,6 @@ If your device has a touchscreen you can use the pinch-to-zoom gesture or just t
 
 Just pause and resume playback once again.
 
-### Why is the APK so big?
-
-The APK available here contains native libraries for all supported architectures (`armeabi-v7a`/`armeabi-v7a-neon`/`arm64-v8a`/`x86`/`x86_64`), which is what takes the most space. Although Just Player relies mostly on device decoders, it packs _FFmpeg_ for some advanced features (video chapters and frame rate detection).
-
-Please note that installs and updates made through Google Play are significantly smaller thanks to Android App Bundles and delta updates.
-
 ## Other open source Android video players
 
 Here's a comparison table presenting all available and significant open source video players for Android I was able to find. Just Player is something like ~~80%~~ 90% feature complete. It will probably never have dozens of options or some rich media library UI. It will never truly compete with feature rich VLC. It just attempts to provide functional feature set and motive others to create greater players based on amazing ExoPlayer.

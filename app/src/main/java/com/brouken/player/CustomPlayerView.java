@@ -7,7 +7,6 @@ import android.media.AudioManager;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
-import android.view.HapticFeedbackConstants;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
@@ -258,12 +257,6 @@ public class CustomPlayerView extends PlayerView implements GestureDetector.OnGe
                             PlayerActivity.player.seekTo(position);
                         }
                     }
-                    for (long start : PlayerActivity.chapterStarts) {
-                        if ((seekLastPosition < start && position >= start) || (seekLastPosition > start && position <= start)) {
-                            performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
-                        }
-                    }
-                    seekLastPosition = position;
                     String message = Utils.formatMilisSign(seekChange);
                     if (!isControllerFullyVisible()) {
                         message += "\n" + Utils.formatMilis(position);

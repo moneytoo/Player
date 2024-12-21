@@ -39,7 +39,6 @@ import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Rational;
 import android.util.TypedValue;
-import android.view.HapticFeedbackConstants;
 import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -183,9 +182,6 @@ public class PlayerActivity extends Activity {
     public static boolean locked = false;
     private Thread nextUriThread;
     public Thread frameRateSwitchThread;
-    public Thread chaptersThread;
-    private long lastScrubbingPosition;
-    public static long[] chapterStarts;
 
     public static boolean restoreControllerTimeout = false;
     public static boolean shortControllerTimeout = false;
@@ -351,7 +347,6 @@ public class PlayerActivity extends Activity {
                 if (restorePlayState) {
                     player.pause();
                 }
-                lastScrubbingPosition = position;
                 scrubbingNoticeable = false;
                 isScrubbing = true;
                 frameRendered = true;
@@ -364,12 +359,6 @@ public class PlayerActivity extends Activity {
             @Override
             public void onScrubMove(TimeBar timeBar, long position) {
                 reportScrubbing(position);
-                for (long start : chapterStarts) {
-                    if ((lastScrubbingPosition < start && position >= start) || (lastScrubbingPosition > start && position <= start)) {
-                        playerView.performHapticFeedback(HapticFeedbackConstants.CLOCK_TICK);
-                    }
-                }
-                lastScrubbingPosition = position;
             }
 
             @Override
@@ -1256,8 +1245,6 @@ public class PlayerActivity extends Activity {
 
         locked = false;
 
-        chapterStarts = new long[0];
-
         if (haveMedia) {
             if (isNetworkUri) {
                 timeBar.setBufferedColor(DefaultTimeBar.DEFAULT_BUFFERED_COLOR);
@@ -1342,8 +1329,6 @@ public class PlayerActivity extends Activity {
                 });
                 nextUriThread.start();
             }
-
-            UtilsFeature.markChapters(this, mPrefs.mediaUri, controlView);
 
             player.setHandleAudioBecomingNoisy(!isTvBox);
 //            mediaSession.setActive(true);
@@ -1464,15 +1449,6 @@ public class PlayerActivity extends Activity {
                 final long position = player.getCurrentPosition();
                 if (position + 4000 >= duration) {
                     isNearEnd = true;
-                } else {
-                    // Last chapter is probably "Credits" chapter
-                    final int chapters = chapterStarts.length;
-                    if (chapters > 1) {
-                        final long lastChapter = chapterStarts[chapters - 1];
-                        if (duration - lastChapter < duration / 10 && position > lastChapter) {
-                            isNearEnd = true;
-                        }
-                    }
                 }
             }
             setEndControlsVisible(haveMedia && (state == Player.STATE_ENDED || isNearEnd));
@@ -1544,7 +1520,7 @@ public class PlayerActivity extends Activity {
                             }
                             displayManager.registerDisplayListener(displayListener, null);
                         }
-                        switched = UtilsFeature.switchFrameRate(PlayerActivity.this, mPrefs.mediaUri, play);
+                        switched = Utils.switchFrameRate(PlayerActivity.this, mPrefs.mediaUri, play);
                     }
                     if (!switched) {
                         if (displayManager != null) {

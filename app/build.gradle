@@ -29,7 +29,7 @@ android {
             //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    flavorDimensions "targetSdk", "distribution", "feature"
+    flavorDimensions "targetSdk", "distribution"
     productFlavors {
         latest {
             dimension "targetSdk"
@@ -50,37 +50,24 @@ android {
         accrescent {
             dimension "distribution"
         }
-        full {
-            dimension "feature"
-        }
-        lite {
-            dimension "feature"
-            versionNameSuffix "-lite"
-        }
     }
     variantFilter { variant ->
         def names = variant.flavors*.name
-        if ((names.contains("legacy") || names.contains("lite")) && (names.contains("amazon") || names.contains("accrescent"))) {
+        if (names.contains("legacy") && (names.contains("amazon") || names.contains("accrescent"))) {
             setIgnore(true)
         }
     }
     applicationVariants.all { variant ->
-        if (variant.buildType.name == "release" && variant.flavorName == "latestUniversalFull") {
+        if (variant.buildType.name == "release" && variant.flavorName == "latestUniversal") {
             variant.outputs.all { output ->
                 output.outputFileName = "${archivesBaseName}.apk"
             }
         }
-        if (variant.buildType.name == "release" && variant.flavorName == "legacyUniversalFull") {
+        if (variant.buildType.name == "release" && variant.flavorName == "legacyUniversal") {
             variant.outputs.all { output ->
                 output.outputFileName = "${archivesBaseName}-legacy.apk"
             }
         }
-    }
-    androidComponents {
-        onVariants(selector().withFlavor("distribution", "amazon"), {
-            packaging.dex.useLegacyPackaging.set(false)
-            packaging.jniLibs.excludes.add('lib/armeabi-v7a/*_neon.so')
-        })
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -117,7 +104,6 @@ dependencies {
     implementation 'com.google.android.material:material:1.12.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
     implementation "androidx.core:core:$androidxCoreVersion"
-    fullImplementation 'com.arthenica:ffmpeg-kit-https:6.0-2.LTS'
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
