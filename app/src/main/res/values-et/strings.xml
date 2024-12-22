@@ -38,7 +38,7 @@
     <string name="pref_map_dv7">Varuvariant Dolby Visioni 7. profiili jaoks</string>
     <string name="pref_map_dv7_on">Esita Dolby Visioni 7. profiili sisu HDR ekraanidel</string>
     <string name="pref_map_dv7_off">Esita UHD Blu-ray sisu koos Dolby Visioniga nii, nagu ta on loodud</string>
-    <string name="mediastore_empty">Indekseeritud videofaile ei leidu. Antud andmeruumist videofailide leidmiseks ja neile ligipääsuks luba süsteemi seadistustest automaatne meedia tuvastamine.</string>
+    <string name="mediastore_empty">Videofaile ei leidu</string>
     <string name="pref_dangerous_header">Ohtklik ⚠️</string>
     <string name="pref_shortcuts_header">Kiirvalikud</string>
     <string name="pref_captioning_preferences">Tiitrite eelistused</string>
