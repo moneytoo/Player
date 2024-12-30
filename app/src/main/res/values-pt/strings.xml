@@ -36,7 +36,7 @@
     <string name="pref_file_access">Acesso ao ficheiro</string>
     <string name="pref_file_access_auto">Automático</string>
     <string name="button_pip">Imagem em imagem</string>
-    <string name="mediastore_empty">Não foram encontrados vídeos para indexar. Para aceder a ficheiros de vídeo em determinado armazenamento, ative a verificação automática nas definições do sistema.</string>
+    <string name="mediastore_empty">Não foram encontrados vídeos</string>
     <string name="pref_decoder_priority_prefer_app">Preferir descodificadores das aplicações</string>
     <string name="pref_decoder_priority_prefer_device">Preferir decodificadores do aparelho (padrão)</string>
     <string name="pref_decoder_priority">Prioridade do descodificador</string>
