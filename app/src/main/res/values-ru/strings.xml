@@ -39,7 +39,7 @@
     <string name="pref_decoder_priority_prefer_device">Предпочтительные декодеры устройства(по умолчанию)</string>
     <string name="pref_decoder_priority_prefer_app">Предпочитайте декодеры приложения</string>
     <string name="pref_decoder_priority_only_device">Только декодеры устройства</string>
-    <string name="mediastore_empty">Не найдено проиндексированных видеофайлов. Чтобы получить доступ к видеофайлам в данном хранилище, включите автоматическое сканирование носителей в настройках системы.</string>
+    <string name="mediastore_empty">Видеофайлы не найдены</string>
     <string name="pref_shortcuts_header">Ярлыки</string>
     <string name="video_orientation_system">Ориентация устройства</string>
     <string name="pref_map_dv7_off">Воспроизведение содержимого UHD Blu-ray, содержащего Dolby Vision, как есть</string>
