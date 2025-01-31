@@ -28,7 +28,7 @@
     <string name="button_pip">Imagine-în-imagine</string>
     <string name="pref_file_access">Acces la fișiere</string>
     <string name="pref_file_access_auto">Auto</string>
-    <string name="mediastore_empty">Nu s-au găsit fișiere video indexate. Pentru a accesa fișierele video în spațiul de stocare dat, activați scanarea automată a suporturilor media în setările de sistem.</string>
+    <string name="mediastore_empty">Nu s-au găsit fișiere video</string>
     <string name="pref_captioning_preferences">Preferințe pentru subtitrări</string>
     <string name="pref_decoder_priority">Prioritate decodor</string>
     <string name="pref_decoder_priority_prefer_device">Preferați decodoarele dispozitivului (implicit)</string>
