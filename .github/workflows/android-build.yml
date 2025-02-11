@@ -20,7 +20,7 @@ jobs:
 
       - run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${GITHUB_WORKSPACE}/keystore.jks
 
-      - run: ./gradlew assembleRelease
+      - run: ./gradlew assembleRelease bundleRelease
           -Pandroid.injected.signing.store.file=${GITHUB_WORKSPACE}/keystore.jks
           -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }}
           -Pandroid.injected.signing.key.alias=key
@@ -33,3 +33,10 @@ jobs:
             app/build/outputs/apk/legacyUniversal/release/*.apk
           prerelease: true
           draft: true
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release
+          path: |
+            app/build/outputs/apk/*/release/*.apk
+            app/build/outputs/bundle/*/*.aab
