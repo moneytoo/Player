@@ -1,9 +1,7 @@
 name: Android Build APK
 
 on:
-  push:
-    tags:
-      - 'v0.*'
+  push
 
 jobs:
   build:
