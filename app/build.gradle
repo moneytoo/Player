@@ -77,6 +77,12 @@ android {
         disable 'MissingTranslation'
         disable 'UnsafeOptInUsageError'
     }
+    packagingOptions {
+        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+        pickFirst 'lib/x86_64/libc++_shared.so'
+        pickFirst 'lib/x86/libc++_shared.so'
+        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+    }
 }
 
 dependencies {
@@ -108,6 +114,11 @@ dependencies {
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation 'com.sigpwned:chardet4j:75.1.2'
+    implementation('io.github.peerless2012:ass-media:0.1.0') {
+        exclude group: "androidx.media3", module: "media3-ui"
+        exclude group: "androidx.media3", module: "media3-extractor"
+        exclude group: "androidx.media3", module: "media3-exoplayer"
+    }
     implementation project(path: ':doubletapplayerview')
     implementation project(path: ':android-file-chooser')
     implementation fileTree(dir: "libs", include: ["lib-*.aar"])
