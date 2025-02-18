@@ -75,6 +75,7 @@ import androidx.media3.common.TrackGroup;
 import androidx.media3.common.TrackSelectionOverride;
 import androidx.media3.common.TrackSelectionParameters;
 import androidx.media3.common.Tracks;
+import androidx.media3.datasource.DefaultDataSource;
 import androidx.media3.datasource.DefaultHttpDataSource;
 import androidx.media3.exoplayer.DefaultRenderersFactory;
 import androidx.media3.exoplayer.ExoPlaybackException;
@@ -110,6 +111,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import io.github.peerless2012.ass.media.kt.AssPlayerKt;
+import io.github.peerless2012.ass.media.type.AssRenderType;
 
 public class PlayerActivity extends Activity {
 
@@ -1214,7 +1218,12 @@ public class PlayerActivity extends Activity {
             }
         }
 
-        player = playerBuilder.build();
+        player = AssPlayerKt.buildWithAssSupport(
+                playerBuilder,
+                this,
+                AssRenderType.OPEN_GL,
+                new DefaultDataSource.Factory(this),
+                extractorsFactory);
 
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setUsage(C.USAGE_MEDIA)
