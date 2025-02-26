@@ -1858,6 +1858,13 @@ public class PlayerActivity extends Activity {
                 int videoWidth = metrics.heightPixels / aspectVideo.getDenominator() * aspectVideo.getNumerator();
                 marginHorizontal = (metrics.widthPixels - videoWidth) / 2;
             }
+        } else {
+            // SubtitleView’s height must be the same in both landscape
+            // and portrait modes to maintain the same subtitle size.
+            DisplayMetrics realMetrics = new DisplayMetrics();
+            getWindowManager().getDefaultDisplay().getRealMetrics(realMetrics);
+            int minMarginVertical = (realMetrics.heightPixels - realMetrics.widthPixels) / 2;
+            if (marginVertical < minMarginVertical) marginVertical = minMarginVertical;
         }
 
         Utils.setViewParams(playerView.getSubtitleView(), 0, 0, 0, 0,
