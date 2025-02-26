@@ -50,11 +50,6 @@
     <string name="pref_language_track_device">Langues de l\'appareil</string>
     <string name="pref_map_dv7_off">Lire du contenu Blu-ray UHD contenant Dolby Vision tel quel</string>
     <string name="pref_language_track_default">Par défaut</string>
-    <string name="pref_subtitle_style_embedded">Styles embarqués</string>
-    <string name="pref_subtitle_style_embedded_on">Appliquer des styles de sous-titres intégrés</string>
-    <string name="pref_subtitle_style_embedded_off">Ne pas appliquer les styles de sous-titres intégrés</string>
-    <string name="pref_subtitle_style_bold_off">Utiliser la police normale par défaut</string>
     <string name="pref_subtitle_header">Sous-titrage</string>
-    <string name="pref_subtitle_style_bold">Style gras</string>
-    <string name="pref_subtitle_style_bold_on">Utiliser le gras comme forme régulière</string>
+    <string name="osd_subtitle_embedded_styles_title">Styles embarqués</string>
 </resources>
