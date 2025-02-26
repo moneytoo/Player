@@ -51,10 +51,5 @@
     <string name="pref_language_track_device">Jazyky zařízení</string>
     <string name="pref_language_track_default">Výchozí nastavení</string>
     <string name="pref_subtitle_header">Titulky</string>
-    <string name="pref_subtitle_style_embedded">Styly v titulcích</string>
-    <string name="pref_subtitle_style_embedded_on">Aplikovat styly definované v titulcích</string>
-    <string name="pref_subtitle_style_embedded_off">Neaplikovat styly definované v titulcích</string>
-    <string name="pref_subtitle_style_bold">Tučné písmo</string>
-    <string name="pref_subtitle_style_bold_on">Použít tučný styl písma</string>
-    <string name="pref_subtitle_style_bold_off">Použít výchozí styl písma</string>
+    <string name="osd_subtitle_embedded_styles_title">Styly v titulcích</string>
 </resources>

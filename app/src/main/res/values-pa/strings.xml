@@ -50,11 +50,6 @@
     <string name="pref_auto_pip_off">ਆਪਣੇ ਆਪ ਹੀ PiP \'ਤੇ ਨਾ ਬਦਲੋ</string>
     <string name="pref_auto_pip">ਆਟੋ ਪਿਕਚਰ ਇਨ ਪਿਕਚਰ</string>
     <string name="pref_auto_pip_on">ਐਪ ਛੱਡਣ ਵੇਲੇ PiP \'ਤੇ ਸਵਿਚ ਕਰੋ</string>
-    <string name="pref_subtitle_style_embedded">ਏਮਬੈਡਡ ਸਟਾਈਲ</string>
-    <string name="pref_subtitle_style_embedded_on">ਏਮਬੈਡਡ ਸਬਟਾਈਟਲ ਸ਼ੈਲੀਆਂ ਲਾਗੂ ਕਰੋ</string>
-    <string name="pref_subtitle_style_embedded_off">ਏਮਬੈਡਡ ਸਬਟਾਈਟਲ ਸ਼ੈਲੀਆਂ ਨੂੰ ਲਾਗੂ ਨਾ ਕਰੋ</string>
-    <string name="pref_subtitle_style_bold_off">ਡਿਫ਼ਾਲਟ ਨਿਯਮਤ ਟਾਈਪਫੇਸ ਦੀ ਵਰਤੋਂ ਕਰੋ</string>
     <string name="pref_subtitle_header">ਸਬਟਾਈਟਲ</string>
-    <string name="pref_subtitle_style_bold">ਬੋਲਡ ਸ਼ੈਲੀ</string>
-    <string name="pref_subtitle_style_bold_on">ਨਿਯਮਤ ਤੌਰ \'ਤੇ ਬੋਲਡ ਟਾਈਪਫੇਸ ਦੀ ਵਰਤੋਂ ਕਰੋ</string>
+    <string name="osd_subtitle_embedded_styles_title">ਏਮਬੈਡਡ ਸਟਾਈਲ</string>
 </resources>

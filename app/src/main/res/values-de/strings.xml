@@ -46,15 +46,10 @@
     <string name="pref_language_audio">Standard-Audiospur</string>
     <string name="pref_language_track_default">Standard</string>
     <string name="pref_language_track_device">Gerätesprachen</string>
-    <string name="pref_subtitle_style_embedded_on">Eingebettete Untertitelstile anwenden</string>
     <string name="pref_map_dv7">Dolby Vision Profile 7 Fallback</string>
     <string name="pref_map_dv7_on">Wiedergabe von Dolby Vision Profil 7-Inhalten auf HDR-Bildschirmen</string>
     <string name="pref_map_dv7_off">Wiedergabe von UHD-Blu-ray-Inhalten mit Dolby Vision in unveränderter Form</string>
     <string name="pref_dangerous_warning">Das Umschalten von Optionen in dieser Kategorie kann die Wiedergabe von normalerweise kompatiblen Inhalten unterbrechen</string>
     <string name="pref_subtitle_header">Untertitel</string>
-    <string name="pref_subtitle_style_embedded">Eingebettete Stile</string>
-    <string name="pref_subtitle_style_embedded_off">Eingebettete Untertitelstile nicht anwenden</string>
-    <string name="pref_subtitle_style_bold">Fettschrift</string>
-    <string name="pref_subtitle_style_bold_on">Fettschrift als Normalschrift verwenden</string>
-    <string name="pref_subtitle_style_bold_off">Normale Standardschriftart verwenden</string>
+    <string name="osd_subtitle_embedded_styles_title">Eingebettete Stile</string>
 </resources>

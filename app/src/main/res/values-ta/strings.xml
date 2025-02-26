@@ -41,11 +41,6 @@
     <string name="pref_language_track_device">சாதன மொழிகள்</string>
     <string name="pref_language_track_default">இயல்புநிலை</string>
     <string name="pref_subtitle_header">வசன வரிகள்</string>
-    <string name="pref_subtitle_style_embedded_on">உட்பொதிக்கப்பட்ட வசன பாணிகளைப் பயன்படுத்துங்கள்</string>
-    <string name="pref_subtitle_style_bold">தைரியமான நடை</string>
-    <string name="pref_subtitle_style_bold_on">தைரியமான தட்டச்சுப்பொறியை வழக்கமானதாகப் பயன்படுத்தவும்</string>
-    <string name="pref_subtitle_style_embedded_off">உட்பொதிக்கப்பட்ட வசன பாணிகளைப் பயன்படுத்த வேண்டாம்</string>
-    <string name="pref_subtitle_style_bold_off">இயல்புநிலை வழக்கமான தட்டச்சு பயன்படுத்தவும்</string>
     <string name="pref_map_dv7">டால்பி பார்வை சுயவிவரம் 7 குறைவானது</string>
     <string name="mediastore_empty">வீடியோ கோப்புகள் எதுவும் கிடைக்கவில்லை</string>
     <string name="video_orientation_system">சாதன நோக்குநிலை</string>
@@ -55,6 +50,6 @@
     <string name="pref_file_access_auto">தானி</string>
     <string name="pref_decoder_priority_prefer_app">பயன்பாட்டு டிகோடர்களை விரும்புங்கள்</string>
     <string name="pref_decoder_priority_only_device">சாதன டிகோடர்கள் மட்டுமே</string>
-    <string name="pref_subtitle_style_embedded">உட்பொதிக்கப்பட்ட பாணிகள்</string>
     <string name="video_orientation_video">வீடியோ நோக்குநிலை</string>
+    <string name="osd_subtitle_embedded_styles_title">உட்பொதிக்கப்பட்ட பாணிகள்</string>
 </resources>

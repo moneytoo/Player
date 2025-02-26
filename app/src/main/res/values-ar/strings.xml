@@ -50,11 +50,6 @@
     <string name="pref_map_dv7_off">قم بتشغيل محتوى UHD Blu-ray الذي يحتوي على Dolby Vision كما هو</string>
     <string name="pref_dangerous_header">خطير ⚠️</string>
     <string name="mediastore_empty">لم يتم العثور على ملفات فيديو</string>
-    <string name="pref_subtitle_style_embedded">الأساليب المدمجة</string>
-    <string name="pref_subtitle_style_embedded_on">تطبيق أساليب الترجمة المدمجة</string>
-    <string name="pref_subtitle_style_embedded_off">لا تُطبّقُ اساليبَ الترجمَةِ الفرعيةِ المُضمّنةِ</string>
-    <string name="pref_subtitle_style_bold_off">استخدم الخط العادي الافتراضي</string>
     <string name="pref_subtitle_header">الترجمات</string>
-    <string name="pref_subtitle_style_bold">اسلوب التضخيم</string>
-    <string name="pref_subtitle_style_bold_on">استخدم محرفًا غامقًا كالمعتاد</string>
+    <string name="osd_subtitle_embedded_styles_title">الأساليب المدمجة</string>
 </resources>
