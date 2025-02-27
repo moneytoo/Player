@@ -57,4 +57,17 @@
     <string name="pref_subtitle_header">Napisy</string>
     <string name="pref_subtitle_style_bold">Pogrubiony styl</string>
     <string name="pref_subtitle_style_bold_on">Użyj pogrubionej czcionki jako normalnej</string>
+    <string name="osd_item_boolean_true">Tak</string>
+    <string name="osd_item_boolean_false">Nie</string>
+    <string name="osd_subtitle_position_title">Położenie</string>
+    <string name="osd_subtitle_size_title">Rozmiar</string>
+    <string name="osd_subtitle_edge_type_title">Typ krawędzi</string>
+    <string name="osd_subtitle_edge_type_none">Brak</string>
+    <string name="osd_subtitle_edge_type_outline">Obrys</string>
+    <string name="osd_subtitle_edge_type_drop_shadow">Z cieniem</string>
+    <string name="osd_subtitle_edge_type_raised">Uniesione</string>
+    <string name="osd_subtitle_edge_type_depressed">Obniżone</string>
+    <string name="osd_subtitle_typeface_title">Styl</string>
+    <string name="osd_subtitle_typeface_regular">Zwykły</string>
+    <string name="osd_subtitle_typeface_bold">Pogrubiony</string>
 </resources>
