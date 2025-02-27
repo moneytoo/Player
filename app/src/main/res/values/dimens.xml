@@ -11,4 +11,11 @@
     <dimen name="exo_styled_progress_margin_bottom" tools:keep="@dimen/exo_styled_progress_margin_bottom">51dp</dimen>
 
     <dimen name="marker_width">3dp</dimen>
+
+    <dimen name="osd_settings_margin">24dp</dimen>
+    <dimen name="osd_settings_title_text_size">20sp</dimen>
+    <dimen name="osd_settings_item_min_width">152dp</dimen>
+    <dimen name="osd_settings_item_min_height">52dp</dimen>
+    <dimen name="osd_settings_item_title_text_size">14sp</dimen>
+    <dimen name="osd_settings_item_summary_text_size">12sp</dimen>
 </resources>
