@@ -9,4 +9,8 @@
     <color name="exo_bottom_bar_background" tools:keep="@color/exo_bottom_bar_background">@color/ui_controls_background</color>
     <color name="exo_black_opacity_70" tools:keep="@color/exo_black_opacity_70">@color/ui_controls_background</color>
     <color name="exo_styled_error_message_background" tools:keep="@color/exo_styled_error_message_background">@color/ui_controls_background</color>
+
+    <color name="osd_settings_title_text">@color/exo_white</color>
+    <color name="osd_settings_item_title_text">@color/exo_white</color>
+    <color name="osd_settings_item_summary_text">@color/exo_white_opacity_70</color>
 </resources>

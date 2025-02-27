@@ -58,4 +58,22 @@
     <string name="pref_subtitle_style_bold">Bold style</string>
     <string name="pref_subtitle_style_bold_on">Use bold typeface as regular</string>
     <string name="pref_subtitle_style_bold_off">Use default regular typeface</string>
+    <string name="osd_item_integer_default">@string/pref_language_track_default</string>
+    <string name="osd_item_boolean_true">On</string>
+    <string name="osd_item_boolean_false">Off</string>
+    <string name="osd_subtitle_title">@string/pref_subtitle_header</string>
+    <string name="osd_subtitle_position_title">Position</string>
+    <string name="osd_subtitle_size_title">Size</string>
+    <string name="osd_subtitle_edge_type_title">Edge type</string>
+    <string name="osd_subtitle_edge_type_default">@string/pref_language_track_default</string>
+    <string name="osd_subtitle_edge_type_none">None</string>
+    <string name="osd_subtitle_edge_type_outline">Outline</string>
+    <string name="osd_subtitle_edge_type_drop_shadow">Drop shadow</string>
+    <string name="osd_subtitle_edge_type_raised">Raised</string>
+    <string name="osd_subtitle_edge_type_depressed">Depressed</string>
+    <string name="osd_subtitle_typeface_title">Typeface</string>
+    <string name="osd_subtitle_typeface_regular">Regular</string>
+    <string name="osd_subtitle_typeface_bold">Bold</string>
+    <string name="osd_subtitle_embedded_styles_title">@string/pref_subtitle_style_embedded</string>
+    <string name="osd_subtitle_caption_preferences_title">@string/pref_captioning_preferences</string>
 </resources>

@@ -18,6 +18,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.UriPermission;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -97,6 +98,7 @@ import androidx.media3.ui.TimeBar;
 
 import com.brouken.player.dtpv.DoubleTapPlayerView;
 import com.brouken.player.dtpv.youtube.YouTubeOverlay;
+import com.brouken.player.osd.OsdSettingsController;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.material.snackbar.Snackbar;
@@ -123,6 +125,7 @@ public class PlayerActivity extends Activity {
     public CustomPlayerView playerView;
     public static ExoPlayer player;
     private YouTubeOverlay youTubeOverlay;
+    private OsdSettingsController osdSettingsController;
 
     private Object mPictureInPictureParamsBuilder;
 
@@ -145,7 +148,7 @@ public class PlayerActivity extends Activity {
     private static final int REQUEST_CHOOSER_VIDEO_MEDIASTORE = 20;
     private static final int REQUEST_CHOOSER_SUBTITLE_MEDIASTORE = 21;
     private static final int REQUEST_SETTINGS = 100;
-    private static final int REQUEST_SYSTEM_CAPTIONS = 200;
+    public static final int REQUEST_SYSTEM_CAPTIONS = 200;
     public static final int CONTROLLER_TIMEOUT = 3500;
     private static final String ACTION_MEDIA_CONTROL = "media_control";
     private static final String EXTRA_CONTROL_TYPE = "control_type";
@@ -170,7 +173,7 @@ public class PlayerActivity extends Activity {
     private boolean restorePlayState;
     private boolean restorePlayStateAllowed;
     private boolean play;
-    private float subtitlesScale;
+    // private float subtitlesScale;
     private boolean isScrubbing;
     private boolean scrubbingNoticeable;
     private long scrubbingStart;
@@ -246,6 +249,8 @@ public class PlayerActivity extends Activity {
         if (isTvBox) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }
+
+        mPrefs.mSharedPreferences.registerOnSharedPreferenceChangeListener(preferenceListener);
 
         final Intent launchIntent = getIntent();
         final String action = launchIntent.getAction();
@@ -551,6 +556,9 @@ public class PlayerActivity extends Activity {
             }
             return windowInsets;
         });
+
+        osdSettingsController = new OsdSettingsController(this);
+
         timeBar.setAdMarkerColor(Color.argb(0x00, 0xFF, 0xFF, 0xFF));
         timeBar.setPlayedAdMarkerColor(Color.argb(0x98, 0xFF, 0xFF, 0xFF));
 
@@ -606,8 +614,7 @@ public class PlayerActivity extends Activity {
         });
 
         exoSubtitle.setOnLongClickListener(v -> {
-            enableRotation();
-            safelyStartActivityForResult(new Intent(Settings.ACTION_CAPTIONING_SETTINGS), REQUEST_SYSTEM_CAPTIONS);
+            osdSettingsController.showSubtitleSettings();
             return true;
         });
 
@@ -756,6 +763,12 @@ public class PlayerActivity extends Activity {
         }
         playerView.setCustomErrorMessage(null);
         releasePlayer(false);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mPrefs.mSharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceListener);
     }
 
     @Override
@@ -1596,7 +1609,7 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    private void enableRotation() {
+    public void enableRotation() {
         try {
             if (Settings.System.getInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION) == 0) {
                 Settings.System.putInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION, 1);
@@ -1697,7 +1710,7 @@ public class PlayerActivity extends Activity {
         return intent;
     }
 
-    void safelyStartActivityForResult(final Intent intent, final int code) {
+    public void safelyStartActivityForResult(final Intent intent, final int code) {
         if (intent.resolveActivity(getPackageManager()) == null)
             showSnack(getText(R.string.error_files_missing).toString(), intent.toString());
         else
@@ -1790,10 +1803,16 @@ public class PlayerActivity extends Activity {
     }
 
     void setSubtitleTextSize() {
-        setSubtitleTextSize(getResources().getConfiguration().orientation);
+        // setSubtitleTextSize(getResources().getConfiguration().orientation);
+
+        final SubtitleView subtitleView = playerView.getSubtitleView();
+        if (subtitleView != null) {
+            final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
+            SubtitleUtils.updateFractionalTextSize(subtitleView, captioningManager, mPrefs);
+        }
     }
 
-    void setSubtitleTextSize(final int orientation) {
+    /*void setSubtitleTextSize(final int orientation) {
         // Tweak text size as fraction size doesn't work well in portrait
         final SubtitleView subtitleView = playerView.getSubtitleView();
         if (subtitleView != null) {
@@ -1810,7 +1829,7 @@ public class PlayerActivity extends Activity {
 
             subtitleView.setFractionalTextSize(size);
         }
-    }
+    }*/
 
     void updateSubtitleViewMargin() {
         if (player == null) {
@@ -1884,7 +1903,7 @@ public class PlayerActivity extends Activity {
         super.onConfigurationChanged(newConfig);
 
         if (!isInPip()) {
-            setSubtitleTextSize(newConfig.orientation);
+            setSubtitleTextSize(/*newConfig.orientation*/);
         }
         updateSubtitleViewMargin();
 
@@ -1949,8 +1968,8 @@ public class PlayerActivity extends Activity {
     void updateSubtitleStyle(final Context context) {
         final CaptioningManager captioningManager = (CaptioningManager) getSystemService(Context.CAPTIONING_SERVICE);
         final SubtitleView subtitleView = playerView.getSubtitleView();
-        final boolean isTablet = Utils.isTablet(context);
-        subtitlesScale = SubtitleUtils.normalizeFontScale(captioningManager.getFontScale(), isTvBox || isTablet);
+        // final boolean isTablet = Utils.isTablet(context);
+        // subtitlesScale = SubtitleUtils.normalizeFontScale(captioningManager.getFontScale(), isTvBox || isTablet);
         if (subtitleView != null) {
             final CaptioningManager.CaptionStyle userStyle = captioningManager.getUserStyle();
             final CaptionStyleCompat userStyleCompat = CaptionStyleCompat.createFromCaptionStyle(userStyle);
@@ -1958,15 +1977,21 @@ public class PlayerActivity extends Activity {
                     userStyle.hasForegroundColor() ? userStyleCompat.foregroundColor : Color.WHITE,
                     userStyle.hasBackgroundColor() ? userStyleCompat.backgroundColor : Color.TRANSPARENT,
                     userStyle.hasWindowColor() ? userStyleCompat.windowColor : Color.TRANSPARENT,
-                    userStyle.hasEdgeType() ? userStyleCompat.edgeType : CaptionStyleCompat.EDGE_TYPE_OUTLINE,
+                    SubtitleUtils.getSubtitleEdgeType(mPrefs.subtitleEdgeType, userStyle),
                     userStyle.hasEdgeColor() ? userStyleCompat.edgeColor : Color.BLACK,
                     Typeface.create(userStyleCompat.typeface != null ? userStyleCompat.typeface : Typeface.DEFAULT,
                             mPrefs.subtitleStyleBold ? Typeface.BOLD : Typeface.NORMAL));
             subtitleView.setStyle(captionStyle);
             subtitleView.setApplyEmbeddedStyles(mPrefs.subtitleStyleEmbedded);
-            subtitleView.setBottomPaddingFraction(SubtitleView.DEFAULT_BOTTOM_PADDING_FRACTION * 2f / 3f);
+            updateSubtitleBottomPaddingFraction(mPrefs.subtitleVerticalPosition);
+            SubtitleUtils.updateFractionalTextSize(subtitleView, captioningManager, mPrefs);
         }
-        setSubtitleTextSize();
+        // setSubtitleTextSize();
+    }
+
+    private void updateSubtitleBottomPaddingFraction(int subtitleVerticalPosition) {
+        float bottomPaddingFraction = SubtitleView.DEFAULT_BOTTOM_PADDING_FRACTION + (subtitleVerticalPosition * 0.01f);
+        playerView.getSubtitleView().setBottomPaddingFraction(bottomPaddingFraction);
     }
 
     void searchSubtitles() {
@@ -2317,4 +2342,15 @@ public class PlayerActivity extends Activity {
             }
         }
     }
+
+    private final SharedPreferences.OnSharedPreferenceChangeListener preferenceListener = (sharedPreferences, key) -> {
+        switch (key) {
+            case Prefs.PREF_KEY_SUBTITLE_VERTICAL_POSITION:
+            case Prefs.PREF_KEY_SUBTITLE_SIZE:
+            case Prefs.PREF_KEY_SUBTITLE_EDGE_TYPE:
+            case Prefs.PREF_KEY_SUBTITLE_STYLE_BOLD:
+            case Prefs.PREF_KEY_SUBTITLE_STYLE_EMBEDDED:
+                updateSubtitleStyle(PlayerActivity.this);
+        }
+    };
 }
