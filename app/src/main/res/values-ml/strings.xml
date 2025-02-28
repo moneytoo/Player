@@ -14,7 +14,6 @@
     <string name="pref_language_track_device">ഉപകരണ ഭാഷകൾ</string>
     <string name="pref_language_track_default">സ്ഥിരസ്ഥിതി</string>
     <string name="pref_subtitle_header">ഉപശീർഷകം</string>
-    <string name="pref_subtitle_style_bold">വിശദമായ ശൈലി</string>
     <string name="pref_captioning_preferences">അടിക്കുറിപ്പ് മുൻഗണനകൾ</string>
     <string name="pref_shortcuts_header">കുറുക്കുവഴികൾ</string>
     <string name="video_resize_fit">അനുയോജ്യം</string>
@@ -24,8 +23,6 @@
     <string name="video_orientation_sensor">സ്വയം തിരിയുക</string>
     <string name="pref_skip_silence_off">ഉള്ളടക്കം അതേപടി കളിക്കുക</string>
     <string name="shortcut_videos">വീഡിയോകൾ</string>
-    <string name="pref_subtitle_style_embedded">ഉൾച്ചേർത്ത ശൈലികൾ</string>
-    <string name="pref_subtitle_style_embedded_on">ഉൾച്ചേർത്ത ഉപശീർഷക ശൈലികൾ പ്രയോഗിക്കുക</string>
-    <string name="pref_subtitle_style_embedded_off">ഉൾച്ചേർത്ത ഉപശീർഷക ശൈലികൾ പ്രയോഗിക്കരുത്</string>
     <string name="pref_framerate_matching_off">ഡിസ്പ്ലേ പുതുക്കൽ നിരക്ക് മാറ്റരുത്</string>
+    <string name="osd_subtitle_embedded_styles_title">ഉൾച്ചേർത്ത ശൈലികൾ</string>
 </resources>
