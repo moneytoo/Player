@@ -39,7 +39,7 @@
     <string name="pref_decoder_priority_prefer_device">Ưu tiên bộ giải mã thiết bị</string>
     <string name="pref_decoder_priority_prefer_app">Ưu tiên bộ giải mã ứng dụng</string>
     <string name="pref_decoder_priority_only_device">Chỉ bộ giải mã thiết bị</string>
-    <string name="mediastore_empty">Không tìm thấy tệp video được lập chỉ mục. Để truy cập các tệp video trong bộ nhớ, hãy bật tính năng quét phương tiện tự động trong cài đặt hệ thống.</string>
+    <string name="mediastore_empty">Không tìm thấy tệp video</string>
     <string name="pref_decoder_priority">Bộ giải mã ưu tiên</string>
     <string name="video_orientation_system">Hướng thiết bị</string>
     <string name="pref_map_dv7">Dự phòng Dolby Vision profile 7</string>
