@@ -12,7 +12,7 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 34
-        versionCode 188
+        versionCode 189
         versionName "0.${versionCode}"
         archivesBaseName = "Just.Player.v${versionName}"
         if (abiFilter) {
@@ -83,7 +83,7 @@ android {
 }
 
 dependencies {
-    def media3_version = '1.6.0-rc01'
+    def media3_version = '1.6.0-rc02'
     def androidxCoreVersion = '1.8.0'
     implementation "androidx.media3:media3-session:$media3_version"
     implementation "androidx.media3:media3-datasource:$media3_version"
@@ -102,10 +102,10 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer-rtsp:$media3_version") {
         exclude group: "androidx.media3", module: "media3-exoplayer"
     }
-    implementation 'androidx.recyclerview:recyclerview:1.3.2'
+    implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
     implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.2.0'
+    implementation 'androidx.coordinatorlayout:coordinatorlayout:1.3.0'
     implementation "androidx.core:core:$androidxCoreVersion"
     implementation 'androidx.appcompat:appcompat:1.7.0'
     implementation 'androidx.preference:preference:1.2.1'
