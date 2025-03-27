@@ -83,7 +83,7 @@ android {
 }
 
 dependencies {
-    def media3_version = '1.6.0-rc02'
+    def media3_version = '1.6.0'
     def androidxCoreVersion = '1.8.0'
     implementation "androidx.media3:media3-session:$media3_version"
     implementation "androidx.media3:media3-datasource:$media3_version"
