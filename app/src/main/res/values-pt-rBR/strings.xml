@@ -34,7 +34,7 @@
     <string name="pref_auto_pip_off">Não mudar automaticamente para PiP</string>
     <string name="pref_skip_silence_on">Ignorar partes silenciosas em transmissões de áudio</string>
     <string name="pref_skip_silence_off">Reproduzir conteúdo como está</string>
-    <string name="pref_repeat_toggle_summary">Controlo extra para permitir a repetição infinita do vídeo (requer a reinicialização do aplicativo)</string>
+    <string name="pref_repeat_toggle_summary">Controle extra para permitir a repetição infinita do vídeo (requer a reinicialização do aplicativo)</string>
     <string name="button_pip">Picture-in-Picture</string>
     <string name="pref_file_access">Acesso aos arquivos</string>
     <string name="pref_shortcuts_header">Atalhos</string>
