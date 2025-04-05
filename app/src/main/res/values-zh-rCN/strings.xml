@@ -50,11 +50,6 @@
     <string name="pref_language_track_default">默认</string>
     <string name="pref_map_dv7">杜比视界配置文件 7 后备</string>
     <string name="pref_map_dv7_on">在 HDR 显示器上播放杜比视界配置 7 内容</string>
-    <string name="pref_subtitle_style_embedded">字幕嵌入样式</string>
-    <string name="pref_subtitle_style_embedded_on">应用嵌入字幕样式</string>
-    <string name="pref_subtitle_style_embedded_off">不应用嵌入字幕样式</string>
-    <string name="pref_subtitle_style_bold_off">使用默认的常规字体</string>
     <string name="pref_subtitle_header">字幕</string>
-    <string name="pref_subtitle_style_bold">粗体式样</string>
-    <string name="pref_subtitle_style_bold_on">使用粗体字体</string>
+    <string name="osd_subtitle_embedded_styles_title">字幕嵌入样式</string>
 </resources>
