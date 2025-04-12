@@ -151,4 +151,22 @@
 
   </LinearLayout>
 
+  <View android:id="@+id/exo_top"
+      android:layout_width="match_parent"
+      android:layout_height="0dp"
+      android:background="@color/exo_black_opacity_70"
+      android:layout_gravity="top" />
+
+  <View android:id="@+id/exo_left"
+    android:layout_width="0dp"
+    android:layout_height="match_parent"
+    android:background="@color/exo_black_opacity_70"
+    android:layout_gravity="left" />
+
+  <View android:id="@+id/exo_right"
+      android:layout_width="0dp"
+      android:layout_height="match_parent"
+      android:background="@color/exo_black_opacity_70"
+      android:layout_gravity="right" />
+
 </merge>

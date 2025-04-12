@@ -475,6 +475,10 @@ public class PlayerActivity extends Activity {
             return true;
         });
 
+        if (Build.VERSION.SDK_INT >= 35) {
+            getWindow().setNavigationBarContrastEnforced(false);
+        }
+
         controlView = playerView.findViewById(R.id.exo_controller);
         controlView.setOnApplyWindowInsetsListener((view, windowInsets) -> {
             if (windowInsets != null) {
@@ -486,9 +490,6 @@ public class PlayerActivity extends Activity {
                         playerView.removeCallbacks(barsHider);
                     }
                 }
-
-                view.setPadding(0, windowInsets.getSystemWindowInsetTop(),
-                        0, windowInsets.getSystemWindowInsetBottom());
 
                 int insetLeft = windowInsets.getSystemWindowInsetLeft();
                 int insetRight = windowInsets.getSystemWindowInsetRight();
@@ -510,14 +511,39 @@ public class PlayerActivity extends Activity {
                     }
                 }
 
+                int bottomBarPaddingBottom = 0;
+                int progressBarMarginBottom = 0;
+
+                if (Build.VERSION.SDK_INT >= 35) {
+                    final int left = windowInsets.getInsets(WindowInsets.Type.navigationBars()).left;
+                    final int right = windowInsets.getInsets(WindowInsets.Type.navigationBars()).right;
+
+                    final View exoTop = findViewById(R.id.exo_top);
+                    exoTop.getLayoutParams().height = windowInsets.getSystemWindowInsetTop();
+                    Utils.setViewMargins(exoTop, left, 0, right, 0);
+
+                    final FrameLayout exoBottomBar = findViewById(R.id.exo_bottom_bar);
+                    ViewGroup.LayoutParams params = exoBottomBar.getLayoutParams();
+                    params.height = getResources().getDimensionPixelSize(R.dimen.exo_styled_bottom_bar_height) + windowInsets.getSystemWindowInsetBottom();
+                    exoBottomBar.setLayoutParams(params);
+
+                    findViewById(R.id.exo_left).getLayoutParams().width = left;
+                    findViewById(R.id.exo_right).getLayoutParams().width = right;
+
+                    bottomBarPaddingBottom = windowInsets.getSystemWindowInsetBottom();
+                    progressBarMarginBottom = windowInsets.getSystemWindowInsetBottom();
+                } else {
+                    view.setPadding(0, windowInsets.getSystemWindowInsetTop(),0, windowInsets.getSystemWindowInsetBottom());
+                }
+
                 Utils.setViewParams(titleView, paddingLeft + titleViewPaddingHorizontal, titleViewPaddingVertical, paddingRight + titleViewPaddingHorizontal, titleViewPaddingVertical,
                         marginLeft, windowInsets.getSystemWindowInsetTop(), marginRight, 0);
 
-                Utils.setViewParams(findViewById(R.id.exo_bottom_bar), paddingLeft, 0, paddingRight, 0,
+                Utils.setViewParams(findViewById(R.id.exo_bottom_bar), paddingLeft, 0, paddingRight, bottomBarPaddingBottom,
                         marginLeft, 0, marginRight, 0);
 
-                findViewById(R.id.exo_progress).setPadding(windowInsets.getSystemWindowInsetLeft(), 0,
-                        windowInsets.getSystemWindowInsetRight(), 0);
+                Utils.setViewParams(findViewById(R.id.exo_progress), windowInsets.getSystemWindowInsetLeft(), 0, windowInsets.getSystemWindowInsetRight(), 0,
+                        0, 0, 0, getResources().getDimensionPixelSize(R.dimen.exo_styled_progress_margin_bottom) + progressBarMarginBottom);
 
                 Utils.setViewMargins(findViewById(R.id.exo_error_message), 0, windowInsets.getSystemWindowInsetTop() / 2, 0, getResources().getDimensionPixelSize(R.dimen.exo_error_message_margin_bottom) + windowInsets.getSystemWindowInsetBottom() / 2);
 

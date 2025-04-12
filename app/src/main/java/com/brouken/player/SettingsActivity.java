@@ -1,5 +1,6 @@
 package com.brouken.player;
 
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,6 +36,16 @@ public class SettingsActivity extends AppCompatActivity {
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
             );
             getWindow().setNavigationBarColor(Color.TRANSPARENT);
+
+            if (Build.VERSION.SDK_INT >= 35) {
+                int nightModeFlags = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+                if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+                    getWindow().getDecorView().setSystemUiVisibility(0);
+                } else if (nightModeFlags == Configuration.UI_MODE_NIGHT_NO) {
+                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                }
+            }
         }
 
         super.onCreate(savedInstanceState);

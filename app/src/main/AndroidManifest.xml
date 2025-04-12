@@ -702,7 +702,7 @@
             android:label="@string/pref_title"
             android:parentActivityName=".PlayerActivity"
             android:screenOrientation="locked"
-            android:theme="@style/Theme.AppCompat.DayNight" >
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
 
