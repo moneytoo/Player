@@ -12,7 +12,7 @@ android {
         applicationId "com.brouken.player"
         minSdkVersion 21
         targetSdkVersion 35
-        versionCode 191
+        versionCode 192
         versionName "0.${versionCode}"
         archivesBaseName = "Just.Player.v${versionName}"
         if (abiFilter) {
@@ -83,7 +83,7 @@ android {
 }
 
 dependencies {
-    def media3_version = '1.6.0'
+    def media3_version = '1.6.1'
     def androidxCoreVersion = '1.8.0'
     implementation "androidx.media3:media3-session:$media3_version"
     implementation "androidx.media3:media3-datasource:$media3_version"
