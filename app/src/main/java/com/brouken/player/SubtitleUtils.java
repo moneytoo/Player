@@ -269,7 +269,7 @@ class SubtitleUtils {
         final String subtitleMime = SubtitleUtils.getSubtitleMime(uri);
         final String subtitleLanguage = SubtitleUtils.getSubtitleLanguage(uri);
         if (subtitleLanguage == null && subtitleName == null)
-            subtitleName = Utils.getFileName(context, uri);
+            subtitleName = Utils.getFileName(context, uri, false);
 
         MediaItem.SubtitleConfiguration.Builder subtitleConfigurationBuilder = new MediaItem.SubtitleConfiguration.Builder(uri)
                 .setMimeType(subtitleMime)
