@@ -38,7 +38,7 @@
     <string name="button_pip">Картинка в картинці</string>
     <string name="pref_file_access">Доступ до файлів</string>
     <string name="pref_file_access_auto">Автоматично</string>
-    <string name="mediastore_empty">Не знайдено проіндексованих відеофайлів. Щоб отримати доступ до відеофайлів у певному сховищі, увімкніть автоматичне сканування медіа в налаштуваннях системи.</string>
+    <string name="mediastore_empty">Відеофайли не знайдено</string>
     <string name="pref_dangerous_header">Увага⚠️</string>
     <string name="pref_dangerous_warning">Перемикання параметрів у цій категорії може порушити відтворення зазвичай сумісного контенту</string>
     <string name="pref_shortcuts_header">Ярлики</string>
