@@ -34,7 +34,7 @@
     <string name="button_pip">Εικόνα-εντός-εικόνας</string>
     <string name="pref_file_access">Πρόσβαση σε αρχεία</string>
     <string name="pref_file_access_auto">Αυτόματο</string>
-    <string name="mediastore_empty">Δεν βρέθηκαν αρχεία βίντεο στο ευρετήριο. Για πρόσβαση σε αρχεία βίντεο στο συγκεκριμένο χώρο αποθήκευσης, ενεργοποιήστε την αυτόματη σάρωση πολυμέσων στις ρυθμίσεις του συστήματος.</string>
+    <string name="mediastore_empty">Δεν βρέθηκαν αρχεία βίντεο.</string>
     <string name="pref_shortcuts_header">Συντομεύσεις</string>
     <string name="pref_captioning_preferences">Προτιμήσεις υπότιτλων</string>
     <string name="pref_decoder_priority">Προτεραιότητα αποκωδικοποιητή</string>
