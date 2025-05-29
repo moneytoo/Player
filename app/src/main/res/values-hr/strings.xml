@@ -50,11 +50,6 @@
     <string name="pref_dangerous_header">Opasno ⚠️</string>
     <string name="pref_map_dv7_off">Reproduciraj UHD Blu-ray sadržaj koji sadrži Dolby Vision kakav je</string>
     <string name="pref_dangerous_warning">Mijenjanje opcija u ovoj kategoriji može prekinuti reprodukciju uobičajeno kompatibilnog sadržaja</string>
-    <string name="pref_subtitle_style_embedded">Ugrađeni stilovi</string>
-    <string name="pref_subtitle_style_embedded_on">Primijeni ugrađene stilove titlova</string>
-    <string name="pref_subtitle_style_embedded_off">Nemoj primijeniti ugrađene stilove titlova</string>
-    <string name="pref_subtitle_style_bold_off">Koristi osnovni stil fonta</string>
     <string name="pref_subtitle_header">Titl</string>
-    <string name="pref_subtitle_style_bold">Podebljani stil</string>
-    <string name="pref_subtitle_style_bold_on">Koristi podebljani stil fonta kao osnovni</string>
+    <string name="osd_subtitle_embedded_styles_title">Ugrađeni stilovi</string>
 </resources>
