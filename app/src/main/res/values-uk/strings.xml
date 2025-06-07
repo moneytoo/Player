@@ -51,10 +51,5 @@
     <string name="pref_language_track_device">Мова пристрою</string>
     <string name="pref_language_track_default">За замовчуванням</string>
     <string name="pref_subtitle_header">Субтитри</string>
-    <string name="pref_subtitle_style_embedded">Вбудовані стилі</string>
-    <string name="pref_subtitle_style_embedded_on">Застосувати вбудовані стилі субтитрів</string>
-    <string name="pref_subtitle_style_embedded_off">Не застосувати вбудовані стилі субтитрів</string>
-    <string name="pref_subtitle_style_bold">Жирний стиль</string>
-    <string name="pref_subtitle_style_bold_on">Використовувати жирний шрифт замість звичайного</string>
-    <string name="pref_subtitle_style_bold_off">Використовувати звичайний шрифт за замовчуванням</string>
+    <string name="osd_subtitle_embedded_styles_title">Вбудовані стилі</string>
 </resources>
