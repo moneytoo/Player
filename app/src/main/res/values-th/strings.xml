@@ -24,4 +24,12 @@
     <string name="pref_language_track_device">ภาษาของอุปกรณ์</string>
     <string name="pref_auto_pip_on">สลับเป็นโหมดภาพซ้อนภาพในภาพเมื่อออกจากแอป</string>
     <string name="video_orientation_system">ปรับทิศตามอุปกรณ์</string>
+    <string name="pref_framerate_matching_on">สลับอัตราการรีเฟรชหน้าจอให้ตรงกับอัตราเฟรมวิดีโอ</string>
+    <string name="pref_framerate_matching_off">อย่าเปลี่ยนอัตราการรีเฟรชแสดงผล</string>
+    <string name="pref_auto_pip">ซ้อนภาพอัตโนมัติ</string>
+    <string name="pref_auto_pip_off">อย่าเปลี่ยนไปใช้ PiP โดยอัตโนมัติ</string>
+    <string name="pref_skip_silence_off">เล่นเนื้อหาตามที่เป็นอยู่</string>
+    <string name="pref_skip_silence">ข้ามความเงียบ</string>
+    <string name="pref_skip_silence_on">ข้ามส่วนที่มีความเงียบในสตรีมเสียง</string>
+    <string name="pref_framerate_matching">จับคู่อัตราเฟรมอัตโนมัติ</string>
 </resources>
