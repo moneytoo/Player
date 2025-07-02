@@ -3,11 +3,16 @@ package com.brouken.player;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
+import android.view.accessibility.CaptioningManager;
 
 import androidx.documentfile.provider.DocumentFile;
 import androidx.media3.common.C;
 import androidx.media3.common.MediaItem;
 import androidx.media3.common.MimeTypes;
+import androidx.media3.ui.CaptionStyleCompat;
+import androidx.media3.ui.SubtitleView;
+
+import com.brouken.player.osd.subtitle.SubtitleEdgeType;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -282,7 +287,7 @@ class SubtitleUtils {
         return subtitleConfigurationBuilder.build();
     }
 
-    public static float normalizeFontScale(float fontScale, boolean small) {
+    /*public static float normalizeFontScale(float fontScale, boolean small) {
         // https://bbc.github.io/subtitle-guidelines/#Presentation-font-size
         float newScale;
         // ¯\_(ツ)_/¯
@@ -306,5 +311,31 @@ class SubtitleUtils {
             newScale = (small ? 0.85f : 1.0f);
         }
         return newScale;
+    }*/
+
+    public static void updateFractionalTextSize(SubtitleView subtitleView, CaptioningManager captioningManager, Prefs prefs) {
+        float fontScale = captioningManager.getFontScale();
+        int subtitleSize = prefs.subtitleSize;
+        float fractionalTextSize = (SubtitleView.DEFAULT_TEXT_SIZE_FRACTION * fontScale) + (subtitleSize * 0.001f);
+        subtitleView.setFractionalTextSize(fractionalTextSize);
+    }
+
+    public static @CaptionStyleCompat.EdgeType int getSubtitleEdgeType(SubtitleEdgeType subtitleEdgeType, CaptioningManager.CaptionStyle captionStyle) {
+        switch (subtitleEdgeType) {
+            case Default:
+                return captionStyle.hasEdgeType() ? captionStyle.edgeType : CaptionStyleCompat.EDGE_TYPE_OUTLINE;
+            case None:
+                return CaptionStyleCompat.EDGE_TYPE_NONE;
+            case Outline:
+                return CaptionStyleCompat.EDGE_TYPE_OUTLINE;
+            case DropShadow:
+                return CaptionStyleCompat.EDGE_TYPE_DROP_SHADOW;
+            case Raised:
+                return CaptionStyleCompat.EDGE_TYPE_RAISED;
+            case Depressed:
+                return CaptionStyleCompat.EDGE_TYPE_DEPRESSED;
+            default:
+                throw new IllegalArgumentException("Unknown subtitleEdgeType: " + subtitleEdgeType);
+        }
     }
 }
