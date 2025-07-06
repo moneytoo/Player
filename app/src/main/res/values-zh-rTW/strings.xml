@@ -9,7 +9,7 @@
     <string name="onboarding_open_description">輕觸即可開啟影片檔案，按住即可載入外掛字幕。</string>
     <string name="open_subtitles">載入字幕</string>
     <string name="error_details">資訊</string>
-    <string name="error_files_missing">檔案應用程式已被停用或遺失。</string>
+    <string name="error_files_missing">檔案應用程式已停用或遺失</string>
     <string name="request_scope">如要自動載入字幕或啟用播放下個檔案功能，請授予 %s 存取您影片的頂層資料夾權限 (例如 Movies)。</string>
     <string name="delete_query">要刪除這個檔案嗎？</string>
     <string name="delete_confirmation">刪除</string>
@@ -40,7 +40,7 @@
     <string name="pref_file_access_auto">自動</string>
     <string name="mediastore_empty">找不到影片檔案</string>
     <string name="pref_dangerous_header">實驗性 ⚠️</string>
-    <string name="pref_dangerous_warning">變更這個類別的項目可能會導致播放異常。</string>
+    <string name="pref_dangerous_warning">變更這個類別中的項目可能會導致播放異常</string>
     <string name="pref_shortcuts_header">捷徑</string>
     <string name="pref_captioning_preferences">字幕設定</string>
     <string name="pref_decoder_priority">解碼器使用順序</string>
@@ -50,8 +50,8 @@
     <string name="pref_language_audio">預設音訊軌道</string>
     <string name="pref_language_track_device">裝置語言</string>
     <string name="pref_language_track_default">媒體檔案預設</string>
-    <string name="pref_subtitle_style_bold_on">默認使用粗體字型</string>
-    <string name="pref_subtitle_style_bold_off">使用預設一般字型</string>
+    <string name="pref_subtitle_style_bold_on">預設使用粗體字型</string>
+    <string name="pref_subtitle_style_bold_off">預設使用標準字型</string>
     <string name="pref_subtitle_style_embedded">嵌入樣式</string>
     <string name="pref_subtitle_style_embedded_on">套用內嵌字幕樣式</string>
     <string name="pref_subtitle_header">字幕</string>
