@@ -50,11 +50,6 @@
     <string name="pref_language_audio">預設音訊軌道</string>
     <string name="pref_language_track_device">裝置語言</string>
     <string name="pref_language_track_default">媒體檔案預設</string>
-    <string name="pref_subtitle_style_bold_on">默認使用粗體字型</string>
-    <string name="pref_subtitle_style_bold_off">使用預設一般字型</string>
-    <string name="pref_subtitle_style_embedded">嵌入樣式</string>
-    <string name="pref_subtitle_style_embedded_on">套用內嵌字幕樣式</string>
+    <string name="osd_subtitle_embedded_styles_title">嵌入樣式</string>
     <string name="pref_subtitle_header">字幕</string>
-    <string name="pref_subtitle_style_embedded_off">不要套用內嵌字幕樣式</string>
-    <string name="pref_subtitle_style_bold">粗體樣式</string>
 </resources>

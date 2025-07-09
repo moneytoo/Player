@@ -51,10 +51,5 @@
     <string name="pref_map_dv7_off">Reproduzir conteúdo \"Blu-ray UHD\" contendo \"Dolby Vision\" como está</string>
     <string name="pref_dangerous_warning">Alternar opções nesta categoria pode interromper a reprodução de conteúdo normalmente compatível</string>
     <string name="pref_subtitle_header">Legenda</string>
-    <string name="pref_subtitle_style_embedded">Estilos embutidos</string>
-    <string name="pref_subtitle_style_embedded_on">Aplicar estilos de legenda embutidos</string>
-    <string name="pref_subtitle_style_embedded_off">Não aplicar estilos de legenda embutidos</string>
-    <string name="pref_subtitle_style_bold">Estilo negrito</string>
-    <string name="pref_subtitle_style_bold_on">Usar fonte em negrito como regular</string>
-    <string name="pref_subtitle_style_bold_off">Usar fonte regular padrão</string>
+    <string name="osd_subtitle_embedded_styles_title">Estilos embutidos</string>
 </resources>

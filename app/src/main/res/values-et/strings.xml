@@ -49,12 +49,7 @@
     <string name="pref_language_track_device">Nutiseadme keele alusel</string>
     <string name="pref_language_track_default">Nii nagu failis on vaikimisi määratud</string>
     <string name="pref_subtitle_header">Subtiitrid</string>
-    <string name="pref_subtitle_style_embedded">Failis leiduvad subtiitrid</string>
-    <string name="pref_subtitle_style_embedded_off">Ära kasuta lõimitud subtiitrites määratletud kujundust</string>
-    <string name="pref_subtitle_style_bold">Paks kiri</string>
-    <string name="pref_subtitle_style_bold_off">Kasuta vaikimisi kirjatüüpi tavalisena</string>
     <string name="pref_dangerous_warning">Eelistuste muutmine sellest kategoorias võib korralikult toimiva taasesituse katki teha</string>
     <string name="pref_decoder_priority_prefer_device">Eelista nutiseadme dekoodereid (vaikimisi valik)</string>
-    <string name="pref_subtitle_style_embedded_on">Kasuta lõimitud subtiitrites määratletud kujundust</string>
-    <string name="pref_subtitle_style_bold_on">Kasuta paksu kirjatüübi tavalisena</string>
+    <string name="osd_subtitle_embedded_styles_title">Failis leiduvad subtiitrid</string>
 </resources>

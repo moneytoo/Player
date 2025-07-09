@@ -6,8 +6,12 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.media3.exoplayer.DefaultRenderersFactory;
 import androidx.media3.ui.AspectRatioFrameLayout;
+
+import com.brouken.player.osd.subtitle.SubtitleEdgeType;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -16,7 +20,7 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedHashMap;
 import java.util.Set;
 
-class Prefs {
+public class Prefs {
     // Previously used
     // private static final String PREF_KEY_AUDIO_TRACK = "audioTrack";
     // private static final String PREF_KEY_AUDIO_TRACK_FFMPEG = "audioTrackFfmpeg";
@@ -45,8 +49,11 @@ class Prefs {
     private static final String PREF_KEY_DECODER_PRIORITY = "decoderPriority";
     private static final String PREF_KEY_MAP_DV7 = "mapDV7ToHevc";
     private static final String PREF_KEY_LANGUAGE_AUDIO = "languageAudio";
-    private static final String PREF_KEY_SUBTITLE_STYLE_EMBEDDED = "subtitleStyleEmbedded";
-    private static final String PREF_KEY_SUBTITLE_STYLE_BOLD = "subtitleStyleBold";
+    static final String PREF_KEY_SUBTITLE_STYLE_EMBEDDED = "subtitleStyleEmbedded";
+    static final String PREF_KEY_SUBTITLE_STYLE_BOLD = "subtitleStyleBold";
+    static final String PREF_KEY_SUBTITLE_VERTICAL_POSITION = "subtitleVerticalPosition";
+    static final String PREF_KEY_SUBTITLE_SIZE = "subtitleSize";
+    static final String PREF_KEY_SUBTITLE_EDGE_TYPE = "subtitleEdgeType";
 
     public static final String TRACK_DEFAULT = "default";
     public static final String TRACK_DEVICE = "device";
@@ -81,6 +88,9 @@ class Prefs {
     public String languageAudio = TRACK_DEVICE;
     public boolean subtitleStyleEmbedded = true;
     public boolean subtitleStyleBold = false;
+    public int subtitleVerticalPosition = 0;
+    public int subtitleSize = 0;
+    public SubtitleEdgeType subtitleEdgeType = SubtitleEdgeType.Default;
 
     private LinkedHashMap positions;
 
@@ -92,6 +102,15 @@ class Prefs {
         mSharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
         loadSavedPreferences();
         loadPositions();
+    }
+
+    private static <T extends Enum<T>> T valueOfEnum(@NonNull Class<T> clazz, @Nullable String name, @NonNull T defaultValue) {
+        if (name == null) return defaultValue;
+        try {
+            return Enum.valueOf(clazz, name);
+        } catch (IllegalArgumentException e) {
+            return defaultValue;
+        }
     }
 
     private void loadSavedPreferences() {
@@ -130,6 +149,9 @@ class Prefs {
         languageAudio = mSharedPreferences.getString(PREF_KEY_LANGUAGE_AUDIO, languageAudio);
         subtitleStyleEmbedded = mSharedPreferences.getBoolean(PREF_KEY_SUBTITLE_STYLE_EMBEDDED, subtitleStyleEmbedded);
         subtitleStyleBold = mSharedPreferences.getBoolean(PREF_KEY_SUBTITLE_STYLE_BOLD, subtitleStyleBold);
+        subtitleVerticalPosition = mSharedPreferences.getInt(PREF_KEY_SUBTITLE_VERTICAL_POSITION, subtitleVerticalPosition);
+        subtitleSize = mSharedPreferences.getInt(PREF_KEY_SUBTITLE_SIZE, subtitleSize);
+        subtitleEdgeType = valueOfEnum(SubtitleEdgeType.class, mSharedPreferences.getString(PREF_KEY_SUBTITLE_EDGE_TYPE, null), subtitleEdgeType);
     }
 
     public void updateMedia(final Context context, final Uri uri, final String type) {
@@ -306,6 +328,41 @@ class Prefs {
             sharedPreferencesEditor.remove(PREF_KEY_SCOPE_URI);
         else
             sharedPreferencesEditor.putString(PREF_KEY_SCOPE_URI, uri.toString());
+        sharedPreferencesEditor.apply();
+    }
+
+    public void updateSubtitleVerticalPosition(final int subtitleVerticalPosition) {
+        this.subtitleVerticalPosition = subtitleVerticalPosition;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        sharedPreferencesEditor.putInt(PREF_KEY_SUBTITLE_VERTICAL_POSITION, subtitleVerticalPosition);
+        sharedPreferencesEditor.apply();
+    }
+
+    public void updateSubtitleSize(final int subtitleSize) {
+        this.subtitleSize = subtitleSize;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        sharedPreferencesEditor.putInt(PREF_KEY_SUBTITLE_SIZE, subtitleSize);
+        sharedPreferencesEditor.apply();
+    }
+
+    public void updateSubtitleEdgeType(final SubtitleEdgeType subtitleEdgeType) {
+        this.subtitleEdgeType = subtitleEdgeType;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        sharedPreferencesEditor.putString(PREF_KEY_SUBTITLE_EDGE_TYPE, subtitleEdgeType.name());
+        sharedPreferencesEditor.apply();
+    }
+
+    public void updateSubtitleStyleBold(final boolean subtitleStyleBold) {
+        this.subtitleStyleBold = subtitleStyleBold;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        sharedPreferencesEditor.putBoolean(PREF_KEY_SUBTITLE_STYLE_BOLD, subtitleStyleBold);
+        sharedPreferencesEditor.apply();
+    }
+
+    public void updateSubtitleStyleEmbedded(final boolean subtitleStyleEmbedded) {
+        this.subtitleStyleEmbedded = subtitleStyleEmbedded;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        sharedPreferencesEditor.putBoolean(PREF_KEY_SUBTITLE_STYLE_EMBEDDED, subtitleStyleEmbedded);
         sharedPreferencesEditor.apply();
     }
 
