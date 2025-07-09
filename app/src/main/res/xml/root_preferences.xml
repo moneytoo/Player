@@ -62,6 +62,13 @@
             android:summaryOff="@string/pref_subtitle_style_bold_off"
             app:title="@string/pref_subtitle_style_bold" />
 
+        <SwitchPreferenceCompat
+            app:key="subtitleAutoSearch"
+            app:defaultValue="false"
+            android:summaryOn="@string/pref_subtitle_autosearch_on"
+            android:summaryOff="@string/pref_subtitle_autosearch_off"
+            app:title="@string/pref_subtitle_autosearch" />
+
         <Preference
             app:title="@string/pref_captioning_preferences">
             <intent android:action="android.settings.CAPTIONING_SETTINGS" />
