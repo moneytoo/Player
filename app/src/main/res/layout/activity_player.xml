@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:focusable="false"
+        app:time_bar_scrubbing_enabled="true"
         app:show_subtitle_button="true"
         app:dtpv_controller="@id/youtube_overlay" />
 
