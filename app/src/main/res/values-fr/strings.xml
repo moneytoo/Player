@@ -34,7 +34,7 @@
     <string name="button_pip">Image dans l\'image</string>
     <string name="pref_file_access">Accès aux fichiers</string>
     <string name="pref_file_access_auto">Auto</string>
-    <string name="mediastore_empty">Aucun fichier vidéo indexé n\'a été trouvé. Pour accéder aux fichiers vidéo dans le stockage donné, activez l\'analyse automatique des médias dans les paramètres du système.</string>
+    <string name="mediastore_empty">Aucun fichier vidéo trouvé</string>
     <string name="pref_shortcuts_header">Raccourcis</string>
     <string name="pref_captioning_preferences">Préférences en matière de sous-titrage</string>
     <string name="pref_decoder_priority_prefer_app">Préférer les décodeurs d’applis</string>
