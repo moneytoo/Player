@@ -4,14 +4,14 @@ plugins {
 
 android {
     namespace 'com.brouken.player'
-    compileSdk 35
+    compileSdk = 36
     ndkVersion '21.4.7075529'
 
     defaultConfig {
         def abiFilter = project.findProperty("abiFilter")
         applicationId "com.brouken.player"
         minSdkVersion 21
-        targetSdkVersion 35
+        targetSdkVersion 36
         versionCode 198
         versionName "0.${versionCode}"
         archivesBaseName = "Just.Player.v${versionName}"

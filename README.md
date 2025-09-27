@@ -147,6 +147,12 @@ If your device has a touchscreen you can use the pinch-to-zoom gesture or just t
 
 Just pause and resume playback once again.
 
+### The orientation switch button doesn't work...
+
+Starting Android 16, apps can't programmatically [switch orientation](https://android-developers.googleblog.com/2025/01/orientation-and-resizability-changes-in-android-16.html). However this functionality can be re-enabled per app. 
+
+Open "Aspect ratio" in system Settings, find Just Player and switch from "Full screen" to "App default".
+
 ## Other open source Android video players
 
 Here's a comparison table presenting all available and significant open source video players for Android I was able to find. Just Player is something like ~~80%~~ 90% feature complete. It will probably never have dozens of options or some rich media library UI. It will never truly compete with feature rich VLC. It just attempts to provide functional feature set and motive others to create greater players based on amazing ExoPlayer.
