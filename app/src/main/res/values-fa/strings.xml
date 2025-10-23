@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="video_resize_fit">اندازه مناسب</string>
+    <string name="video_resize_crop">کراپ</string>
+    <string name="video_orientation_sensor">چرخش خودکار</string>
+    <string name="onboarding_open_title">یه ویدیو برای پخش انتخاب کن داداچ</string>
 </resources>
