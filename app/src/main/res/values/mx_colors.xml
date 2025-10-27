@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MX Player Color Scheme -->
+    
+    <!-- Primary Colors -->
+    <color name="mx_primary">#4A9EFF</color> <!-- Blue accent from screenshots -->
+    <color name="mx_primary_dark">#2979FF</color>
+    <color name="mx_accent">#4A9EFF</color>
+    
+    <!-- Background Colors -->
+    <color name="mx_background">#000000</color> <!-- Pure black -->
+    <color name="mx_background_transparent">#80000000</color>
+    <color name="mx_status_bar">#00000000</color> <!-- Transparent -->
+    <color name="mx_navigation_bar">#000000</color>
+    
+    <!-- Text Colors -->
+    <color name="mx_text_primary">#FFFFFF</color> <!-- White -->
+    <color name="mx_text_secondary">#CCFFFFFF</color> <!-- Light gray -->
+    <color name="mx_text_tertiary">#80FFFFFF</color> <!-- Darker gray -->
+    <color name="mx_text_disabled">#40FFFFFF</color>
+    
+    <!-- Control Colors -->
+    <color name="mx_controls_background">#CC000000</color> <!-- Semi-transparent black -->
+    <color name="mx_controls_overlay">#80000000</color>
+    <color name="mx_icon_tint">#FFFFFF</color>
+    <color name="mx_icon_active">#4A9EFF</color> <!-- Blue for active states -->
+    <color name="mx_icon_disabled">#80FFFFFF</color>
+    
+    <!-- Progress/Seekbar Colors -->
+    <color name="mx_progress_primary">#4A9EFF</color>
+    <color name="mx_progress_secondary">#40FFFFFF</color>
+    <color name="mx_progress_background">#20FFFFFF</color>
+    
+    <!-- Equalizer Colors -->
+    <color name="mx_equalizer_background">#000000</color>
+    <color name="mx_equalizer_slider_active">#4A9EFF</color>
+    <color name="mx_equalizer_slider_inactive">#40FFFFFF</color>
+    <color name="mx_equalizer_text">#FFFFFF</color>
+    
+    <!-- Library Colors -->
+    <color name="mx_library_background">#000000</color>
+    <color name="mx_library_item_background">#20FFFFFF</color>
+    <color name="mx_library_item_selected">#4A9EFF</color>
+    <color name="mx_library_separator">#40FFFFFF</color>
+    
+    <!-- Downloader Colors -->
+    <color name="mx_downloader_background">#000000</color>
+    <color name="mx_downloader_progress">#4A9EFF</color>
+    <color name="mx_downloader_complete">#4CAF50</color>
+    <color name="mx_downloader_error">#F44336</color>
+    
+    <!-- Dialog Colors -->
+    <color name="mx_dialog_background">#CC000000</color>
+    <color name="mx_dialog_title">#FFFFFF</color>
+    <color name="mx_dialog_text">#CCFFFFFF</color>
+    
+    <!-- Overlay Colors -->
+    <color name="mx_overlay_background">#80000000</color>
+    <color name="mx_overlay_text">#FFFFFF</color>
+    <color name="mx_overlay_accent">#4A9EFF</color>
+    
+    <!-- Special State Colors -->
+    <color name="mx_selected">#334A9EFF</color>
+    <color name="mx_pressed">#664A9EFF</color>
+    <color name="mx_ripple">#404A9EFF</color>
+    
+</resources>
