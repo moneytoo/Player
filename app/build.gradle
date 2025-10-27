@@ -88,14 +88,14 @@ dependencies {
     def androidxCoreVersion = '1.8.0'
     def work_version = '2.9.0'
 
-    // Media3/ExoPlayer dependencies
+    // Media3/ExoPlayer dependencies (excluding UI to use custom lib-ui-release.aar)
     implementation "androidx.media3:media3-session:$media3_version"
     implementation "androidx.media3:media3-datasource:$media3_version"
     implementation "androidx.media3:media3-decoder:$media3_version"
     implementation "androidx.media3:media3-common:$media3_version"
     implementation "androidx.media3:media3-container:$media3_version"
     implementation "androidx.media3:media3-extractor:$media3_version"
-    // Note: Removed media3-ui to avoid duplicate classes with lib-ui-release.aar
+    // NOTE: media3-ui is excluded to avoid conflicts with lib-ui-release.aar
     implementation("androidx.media3:media3-exoplayer-dash:$media3_version") {
         exclude group: "androidx.media3", module: "media3-exoplayer"
     }
@@ -151,6 +151,6 @@ dependencies {
     implementation project(path: ':doubletapplayerview')
     implementation project(path: ':android-file-chooser')
     
-    // Include all libs except lib-ui-release.aar to avoid duplicate classes
-    implementation fileTree(dir: "libs", include: ["lib-decoder-*.aar", "lib-exoplayer-release.aar"])
+    // Include all custom libs (including lib-ui-release.aar for custom UI)
+    implementation fileTree(dir: "libs", include: ["lib-*.aar"])
 }
