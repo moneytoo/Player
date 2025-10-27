@@ -1,8 +1,86 @@
----
-# Remove lib-ui-release.aar from build dependencies to avoid class duplication with media3-ui
+plugins {
+    id 'com.android.application'
+}
 
 android {
-    // Existing android config unchanged
+    namespace 'com.brouken.player'
+    compileSdk = 36
+    ndkVersion '21.4.7075529'
+
+    defaultConfig {
+        def abiFilter = project.findProperty("abiFilter")
+        applicationId "com.brouken.player"
+        minSdkVersion 23
+        targetSdkVersion 36
+        versionCode 199
+        versionName "0.${versionCode}"
+        archivesBaseName = "Just.Player.v${versionName}"
+        if (abiFilter) {
+            def abiCodeMap = ["x86": 1, "x86_64": 2, "armeabi-v7a": 3, "arm64-v8a": 4]
+            versionCode = versionCode * 10 + abiCodeMap[abiFilter]
+            ndk {
+                abiFilters abiFilter
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            //proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    flavorDimensions "targetSdk", "distribution"
+    productFlavors {
+        latest {
+            dimension "targetSdk"
+        }
+        legacy {
+            dimension "targetSdk"
+            versionCode = defaultConfig.versionCode + 1_000_000
+            versionNameSuffix "-legacy"
+            targetSdkVersion 29
+        }
+
+        universal {
+            dimension "distribution"
+        }
+        amazon {
+            dimension "distribution"
+        }
+        accrescent {
+            dimension "distribution"
+        }
+    }
+    variantFilter { variant ->
+        def names = variant.flavors*.name
+        if (names.contains("legacy") && (names.contains("amazon") || names.contains("accrescent"))) {
+            setIgnore(true)
+        }
+    }
+    applicationVariants.all { variant ->
+        if (variant.buildType.name == "release" && variant.flavorName == "latestUniversal") {
+            variant.outputs.all { output ->
+                output.outputFileName = "${archivesBaseName}.apk"
+            }
+        }
+        if (variant.buildType.name == "release" && variant.flavorName == "legacyUniversal") {
+            variant.outputs.all { output ->
+                output.outputFileName = "${archivesBaseName}-legacy.apk"
+            }
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    buildFeatures {
+        buildConfig = true
+        viewBinding = true
+    }
+    lint {
+        disable 'MissingTranslation'
+        disable 'UnsafeOptInUsageError'
+    }
 }
 
 dependencies {
@@ -10,41 +88,69 @@ dependencies {
     def androidxCoreVersion = '1.8.0'
     def work_version = '2.9.0'
 
+    // Media3/ExoPlayer dependencies
     implementation "androidx.media3:media3-session:$media3_version"
     implementation "androidx.media3:media3-datasource:$media3_version"
     implementation "androidx.media3:media3-decoder:$media3_version"
     implementation "androidx.media3:media3-common:$media3_version"
     implementation "androidx.media3:media3-container:$media3_version"
     implementation "androidx.media3:media3-extractor:$media3_version"
-    implementation "androidx.media3:media3-ui:$media3_version"
-    implementation("androidx.media3:media3-exoplayer-dash:$media3_version") { exclude group: "androidx.media3", module: "media3-exoplayer" }
-    implementation("androidx.media3:media3-exoplayer-hls:$media3_version") { exclude group: "androidx.media3", module: "media3-exoplayer" }
-    implementation("androidx.media3:media3-exoplayer-smoothstreaming:$media3_version") { exclude group: "androidx.media3", module: "media3-exoplayer" }
-    implementation("androidx.media3:media3-exoplayer-rtsp:$media3_version") { exclude group: "androidx.media3", module: "media3-exoplayer" }
+    // Note: Removed media3-ui to avoid duplicate classes with lib-ui-release.aar
+    implementation("androidx.media3:media3-exoplayer-dash:$media3_version") {
+        exclude group: "androidx.media3", module: "media3-exoplayer"
+    }
+    implementation("androidx.media3:media3-exoplayer-hls:$media3_version") {
+        exclude group: "androidx.media3", module: "media3-exoplayer"
+    }
+    implementation("androidx.media3:media3-exoplayer-smoothstreaming:$media3_version") {
+        exclude group: "androidx.media3", module: "media3-exoplayer"
+    }
+    implementation("androidx.media3:media3-exoplayer-rtsp:$media3_version") {
+        exclude group: "androidx.media3", module: "media3-exoplayer"
+    }
 
+    // AndroidX dependencies
     implementation 'androidx.recyclerview:recyclerview:1.4.0'
     implementation 'androidx.coordinatorlayout:coordinatorlayout:1.3.0'
     implementation "androidx.core:core:$androidxCoreVersion"
     implementation 'androidx.appcompat:appcompat:1.7.1'
     implementation 'androidx.preference:preference:1.2.1'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.viewpager2:viewpager2:1.1.0'
 
+    // WorkManager for background downloads
+    implementation "androidx.work:work-runtime:$work_version"
+
+    // Material Design
+    implementation 'com.google.android.material:material:1.12.0'
+
+    // Networking
     implementation 'com.squareup.okhttp3:okhttp:5.2.1'
     implementation 'com.squareup.okhttp3:logging-interceptor:5.2.1'
 
+    // Image loading
     implementation 'com.github.bumptech.glide:glide:4.16.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 
-    implementation 'com.google.android.material:material:1.12.0'
+    // JSON parsing
+    implementation 'com.google.code.gson:gson:2.10.1'
 
+    // Permissions
+    implementation 'com.karumi:dexter:6.2.3'
+
+    // WebView
+    implementation 'androidx.webkit:webkit:1.8.0'
+
+    // Utilities
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
     implementation 'com.sigpwned:chardet4j:77.1.0'
 
+    // Existing dependencies
     implementation project(path: ':doubletapplayerview')
     implementation project(path: ':android-file-chooser')
-    // Removed lib-ui-release.aar from fileTree to avoid duplicate classes
+    
+    // Include all libs except lib-ui-release.aar to avoid duplicate classes
     implementation fileTree(dir: "libs", include: ["lib-decoder-*.aar", "lib-exoplayer-release.aar"])
 }
-
-# NOTE: Exclude or remove lib-ui-release.aar from libs directory manually if not needed
-
