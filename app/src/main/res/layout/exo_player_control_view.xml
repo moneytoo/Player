@@ -28,13 +28,14 @@
         android:layoutDirection="ltr">
 
       <TextView android:id="@+id/exo_position"
-          style="@style/ExoStyledControls.TimeText.Position"/>
+          style="@style/MXPlayer.Text.Time"/>
 
       <TextView
-          style="@style/ExoStyledControls.TimeText.Separator"/>
+          style="@style/MXPlayer.Text.Time"
+          android:text=" / "/>
 
       <TextView android:id="@+id/exo_duration"
-          style="@style/ExoStyledControls.TimeText.Duration"/>
+          style="@style/MXPlayer.Text.Time"/>
 
     </LinearLayout>
 
@@ -45,25 +46,32 @@
         android:layoutDirection="ltr">
 
       <ImageButton android:id="@+id/exo_vr"
-          style="@style/ExoStyledControls.Button.Bottom.VR"/>
+          style="@style/MXPlayer.ImageButton.Small"
+          android:src="@drawable/exo_styled_controls_vr"/>
 
       <ImageButton android:id="@+id/exo_shuffle"
-          style="@style/ExoStyledControls.Button.Bottom.Shuffle"/>
+          style="@style/MXPlayer.ImageButton.Small"
+          android:src="@drawable/exo_styled_controls_shuffle"/>
 
       <ImageButton android:id="@+id/exo_repeat_toggle"
-          style="@style/ExoStyledControls.Button.Bottom.RepeatToggle"/>
+          style="@style/MXPlayer.ImageButton.Small"
+          android:src="@drawable/exo_styled_controls_repeat_off"/>
 
       <ImageButton android:id="@+id/exo_subtitle"
-          style="@style/ExoStyledControls.Button.Bottom.CC"/>
+          style="@style/MXPlayer.ImageButton.Small"
+          android:src="@drawable/exo_styled_controls_cc"/>
 
       <ImageButton android:id="@+id/exo_settings"
-          style="@style/ExoStyledControls.Button.Bottom.Settings"/>
+          style="@style/MXPlayer.ImageButton.Small"
+          android:src="@drawable/exo_styled_controls_settings"/>
 
       <ImageButton android:id="@+id/exo_fullscreen"
-          style="@style/ExoStyledControls.Button.Bottom.FullScreen"/>
+          style="@style/MXPlayer.ImageButton.Small"
+          android:src="@drawable/exo_styled_controls_fullscreen_enter"/>
 
       <ImageButton android:id="@+id/exo_overflow_show"
-          style="@style/ExoStyledControls.Button.Bottom.OverflowShow"/>
+          style="@style/MXPlayer.ImageButton.Small"
+          android:src="@drawable/exo_styled_controls_overflow_show"/>
 
     </LinearLayout>
 
@@ -79,7 +87,8 @@
           android:layoutDirection="ltr">
 
         <ImageButton android:id="@+id/exo_overflow_hide"
-            style="@style/ExoStyledControls.Button.Bottom.OverflowHide"/>
+            style="@style/MXPlayer.ImageButton.Small"
+            android:src="@drawable/exo_styled_controls_overflow_hide"/>
 
       </LinearLayout>
 
@@ -109,7 +118,8 @@
       android:layoutDirection="ltr">
 
     <ImageButton android:id="@+id/exo_minimal_fullscreen"
-        style="@style/ExoStyledControls.Button.Bottom.FullScreen"/>
+        style="@style/MXPlayer.ImageButton.Small"
+        android:src="@drawable/exo_styled_controls_fullscreen_enter"/>
 
   </LinearLayout>
 
@@ -123,16 +133,18 @@
       android:padding="@dimen/exo_styled_controls_padding">
 
     <ImageButton android:id="@+id/delete"
-        style="@style/ExoStyledControls.Button.Center.Secondary"
+        style="@style/MXPlayer.Button.Small"
         android:src="@drawable/exo_styled_controls_delete"/>
 
     <ImageButton android:id="@+id/exo_prev"
-        style="@style/ExoStyledControls.Button.Center.Previous"/>
+        style="@style/MXPlayer.Button.Large"
+        android:src="@drawable/exo_styled_controls_previous"/>
 
     <include layout="@layout/exo_player_control_rewind_button" />
 
     <ImageButton android:id="@+id/exo_play_pause"
-        style="@style/ExoStyledControls.Button.Center.PlayPause"/>
+        style="@style/MXPlayer.Button.Center"
+        android:src="@drawable/exo_styled_controls_play"/>
 
     <ProgressBar android:id="@+id/loading"
         style="?android:attr/progressBarStyle"
@@ -143,10 +155,11 @@
     <include layout="@layout/exo_player_control_ffwd_button" />
 
     <ImageButton android:id="@+id/exo_next"
-        style="@style/ExoStyledControls.Button.Center.Next"/>
+        style="@style/MXPlayer.Button.Large"
+        android:src="@drawable/exo_styled_controls_next"/>
 
     <ImageButton android:id="@+id/next"
-        style="@style/ExoStyledControls.Button.Center.Secondary"
+        style="@style/MXPlayer.Button.Small"
         android:src="@drawable/exo_styled_controls_next"/>
 
   </LinearLayout>
