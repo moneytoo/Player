@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- MX Player Custom Styles to replace ExoStyledControls -->
+    
+    <!-- Base MX Player Theme -->
+    <style name="MXPlayer" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowBackground">@color/mx_background</item>
+        <item name="android:statusBarColor">@color/mx_status_bar</item>
+        <item name="android:navigationBarColor">@color/mx_navigation_bar</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+    
+    <!-- MX Player Button Styles -->
+    <style name="MXPlayer.Button" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/mx_button_background</item>
+        <item name="android:textColor">@color/mx_text_primary</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:layout_margin">4dp</item>
+    </style>
+    
+    <style name="MXPlayer.Button.Center">
+        <item name="android:gravity">center</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:background">@drawable/mx_button_center_background</item>
+    </style>
+    
+    <style name="MXPlayer.Button.Small">
+        <item name="android:textSize">12sp</item>
+        <item name="android:minWidth">32dp</item>
+        <item name="android:minHeight">32dp</item>
+        <item name="android:padding">4dp</item>
+    </style>
+    
+    <style name="MXPlayer.Button.Large">
+        <item name="android:textSize">16sp</item>
+        <item name="android:minWidth">64dp</item>
+        <item name="android:minHeight">64dp</item>
+        <item name="android:padding">12dp</item>
+    </style>
+    
+    <!-- MX Player Text Styles -->
+    <style name="MXPlayer.Text" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/mx_text_primary</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+    
+    <style name="MXPlayer.Text.Title">
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:ellipsize">marquee</item>
+        <item name="android:marqueeRepeatLimit">marquee_forever</item>
+        <item name="android:focusable">true</item>
+        <item name="android:focusableInTouchMode">true</item>
+    </style>
+    
+    <style name="MXPlayer.Text.Small">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/mx_text_secondary</item>
+    </style>
+    
+    <style name="MXPlayer.Text.Time">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/mx_text_primary</item>
+        <item name="android:fontFamily">monospace</item>
+    </style>
+    
+    <!-- MX Player SeekBar Styles -->
+    <style name="MXPlayer.SeekBar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressDrawable">@drawable/mx_seekbar_progress</item>
+        <item name="android:thumb">@drawable/mx_seekbar_thumb</item>
+        <item name="android:paddingStart">8dp</item>
+        <item name="android:paddingEnd">8dp</item>
+        <item name="android:minHeight">4dp</item>
+        <item name="android:maxHeight">4dp</item>
+    </style>
+    
+    <!-- MX Player ImageButton Styles -->
+    <style name="MXPlayer.ImageButton" parent="Widget.AppCompat.ImageButton">
+        <item name="android:background">@drawable/mx_image_button_background</item>
+        <item name="android:tint">@color/mx_icon_tint</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:minWidth">48dp</item>
+        <item name="android:minHeight">48dp</item>
+    </style>
+    
+    <style name="MXPlayer.ImageButton.Small">
+        <item name="android:padding">6dp</item>
+        <item name="android:minWidth">32dp</item>
+        <item name="android:minHeight">32dp</item>
+    </style>
+    
+    <!-- MX Player Controls Container Styles -->
+    <style name="MXPlayer.ControlsContainer">
+        <item name="android:background">@drawable/mx_controls_background</item>
+        <item name="android:padding">8dp</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    
+    <!-- MX Player Dialog Styles -->
+    <style name="MXPlayer.Dialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/mx_dialog_background</item>
+        <item name="android:textColor">@color/mx_text_primary</item>
+        <item name="android:textColorPrimary">@color/mx_text_primary</item>
+        <item name="android:textColorSecondary">@color/mx_text_secondary</item>
+        <item name="colorAccent">@color/mx_accent</item>
+        <item name="colorPrimary">@color/mx_primary</item>
+    </style>
+    
+    <!-- MX Player Equalizer Styles -->
+    <style name="MXPlayer.Equalizer">
+        <item name="android:background">@color/mx_equalizer_background</item>
+    </style>
+    
+    <style name="MXPlayer.Equalizer.Slider" parent="Widget.AppCompat.SeekBar">
+        <item name="android:progressDrawable">@drawable/mx_equalizer_slider_progress</item>
+        <item name="android:thumb">@drawable/mx_equalizer_slider_thumb</item>
+        <item name="android:rotation">270</item>
+        <item name="android:layout_width">200dp</item>
+        <item name="android:layout_height">48dp</item>
+    </style>
+    
+    <!-- MX Player Library Styles -->
+    <style name="MXPlayer.Library">
+        <item name="android:background">@color/mx_library_background</item>
+    </style>
+    
+    <style name="MXPlayer.Library.Item">
+        <item name="android:background">@drawable/mx_library_item_background</item>
+        <item name="android:padding">12dp</item>
+        <item name="android:layout_margin">4dp</item>
+    </style>
+    
+    <!-- MX Player Downloader Styles -->
+    <style name="MXPlayer.Downloader">
+        <item name="android:background">@color/mx_downloader_background</item>
+    </style>
+    
+</resources>
