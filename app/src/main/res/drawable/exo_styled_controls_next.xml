@@ -1,13 +1,1 @@
-<?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:tools="http://schemas.android.com/tools"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    tools:keep="@drawable/exo_styled_controls_pause">
-    <item android:drawable="@drawable/controls_gradient"/>
-    <item
-        android:drawable="@drawable/exo_icon_next"
-        android:top="3dp"
-        android:left="3dp"
-        android:right="3dp"
-        android:bottom="3dp">
-    </item>
-</layer-list>
+<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24"><path android:fillColor="#FFFFFFFF" android:pathData="M6,18l8.5,-6L6,6v12zM16,6h2v12h-2z"/></vector>
