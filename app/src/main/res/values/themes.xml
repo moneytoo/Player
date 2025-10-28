@@ -11,10 +11,32 @@
     <style name="Theme.Player" parent="BaseTheme.Player">
     </style>
 
-    <style name="ExoStyledControls.Button.Center.Secondary" parent="ExoStyledControls.Button.Center">
+    <!-- Updated to use MXPlayer custom styles instead of ExoStyledControls -->
+    <style name="MXPlayer.Button.Center.Secondary" parent="MXPlayer.Button.Center">
         <item name="android:layout_width">60dp</item>
         <item name="android:layout_height">60dp</item>
         <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="Theme.Player.Fullscreen" parent="BaseTheme.Player">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+    </style>
+
+    <style name="Theme.Player.NoActionBar" parent="BaseTheme.Player">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="MXDialogTheme" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/mx_dialog_background</item>
+        <item name="android:textColor">@color/mx_text_primary</item>
+        <item name="android:textColorPrimary">@color/mx_text_primary</item>
+        <item name="android:textColorSecondary">@color/mx_text_secondary</item>
+        <item name="colorAccent">@color/mx_accent</item>
+        <item name="colorPrimary">@color/mx_primary</item>
     </style>
 
     <style name="Transparent" parent="@android:style/Theme.Material.NoActionBar">
@@ -29,6 +51,6 @@
     <style name="MediaStoreChooserDialog" parent="@android:style/Theme.Material.Dialog.Alert">
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
-        <item name="android:singleLine">true</item> <!-- When focused, line scrolls -->
+        <item name="android:singleLine">true</item>
     </style>
 </resources>

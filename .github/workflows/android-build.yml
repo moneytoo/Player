@@ -1,42 +1,115 @@
-name: Android Build APK
+name: Android Build and APK Release
 
 on:
   push:
+    branches: [ master, mx-ui-complete-features ]
     tags:
-      - 'v0.*'
+      - 'v*'
+  pull_request:
+    branches: [ master ]
+  workflow_dispatch:  # Allows manual triggering
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 17
-          cache: gradle
-
-      - run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${GITHUB_WORKSPACE}/keystore.jks
-
-      - run: ./gradlew assembleRelease bundleRelease
-          -Pandroid.injected.signing.store.file=${GITHUB_WORKSPACE}/keystore.jks
-          -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }}
-          -Pandroid.injected.signing.key.alias=key
-          -Pandroid.injected.signing.key.password=${{ secrets.KEYSTORE_PASSWORD }}
-
-      - uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            app/build/outputs/apk/latestUniversal/release/*.apk
-            app/build/outputs/apk/legacyUniversal/release/*.apk
-          prerelease: true
-          draft: true
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: release
-          path: |
-            app/build/outputs/apk/*/release/*.apk
-            app/build/outputs/bundle/*/*.aab
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+          
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    # Build Debug APK (always works without signing)
+    - name: Build Debug APK
+      run: ./gradlew assembleLatestUniversalDebug
+      
+    - name: Upload Debug APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: MX-Player-Debug-APK
+        path: app/build/outputs/apk/latestUniversal/debug/*.apk
+        
+    # Build Release APK (only if we have signing secrets or it's a tag)
+    - name: Build Release APK
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+      run: |
+        if [ -n "${{ secrets.KEYSTORE_BASE64 }}" ] && [ -n "${{ secrets.KEYSTORE_PASSWORD }}" ]; then
+          echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${GITHUB_WORKSPACE}/keystore.jks
+          ./gradlew assembleLatestUniversalRelease bundleLatestUniversalRelease \
+            -Pandroid.injected.signing.store.file=${GITHUB_WORKSPACE}/keystore.jks \
+            -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }} \
+            -Pandroid.injected.signing.key.alias=key \
+            -Pandroid.injected.signing.key.password=${{ secrets.KEYSTORE_PASSWORD }}
+        else
+          echo "No signing secrets available, building unsigned release"
+          ./gradlew assembleLatestUniversalRelease
+        fi
+        
+    - name: Upload Release APK
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+      uses: actions/upload-artifact@v4
+      with:
+        name: MX-Player-Release-APK
+        path: |
+          app/build/outputs/apk/latestUniversal/release/*.apk
+          app/build/outputs/bundle/latestUniversalRelease/*.aab
+          
+    # Create GitHub Release for tags
+    - name: Create Release
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          app/build/outputs/apk/latestUniversal/release/*.apk
+          app/build/outputs/apk/legacyUniversal/release/*.apk
+          app/build/outputs/bundle/*/*.aab
+        prerelease: ${{ contains(github.ref, 'alpha') || contains(github.ref, 'beta') }}
+        draft: false
+        generate_release_notes: true
+        
+  # Run tests (optional)
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Set up JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        
+    - name: Cache Gradle packages
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+          
+    - name: Grant execute permission for gradlew
+      run: chmod +x gradlew
+      
+    - name: Run tests
+      run: ./gradlew test
