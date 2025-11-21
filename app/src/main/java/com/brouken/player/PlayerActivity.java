@@ -758,6 +758,7 @@ public class PlayerActivity extends Activity {
         releasePlayer(false);
     }
 
+    @SuppressLint("GestureBackNavigation")
     @Override
     public void onBackPressed() {
         restorePlayStateAllowed = false;
@@ -822,6 +823,7 @@ public class PlayerActivity extends Activity {
         }
     }
 
+    @SuppressLint("GestureBackNavigation")
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
