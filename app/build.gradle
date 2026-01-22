@@ -14,7 +14,6 @@ android {
         targetSdkVersion 36
         versionCode 203
         versionName "0.${versionCode}"
-        archivesBaseName = "Just.Player.v${versionName}"
         if (abiFilter) {
             def abiCodeMap = ["x86": 1, "x86_64": 2, "armeabi-v7a": 3, "arm64-v8a": 4]
             versionCode = versionCode * 10 + abiCodeMap[abiFilter]
@@ -22,6 +21,9 @@ android {
                 abiFilters abiFilter
             }
         }
+    }
+    base {
+        archivesName = "Just.Player.v${defaultConfig.versionName}"
     }
     buildTypes {
         release {
@@ -60,12 +62,12 @@ android {
     applicationVariants.all { variant ->
         if (variant.buildType.name == "release" && variant.flavorName == "latestUniversal") {
             variant.outputs.all { output ->
-                output.outputFileName = "${archivesBaseName}.apk"
+                output.outputFileName = "${base.archivesName.get()}.apk"
             }
         }
         if (variant.buildType.name == "release" && variant.flavorName == "legacyUniversal") {
             variant.outputs.all { output ->
-                output.outputFileName = "${archivesBaseName}-legacy.apk"
+                output.outputFileName = "${base.archivesName.get()}-legacy.apk"
             }
         }
     }
