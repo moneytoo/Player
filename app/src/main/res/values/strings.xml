@@ -58,4 +58,7 @@
     <string name="pref_subtitle_style_bold">Bold style</string>
     <string name="pref_subtitle_style_bold_on">Use bold typeface as regular</string>
     <string name="pref_subtitle_style_bold_off">Use default regular typeface</string>
+    <string name="pref_subtitle_autosearch">Guess subtitles from video name</string>
+    <string name="pref_subtitle_autosearch_on">For network videos, try to load subtitles with common names (e.g., video.srt)</string>
+    <string name="pref_subtitle_autosearch_off">Do not guess subtitles from video name</string>
 </resources>
