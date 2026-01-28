@@ -100,10 +100,12 @@ import com.brouken.player.dtpv.youtube.YouTubeOverlay;
 import com.getkeepsafe.taptargetview.TapTarget;
 import com.getkeepsafe.taptargetview.TapTargetView;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.common.collect.Lists;
 
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -289,17 +291,25 @@ public class PlayerActivity extends Activity {
                         defaultSub = (Uri) subsEnable[0];
                     }
 
-                    Parcelable[] subs = bundle.getParcelableArray(API_SUBS);
+                    Parcelable[] subParcelableArray = bundle.getParcelableArray(API_SUBS);
+                    if (subParcelableArray == null) subParcelableArray = new Parcelable[0];
+
+                    List<Uri> subUriList = new ArrayList<>(subParcelableArray.length);
+                    for (Parcelable parcelable : subParcelableArray) {
+                        Uri element = (Uri) parcelable;
+                        subUriList.add(element);
+                    }
+
+                    List<Uri> subs = new SubtitleConverter().convertSubtitles(this, subUriList);
                     String[] subsName = bundle.getStringArray(API_SUBS_NAME);
-                    if (subs != null && subs.length > 0) {
-                        for (int i = 0; i < subs.length; i++) {
-                            Uri sub = (Uri) subs[i];
-                            String name = null;
-                            if (subsName != null && subsName.length > i) {
-                                name = subsName[i];
-                            }
-                            apiSubs.add(SubtitleUtils.buildSubtitle(this, sub, name, sub.equals(defaultSub)));
+
+                    for (int i = 0; i < subs.size(); i++) {
+                        Uri sub = subs.get(i);
+                        String name = null;
+                        if (subsName != null && subsName.length > i) {
+                            name = subsName[i];
                         }
+                        apiSubs.add(SubtitleUtils.buildSubtitle(this, sub, name, sub.equals(defaultSub)));
                     }
                 }
 
@@ -1299,7 +1309,7 @@ public class PlayerActivity extends Activity {
             if (apiTitle != null) {
                 title = apiTitle;
             } else {
-                title = Utils.getFileName(PlayerActivity.this, mPrefs.mediaUri);
+                title = Utils.getFileName(PlayerActivity.this, mPrefs.mediaUri, false);
             }
             if (title != null) {
                 final MediaMetadata mediaMetadata = new MediaMetadata.Builder()
@@ -1338,7 +1348,7 @@ public class PlayerActivity extends Activity {
             if (apiTitle != null) {
                 titleView.setText(apiTitle);
             } else {
-                titleView.setText(Utils.getFileName(this, mPrefs.mediaUri));
+                titleView.setText(Utils.getFileName(this, mPrefs.mediaUri, false));
             }
             titleView.setVisibility(View.VISIBLE);
 
