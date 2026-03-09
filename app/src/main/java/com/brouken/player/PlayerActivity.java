@@ -75,6 +75,8 @@ import androidx.media3.common.TrackGroup;
 import androidx.media3.common.TrackSelectionOverride;
 import androidx.media3.common.TrackSelectionParameters;
 import androidx.media3.common.Tracks;
+import androidx.media3.datasource.DataSource;
+import androidx.media3.datasource.DefaultDataSource;
 import androidx.media3.datasource.DefaultHttpDataSource;
 import androidx.media3.exoplayer.DefaultRenderersFactory;
 import androidx.media3.exoplayer.ExoPlaybackException;
@@ -110,6 +112,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+
+import io.github.peerless2012.ass.media.kt.AssPlayerKt;
+import io.github.peerless2012.ass.media.type.AssRenderType;
 
 public class PlayerActivity extends Activity {
 
@@ -1231,6 +1236,7 @@ public class PlayerActivity extends Activity {
                 .setTrackSelector(trackSelector)
                 .setMediaSourceFactory(new DefaultMediaSourceFactory(this, extractorsFactory));
 
+        DataSource.Factory dataSourceFactory = null;
         if (haveMedia && isNetworkUri) {
             if (mPrefs.mediaUri.getScheme().toLowerCase().startsWith("http")) {
                 HashMap<String, String> headers = new HashMap<>();
@@ -1240,11 +1246,19 @@ public class PlayerActivity extends Activity {
                     DefaultHttpDataSource.Factory defaultHttpDataSourceFactory = new DefaultHttpDataSource.Factory();
                     defaultHttpDataSourceFactory.setDefaultRequestProperties(headers);
                     playerBuilder.setMediaSourceFactory(new DefaultMediaSourceFactory(defaultHttpDataSourceFactory, extractorsFactory));
+                    dataSourceFactory = defaultHttpDataSourceFactory;
                 }
             }
         }
 
-        player = playerBuilder.build();
+        player = AssPlayerKt.buildWithAssSupport(
+                playerBuilder,
+                this,
+                AssRenderType.OVERLAY_OPEN_GL,
+                playerView.getSubtitleView(),
+                dataSourceFactory != null? dataSourceFactory : new DefaultDataSource.Factory(this),
+                extractorsFactory,
+                renderersFactory);
 
         AudioAttributes audioAttributes = new AudioAttributes.Builder()
                 .setUsage(C.USAGE_MEDIA)
