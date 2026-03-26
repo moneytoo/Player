@@ -216,6 +216,28 @@ public class PlayerActivity extends Activity {
         }
     };
 
+    private final android.os.Handler bufferHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+    private final Runnable bufferRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (player != null && timeBar != null && player.isPlaying()) {
+                long currentPos = player.getCurrentPosition();
+                long duration = player.getDuration();
+
+                long forwardMs = Math.max(0, player.getBufferedPosition() - currentPos);
+
+                long maxBackBufferMs = 120_000;
+                long backMs = Math.min(currentPos, maxBackBufferMs);
+
+                timeBar.setBufferInfo(backMs, forwardMs, duration);
+            }
+
+            if (alive) {
+                bufferHandler.postDelayed(this, 500);
+            }
+        }
+    };
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -732,6 +754,7 @@ public class PlayerActivity extends Activity {
         }
         initializePlayer();
         updateButtonRotation();
+        bufferHandler.post(bufferRunnable);
     }
 
     @Override
@@ -753,6 +776,9 @@ public class PlayerActivity extends Activity {
     public void onStop() {
         super.onStop();
         alive = false;
+
+        bufferHandler.removeCallbacks(bufferRunnable);
+
         if (Build.VERSION.SDK_INT >= 31) {
             playerView.removeCallbacks(barsHider);
         }

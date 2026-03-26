@@ -1,6 +1,9 @@
 package com.brouken.player;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -12,11 +15,18 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-class CustomDefaultTimeBar extends DefaultTimeBar {
+public class CustomDefaultTimeBar extends DefaultTimeBar {
 
-    Rect scrubberBar;
+    private Rect scrubberBar;
+    private Rect progressBar;
     private boolean scrubbing;
     private int scrubbingStartX;
+
+    private long backMs = 0;
+    private long forwardMs = 0;
+    private long durationMs = 0;
+    private Paint textPaint;
+    private Paint redDotPaint; // <-- Add this
 
     public CustomDefaultTimeBar(Context context) {
         this(context, null);
@@ -36,12 +46,72 @@ class CustomDefaultTimeBar extends DefaultTimeBar {
 
     public CustomDefaultTimeBar(Context context, @Nullable AttributeSet attrs, int defStyleAttr, @Nullable AttributeSet timebarAttrs, int defStyleRes) {
         super(context, attrs, defStyleAttr, timebarAttrs, defStyleRes);
+
+        textPaint = new Paint();
+        textPaint.setColor(Color.WHITE);
+        textPaint.setTextSize(Utils.dpToPx(12)); // Adjust size if needed
+        textPaint.setAntiAlias(true);
+
+        redDotPaint = new Paint();
+        redDotPaint.setColor(Color.RED);
+        redDotPaint.setAntiAlias(true);
+
         try {
-            Field field = DefaultTimeBar.class.getDeclaredField("scrubberBar");
-            field.setAccessible(true);
-            scrubberBar = (Rect) field.get(this);
+            Field sField = DefaultTimeBar.class.getDeclaredField("scrubberBar");
+            sField.setAccessible(true);
+            scrubberBar = (Rect) sField.get(this);
+
+            Field pField = DefaultTimeBar.class.getDeclaredField("progressBar");
+            pField.setAccessible(true);
+            progressBar = (Rect) pField.get(this);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
+        }
+    }
+
+    // Call this from PlayerActivity to update the numbers
+    public void setBufferInfo(long backMs, long forwardMs, long durationMs) {
+        this.backMs = backMs;
+        this.forwardMs = forwardMs;
+        this.durationMs = durationMs;
+        invalidate(); // Force a redraw
+    }
+
+    @Override
+    public void onDraw(Canvas canvas) {
+        super.onDraw(canvas); // Draw the standard ExoPlayer bar first
+
+        if (durationMs <= 0 || progressBar == null || scrubberBar == null) return;
+
+        // Calculate how many pixels represent 1 millisecond
+        float pixelPerMs = (float) progressBar.width() / durationMs;
+
+        // 1. Draw the Backbuffer Red Dot
+        if (backMs > 0) {
+            // Find the X coordinate: Scrubber center minus the width of the backbuffer
+            float backDotX = scrubberBar.centerX() - (backMs * pixelPerMs);
+
+            // Ensure the dot doesn't draw to the left of the actual progress bar
+            backDotX = Math.max(progressBar.left, backDotX);
+
+            // Draw the dot in the vertical center of the progress bar track
+            int centerY = progressBar.centerY();
+            float dotRadius = Utils.dpToPx(4); // Adjust this to make the dot bigger/smaller
+
+            canvas.drawCircle(backDotX, centerY, dotRadius, redDotPaint);
+
+            // Optional: Draw the text directly above the red dot instead of the scrubber
+            int textY = progressBar.top - Utils.dpToPx(8);
+            textPaint.setTextAlign(Paint.Align.CENTER);
+            canvas.drawText("-" + (backMs / 1000) + "s", backDotX, textY, textPaint);
+        }
+
+        // 2. Draw Forward buffer text
+        if (forwardMs > 0) {
+            int textY = progressBar.top - Utils.dpToPx(8);
+            String forwardText = "+" + (forwardMs / 1000) + "s";
+            textPaint.setTextAlign(Paint.Align.LEFT);
+            canvas.drawText(forwardText, scrubberBar.right + Utils.dpToPx(4), textY, textPaint);
         }
     }
 
