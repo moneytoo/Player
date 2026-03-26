@@ -98,7 +98,7 @@ public final class YouTubeOverlay extends ConstraintLayout implements PlayerDoub
                     R.styleable.YouTubeOverlay_yt_animationDuration, 650));
 
             seekSeconds = a.getInt(
-                    R.styleable.YouTubeOverlay_yt_seekSeconds, 10);
+                    R.styleable.YouTubeOverlay_yt_seekSeconds, 5);
 
             setIconAnimationDuration((long)a.getInt(
                     R.styleable.YouTubeOverlay_yt_iconAnimationDuration, 750));
@@ -139,7 +139,7 @@ public final class YouTubeOverlay extends ConstraintLayout implements PlayerDoub
             setCircleBackgroundColor(ContextCompat.getColor(getContext(), R.color.dtpv_yt_background_circle_color));
             setAnimationDuration(650L);
             setIconAnimationDuration(750L);
-            seekSeconds = 10;
+            seekSeconds = 5;
             setTextAppearance(R.style.YTOSecondsTextAppearance);
         }
     }

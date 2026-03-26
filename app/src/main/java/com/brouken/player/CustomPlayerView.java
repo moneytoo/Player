@@ -180,15 +180,15 @@ public class CustomPlayerView extends PlayerView implements GestureDetector.OnGe
 
     public boolean tap() {
         if (PlayerActivity.locked) {
-            Utils.showText(this, "", MESSAGE_TIMEOUT_LONG);
-            setIconLock(true);
+            //Utils.showText(this, "", MESSAGE_TIMEOUT_LONG);
+            //setIconLock(true);
             return true;
         }
 
         if (!PlayerActivity.controllerVisibleFully) {
             showController();
             return true;
-        } else if (PlayerActivity.haveMedia && PlayerActivity.player != null && PlayerActivity.player.isPlaying()) {
+        } else if (PlayerActivity.haveMedia && PlayerActivity.player != null) {
             hideController();
             return true;
         }

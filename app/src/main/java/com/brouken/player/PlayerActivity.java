@@ -56,6 +56,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.os.Handler;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -94,6 +95,7 @@ import androidx.media3.ui.PlayerControlView;
 import androidx.media3.ui.PlayerView;
 import androidx.media3.ui.SubtitleView;
 import androidx.media3.ui.TimeBar;
+import androidx.media3.exoplayer.DefaultLoadControl;
 
 import com.brouken.player.dtpv.DoubleTapPlayerView;
 import com.brouken.player.dtpv.youtube.YouTubeOverlay;
@@ -875,7 +877,7 @@ public class PlayerActivity extends Activity {
                     if (playerView.keySeekStart == -1) {
                         playerView.keySeekStart = pos;
                     }
-                    long seekTo = pos - 10_000;
+                    long seekTo = pos - 5_000;
                     if (seekTo < 0)
                         seekTo = 0;
                     player.setSeekParameters(SeekParameters.PREVIOUS_SYNC);
@@ -896,7 +898,7 @@ public class PlayerActivity extends Activity {
                     if (playerView.keySeekStart == -1) {
                         playerView.keySeekStart = pos;
                     }
-                    long seekTo = pos + 10_000;
+                    long seekTo = pos + 5_000;
                     long seekMax = player.getDuration();
                     if (seekMax != C.TIME_UNSET && seekTo > seekMax)
                         seekTo = seekMax;
@@ -1227,9 +1229,17 @@ public class PlayerActivity extends Activity {
                 .setExtensionRendererMode(mPrefs.decoderPriority)
                 .setMapDV7ToHevc(mPrefs.mapDV7ToHevc);
 
+        DefaultMediaSourceFactory dataSource = new DefaultMediaSourceFactory(this, extractorsFactory);
+        DefaultLoadControl loadControl = new DefaultLoadControl.Builder()
+                .setBackBuffer(1000 * 120, true) //for retaining previously loaded 2 minutes of data in buffer
+                .setBufferDurationsMs(5000, 1000 * 310, 1500, 5000)
+                .build();
+
         ExoPlayer.Builder playerBuilder = new ExoPlayer.Builder(this, renderersFactory)
                 .setTrackSelector(trackSelector)
-                .setMediaSourceFactory(new DefaultMediaSourceFactory(this, extractorsFactory));
+                .setMediaSourceFactory(new DefaultMediaSourceFactory(this, extractorsFactory))
+                .setMediaSourceFactory(dataSource)
+                .setLoadControl(loadControl);
 
         if (haveMedia && isNetworkUri) {
             if (mPrefs.mediaUri.getScheme().toLowerCase().startsWith("http")) {
@@ -1277,10 +1287,10 @@ public class PlayerActivity extends Activity {
 
         if (haveMedia) {
             if (isNetworkUri) {
-                timeBar.setBufferedColor(DefaultTimeBar.DEFAULT_BUFFERED_COLOR);
+                timeBar.setBufferedColor(Color.GREEN);
             } else {
                 // https://github.com/google/ExoPlayer/issues/5765
-                timeBar.setBufferedColor(0x33FFFFFF);
+                timeBar.setBufferedColor(Color.GREEN);
             }
 
             playerView.setResizeMode(mPrefs.resizeMode);
