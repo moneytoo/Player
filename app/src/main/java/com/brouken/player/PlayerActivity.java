@@ -140,6 +140,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -213,6 +214,16 @@ public class PlayerActivity extends Activity {
     // (stuck buffering, a broken next-episode URL, etc.) a friendly LOAD_TIMEOUT message is shown.
     // Such stalls often produce no PlaybackException, so onPlayerError alone would never catch them.
     private static final long VIDEO_LOAD_TIMEOUT_MS = 30_000L;
+    // Heavy MKV audio codecs whose platform MediaCodec decoder can wedge on init on some TV boxes
+    // (JPP-1005). On TV+MKV these are hidden from the platform decoder via a MediaCodecSelector, so
+    // MediaCodecAudioRenderer either bitstreams to a receiver that advertises passthrough (Atmos kept)
+    // or the track falls through to the ffmpeg software renderer — never the wedging platform decoder.
+    // Set matches the ffmpeg build's decoders (app/libs/README.md); AC4 / DTS:X-UHD are excluded since
+    // ffmpeg has no decoder for them and blocking would leave the track unplayable (muted audio).
+    private static final List<String> HEAVY_MKV_AUDIO_MIMES = Arrays.asList(
+            MimeTypes.AUDIO_AC3, MimeTypes.AUDIO_E_AC3, MimeTypes.AUDIO_E_AC3_JOC,
+            MimeTypes.AUDIO_DTS, MimeTypes.AUDIO_DTS_HD, MimeTypes.AUDIO_DTS_EXPRESS,
+            MimeTypes.AUDIO_TRUEHD);
     private final Runnable loadTimeoutRunnable = this::reportVideoLoadTimeout;
     // One-shot recovery for a mid-playback stall (Media3 StuckPlayerDetector → ERROR_CODE_TIMEOUT),
     // typically the device's Dolby Vision decoder wedging on a stream: re-decode the DV track as plain
@@ -4425,14 +4436,16 @@ public class PlayerActivity extends Activity {
         DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory()
                 .setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS)
                 .setTsExtractorTimestampSearchBytes(1500 * TsExtractor.TS_PACKET_SIZE);
-        // On TV boxes, decode MKV audio in software (ffmpeg) instead of routing it to the platform
-        // audio decoder / HDMI passthrough. Some TV decoders and passthrough paths wedge on init for
-        // the heavy codecs common in MKV remuxes (DTS/EAC3/TrueHD) — the load then never reaches a
-        // ready state (JPP-1005). Preferring the ffmpeg audio renderer sidesteps that path entirely.
-        // Only audio is affected (video keeps the user's decoder priority), and only for MKV on a TV;
-        // phones already fall back to ffmpeg for these codecs, and non-MKV keeps passthrough intact.
-        final boolean preferFfmpegAudio = isTvBox && isMatroskaMedia();
-        DefaultRenderersFactory baseRenderersFactory = preferFfmpegAudio
+        // On TV boxes the platform MediaCodec decoder for the heavy codecs common in MKV remuxes
+        // (DTS/EAC3/TrueHD) can wedge during init on the playback thread — no exception is thrown, so
+        // the load never reaches a ready state (JPP-1005). Instead of blanket-forcing software audio
+        // (which also kills Atmos/passthrough on every TV), hide only those codecs from the platform
+        // decoder via the combined MediaCodecSelector below. MediaCodecAudioRenderer consults the sink
+        // first, so where the receiver advertises passthrough the compressed bitstream still goes out
+        // (Atmos preserved); where it does not, the track falls through to the ffmpeg software
+        // renderer. Only MKV audio on a TV is affected; video keeps the user's decoder priority.
+        final boolean blockHeavyMkvAudio = isTvBox && isMatroskaMedia();
+        DefaultRenderersFactory baseRenderersFactory = blockHeavyMkvAudio
                 ? new DefaultRenderersFactory(this) {
                     @Override
                     protected void buildAudioRenderers(Context context, int extensionRendererMode,
@@ -4441,7 +4454,12 @@ public class PlayerActivity extends Activity {
                                                        Handler eventHandler,
                                                        AudioRendererEventListener eventListener,
                                                        ArrayList<Renderer> out) {
-                        super.buildAudioRenderers(context, EXTENSION_RENDERER_MODE_PREFER,
+                        // Ensure the ffmpeg audio renderer exists as a fallback even when the user
+                        // chose "device decoders only"; keep it behind the platform renderer (ON, not
+                        // PREFER) so passthrough still wins when available. An explicit PREFER stands.
+                        super.buildAudioRenderers(context,
+                                extensionRendererMode == EXTENSION_RENDERER_MODE_OFF
+                                        ? EXTENSION_RENDERER_MODE_ON : extensionRendererMode,
                                 mediaCodecSelector, enableDecoderFallback, audioSink, eventHandler,
                                 eventListener, out);
                     }
@@ -4450,13 +4468,21 @@ public class PlayerActivity extends Activity {
         @SuppressLint("WrongConstant") DefaultRenderersFactory renderersFactory = baseRenderersFactory
                 .setExtensionRendererMode(mPrefs.decoderPriority)
                 .setMapDV7ToHevc(mPrefs.mapDV7ToHevc);
-        if (forceHevcForDolbyVision) {
-            // Stuck-playback recovery: route a Dolby Vision track to the plain HEVC decoder (its
-            // base layer is HEVC), bypassing a device DV decoder that wedged. Picture stays HDR10.
-            renderersFactory.setMediaCodecSelector((mimeType, requiresSecureDecoder, requiresTunnelingDecoder) ->
-                    MediaCodecSelector.DEFAULT.getDecoderInfos(
-                            MimeTypes.VIDEO_DOLBY_VISION.equals(mimeType) ? MimeTypes.VIDEO_H265 : mimeType,
-                            requiresSecureDecoder, requiresTunnelingDecoder));
+        if (forceHevcForDolbyVision || blockHeavyMkvAudio) {
+            // One combined codec selector for two independent needs:
+            // - blockHeavyMkvAudio: no platform decoder for the heavy MKV audio codecs, so they
+            //   passthrough (if the sink supports it) or fall back to ffmpeg (see above).
+            // - forceHevcForDolbyVision: route a Dolby Vision track to the plain HEVC decoder (its base
+            //   layer is HEVC), bypassing a device DV decoder that wedged. Picture stays HDR10.
+            renderersFactory.setMediaCodecSelector((mimeType, requiresSecureDecoder, requiresTunnelingDecoder) -> {
+                if (blockHeavyMkvAudio && HEAVY_MKV_AUDIO_MIMES.contains(mimeType)) {
+                    return Collections.emptyList();
+                }
+                return MediaCodecSelector.DEFAULT.getDecoderInfos(
+                        forceHevcForDolbyVision && MimeTypes.VIDEO_DOLBY_VISION.equals(mimeType)
+                                ? MimeTypes.VIDEO_H265 : mimeType,
+                        requiresSecureDecoder, requiresTunnelingDecoder);
+            });
         }
 
         ExoPlayer.Builder playerBuilder = new ExoPlayer.Builder(this, renderersFactory)
