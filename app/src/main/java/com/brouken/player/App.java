@@ -1,6 +1,7 @@
 package com.brouken.player;
 
 import android.app.Application;
+import android.os.SystemClock;
 import android.preference.PreferenceManager;
 
 import io.sentry.SentryEvent;
@@ -11,6 +12,13 @@ import io.sentry.protocol.SentryException;
 import java.util.List;
 
 public class App extends Application {
+
+    /**
+     * Process start, captured when this class is loaded — the first app code to run. Used by the error
+     * report's uptime line; a static beats Process.getStartElapsedRealtime() only in that it needs no
+     * API-level branch (that call arrived in API 24, this app supports 23).
+     */
+    static final long START_ELAPSED = SystemClock.elapsedRealtime();
 
     @Override
     public void onCreate() {

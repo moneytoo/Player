@@ -5946,8 +5946,68 @@ public class PlayerActivity extends Activity {
         final Uri uri = currentMediaUri();
         if (Utils.isSupportedNetworkUri(uri)) {
             sb.append("\nMedia: ").append(Utils.uriToReportString(uri));
+        } else if (uri != null) {
+            // Local media: the scheme only. A path or file name can identify the user's library, so it
+            // never leaves the device — the formats below say everything a decoder bug needs anyway.
+            sb.append("\nMedia: ").append(uri.getScheme()).append(" (local)");
         }
+        appendPlayerState(sb);
         return sb.append("\n\n").append(ErrorActivity.stackTrace(error)).toString();
+    }
+
+    /**
+     * Player-side state for the error report — the part no crash reporter can see: which formats were
+     * actually selected, where playback had got to, and which decoder-affecting settings and recovery
+     * flags were in effect. Absent when the player is already gone (a process crash reaches
+     * ErrorActivity through its own handler, with no player to ask).
+     */
+    private void appendPlayerState(final StringBuilder sb) {
+        if (player == null) {
+            return;
+        }
+        int video = 0, audio = 0, text = 0;
+        Format subtitle = null;
+        for (Tracks.Group group : player.getCurrentTracks().getGroups()) {
+            switch (group.getType()) {
+                case C.TRACK_TYPE_VIDEO:
+                    video++;
+                    break;
+                case C.TRACK_TYPE_AUDIO:
+                    audio++;
+                    break;
+                case C.TRACK_TYPE_TEXT:
+                    text++;
+                    if (group.isSelected()) {
+                        subtitle = group.getMediaTrackGroup().getFormat(0);
+                    }
+                    break;
+            }
+        }
+        sb.append("\nVideo: ").append(Format.toLogString(player.getVideoFormat()));
+        sb.append("\nAudio: ").append(Format.toLogString(player.getAudioFormat()));
+        sb.append("\nSubtitle: ").append(subtitle != null ? Format.toLogString(subtitle) : "none");
+        sb.append("\nTracks: ").append(video).append(" video, ").append(audio).append(" audio, ")
+                .append(text).append(" subtitle");
+        final long duration = player.getDuration();
+        sb.append("\nPosition: ").append(player.getCurrentPosition()).append('/')
+                .append(duration == C.TIME_UNSET ? "unknown" : String.valueOf(duration))
+                .append(" ms, buffered ").append(player.getBufferedPosition())
+                .append(" ms, state ").append(player.getPlaybackState())
+                .append(player.isPlaying() ? " (playing)" : " (paused)")
+                .append(", item ").append(player.getCurrentMediaItemIndex() + 1)
+                .append('/').append(player.getMediaItemCount());
+        sb.append("\nPlayback: decoder priority ").append(mPrefs.decoderPriority)
+                .append(", speed ").append(mPrefs.speed)
+                .append(", resize ").append(mPrefs.resizeMode)
+                .append(mPrefs.tunneling ? ", tunneling" : "")
+                .append(mPrefs.frameRateMatching ? ", frame rate matching" : "")
+                .append(mPrefs.skipSilence ? ", skip silence" : "")
+                .append(mPrefs.mapDV7ToHevc ? ", map DV7" : "");
+        if (forceHevcForDolbyVision || stuckRecoveryAttemptedUri != null) {
+            sb.append("\nRecovery: ")
+                    .append(forceHevcForDolbyVision ? "forced HEVC for Dolby Vision" : "none")
+                    .append(stuckRecoveryAttemptedUri != null ? ", after stuck playback" : "");
+        }
     }
 
     private Uri currentMediaUri() {
