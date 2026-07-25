@@ -101,6 +101,7 @@ import androidx.media3.datasource.DefaultHttpDataSource;
 import androidx.media3.exoplayer.DefaultRenderersFactory;
 import androidx.media3.exoplayer.ExoPlaybackException;
 import androidx.media3.exoplayer.ExoPlayer;
+import androidx.media3.exoplayer.ExoTimeoutException;
 import androidx.media3.exoplayer.Renderer;
 import androidx.media3.exoplayer.RenderersFactory;
 import androidx.media3.exoplayer.SeekParameters;
@@ -5247,11 +5248,25 @@ public class PlayerActivity extends Activity {
                     && recoverFromContainerError()) {
                 return;
             }
-            // A mid-playback stall: Media3's StuckPlayerDetector reports "no progress" as a
-            // TYPE_UNEXPECTED error with ERROR_CODE_TIMEOUT. Not an app bug — the device decoder wedged
-            // (commonly a Dolby Vision stream its DV decoder can't handle). Try a one-shot recovery that
-            // re-decodes DV as plain HEVC; if not applicable / already tried, show a friendly message.
+            // Media3 reports two unrelated failures as ERROR_CODE_TIMEOUT, and only one of them is a
+            // playback problem.
+            //
+            // An ExoTimeoutException is the player's own lifecycle plumbing giving up. Leaving the
+            // player (Back, or opening the settings screen) makes the window invisible, which destroys
+            // the SurfaceView the player is still attached to; on a slow box the decoder does not hand
+            // the surface back inside Media3's 2 s budget, so this lands here about two seconds after
+            // the user has already moved on — an error window popping up over whatever they went back
+            // to. Nothing failed for them: the position was saved in onPause, and onStart builds a new
+            // player from scratch, so there is nothing to say and nothing to report.
+            //
+            // A StuckPlayerException is the real thing: Media3's StuckPlayerDetector reporting "no
+            // progress" mid-playback because the device decoder wedged (commonly a Dolby Vision stream
+            // its DV decoder can't handle). Try a one-shot recovery that re-decodes DV as plain HEVC;
+            // if not applicable / already tried, show a friendly message.
             if (error.errorCode == PlaybackException.ERROR_CODE_TIMEOUT) {
+                if (error.getCause() instanceof ExoTimeoutException) {
+                    return;
+                }
                 if (recoverFromStuckPlayback()) {
                     return;
                 }
