@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Surface for the app's full-screen states (empty state, error screen): the app icon's plum,
+     pooled behind the content and falling off to black at the edges. Gives a screen somewhere to
+     sit instead of floating on a void, without lifting the black the player itself needs. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:type="radial"
+        android:centerX="0.5"
+        android:centerY="0.52"
+        android:gradientRadius="75%p"
+        android:startColor="#1C0F42"
+        android:endColor="@color/black" />
+</shape>

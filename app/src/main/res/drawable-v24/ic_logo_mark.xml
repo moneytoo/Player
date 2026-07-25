@@ -1,19 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Cleave mark with the brand ramp, see design/logo_icon.svg and the drawable/
+     variant for the anchoring the group transform encodes. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
-    android:width="108dp"
-    android:height="108dp"
-    android:viewportWidth="100"
-    android:viewportHeight="100">
-    <!-- Cleave mark, see design/logo.svg. Anchored on the optical centre
-         (45.85, 48.89) and scaled 0.63 to clear the adaptive icon safe zone. -->
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
     <group
-        android:pivotX="45.85"
-        android:pivotY="48.89"
-        android:scaleX="0.63"
-        android:scaleY="0.63"
-        android:translateX="4.15"
-        android:translateY="1.11">
+        android:scaleX="0.29"
+        android:scaleY="0.29"
+        android:translateX="-1.2965"
+        android:translateY="-2.1781">
         <path android:pathData="M20,10 L79.28,42.08 A9,9 0 0 1 79.28,57.92 L55.09,71.01 L20,52.02 Z">
             <aapt:attr name="android:fillColor">
                 <gradient

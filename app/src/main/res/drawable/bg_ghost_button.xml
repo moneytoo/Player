@@ -13,9 +13,10 @@
                         android:color="@color/white" />
                 </shape>
             </item>
+            <!-- A faint resting fill, so the control reads as a button and not as caption text. -->
             <item>
                 <shape android:shape="rectangle">
-                    <solid android:color="@android:color/transparent" />
+                    <solid android:color="#14FFFFFF" />
                     <corners android:radius="100dp" />
                 </shape>
             </item>

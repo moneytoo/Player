@@ -2,5 +2,5 @@
 <inset xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:keep="@drawable/exo_styled_controls_play"
-    android:drawable="@drawable/ic_play_arrow_24dp"
+    android:drawable="@drawable/ic_logo_mark"
     android:inset="24dp"/>

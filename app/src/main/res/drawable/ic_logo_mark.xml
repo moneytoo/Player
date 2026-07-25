@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Cleave mark, see design/logo_icon.svg. Scaled into a 24x24 viewport so it drops
+     in wherever a 24dp play glyph goes. What sits on the viewport centre is the
+     optical anchor (45.85, 48.89), not the bbox centre: the mark carries its mass
+     left, so centring the box reads as off-centre inside a round button. 0.29 is the
+     largest scale that keeps the mark inside the box once anchored that way.
+     drawable-v24 carries the gradient version; VectorDrawable only supports
+     gradient fills from API 24, so this one is a flat mid-ramp colour. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+    <group
+        android:scaleX="0.29"
+        android:scaleY="0.29"
+        android:translateX="-1.2965"
+        android:translateY="-2.1781">
+        <path
+            android:fillColor="#FF3D4F"
+            android:pathData="M20,10 L79.28,42.08 A9,9 0 0 1 79.28,57.92 L55.09,71.01 L20,52.02 Z" />
+        <path
+            android:fillColor="#FF3D4F"
+            android:pathData="M20,59.98 L47.73,74.99 L20,90 Z" />
+    </group>
+</vector>

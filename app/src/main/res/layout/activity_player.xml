@@ -14,60 +14,78 @@
         app:show_subtitle_button="true"
         app:dtpv_controller="@id/youtube_overlay" />
 
-    <!-- Branded empty state: shown while the player has no clip to play. -->
-    <LinearLayout
+    <!-- Branded empty state: shown while the player has no clip to play. The identity sits in the
+         corner and the task sits in the middle — keeping the coral mark out of the column stops it
+         competing with the coral call to action, which is the only thing that should pull the eye. -->
+    <FrameLayout
         android:id="@+id/empty_state"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/black"
+        android:background="@drawable/bg_brand_wash"
         android:clickable="true"
         android:focusable="false"
-        android:gravity="center"
-        android:orientation="vertical"
         android:padding="24dp"
         android:visibility="gone">
 
-        <FrameLayout
+        <!-- Wordmark and mark on one line, the lockup the TV banner uses. -->
+        <LinearLayout
             android:id="@+id/empty_state_mark"
-            android:layout_width="96dp"
-            android:layout_height="96dp"
-            android:background="@drawable/bg_brand_tile">
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|start"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/empty_state_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/app_name"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/empty_state_mark_icon"
-                android:layout_width="46dp"
-                android:layout_height="46dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="4dp"
-                android:contentDescription="@string/app_name"
-                android:src="@drawable/ic_play_triangle" />
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="10dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_logo_mark" />
 
-        </FrameLayout>
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/empty_state_title"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="@string/app_name"
-            android:textColor="@color/white"
-            android:textSize="22sp"
-            android:textStyle="bold" />
+            android:layout_gravity="center"
+            android:clipChildren="false"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
 
         <TextView
             android:id="@+id/empty_state_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
             android:text="@string/empty_state_subtitle"
-            android:textColor="#B3FFFFFF"
-            android:textSize="14sp" />
+            android:textColor="#EBFFFFFF"
+            android:textSize="20sp" />
+
+        <!-- Both actions share a column that is as wide as the wider of them, so the two pills come
+             out the same width in every locale instead of near-matching by 20-odd dp. The column then
+             hugs them exactly, so it must not clip: the attention pulse scales the call to action
+             past its own bounds. -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:clipChildren="false"
+            android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/empty_state_open"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
             android:background="@drawable/bg_cta_button"
             android:clickable="true"
             android:focusable="true"
@@ -84,7 +102,7 @@
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:contentDescription="@null"
-                android:src="@drawable/ic_play_triangle"
+                android:src="@drawable/ic_folder_open_24dp"
                 android:tint="@color/black" />
 
             <TextView
@@ -101,9 +119,9 @@
 
         <LinearLayout
             android:id="@+id/empty_state_settings"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="12dp"
             android:background="@drawable/bg_ghost_button"
             android:clickable="true"
             android:focusable="true"
@@ -129,11 +147,15 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:text="@string/pref_title"
-                android:textColor="#B3FFFFFF"
+                android:textColor="#CCFFFFFF"
                 android:textSize="15sp" />
 
         </LinearLayout>
 
-    </LinearLayout>
+        </LinearLayout>
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -4788,11 +4788,18 @@ public class PlayerActivity extends Activity {
 
         // TV is viewed from across the room; scale the phone-tuned sizes up, matching the
         // isTvBox sizing used elsewhere (poster, clock, skip button).
+        // The overlay runs edge to edge, so the corner lockup has to dodge the status bar and any
+        // cutout itself. The listener keeps it right across rotations, which don't recreate this activity.
+        overlay.setOnApplyWindowInsetsListener((v, insets) -> {
+            padEmptyState(v, insets);
+            return insets;
+        });
+        padEmptyState(overlay, coordinatorLayout.getRootWindowInsets());
+
         if (isTvBox) {
-            setViewSize(mark, 140);
-            setViewSize(findViewById(R.id.empty_state_mark_icon), 68);
-            title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 30);
-            subtitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+            setViewSize(findViewById(R.id.empty_state_mark_icon), 40);
+            title.setTextSize(TypedValue.COMPLEX_UNIT_SP, 26);
+            subtitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, 28);
             setViewSize(findViewById(R.id.empty_state_open_icon), 28);
             ((TextView) findViewById(R.id.empty_state_open_label))
                     .setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
@@ -4806,10 +4813,9 @@ public class PlayerActivity extends Activity {
             settings.setMinimumHeight(Utils.dpToPx(64));
         } else if (ui.deviceClass != UiMetrics.DeviceClass.PHONE) {
             // Tablet: scale the phone XML defaults by the device-class factor (phone keeps the XML sizes).
-            setViewSize(mark, ui.dpS(96));
-            setViewSize(findViewById(R.id.empty_state_mark_icon), ui.dpS(46));
-            title.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.sp(22));
-            subtitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.sp(14));
+            setViewSize(findViewById(R.id.empty_state_mark_icon), ui.dpS(28));
+            title.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.sp(18));
+            subtitle.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.sp(20));
             setViewSize(findViewById(R.id.empty_state_open_icon), ui.dpS(20));
             ((TextView) findViewById(R.id.empty_state_open_label))
                     .setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.sp(16));
@@ -4837,11 +4843,11 @@ public class PlayerActivity extends Activity {
         final float density = getResources().getDisplayMetrics().density;
         final PathInterpolator easeOutExpo = new PathInterpolator(0.16f, 1f, 0.3f, 1f);
 
+        // The title is part of the logo lockup now, so it reveals with the mark rather than
+        // sliding in behind it.
         mark.setAlpha(0f);
         mark.setScaleX(0.85f);
         mark.setScaleY(0.85f);
-        title.setAlpha(0f);
-        title.setTranslationY(12 * density);
         subtitle.setAlpha(0f);
         subtitle.setTranslationY(12 * density);
         open.setAlpha(0f);
@@ -4851,10 +4857,8 @@ public class PlayerActivity extends Activity {
 
         mark.animate().alpha(1f).scaleX(1f).scaleY(1f)
                 .setStartDelay(0).setDuration(450).setInterpolator(easeOutExpo).start();
-        title.animate().alpha(1f).translationY(0f)
-                .setStartDelay(120).setDuration(350).setInterpolator(easeOutExpo).start();
         subtitle.animate().alpha(1f).translationY(0f)
-                .setStartDelay(200).setDuration(300).setInterpolator(easeOutExpo).start();
+                .setStartDelay(160).setDuration(300).setInterpolator(easeOutExpo).start();
         open.animate().alpha(1f).translationY(0f)
                 .setStartDelay(260).setDuration(350).setInterpolator(easeOutExpo)
                 .withEndAction(() -> {
@@ -4863,6 +4867,33 @@ public class PlayerActivity extends Activity {
                 }).start();
         settings.animate().alpha(1f).translationY(0f)
                 .setStartDelay(320).setDuration(350).setInterpolator(easeOutExpo).start();
+    }
+
+    // Inset the empty state by the system bars plus a margin — 48dp on TV, where panels still cut
+    // the outer few percent, 24dp elsewhere.
+    private void padEmptyState(View overlay, WindowInsets insets) {
+        int top = 0, left = 0, right = 0, bottom = 0;
+        if (insets != null) {
+            if (Build.VERSION.SDK_INT >= 30) {
+                final android.graphics.Insets bars = insets.getInsets(
+                        WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+                top = bars.top;
+                left = bars.left;
+                right = bars.right;
+                bottom = bars.bottom;
+            } else {
+                top = insets.getSystemWindowInsetTop();
+                left = insets.getSystemWindowInsetLeft();
+                right = insets.getSystemWindowInsetRight();
+                bottom = insets.getSystemWindowInsetBottom();
+            }
+        }
+        // Mirror each axis on its larger inset: the centred block then sits on the screen's real centre
+        // (a one-sided cutout would otherwise push it off), while every edge still clears its bar.
+        final int pad = Utils.dpToPx(isTvBox ? 48 : 24);
+        final int padH = pad + Math.max(left, right);
+        final int padV = pad + Math.max(top, bottom);
+        overlay.setPadding(padH, padV, padH, padV);
     }
 
     private void setViewSize(View view, int dp) {
@@ -6243,6 +6274,20 @@ public class PlayerActivity extends Activity {
         }
         setupEpisodeNavButton(exoPrev, size, padding, margin);
         setupEpisodeNavButton(exoNext, size, padding, margin);
+        // "Next file" and "delete" sit in the same secondary tier — "next file" even replaces the arrows
+        // outside a playlist — so they get the same disc. Their layer-list sources carry Media3's gradient
+        // halo and no disc, which made the single-video "next" read as a different button than the
+        // playlist one it stands in for.
+        final ImageButton nextFile = findViewById(R.id.next);
+        if (nextFile != null) {
+            nextFile.setImageResource(R.drawable.ic_skip_next);
+        }
+        final ImageButton deleteFile = findViewById(R.id.delete);
+        if (deleteFile != null) {
+            deleteFile.setImageResource(R.drawable.ic_delete_24dp_);
+        }
+        setupEpisodeNavButton(nextFile, size, padding, margin);
+        setupEpisodeNavButton(deleteFile, size, padding, margin);
         if (exoPrev != null) {
             exoPrev.setOnClickListener(v -> {
                 if (!episodeNavLoading && player != null && player.hasPreviousMediaItem()) {
