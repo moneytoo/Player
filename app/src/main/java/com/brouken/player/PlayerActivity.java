@@ -540,78 +540,7 @@ public class PlayerActivity extends Activity {
                 }
             }
         } else if (launchIntent.getData() != null) {
-            resetApiAccess();
-            final Uri uri = launchIntent.getData();
-            if (SubtitleUtils.isSubtitle(uri, type)) {
-                handleSubtitles(uri);
-            } else {
-                Bundle bundle = launchIntent.getExtras();
-                if (bundle != null) {
-                    apiAccess = bundle.containsKey(API_POSITION) || bundle.containsKey(API_RETURN_RESULT)
-                            || bundle.containsKey(API_SUBS) || bundle.containsKey(API_SUBS_ENABLE)
-                            || bundle.containsKey(API_VIDEO_LIST) || bundle.containsKey(API_QUALITY_LEVELS);
-                    if (apiAccess) {
-                        mPrefs.setPersistent(false);
-                    } else if (bundle.containsKey(API_TITLE)) {
-                        apiAccessPartial = true;
-                    }
-                    // Read as CharSequence: some senders pass a Spanned/CharSequence title,
-                    // which getString() would silently drop.
-                    final CharSequence titleExtra = bundle.getCharSequence(API_TITLE);
-                    apiTitle = Utils.unescapeHtml(titleExtra == null ? null : titleExtra.toString());
-                    final String thumbnail = bundle.getString(API_THUMBNAIL);
-                    if (thumbnail != null) {
-                        apiThumbnailUri = Uri.parse(thumbnail);
-                    }
-                    apiSegments = bundle.getString(API_SEGMENTS);
-                    apiHeaders = bundle.getStringArray(API_HEADERS);
-                    apiSeason = bundle.getInt(API_SEASON, -1);
-                    apiEpisode = bundle.getInt(API_EPISODE, -1);
-                    apiImdbId = bundle.getString(API_IMDB_ID);
-                    apiTmdbId = getStringOrIntExtra(bundle, API_ID);
-                    // Quality variants for a single (non-playlist) video; playlists carry per-episode maps.
-                    apiSingleQuality = readQualityMap(bundle, API_QUALITY_LEVELS, API_QUALITY_URLS);
-                    if (bundle.containsKey(API_VIDEO_LIST)) {
-                        parseApiPlaylist(bundle, uri);
-                    }
-                }
-
-                mPrefs.updateMedia(this, uri, type);
-
-                if (bundle != null) {
-                    Uri defaultSub = null;
-                    Parcelable[] subsEnable = bundle.getParcelableArray(API_SUBS_ENABLE);
-                    if (subsEnable != null && subsEnable.length > 0) {
-                        defaultSub = (Uri) subsEnable[0];
-                    }
-
-                    Parcelable[] subs = bundle.getParcelableArray(API_SUBS);
-                    String[] subsName = bundle.getStringArray(API_SUBS_NAME);
-                    if (subs != null && subs.length > 0) {
-                        for (int i = 0; i < subs.length; i++) {
-                            Uri sub = (Uri) subs[i];
-                            String name = null;
-                            if (subsName != null && subsName.length > i) {
-                                name = subsName[i];
-                            }
-                            apiSubs.add(SubtitleUtils.buildSubtitle(this, sub, name, sub.equals(defaultSub)));
-                        }
-                    }
-                }
-
-                if (apiSubs.isEmpty()) {
-                    searchSubtitles();
-                }
-
-                if (bundle != null) {
-                    intentReturnResult = bundle.getBoolean(API_RETURN_RESULT);
-
-                    if (bundle.containsKey(API_POSITION)) {
-                        mPrefs.updatePosition((long) bundle.getInt(API_POSITION));
-                    }
-                }
-            }
-            focusPlay = true;
+            handleViewIntent(launchIntent);
         }
 
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
@@ -1635,6 +1564,85 @@ public class PlayerActivity extends Activity {
         super.finish();
     }
 
+    // Media plus every api extra (title, playlist, subs, position, ...) of a VIEW intent. Shared by
+    // onCreate and onNewIntent: with launchMode="singleTask" a second intent lands in the running
+    // activity, and its extras have to replace the previous ones instead of being ignored.
+    private void handleViewIntent(Intent intent) {
+        resetApiAccess();
+        final Uri uri = intent.getData();
+        final String type = intent.getType();
+        if (SubtitleUtils.isSubtitle(uri, type)) {
+            handleSubtitles(uri);
+        } else {
+            Bundle bundle = intent.getExtras();
+            if (bundle != null) {
+                apiAccess = bundle.containsKey(API_POSITION) || bundle.containsKey(API_RETURN_RESULT)
+                        || bundle.containsKey(API_SUBS) || bundle.containsKey(API_SUBS_ENABLE)
+                        || bundle.containsKey(API_VIDEO_LIST) || bundle.containsKey(API_QUALITY_LEVELS);
+                if (apiAccess) {
+                    mPrefs.setPersistent(false);
+                } else if (bundle.containsKey(API_TITLE)) {
+                    apiAccessPartial = true;
+                }
+                // Read as CharSequence: some senders pass a Spanned/CharSequence title,
+                // which getString() would silently drop.
+                final CharSequence titleExtra = bundle.getCharSequence(API_TITLE);
+                apiTitle = Utils.unescapeHtml(titleExtra == null ? null : titleExtra.toString());
+                final String thumbnail = bundle.getString(API_THUMBNAIL);
+                if (thumbnail != null) {
+                    apiThumbnailUri = Uri.parse(thumbnail);
+                }
+                apiSegments = bundle.getString(API_SEGMENTS);
+                apiHeaders = bundle.getStringArray(API_HEADERS);
+                apiSeason = bundle.getInt(API_SEASON, -1);
+                apiEpisode = bundle.getInt(API_EPISODE, -1);
+                apiImdbId = bundle.getString(API_IMDB_ID);
+                apiTmdbId = getStringOrIntExtra(bundle, API_ID);
+                // Quality variants for a single (non-playlist) video; playlists carry per-episode maps.
+                apiSingleQuality = readQualityMap(bundle, API_QUALITY_LEVELS, API_QUALITY_URLS);
+                if (bundle.containsKey(API_VIDEO_LIST)) {
+                    parseApiPlaylist(bundle, uri);
+                }
+            }
+
+            mPrefs.updateMedia(this, uri, type);
+
+            if (bundle != null) {
+                Uri defaultSub = null;
+                Parcelable[] subsEnable = bundle.getParcelableArray(API_SUBS_ENABLE);
+                if (subsEnable != null && subsEnable.length > 0) {
+                    defaultSub = (Uri) subsEnable[0];
+                }
+
+                Parcelable[] subs = bundle.getParcelableArray(API_SUBS);
+                String[] subsName = bundle.getStringArray(API_SUBS_NAME);
+                if (subs != null && subs.length > 0) {
+                    for (int i = 0; i < subs.length; i++) {
+                        Uri sub = (Uri) subs[i];
+                        String name = null;
+                        if (subsName != null && subsName.length > i) {
+                            name = subsName[i];
+                        }
+                        apiSubs.add(SubtitleUtils.buildSubtitle(this, sub, name, sub.equals(defaultSub)));
+                    }
+                }
+            }
+
+            if (apiSubs.isEmpty()) {
+                searchSubtitles();
+            }
+
+            if (bundle != null) {
+                intentReturnResult = bundle.getBoolean(API_RETURN_RESULT);
+
+                if (bundle.containsKey(API_POSITION)) {
+                    mPrefs.updatePosition((long) bundle.getInt(API_POSITION));
+                }
+            }
+        }
+        focusPlay = true;
+    }
+
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
@@ -1645,13 +1653,9 @@ public class PlayerActivity extends Activity {
             final Uri uri = intent.getData();
 
             if (Intent.ACTION_VIEW.equals(action) && uri != null) {
-                if (SubtitleUtils.isSubtitle(uri, type)) {
-                    handleSubtitles(uri);
-                } else {
-                    mPrefs.updateMedia(this, uri, type);
-                    searchSubtitles();
-                }
-                focusPlay = true;
+                // Keep getIntent() pointing at what is actually playing (used by the intent report).
+                setIntent(intent);
+                handleViewIntent(intent);
                 initializePlayer();
             } else if (Intent.ACTION_SEND.equals(action) && "text/plain".equals(type)) {
                 String text = intent.getStringExtra(Intent.EXTRA_TEXT);
@@ -1949,6 +1953,7 @@ public class PlayerActivity extends Activity {
     void resetApiAccess() {
         apiAccess = false;
         apiAccessPartial = false;
+        intentReturnResult = false;
         apiTitle = null;
         apiThumbnailUri = null;
         apiSegments = null;
