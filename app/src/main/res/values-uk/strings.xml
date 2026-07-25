@@ -15,6 +15,7 @@
     <string name="error_playback_general">Не вдалося відтворити це відео.</string>
     <string name="error_playback_timeout">Відтворення надто довго не починається. Спробуйте ще раз.</string>
     <string name="error_playback_stalled">Відтворення зупинилося — цей пристрій, можливо, не може декодувати цей файл.</string>
+    <string name="error_stream_broken">Потік відео пошкоджено або недоступний. Спробуйте ще раз.</string>
     <string name="error_media_access_expired">Доступ до цього відео закінчився. Відкрийте його знову із застосунку, звідки поділилися.</string>
     <string name="error_media_missing">Цього відео більше немає.</string>
     <string name="error_screen_title">Щось пішло не так</string>
