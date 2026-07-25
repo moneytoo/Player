@@ -6239,6 +6239,20 @@ public class PlayerActivity extends Activity {
         }
         setupEpisodeNavButton(exoPrev, size, padding, margin);
         setupEpisodeNavButton(exoNext, size, padding, margin);
+        // "Next file" and "delete" sit in the same secondary tier — "next file" even replaces the arrows
+        // outside a playlist — so they get the same disc. Their layer-list sources carry Media3's gradient
+        // halo and no disc, which made the single-video "next" read as a different button than the
+        // playlist one it stands in for.
+        final ImageButton nextFile = findViewById(R.id.next);
+        if (nextFile != null) {
+            nextFile.setImageResource(R.drawable.ic_skip_next);
+        }
+        final ImageButton deleteFile = findViewById(R.id.delete);
+        if (deleteFile != null) {
+            deleteFile.setImageResource(R.drawable.ic_delete_24dp_);
+        }
+        setupEpisodeNavButton(nextFile, size, padding, margin);
+        setupEpisodeNavButton(deleteFile, size, padding, margin);
         if (exoPrev != null) {
             exoPrev.setOnClickListener(v -> {
                 if (!episodeNavLoading && player != null && player.hasPreviousMediaItem()) {
