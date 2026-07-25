@@ -4756,8 +4756,11 @@ public class PlayerActivity extends Activity {
         final TextView title = findViewById(R.id.empty_state_title);
         final TextView subtitle = findViewById(R.id.empty_state_subtitle);
         final View open = findViewById(R.id.empty_state_open);
+        final View settings = findViewById(R.id.empty_state_settings);
 
         open.setOnClickListener(v -> openFile(mPrefs.mediaUri));
+        settings.setOnClickListener(v ->
+                startActivityForResult(new Intent(this, SettingsActivity.class), REQUEST_SETTINGS));
         stopEmptyStatePulse();
 
         // TV is viewed from across the room; scale the phone-tuned sizes up, matching the
@@ -4773,6 +4776,11 @@ public class PlayerActivity extends Activity {
             final int padV = Utils.dpToPx(18);
             open.setPadding(Utils.dpToPx(30), padV, Utils.dpToPx(32), padV);
             open.setMinimumHeight(Utils.dpToPx(64));
+            setViewSize(findViewById(R.id.empty_state_settings_icon), 28);
+            ((TextView) findViewById(R.id.empty_state_settings_label))
+                    .setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
+            settings.setPadding(Utils.dpToPx(26), padV, Utils.dpToPx(28), padV);
+            settings.setMinimumHeight(Utils.dpToPx(64));
         } else if (ui.deviceClass != UiMetrics.DeviceClass.PHONE) {
             // Tablet: scale the phone XML defaults by the device-class factor (phone keeps the XML sizes).
             setViewSize(mark, ui.dpS(96));
@@ -4782,12 +4790,15 @@ public class PlayerActivity extends Activity {
             setViewSize(findViewById(R.id.empty_state_open_icon), ui.dpS(20));
             ((TextView) findViewById(R.id.empty_state_open_label))
                     .setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.sp(16));
+            setViewSize(findViewById(R.id.empty_state_settings_icon), ui.dpS(20));
+            ((TextView) findViewById(R.id.empty_state_settings_label))
+                    .setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.sp(15));
         }
 
         overlay.setVisibility(View.VISIBLE);
         overlay.bringToFront();
 
-        final View[] items = {mark, title, subtitle, open};
+        final View[] items = {mark, title, subtitle, open, settings};
 
         if (isReducedMotion()) {
             for (View v : items) {
@@ -4812,6 +4823,8 @@ public class PlayerActivity extends Activity {
         subtitle.setTranslationY(12 * density);
         open.setAlpha(0f);
         open.setTranslationY(16 * density);
+        settings.setAlpha(0f);
+        settings.setTranslationY(16 * density);
 
         mark.animate().alpha(1f).scaleX(1f).scaleY(1f)
                 .setStartDelay(0).setDuration(450).setInterpolator(easeOutExpo).start();
@@ -4825,6 +4838,8 @@ public class PlayerActivity extends Activity {
                     open.requestFocus();
                     startEmptyStatePulse(open);
                 }).start();
+        settings.animate().alpha(1f).translationY(0f)
+                .setStartDelay(320).setDuration(350).setInterpolator(easeOutExpo).start();
     }
 
     private void setViewSize(View view, int dp) {
