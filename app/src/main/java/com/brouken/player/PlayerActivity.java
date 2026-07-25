@@ -236,6 +236,12 @@ public class PlayerActivity extends Activity {
     private boolean forceHevcForDolbyVision;
     private boolean pendingStuckRecovery;
     private String stuckRecoveryAttemptedUri;
+    // A fatal report has just been shown for the current clip. onStart re-initialises the player every
+    // time the activity comes back, so without this the clip is prepared again the moment the report is
+    // closed, fails the same way and reopens it — a window that cannot be dismissed. Fall back to the
+    // empty state instead, as the media-gone path does. One-shot: consumed by that next initialisation,
+    // so re-opening the same clip, or picking another one, plays normally.
+    private boolean skipMediaAfterFatalError;
     // Re-reads spent on network source errors this session (see recoverFromSourceError), reset per player
     // build so a chronically bad stream costs a bounded number of re-prepares instead of one per resume.
     private int sourceRetries;
@@ -4401,6 +4407,10 @@ public class PlayerActivity extends Activity {
     public void initializePlayer() {
         boolean isNetworkUri = Utils.isSupportedNetworkUri(mPrefs.mediaUri);
         haveMedia = mPrefs.mediaUri != null;
+        if (skipMediaAfterFatalError) {
+            skipMediaAfterFatalError = false;
+            haveMedia = false;
+        }
 
         // Unless this is the stuck-playback recovery rebuild (which must keep forceHevcForDolbyVision),
         // clear the one-shot Dolby Vision recovery state so a normal open plays DV through its regular
@@ -5968,6 +5978,9 @@ public class PlayerActivity extends Activity {
     }
 
     private void showErrorScreen(final String summary, final String report) {
+        // Every full-screen report from the player passes through here, so this is the one place that has
+        // to keep the next resume from walking straight back into the failure (see the field's comment).
+        skipMediaAfterFatalError = true;
         startActivity(new Intent(this, ErrorActivity.class)
                 .putExtra(ErrorActivity.EXTRA_SUMMARY, summary)
                 .putExtra(ErrorActivity.EXTRA_REPORT, report));
