@@ -65,6 +65,15 @@
         app:yt_backgroundCircleColor="@color/ui_controls_background"
         app:yt_playerView="@id/video_view" />
 
+    <com.brouken.player.LevelBar
+        android:id="@+id/level_bar"
+        android:layout_width="@dimen/level_bar_width"
+        android:layout_height="@dimen/level_bar_height"
+        android:layout_gravity="center_vertical|end"
+        android:layout_marginStart="@dimen/level_bar_margin"
+        android:layout_marginEnd="@dimen/level_bar_margin"
+        android:visibility="gone"/>
+
     <View android:id="@id/exo_controller_placeholder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

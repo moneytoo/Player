@@ -1302,8 +1302,8 @@ public class PlayerActivity extends Activity {
 
         mBrightnessControl = new BrightnessControl(this);
         if (mPrefs.brightness >= 0) {
-            mBrightnessControl.currentBrightnessLevel = mPrefs.brightness;
-            mBrightnessControl.setScreenBrightness(mBrightnessControl.levelToBrightness(mBrightnessControl.currentBrightnessLevel));
+            mBrightnessControl.percent = mPrefs.brightness;
+            mBrightnessControl.setScreenBrightness(mBrightnessControl.percentToBrightness(mBrightnessControl.percent));
         }
         playerView.setBrightnessControl(mBrightnessControl);
 
@@ -4710,7 +4710,7 @@ public class PlayerActivity extends Activity {
 
     private void savePlayer() {
         if (player != null) {
-            mPrefs.updateBrightness(mBrightnessControl.currentBrightnessLevel);
+            mPrefs.updateBrightness(Math.round(mBrightnessControl.percent));
             mPrefs.updateOrientation();
 
             if (haveMedia) {

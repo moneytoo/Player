@@ -7,7 +7,8 @@ class BrightnessControl {
 
     private final Activity activity;
 
-    public int currentBrightnessLevel = -1;
+    /** 0-100, or -1 for system/auto brightness. Float so the absolute gesture keeps sub-percent precision. */
+    public float percent = -1;
 
     public BrightnessControl(Activity activity) {
         this.activity = activity;
@@ -23,32 +24,24 @@ class BrightnessControl {
         activity.getWindow().setAttributes(lp);
     }
 
-    public void changeBrightness(final CustomPlayerView playerView, final boolean increase, final boolean canSetAuto) {
-        int newBrightnessLevel = (increase ? currentBrightnessLevel + 1 : currentBrightnessLevel - 1);
+    public void changeBrightness(final CustomPlayerView playerView, final float delta, final boolean canSetAuto) {
+        final float newPercent = (percent < 0 ? 0 : percent) + delta;
 
-        if (canSetAuto && newBrightnessLevel < 0)
-            currentBrightnessLevel = -1;
-        else if (newBrightnessLevel >= 0 && newBrightnessLevel <= 30)
-            currentBrightnessLevel = newBrightnessLevel;
+        if (canSetAuto && newPercent < 0)
+            percent = -1;
+        else
+            percent = Math.max(0f, Math.min(100f, newPercent));
 
-        if (currentBrightnessLevel == -1 && canSetAuto)
+        if (percent < 0)
             setScreenBrightness(WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE);
-        else if (currentBrightnessLevel != -1)
-            setScreenBrightness(levelToBrightness(currentBrightnessLevel));
+        else
+            setScreenBrightness(percentToBrightness(percent));
 
-        playerView.setHighlight(false);
-
-        if (currentBrightnessLevel == -1 && canSetAuto) {
-            playerView.setIconBrightnessAuto();
-            playerView.setCustomErrorMessage("");
-        } else {
-            playerView.setIconBrightness();
-            playerView.setCustomErrorMessage(" " + currentBrightnessLevel);
-        }
+        playerView.showBrightness(Math.round(percent), percent < 0);
     }
 
-    float levelToBrightness(final int level) {
-        final double d = 0.064 + 0.936 / (double) 30 * (double) level;
+    float percentToBrightness(final float percent) {
+        final double d = 0.064 + 0.936 / 100 * percent;
         return (float) (d * d);
     }
 }

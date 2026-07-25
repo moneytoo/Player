@@ -126,6 +126,7 @@
     <string name="quality_source">Source</string>
     <string name="quality_bitrate">%1$.1f Mbps</string>
     <string name="quality_unavailable">Quality options are not available yet</string>
+    <string name="volume_high_warning">High volume may damage your hearing</string>
     <string name="pref_file_access">File access</string>
     <string name="pref_file_access_auto">Auto</string>
     <string name="mediastore_empty">No video files found</string>

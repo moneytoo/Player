@@ -105,6 +105,7 @@
     <string name="quality_source">Источник</string>
     <string name="quality_bitrate">%1$.1f Мбит/с</string>
     <string name="quality_unavailable">Параметры качества пока недоступны</string>
+    <string name="volume_high_warning">Высокая громкость может повредить слух</string>
     <string name="pref_file_access_auto">Авто</string>
     <string name="pref_file_access">Доступ к файлам</string>
     <string name="pref_captioning_preferences">Настройки субтитров</string>
