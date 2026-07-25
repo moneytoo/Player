@@ -138,6 +138,7 @@ import com.bumptech.glide.request.target.Target;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -3328,6 +3329,7 @@ public class PlayerActivity extends Activity {
                 if (player != null) {
                     player.seekToDefaultPosition(index);
                     player.setPlayWhenReady(true);
+                    prepareIfIdle();
                 }
                 if (playlistDialog != null) {
                     playlistDialog.dismiss();
@@ -4381,6 +4383,10 @@ public class PlayerActivity extends Activity {
         containerTracks.clear();
         resolvedTrackNames.clear();
 
+        // Also drops a deferred error here, not only in releasePlayer: onNewIntent (sharing a video into
+        // the running player) reaches this inline teardown instead, and the stashed error would then
+        // surface over the new clip.
+        errorToShow = null;
         if (player != null) {
             player.removeListener(playerListener);
             player.clearMediaItems();
@@ -4834,6 +4840,10 @@ public class PlayerActivity extends Activity {
 
     public void releasePlayer(boolean save) {
         cancelLoadWatchdog();
+        // An error deferred until the controller is fully visible belongs to the playback session being
+        // torn down here. Kept around, it would surface over whatever plays next — an error screen for a
+        // clip the user already moved on from.
+        errorToShow = null;
         if (save) {
             savePlayer();
         }
@@ -5232,6 +5242,41 @@ public class PlayerActivity extends Activity {
                     }
                 });
                 releasePlayer(false);
+                return;
+            }
+            // The remembered clip can no longer be opened: a foreign app's one-off URI grant has
+            // expired (a video streamed from a messenger, reopened after that app restarted) or the
+            // file is gone. Expected external state, not an app bug — forget the clip so it stops
+            // failing on every launch, fall back to the empty state, and report nothing.
+            // Forgetting also breaks the loop where closing the error screen resumes the activity,
+            // onStart re-prepares the same dead URI and the error screen comes straight back, which
+            // reads as a window that cannot be dismissed. For an API session (persistentMode off)
+            // updateMedia only drops the in-memory URI, so nothing remembered in prefs is lost.
+            final int unavailable = mediaUnavailableMessage(error);
+            if (unavailable != 0) {
+                // A playlist keeps everything: the other episodes are still watchable, and the user may
+                // want to step back to the one they were on (an accidental switch, say). So never tear the
+                // view down and never walk the list on its own — that would march past every episode with
+                // a message each time (a modal dialog each time on TV) and lose the user's place. Stay on
+                // this episode and re-enable the arrows, which are gated while loading and would otherwise
+                // only be cleared by STATE_READY or releasePlayer.
+                if (player != null && player.getMediaItemCount() > 1) {
+                    setEpisodeNavLoading(false);
+                    showSnack(getString(unavailable), null);
+                    return;
+                }
+                releasePlayer(false);
+                // Forget the clip only when nothing entitles us to it any more: a one-off grant from
+                // another app is gone for good, so retrying it on every launch is pointless. A URI we hold
+                // a persisted grant for may just be unreachable right now (cloud provider offline, card
+                // ejected), so keep it and let the next launch try again.
+                if (!holdsPersistedGrant(mPrefs.mediaUri)) {
+                    mPrefs.updateMedia(PlayerActivity.this, null, null);
+                }
+                // Before the snackbar: showEmptyState() brings the opaque overlay to the front, and
+                // the Snackbar is only added to the CoordinatorLayout afterwards, so it stays on top.
+                showEmptyStateWithoutMedia();
+                showSnack(getString(unavailable), null);
                 return;
             }
             // Enrich via the per-capture ScopeCallback overload (not withScope) so the tag/extra land
@@ -5678,6 +5723,38 @@ public class PlayerActivity extends Activity {
         showErrorScreen(errorSummary(error), errorReport(error));
     }
 
+    // Whether a SAF grant we took ourselves still covers this uri, i.e. it is ours to retry later.
+    private boolean holdsPersistedGrant(final Uri uri) {
+        if (uri == null) {
+            return false;
+        }
+        for (final UriPermission permission : getContentResolver().getPersistedUriPermissions()) {
+            if (permission.getUri().equals(uri)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // The message for a clip that can no longer be opened, or 0 when this is a different failure.
+    // Matching on errorCode is not enough: a revoked grant arrives as ERROR_CODE_IO_UNSPECIFIED
+    // because Loader wraps the SecurityException, so walk the cause chain. Network media is excluded:
+    // HTTP failures are transient and belong on the normal error path.
+    private int mediaUnavailableMessage(PlaybackException error) {
+        if (Utils.isSupportedNetworkUri(currentMediaUri())) {
+            return 0;
+        }
+        for (Throwable t = error; t != null; t = t.getCause()) {
+            if (t instanceof SecurityException) {
+                return R.string.error_media_access_expired;
+            }
+            if (t instanceof FileNotFoundException) {
+                return R.string.error_media_missing;
+            }
+        }
+        return 0;
+    }
+
     // Short, human-facing text for the error screen's panel: the stable ExoPlayer error-code name, the
     // underlying error text, and the network URL that was being played (sanitised). No internal codes.
     private String errorSummary(PlaybackException error) {
@@ -5933,7 +6010,11 @@ public class PlayerActivity extends Activity {
         if (exoPrev != null) {
             exoPrev.setOnClickListener(v -> {
                 if (!episodeNavLoading && player != null && player.hasPreviousMediaItem()) {
-                    player.seekToPrevious();
+                    if (player.getPlaybackState() == Player.STATE_IDLE) {
+                        stepEpisodeWhileIdle(-1);
+                    } else {
+                        player.seekToPrevious();
+                    }
                     resetHideCallbacks();
                 }
             });
@@ -5941,7 +6022,11 @@ public class PlayerActivity extends Activity {
         if (exoNext != null) {
             exoNext.setOnClickListener(v -> {
                 if (!episodeNavLoading && player != null && player.hasNextMediaItem()) {
-                    player.seekToNext();
+                    if (player.getPlaybackState() == Player.STATE_IDLE) {
+                        stepEpisodeWhileIdle(1);
+                    } else {
+                        player.seekToNext();
+                    }
                     resetHideCallbacks();
                 }
             });
@@ -5995,6 +6080,25 @@ public class PlayerActivity extends Activity {
     private void setEpisodeNavLoading(final boolean loading) {
         episodeNavLoading = loading;
         updateEpisodeNavButtons();
+    }
+
+    // Picking an episode after a fatal error has to reload it: the player is left idle with its timeline
+    // intact, so a seek alone would move the index without ever loading anything.
+    private void prepareIfIdle() {
+        if (player != null && player.getPlaybackState() == Player.STATE_IDLE) {
+            player.prepare();
+        }
+    }
+
+    // Stepping episodes out of that idle state: seekToPrevious would restart the failed item once past its
+    // first seconds, and under the repeat-one toggle seekToNext/Previous target the current item as well.
+    // Move by index instead so the arrows really leave a broken episode, then reload.
+    private void stepEpisodeWhileIdle(final int delta) {
+        final int target = player.getCurrentMediaItemIndex() + delta;
+        if (target >= 0 && target < player.getMediaItemCount()) {
+            player.seekToDefaultPosition(target);
+            player.prepare();
+        }
     }
 
     // Enable each episode arrow only when that direction exists in the playlist: "prev" is disabled on the
@@ -6079,10 +6183,7 @@ public class PlayerActivity extends Activity {
             releasePlayer();
             deleteMedia();
             if (nextUri == null) {
-                haveMedia = false;
-                setEndControlsVisible(false);
-                playerView.setControllerShowTimeoutMs(-1);
-                showEmptyState();
+                showEmptyStateWithoutMedia();
             } else {
                 skipToNext();
             }
@@ -6090,6 +6191,14 @@ public class PlayerActivity extends Activity {
         builder.setNegativeButton(android.R.string.cancel, (dialog, which) -> {});
         final AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    // Nothing left to play: drop the end controls and hand the screen over to the empty state.
+    private void showEmptyStateWithoutMedia() {
+        haveMedia = false;
+        setEndControlsVisible(false);
+        playerView.setControllerShowTimeoutMs(-1);
+        showEmptyState();
     }
 
     void deleteMedia() {

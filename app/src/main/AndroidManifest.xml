@@ -699,9 +699,17 @@
                 android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
+        <!-- The crash handler starts this with NEW_TASK, and taskAffinity="" then puts that instance in
+             its own task instead of leaving it parked in the player's task, where it stayed after the
+             process died and resurfaced under a freshly launched player (Back landed on a stale error).
+             excludeFromRecents keeps that crash task out of the recents list. A playback error starts
+             this without NEW_TASK, so it still opens in the player's own task, where neither attribute
+             applies. -->
         <activity
             android:name=".ErrorActivity"
+            android:excludeFromRecents="true"
             android:exported="false"
+            android:taskAffinity=""
             android:theme="@style/Theme.Error" />
         <activity
             android:name=".MediaStoreChooserActivity"

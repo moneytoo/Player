@@ -182,7 +182,8 @@ class Prefs {
         }
 
         if (mediaType == null) {
-            if (ContentResolver.SCHEME_CONTENT.equals(mediaUri.getScheme())) {
+            // A null uri clears the remembered media (handled by the persist block below).
+            if (mediaUri != null && ContentResolver.SCHEME_CONTENT.equals(mediaUri.getScheme())) {
                 mediaType = context.getContentResolver().getType(mediaUri);
             }
         }
