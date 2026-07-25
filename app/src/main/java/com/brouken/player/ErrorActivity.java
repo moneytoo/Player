@@ -1,15 +1,23 @@
 package com.brouken.player;
 
+import android.app.ActivityManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.hardware.display.DisplayManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Process;
+import android.os.StatFs;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
+import android.util.DisplayMetrics;
+import android.view.Display;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -29,6 +37,7 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * Friendly, full-screen surface for a playback error. The on-screen panel shows only the error code
@@ -146,14 +155,94 @@ public class ErrorActivity extends AppCompatActivity {
 
     private String buildReport(final String body) {
         // Header mirrors the metadata Sentry attaches (release, dist, environment, timestamp) so a
-        // pasted/shared report carries at least as much context as a Sentry event.
+        // pasted/shared report carries at least as much context as a Sentry event. The device and
+        // runtime blocks below carry what Sentry's device/app contexts did — they are what makes a
+        // manually pasted report a viable replacement for automatic reporting.
         final String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z", Locale.US).format(new Date());
-        return BuildConfig.APPLICATION_ID + "@" + BuildConfig.VERSION_NAME
-                + " (build " + BuildConfig.VERSION_CODE + ", " + (BuildConfig.DEBUG ? "debug" : "release") + ")\n"
-                + "Device: " + Build.MANUFACTURER + " " + Build.MODEL
-                + " (Android " + Build.VERSION.RELEASE + ", API " + Build.VERSION.SDK_INT + ")\n"
-                + "Time: " + time + "\n\n"
-                + (body != null ? body : "");
+        final StringBuilder sb = new StringBuilder();
+        sb.append(BuildConfig.APPLICATION_ID).append('@').append(BuildConfig.VERSION_NAME)
+                .append(" (build ").append(BuildConfig.VERSION_CODE)
+                .append(", ").append(BuildConfig.FLAVOR)
+                .append(' ').append(BuildConfig.DEBUG ? "debug" : "release").append(")\n");
+        sb.append("Device: ").append(Build.MANUFACTURER).append(' ').append(Build.MODEL)
+                .append(" (Android ").append(Build.VERSION.RELEASE)
+                .append(", API ").append(Build.VERSION.SDK_INT).append(")\n");
+        sb.append("Time: ").append(time).append('\n');
+        appendDevice(sb);
+        appendRuntime(sb);
+        sb.append('\n').append(body != null ? body : "");
+        return sb.toString();
+    }
+
+    /**
+     * Firmware, hardware and display detail — all of it from Build/Resources, so no permission is
+     * involved. The fingerprint pins the exact OEM build (crashes cluster per firmware, not per model);
+     * refresh rate and form factor matter because of frame-rate matching and the TV layout.
+     */
+    private void appendDevice(final StringBuilder sb) {
+        sb.append("Build: ").append(Build.FINGERPRINT).append('\n');
+        sb.append("Hardware: ").append(Build.DEVICE).append('/').append(Build.HARDWARE);
+        if (Build.VERSION.SDK_INT >= 31) {
+            sb.append(' ').append(Build.SOC_MODEL);
+        }
+        sb.append(", ").append(Build.SUPPORTED_ABIS.length > 0 ? Build.SUPPORTED_ABIS[0] : "?")
+                .append(", patch ").append(Build.VERSION.SECURITY_PATCH).append('\n');
+        final DisplayMetrics metrics = getResources().getDisplayMetrics();
+        sb.append("Display: ").append(metrics.widthPixels).append('x').append(metrics.heightPixels)
+                .append(" @").append(metrics.densityDpi).append("dpi ")
+                .append(String.format(Locale.US, "%.2fHz", refreshRate())).append(", ")
+                .append(Utils.isTvBox(this) ? "tv" : Utils.isTablet(this) ? "tablet" : "phone")
+                .append(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
+                        ? ", landscape" : ", portrait").append('\n');
+        sb.append("Locale: ").append(Locale.getDefault()).append(", ")
+                .append(TimeZone.getDefault().getID()).append('\n');
+    }
+
+    /**
+     * How the app was installed, how long it had been running and how much headroom it had — the
+     * difference between "playback failed" and "playback failed 4 seconds in with the heap nearly full".
+     */
+    private void appendRuntime(final StringBuilder sb) {
+        sb.append("Runtime: up ").append((SystemClock.elapsedRealtime() - App.START_ELAPSED) / 1000)
+                .append("s, installer ").append(installer()).append('\n');
+        final Runtime runtime = Runtime.getRuntime();
+        sb.append("Memory: heap ").append((runtime.totalMemory() - runtime.freeMemory()) >> 20)
+                .append('/').append(runtime.maxMemory() >> 20).append(" MB");
+        final ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        if (am != null) {
+            final ActivityManager.MemoryInfo memory = new ActivityManager.MemoryInfo();
+            am.getMemoryInfo(memory);
+            sb.append(", device ").append(memory.availMem >> 20).append(" MB free")
+                    .append(memory.lowMemory ? " (low)" : "");
+        }
+        sb.append(", storage ").append(new StatFs(getFilesDir().getAbsolutePath()).getAvailableBytes() >> 20)
+                .append(" MB free\n");
+        // Same SharedPreferences read App.initSentry() uses — cheaper than building a Prefs, which
+        // would also load unrelated playback state.
+        final android.content.SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        sb.append("Prefs: file access ").append(prefs.getString("fileAccess", "auto"))
+                .append(prefs.getBoolean("crashReporting", true) ? ", crash reporting on" : ", crash reporting off")
+                .append('\n');
+    }
+
+    private float refreshRate() {
+        final DisplayManager dm = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
+        final Display display = dm != null ? dm.getDisplay(Display.DEFAULT_DISPLAY) : null;
+        return display != null ? display.getRefreshRate() : 0f;
+    }
+
+    // Deprecated since API 30 in favour of getInstallSourceInformation(), itself replaced by
+    // getInstallSourceInfo() in API 36 — this one call still answers "store install or sideload?" on
+    // every supported level, which is all the report needs.
+    @SuppressWarnings("deprecation")
+    private String installer() {
+        try {
+            final String name = getPackageManager().getInstallerPackageName(getPackageName());
+            // No installer at all means adb / a raw APK, which is worth telling apart from a store install.
+            return name != null ? name : "none (sideloaded)";
+        } catch (Exception e) {
+            return "?";
+        }
     }
 
     private void animateIn() {
