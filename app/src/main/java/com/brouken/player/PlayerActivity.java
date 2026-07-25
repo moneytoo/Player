@@ -98,6 +98,7 @@ import androidx.media3.common.TrackSelectionParameters;
 import androidx.media3.common.Tracks;
 import androidx.media3.datasource.DefaultDataSource;
 import androidx.media3.datasource.DefaultHttpDataSource;
+import androidx.media3.datasource.HttpDataSource;
 import androidx.media3.exoplayer.DefaultRenderersFactory;
 import androidx.media3.exoplayer.ExoPlaybackException;
 import androidx.media3.exoplayer.ExoPlayer;
@@ -235,6 +236,17 @@ public class PlayerActivity extends Activity {
     private boolean forceHevcForDolbyVision;
     private boolean pendingStuckRecovery;
     private String stuckRecoveryAttemptedUri;
+    // Re-reads spent on network source errors this session (see recoverFromSourceError), reset per player
+    // build so a chronically bad stream costs a bounded number of re-prepares instead of one per resume.
+    private int sourceRetries;
+    private static final int MAX_SOURCE_RETRIES = 3;
+    // Held in a field (like loadTimeoutRunnable) so releasePlayer can drop a re-read that no longer has a
+    // session to belong to.
+    private final Runnable sourceRetryRunnable = () -> {
+        if (player != null) {
+            player.prepare();
+        }
+    };
     public static boolean controllerVisible;
     public static boolean controllerVisibleFully;
     public static Snackbar snackbar;
@@ -4391,6 +4403,9 @@ public class PlayerActivity extends Activity {
             stuckRecoveryAttemptedUri = null;
         }
 
+        // Fresh player — the source re-read budget starts over.
+        sourceRetries = 0;
+
         // Fresh media — drop any container track names so the tap re-parses for this item.
         containerTracks.clear();
         resolvedTrackNames.clear();
@@ -4867,6 +4882,10 @@ public class PlayerActivity extends Activity {
 
     public void releasePlayer(boolean save) {
         cancelLoadWatchdog();
+        // A pending source re-read belongs to the session being torn down here, same as errorToShow below.
+        if (playerView != null) {
+            playerView.removeCallbacks(sourceRetryRunnable);
+        }
         // An error deferred until the controller is fully visible belongs to the playback session being
         // torn down here. Kept around, it would surface over whatever plays next — an error screen for a
         // clip the user already moved on from.
@@ -5320,6 +5339,27 @@ public class PlayerActivity extends Activity {
                 showSnack(getString(unavailable), null);
                 return;
             }
+            // A single bad read from a streaming server is not the end of playback — re-read before
+            // treating it as a failure. Nothing is reported yet: if the retry succeeds this was a server
+            // hiccup, not an app problem.
+            if (recoverFromSourceError(error)) {
+                return;
+            }
+            // The stream still won't read after that retry: the server or the file is the problem, not
+            // the app — an unfinished torrent piece, a malformed rip, a link that died mid-playback. One
+            // line is all the user can act on, so no full-screen stack trace, and nothing to report: the
+            // same bad host otherwise files a fresh issue on every attempt.
+            if (isBrokenNetworkSource(error)) {
+                showSnack(getString(R.string.error_stream_broken), null);
+                // A playlist keeps everything: the other episodes are still watchable and the user may
+                // want to step back to this one, so stay here and re-enable the arrows (gated while loading).
+                if (player != null && player.getMediaItemCount() > 1) {
+                    setEpisodeNavLoading(false);
+                    return;
+                }
+                releasePlayer(false);
+                return;
+            }
             // Enrich via the per-capture ScopeCallback overload (not withScope) so the tag/extra land
             // on exactly this event.
             io.sentry.Sentry.captureException(error, scope -> {
@@ -5393,6 +5433,37 @@ public class PlayerActivity extends Activity {
         player.setMediaItems(items, index, position);
         player.prepare();
         player.play();
+        return true;
+    }
+
+    // Re-read after a source error on network media. A streaming server can hand back bytes that are not
+    // the media at all — a torrent piece that has not arrived yet, a hole padded with zeros — and the
+    // extractor then dies on the first malformed element ("No valid varint length mask found" from
+    // MatroskaExtractor). Media3 never retries these itself: DefaultLoadErrorHandlingPolicy gives
+    // Loader.UnexpectedLoaderException and ParserException no retry delay, so one bad read ends playback
+    // outright.
+    //
+    // Recovery stays on the same player instance: after an error it is merely STATE_IDLE, and prepare()
+    // re-reads the source keeping the media item, the position, the surface and the track selection — the
+    // user sees the spinner for a moment, not a rebuilt player and no surface detach. The re-read is delayed a
+    // second so the server has time to actually fetch the missing bytes, and the budget is MAX_SOURCE_RETRIES
+    // per player build: a stream that keeps failing gives up with a message instead of re-preparing forever.
+    private boolean recoverFromSourceError(PlaybackException error) {
+        if (player == null || !isBrokenNetworkSource(error)) {
+            return false;
+        }
+        if (sourceRetries >= MAX_SOURCE_RETRIES) {
+            return false;
+        }
+        // A refusal is an answer, not a hiccup: re-reading a 403/404 changes nothing.
+        for (Throwable t = error; t != null; t = t.getCause()) {
+            if (t instanceof HttpDataSource.InvalidResponseCodeException) {
+                return false;
+            }
+        }
+        sourceRetries++;
+        updateLoading(true);
+        playerView.postDelayed(sourceRetryRunnable, 1_000);
         return true;
     }
 
@@ -5794,6 +5865,29 @@ public class PlayerActivity extends Activity {
             }
         }
         return 0;
+    }
+
+    // Whether a failure belongs to the network media rather than to the app: everything the loader can
+    // hit on a remote stream — a read that returns bytes which are not the media, a dead or refusing host,
+    // a connection dropped mid-playback. These get one line and no report, and are worth re-reading.
+    private boolean isBrokenNetworkSource(PlaybackException error) {
+        if (!(error instanceof ExoPlaybackException)
+                || ((ExoPlaybackException) error).type != ExoPlaybackException.TYPE_SOURCE
+                || !Utils.isSupportedNetworkUri(currentMediaUri())) {
+            return false;
+        }
+        switch (error.errorCode) {
+            // Not the stream's fault, and re-reading changes nothing: the player has no support for what
+            // it was handed, or we are configured to refuse the connection ourselves (cleartext blocked,
+            // permission missing). Both say something about the app, so they keep the full report.
+            case PlaybackException.ERROR_CODE_PARSING_CONTAINER_UNSUPPORTED:
+            case PlaybackException.ERROR_CODE_PARSING_MANIFEST_UNSUPPORTED:
+            case PlaybackException.ERROR_CODE_IO_CLEARTEXT_NOT_PERMITTED:
+            case PlaybackException.ERROR_CODE_IO_NO_PERMISSION:
+                return false;
+            default:
+                return true;
+        }
     }
 
     // Short, human-facing text for the error screen's panel: the stable ExoPlayer error-code name, the

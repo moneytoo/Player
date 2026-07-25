@@ -5,6 +5,7 @@
     <string name="error_playback_general">Не удалось воспроизвести это видео.</string>
     <string name="error_playback_timeout">Воспроизведение слишком долго не начинается. Попробуйте ещё раз.</string>
     <string name="error_playback_stalled">Воспроизведение остановилось — это устройство, возможно, не может декодировать этот файл.</string>
+    <string name="error_stream_broken">Поток видео повреждён или недоступен. Попробуйте ещё раз.</string>
     <string name="error_media_access_expired">Доступ к этому видео истёк. Откройте его снова из того приложения.</string>
     <string name="error_media_missing">Этого видео больше нет.</string>
     <string name="error_details">Подробности</string>
