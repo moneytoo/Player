@@ -8,6 +8,8 @@
             <!-- Additionally trust user added CAs -->
             <certificates src="user"
                 tools:ignore="AcceptsUserCertificates" />
+            <!-- Let's Encrypt root, missing from the system store before Android 7.1.1 -->
+            <certificates src="@raw/isrg_root_x1" />
         </trust-anchors>
     </base-config>
 </network-security-config>
