@@ -71,6 +71,10 @@ class Prefs {
     final SharedPreferences mSharedPreferences;
 
     public Uri mediaUri;
+    // Set for a launch that brought no media of its own: the remembered clip stays on disk
+    // (the picker starts there, its position is kept) but the player must not resume it by
+    // itself. Cleared by updateMedia, i.e. as soon as any media is actually opened.
+    public boolean suppressResume;
     public Uri subtitleUri;
     public Uri scopeUri;
     public String mediaType;
@@ -180,6 +184,7 @@ class Prefs {
     public void updateMedia(final Context context, final Uri uri, final String type) {
         mediaUri = uri;
         mediaType = type;
+        suppressResume = false;
         updateSubtitle(null);
         updateMeta(null, null, AspectRatioFrameLayout.RESIZE_MODE_FIT, 1.f, 0f, 1.f);
 

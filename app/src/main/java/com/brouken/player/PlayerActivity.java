@@ -547,6 +547,10 @@ public class PlayerActivity extends Activity {
             }
         } else if (launchIntent.getData() != null) {
             handleViewIntent(launchIntent);
+        } else {
+            // Nothing came in — a launcher start opens on the empty state instead of resuming
+            // whatever was last watched.
+            mPrefs.suppressResume = true;
         }
 
         coordinatorLayout = findViewById(R.id.coordinatorLayout);
@@ -4406,7 +4410,7 @@ public class PlayerActivity extends Activity {
 
     public void initializePlayer() {
         boolean isNetworkUri = Utils.isSupportedNetworkUri(mPrefs.mediaUri);
-        haveMedia = mPrefs.mediaUri != null;
+        haveMedia = mPrefs.mediaUri != null && !mPrefs.suppressResume;
         if (skipMediaAfterFatalError) {
             skipMediaAfterFatalError = false;
             haveMedia = false;
