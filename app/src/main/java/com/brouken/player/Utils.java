@@ -184,13 +184,67 @@ class Utils {
         return result;
     }
 
-    public static boolean isVolumeMax(final AudioManager audioManager) {
-        return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
-    }
-
     public static boolean isVolumeMin(final AudioManager audioManager) {
         int min = Build.VERSION.SDK_INT >= 28 ? audioManager.getStreamMinVolume(AudioManager.STREAM_MUSIC) : 0;
         return audioManager.getStreamVolume(AudioManager.STREAM_MUSIC) == min;
+    }
+
+    /**
+     * The volume as shown to the user: 0-100% of the system range, plus one 10% step per boost level.
+     * The raw stream index is device specific (15, 16, 150 …), so it is never displayed directly.
+     */
+    public static int getVolumePercent(final Context context, final AudioManager audioManager) {
+        if (PlayerActivity.boostLevel > 0)
+            return 100 + PlayerActivity.boostLevel * 10;
+        final int max = getVolume(context, true, audioManager);
+        if (max <= 0)
+            return 0;
+        return Math.round(getVolume(context, false, audioManager) * 100f / max);
+    }
+
+    public static boolean canBoostVolume() {
+        try {
+            return PlayerActivity.loudnessEnhancer != null && PlayerActivity.loudnessEnhancer.hasControl();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    private static void applyBoost() {
+        if (PlayerActivity.loudnessEnhancer == null)
+            return;
+        try {
+            PlayerActivity.loudnessEnhancer.setTargetGain(PlayerActivity.boostLevel * 200);
+            PlayerActivity.loudnessEnhancer.setEnabled(PlayerActivity.boostLevel > 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Absolute volume set from the vertical gesture: 0-100% maps onto the system range, 101-200% keeps
+     * the system volume maxed out and adds boost. Displayed value is read back, so it never overstates
+     * what was actually applied.
+     */
+    public static void setVolumePercent(final Context context, final AudioManager audioManager, final CustomPlayerView playerView, final float percent) {
+        playerView.removeCallbacks(playerView.textClearRunnable);
+
+        final int max = audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC);
+        final int index = Math.round(Math.min(percent, 100f) / 100f * max);
+        if (index != audioManager.getStreamVolume(AudioManager.STREAM_MUSIC)) {
+            try {
+                audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, index, 0);
+            } catch (RuntimeException e) {
+                // Setting the volume can be denied (Do Not Disturb, device policy)
+                e.printStackTrace();
+            }
+        }
+
+        PlayerActivity.boostLevel = percent > 100f ? Math.min(10, Math.round((percent - 100f) / 10f)) : 0;
+        applyBoost();
+
+        playerView.showVolume(getVolumePercent(context, audioManager));
     }
 
     public static void adjustVolume(final Context context, final AudioManager audioManager, final CustomPlayerView playerView, final boolean raise, boolean canBoost, boolean clear) {
@@ -198,30 +252,18 @@ class Utils {
 
         final int volume = getVolume(context,false, audioManager);
         final int volumeMax = getVolume(context,true, audioManager);
-        boolean volumeActive = volume != 0;
 
         // Handle volume changes outside the app (lose boost if volume is not maxed out)
         if (volume != volumeMax) {
             PlayerActivity.boostLevel = 0;
         }
 
-        try {
-            if (PlayerActivity.loudnessEnhancer == null || !PlayerActivity.loudnessEnhancer.hasControl()) {
-                canBoost = false;
-            }
-        } catch (Exception e) {
+        if (!canBoostVolume()) {
             canBoost = false;
-            e.printStackTrace();
         }
 
         if (volume != volumeMax || (PlayerActivity.boostLevel == 0 && !raise)) {
-            if (PlayerActivity.loudnessEnhancer != null) {
-                try {
-                    PlayerActivity.loudnessEnhancer.setEnabled(false);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+            applyBoost();
             audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, raise ? AudioManager.ADJUST_RAISE : AudioManager.ADJUST_LOWER, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE);
             final int volumeNew = getVolume(context, false, audioManager);
             // Custom volume step on Samsung devices (Sound Assistant)
@@ -232,9 +274,6 @@ class Utils {
             }
             if (playerView.volumeUpsInRow > 4 && !isVolumeMin(audioManager)) {
                 audioManager.adjustStreamVolume(AudioManager.STREAM_MUSIC, AudioManager.ADJUST_RAISE, AudioManager.FLAG_REMOVE_SOUND_AND_VIBRATE | AudioManager.FLAG_SHOW_UI);
-            } else {
-                volumeActive = volumeNew != 0;
-                playerView.setCustomErrorMessage(volumeActive ? " " + volumeNew : "");
             }
         } else {
             if (canBoost && raise && PlayerActivity.boostLevel < 10)
@@ -242,25 +281,10 @@ class Utils {
             else if (!raise && PlayerActivity.boostLevel > 0)
                 PlayerActivity.boostLevel--;
 
-            if (PlayerActivity.loudnessEnhancer != null) {
-                try {
-                    PlayerActivity.loudnessEnhancer.setTargetGain(PlayerActivity.boostLevel * 200);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            playerView.setCustomErrorMessage(" " + (volumeMax + PlayerActivity.boostLevel));
+            applyBoost();
         }
 
-        playerView.setIconVolume(volumeActive);
-        if (PlayerActivity.loudnessEnhancer != null) {
-            try {
-                PlayerActivity.loudnessEnhancer.setEnabled(PlayerActivity.boostLevel > 0);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        playerView.setHighlight(PlayerActivity.boostLevel > 0);
+        playerView.showVolume(getVolumePercent(context, audioManager));
 
         if (clear) {
             playerView.postDelayed(playerView.textClearRunnable, CustomPlayerView.MESSAGE_TIMEOUT_KEY);

@@ -24,7 +24,8 @@ class Prefs {
 
     private static final String PREF_KEY_MEDIA_URI = "mediaUri";
     private static final String PREF_KEY_MEDIA_TYPE = "mediaType";
-    private static final String PREF_KEY_BRIGHTNESS = "brightness";
+    private static final String PREF_KEY_BRIGHTNESS = "brightness"; // legacy 0-30 levels, migrated on load
+    private static final String PREF_KEY_BRIGHTNESS_PERCENT = "brightnessPercent";
     private static final String PREF_KEY_FIRST_RUN = "firstRun";
     private static final String PREF_KEY_SUBTITLE_URI = "subtitleUri";
 
@@ -126,7 +127,12 @@ class Prefs {
             mediaUri = Uri.parse(mSharedPreferences.getString(PREF_KEY_MEDIA_URI, null));
         if (mSharedPreferences.contains(PREF_KEY_MEDIA_TYPE))
             mediaType = mSharedPreferences.getString(PREF_KEY_MEDIA_TYPE, null);
-        brightness = mSharedPreferences.getInt(PREF_KEY_BRIGHTNESS, brightness);
+        if (mSharedPreferences.contains(PREF_KEY_BRIGHTNESS_PERCENT)) {
+            brightness = mSharedPreferences.getInt(PREF_KEY_BRIGHTNESS_PERCENT, brightness);
+        } else {
+            final int level = mSharedPreferences.getInt(PREF_KEY_BRIGHTNESS, -1);
+            brightness = level < 0 ? -1 : level * 100 / 30;
+        }
         firstRun = mSharedPreferences.getBoolean(PREF_KEY_FIRST_RUN, firstRun);
         if (mSharedPreferences.contains(PREF_KEY_SUBTITLE_URI))
             subtitleUri = Uri.parse(mSharedPreferences.getString(PREF_KEY_SUBTITLE_URI, null));
@@ -235,7 +241,7 @@ class Prefs {
         if (brightness >= -1) {
             this.brightness = brightness;
             final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
-            sharedPreferencesEditor.putInt(PREF_KEY_BRIGHTNESS, brightness);
+            sharedPreferencesEditor.putInt(PREF_KEY_BRIGHTNESS_PERCENT, brightness);
             sharedPreferencesEditor.apply();
         }
     }

@@ -11,4 +11,8 @@
     <dimen name="exo_styled_progress_margin_bottom" tools:keep="@dimen/exo_styled_progress_margin_bottom">51dp</dimen>
 
     <dimen name="marker_width">3dp</dimen>
+
+    <dimen name="level_bar_width">6dp</dimen>
+    <dimen name="level_bar_height">160dp</dimen>
+    <dimen name="level_bar_margin">28dp</dimen>
 </resources>

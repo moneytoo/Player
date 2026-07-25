@@ -1,17 +1,19 @@
 package com.brouken.player;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.media.AudioManager;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.GestureDetector;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.core.view.GestureDetectorCompat;
 import androidx.media3.common.C;
@@ -34,8 +36,12 @@ public class CustomPlayerView extends PlayerView implements GestureDetector.OnGe
     private long seekMax;
     private long seekLastPosition;
     public boolean seekProgress;
-    private boolean canBoostVolume = false;
+    private boolean boostAllowed = false;
+    private boolean boostWarned = false;
     private boolean canSetAutoBrightness = false;
+    // Volume in percent (0-200, above 100 = boost) tracked as a float so the absolute gesture keeps
+    // sub-step precision between events.
+    private float gestureVolume = 0f;
 
     private final float IGNORE_BORDER = Utils.dpToPx(24);
     private final float SCROLL_STEP = Utils.dpToPx(16);
@@ -74,6 +80,7 @@ public class CustomPlayerView extends PlayerView implements GestureDetector.OnGe
 
     private final TextView exoErrorMessage;
     private final View exoProgress;
+    private final LevelBar levelBar;
 
     public CustomPlayerView(Context context) {
         this(context, null);
@@ -91,13 +98,14 @@ public class CustomPlayerView extends PlayerView implements GestureDetector.OnGe
 
         exoErrorMessage = findViewById(R.id.exo_error_message);
         exoProgress = findViewById(R.id.exo_progress);
+        levelBar = findViewById(R.id.level_bar);
 
         mScaleDetector = new ScaleGestureDetector(context, this);
     }
 
     public void clearIcon() {
         exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-        setHighlight(false);
+        levelBar.setVisibility(GONE);
     }
 
     @Override
@@ -166,6 +174,7 @@ public class CustomPlayerView extends PlayerView implements GestureDetector.OnGe
         gestureScrollX = 0;
         gestureOrientation = Orientation.UNKNOWN;
         isHandledLongPress = false;
+        boostWarned = false;
 
         return false;
     }
@@ -275,20 +284,33 @@ public class CustomPlayerView extends PlayerView implements GestureDetector.OnGe
         // LEFT = Brightness  |  RIGHT = Volume
         if (gestureOrientation == Orientation.VERTICAL || gestureOrientation == Orientation.UNKNOWN) {
             gestureScrollY += distanceY;
-            if (Math.abs(gestureScrollY) > SCROLL_STEP) {
-                if (gestureOrientation == Orientation.UNKNOWN) {
-                    canBoostVolume = Utils.isVolumeMax(mAudioManager);
-                    canSetAutoBrightness = brightnessControl.currentBrightnessLevel <= 0;
-                }
+            if (gestureOrientation == Orientation.UNKNOWN) {
+                if (Math.abs(gestureScrollY) <= SCROLL_STEP)
+                    return true;
+                // Entering the boost zone requires the volume to be maxed out already, so a single swipe
+                // can never run past 100% into boost by accident.
+                gestureVolume = Utils.getVolumePercent(getContext(), mAudioManager);
+                boostAllowed = gestureVolume >= 100 && Utils.canBoostVolume();
+                canSetAutoBrightness = brightnessControl.percent <= 0;
                 gestureOrientation = Orientation.VERTICAL;
+                // Apply the distance accumulated up to the activation threshold as the first delta
+                distanceY = gestureScrollY;
+            }
 
-                if (motionEvent.getX() < (float)(getWidth() / 2)) {
-                    brightnessControl.changeBrightness(this, gestureScrollY > 0, canSetAutoBrightness);
-                } else {
-                    Utils.adjustVolume(getContext(), mAudioManager, this, gestureScrollY > 0, canBoostVolume, false);
+            // A full swipe over the screen height covers 1.25x the range, as in VLC.
+            // distanceY is positive when the finger moves up, which is the "increase" direction.
+            final float delta = distanceY / getHeight() * 100f * 1.25f;
+
+            if (motionEvent.getX() < (float)(getWidth() / 2)) {
+                brightnessControl.changeBrightness(this, delta, canSetAutoBrightness);
+            } else {
+                gestureVolume = Math.max(0f, Math.min(boostAllowed ? 200f : 100f, gestureVolume + delta));
+                // Warn once per gesture when reaching the loud zone, whether boost engages or is refused
+                if (gestureVolume >= 100f && delta > 0 && !boostWarned) {
+                    boostWarned = true;
+                    Toast.makeText(getContext(), R.string.volume_high_warning, Toast.LENGTH_SHORT).show();
                 }
-
-                gestureScrollY = 0.0001f;
+                Utils.setVolumePercent(getContext(), mAudioManager, this, gestureVolume);
             }
         }
 
@@ -426,23 +448,32 @@ public class CustomPlayerView extends PlayerView implements GestureDetector.OnGe
         HORIZONTAL, VERTICAL, UNKNOWN
     }
 
-    public void setIconVolume(boolean volumeActive) {
-        exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(volumeActive ? R.drawable.ic_volume_up_24dp : R.drawable.ic_volume_off_24dp, 0, 0, 0);
+    /** Volume OSD: percent text plus the bar on the volume (right) side, scaled 0-200 to expose the boost zone. */
+    public void showVolume(int percent) {
+        exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(percent > 0 ? R.drawable.ic_volume_up_24dp : R.drawable.ic_volume_off_24dp, 0, 0, 0);
+        setCustomErrorMessage(" " + percent + "%");
+        showLevelBar(percent, 200f, Gravity.CENTER_VERTICAL | Gravity.END);
     }
 
-    public void setHighlight(boolean active) {
-        if (active)
-            exoErrorMessage.getBackground().setTint(Color.RED);
-        else
-            exoErrorMessage.getBackground().setTintList(null);
+    /** Brightness OSD: percent text plus the bar on the brightness (left) side; auto mode has no value. */
+    public void showBrightness(int percent, boolean auto) {
+        exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(auto ? R.drawable.ic_brightness_auto_24dp : R.drawable.ic_brightness_medium_24, 0, 0, 0);
+        setCustomErrorMessage(auto ? "" : " " + percent + "%");
+        if (auto) {
+            levelBar.setVisibility(GONE);
+        } else {
+            showLevelBar(percent, 100f, Gravity.CENTER_VERTICAL | Gravity.START);
+        }
     }
 
-    public void setIconBrightness() {
-        exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_brightness_medium_24, 0, 0, 0);
-    }
-
-    public void setIconBrightnessAuto() {
-        exoErrorMessage.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_brightness_auto_24dp, 0, 0, 0);
+    private void showLevelBar(int value, float max, int gravity) {
+        final FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) levelBar.getLayoutParams();
+        if (lp.gravity != gravity) {
+            lp.gravity = gravity;
+            levelBar.setLayoutParams(lp);
+        }
+        levelBar.setValue(value, max);
+        levelBar.setVisibility(VISIBLE);
     }
 
     public void setScale(final float scale) {
