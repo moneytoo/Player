@@ -28,9 +28,11 @@
     </style>
 
     <style name="Theme.Error" parent="Theme.AppCompat.NoActionBar">
-        <item name="android:windowBackground">@color/error_bg</item>
-        <item name="android:statusBarColor">@color/error_bg</item>
-        <item name="android:navigationBarColor">@color/error_bg</item>
+        <!-- The wash is the window background, not the layout's, so the one gradient covers the
+             system bars too — a bar painted in a flat colour would cut a seam across it. -->
+        <item name="android:windowBackground">@drawable/bg_brand_wash</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
         <item name="android:forceDarkAllowed" tools:targetApi="29">false</item>
         <item name="colorAccent">@color/brand</item>
         <item name="android:colorControlActivated">@color/brand</item>
