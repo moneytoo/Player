@@ -97,6 +97,11 @@ public class ErrorActivity extends AppCompatActivity {
         final Thread.UncaughtExceptionHandler previous = Thread.getDefaultUncaughtExceptionHandler();
         Thread.setDefaultUncaughtExceptionHandler((thread, throwable) -> {
             try {
+                // This activity's empty taskAffinity puts the crash screen in a task of its own, so the
+                // app's task keeps its history and is restored as the player. CLEAR_TASK then clears that
+                // crash task rather than the app's — needed because a second crash would otherwise reuse
+                // the existing task (same affinity, intents equal apart from extras) and, with no
+                // onNewIntent handling, relaunch the FIRST crash's report.
                 app.startActivity(new Intent(app, ErrorActivity.class)
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK)
                         .putExtra(EXTRA_MESSAGE, app.getString(R.string.error_crash_message))
