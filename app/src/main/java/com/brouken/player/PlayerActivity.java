@@ -555,7 +555,10 @@ public class PlayerActivity extends Activity {
                     } else if (bundle.containsKey(API_TITLE)) {
                         apiAccessPartial = true;
                     }
-                    apiTitle = bundle.getString(API_TITLE);
+                    // Read as CharSequence: some senders pass a Spanned/CharSequence title,
+                    // which getString() would silently drop.
+                    final CharSequence titleExtra = bundle.getCharSequence(API_TITLE);
+                    apiTitle = Utils.unescapeHtml(titleExtra == null ? null : titleExtra.toString());
                     final String thumbnail = bundle.getString(API_THUMBNAIL);
                     if (thumbnail != null) {
                         apiThumbnailUri = Uri.parse(thumbnail);
@@ -2665,6 +2668,7 @@ public class PlayerActivity extends Activity {
             if (title == null || title.isEmpty()) {
                 title = filenames != null && i < filenames.length ? filenames[i] : null;
             }
+            title = Utils.unescapeHtml(title);
             if (title == null || title.isEmpty()) {
                 title = uri.getLastPathSegment();
             }
