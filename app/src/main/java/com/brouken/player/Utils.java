@@ -43,6 +43,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.text.HtmlCompat;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.media3.common.Format;
 import androidx.media3.common.MimeTypes;
@@ -182,6 +183,14 @@ class Utils {
             e.printStackTrace();
         }
         return result;
+    }
+
+    // Some senders pass HTML-escaped text in intent extras (e.g. "В&#039;язниця").
+    public static String unescapeHtml(String text) {
+        if (text == null || text.indexOf('&') < 0) {
+            return text;
+        }
+        return HtmlCompat.fromHtml(text, HtmlCompat.FROM_HTML_MODE_LEGACY).toString().trim();
     }
 
     public static boolean isVolumeMin(final AudioManager audioManager) {
