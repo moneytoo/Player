@@ -80,7 +80,7 @@
     <string name="pref_crash_reporting_on">Автоматически отправлять отчёты о сбоях и ошибках воспроизведения, чтобы помочь их исправить</string>
     <string name="pref_crash_reporting_off">Данные о сбоях и ошибках не покидают устройство</string>
     <string name="time_ends_at">Закончится в %s</string>
-    <string name="time_ends_at_inline">до %1$s ·</string>
+    <string name="time_ends_at_inline">до %1$s</string>
     <string name="playlist">Плейлист</string>
     <string name="shortcut_videos">Видео</string>
     <string name="button_open">Открыть</string>

@@ -85,10 +85,10 @@ final class UiMetrics {
 
     int posterHeight() {
         switch (deviceClass) {
-            case TV:            return dp(84);
-            case TABLET_LARGE:  return dp(72);
-            case TABLET_MEDIUM: return dp(66);
-            default:            return dp(60);
+            case TV:            return dp(96);
+            case TABLET_LARGE:  return dp(88);
+            case TABLET_MEDIUM: return dp(80);
+            default:            return dp(74);
         }
     }
 
@@ -132,12 +132,14 @@ final class UiMetrics {
             default:            return phone;
         }
     }
-    float textTitle()       { return t(18, 20, 21, 22); }   // header + picker headers
+    float textTitle()       { return t(18, 20, 21, 22); }   // picker headers
     float textBody()        { return t(16, 17, 18, 20); }   // picker row title
     float textCaption()     { return t(13, 14, 15, 16); }   // row details / subtitle
     float textList()        { return t(15, 16, 17, 18); }   // playlist row
     float textInfo()        { return t(12, 13, 13, 14); }   // header meta lines
-    float textClock()       { return t(16, 17, 18, 18); }   // clock / endsAt / overlay clock
+    float textHeaderTitle() { return t(22, 24, 25, 26); }   // header title (larger than a picker header)
+    float textClock()       { return t(20, 21, 22, 22); }   // clock, header + overlay (must match)
+    float textEndsAt()      { return t(16, 17, 18, 18); }   // "until …", a step below the clock
     float textSkip()        { return t(13, 14, 14, 15); }   // skip pill + notification
     float textBadge()       { return t(11, 11, 12, 13); }   // poster number chip
     float textValue()       { return t(40, 44, 46, 48); }   // skip-offset readout

@@ -97,7 +97,7 @@
     <string name="update_later">Later</string>
     <string name="update_skip">Skip this version</string>
     <string name="time_ends_at">Ends at %s</string>
-    <string name="time_ends_at_inline">until %1$s ·</string>
+    <string name="time_ends_at_inline">until %1$s</string>
     <string name="playlist">Playlist</string>
     <string name="intent_copied">Launch intent copied to clipboard</string>
     <string name="pref_map_dv7">Dolby Vision profile 7 fallback</string>

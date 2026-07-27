@@ -455,13 +455,13 @@ public class PlayerActivity extends Activity {
     };
 
     static final long SKIP_POLL_INTERVAL_MS = 250;
-    // Segment highlights (see CustomDefaultTimeBar): a near-opaque *_FILL band across the segment plus a
-    // crisp boundary hairline in the lighter *_HIGHLIGHT colour. Three-colour timeline system — coral =
-    // playback, cool steel = skip (complementary to the warm coral so it never merges over the played
-    // track, and still legible over the dark unplayed track), amber = ad. High alpha keeps each band
-    // reading the same over both the coral and the dark portions of the bar.
+    // Segment highlights (see CustomDefaultTimeBar): a *_FILL band across the segment plus a crisp boundary
+    // hairline in the lighter *_HIGHLIGHT colour. Three-colour timeline system — coral = playback, blue =
+    // skip (complementary to the warm coral so it never merges over the played track, and still legible
+    // over the dark unplayed track), amber = ad. The skip band is opaque, so it reads as the same blue over
+    // both the coral and the dark portions of the bar.
     static final int SKIP_HIGHLIGHT_COLOR = 0xFFEAF6FF;
-    static final int SKIP_FILL_COLOR = 0xC77FB8D4;
+    static final int SKIP_FILL_COLOR = 0xFF0696BB;
     static final int AD_HIGHLIGHT_COLOR = 0xFFFFD27A;
     static final int AD_FILL_COLOR = 0xC7FFA000;
     SkipManager skipManager;
@@ -819,36 +819,41 @@ public class PlayerActivity extends Activity {
         titleView.setTypeface(Typeface.DEFAULT_BOLD);
         titleView.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-        titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.textTitle());
+        titleView.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.textHeaderTitle());
         titleView.setMaxLines(1);
         titleView.setEllipsize(TextUtils.TruncateAt.END);
         titleView.setTextDirection(View.TEXT_DIRECTION_LOCALE);
         infoColumn.addView(titleView);
 
         // Two meta lines: video (resolution · codec · HDR) and the audio track (label / codec / language).
-        videoInfoView = createInfoLine(Utils.dpToPx(2));
+        // The gaps are the design's, and they are what makes the text column as tall as the poster beside it,
+        // so the two header columns end on the same line.
+        videoInfoView = createInfoLine(ui.dpS(7));
         infoColumn.addView(videoInfoView);
-        audioInfoView = createInfoLine(0);
+        audioInfoView = createInfoLine(ui.dpS(3));
         infoColumn.addView(audioInfoView);
 
         topInfoPanel.addView(infoColumn);
 
         // Right block of the header, mirroring the left (poster + text column): a one-line time row on top, with
-        // the display-icon pill right-aligned directly beneath it — so the pill's right edge lands on the same
-        // grid line as the clock and the bottom-bar pill.
+        // the display icons right-aligned directly beneath it — so their glyphs land on the same grid line as
+        // the clock and the bottom-bar pill.
         final LinearLayout headerClockColumn = new LinearLayout(this);
         headerClockColumn.setOrientation(LinearLayout.VERTICAL);
         headerClockColumn.setGravity(Gravity.END);
+        // Full height, so the icon row below can be pushed to the header's bottom line rather than trailing
+        // the clock: the left column (poster, or the last meta line) is what sets that line.
         final LinearLayout.LayoutParams headerClockColumnParams = new LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         headerClockColumnParams.gravity = Gravity.TOP;
         headerClockColumn.setLayoutParams(headerClockColumnParams);
 
-        // Time row (row 1): "until … ·" then the clock on one line. The clock is the bold, right-pinned anchor,
+        // Time row (row 1): "until …" then the clock on one line. The clock is the bold, right-pinned anchor,
         // so it never jumps sideways when the dynamically-computed end time appears/updates while loading.
+        // No vertical gravity: that lets LinearLayout's baseline alignment sit the smaller end time on the
+        // clock's baseline, instead of centring two different text sizes against each other.
         final LinearLayout timeRow = new LinearLayout(this);
         timeRow.setOrientation(LinearLayout.HORIZONTAL);
-        timeRow.setGravity(Gravity.CENTER_VERTICAL);
         final LinearLayout.LayoutParams timeRowLp = new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         timeRowLp.gravity = Gravity.END;
@@ -856,16 +861,17 @@ public class PlayerActivity extends Activity {
 
         endsAtView = new TextView(this);
         endsAtView.setTextColor(0xB3FFFFFF);
-        endsAtView.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.textClock());
+        // A step below the clock: the clock is the anchor, the end time is the qualifier next to it.
+        endsAtView.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.textEndsAt());
         endsAtView.setVisibility(View.GONE);
         timeRow.addView(endsAtView);
 
         headerClock = new OutlineTextClock(this);
         headerClock.setFormat12Hour("h:mm a");
         headerClock.setFormat24Hour("HH:mm");
-        // Dimmed white (matches the "until …" text); pure white read as too harsh. The black outline and
-        // bold weight keep it legible and as the anchor without the glare.
-        headerClock.setTextColor(0xB3FFFFFF);
+        // A step above the "until …" text but short of pure white, which read as too harsh; the black outline
+        // and bold weight carry the rest of the legibility. The overlay clock must use the same value.
+        headerClock.setTextColor(0xC2FFFFFF);
         headerClock.setTypeface(Typeface.DEFAULT_BOLD);
         headerClock.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.textClock());
         final LinearLayout.LayoutParams headerClockLp = new LinearLayout.LayoutParams(
@@ -876,8 +882,15 @@ public class PlayerActivity extends Activity {
 
         headerClockColumn.addView(timeRow);
 
-        // Display-icon pill (row 2): aspect / PiP / rotation, right-aligned directly under the clock. No negative
-        // margin — the pill right-aligns to the column edge, which matches the clock and the bottom-bar pill.
+        // All the slack goes between the two rows, so the icons ride the header's bottom line whatever the
+        // left column's height turns out to be, instead of trailing the clock with a fixed gap.
+        final View headerSpacer = new View(this);
+        headerSpacer.setLayoutParams(new LinearLayout.LayoutParams(0, 0, 1f));
+        headerClockColumn.addView(headerSpacer);
+
+        // Display icons (row 2): aspect / PiP / rotation, right-aligned under the clock, bare — no pill behind
+        // them. The nudge that lands their glyphs on the header's right and bottom grid lines is applied in the
+        // controls assembly, where the button padding is known.
         // Populated in the controls assembly; empty on TV (those controls live in the bottom bar there).
         headerButtons = new LinearLayout(this);
         headerButtons.setOrientation(LinearLayout.HORIZONTAL);
@@ -887,6 +900,15 @@ public class PlayerActivity extends Activity {
         headerButtonsParams.topMargin = Utils.dpToPx(4);
         headerButtons.setLayoutParams(headerButtonsParams);
         headerClockColumn.addView(headerButtons);
+
+        // Both header columns are top-aligned, and the title's ascent is taller than the time row's, so equal
+        // tops leave the clock's baseline above the title's — the design has the two on one line. Push the
+        // column down by the difference between the two first-baseline offsets, read from the paints so it
+        // holds at any font scale.
+        headerClockColumnParams.topMargin = Math.max(0,
+                headerClock.getPaint().getFontMetricsInt().top
+                        - titleView.getPaint().getFontMetricsInt().top);
+        headerClockColumn.setLayoutParams(headerClockColumnParams);
 
         // Long-press the clock to copy the full launch intent to the clipboard, for diagnostics.
         headerClockColumn.setOnLongClickListener(view -> {
@@ -1060,8 +1082,8 @@ public class PlayerActivity extends Activity {
         overlayClock = new OutlineTextClock(this);
         overlayClock.setFormat12Hour("h:mm a");
         overlayClock.setFormat24Hour("HH:mm");
-        // Same dimmed white as the header clock — the black outline keeps it readable over bright frames.
-        overlayClock.setTextColor(0xB3FFFFFF);
+        // Same white as the header clock — the black outline keeps it readable over bright frames.
+        overlayClock.setTextColor(0xC2FFFFFF);
         overlayClock.setTypeface(Typeface.DEFAULT_BOLD);
         // Must match the header clock size (see below) so the two line up exactly when controls toggle.
         overlayClock.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.textClock());
@@ -1214,9 +1236,12 @@ public class PlayerActivity extends Activity {
         });
         timeBar.setAdMarkerColor(Color.argb(0x00, 0xFF, 0xFF, 0xFF));
         timeBar.setPlayedAdMarkerColor(Color.argb(0x98, 0xFF, 0xFF, 0xFF));
-        // Brand the timeline: coral played portion + coral scrubber (the surfaces the user actually touches).
-        timeBar.setPlayedColor(brandColor());
-        timeBar.setScrubberColor(brandColor());
+        // Brand the timeline: the played portion and the scrubber (the surfaces the user actually touches)
+        // share one colour, over a solid dark rail instead of Media3's wash of the frame behind.
+        final int timeBarPlayed = ContextCompat.getColor(this, R.color.timebar_played);
+        timeBar.setPlayedColor(timeBarPlayed);
+        timeBar.setScrubberColor(timeBarPlayed);
+        timeBar.setUnplayedColor(ContextCompat.getColor(this, R.color.timebar_track));
 
         try {
             trackNameProvider = new CustomDefaultTrackNameProvider(getResources());
@@ -1281,11 +1306,11 @@ public class PlayerActivity extends Activity {
         final HorizontalScrollView horizontalScrollView = (HorizontalScrollView) getLayoutInflater().inflate(R.layout.controls, null);
         final LinearLayout controls = horizontalScrollView.findViewById(R.id.controls);
 
-        // Multimedia pickers (subtitle / audio / quality / playlist), each shown when relevant, live in the
-        // bottom bar on every device.
-        controls.addView(exoSubtitle);
-        controls.addView(buttonAudio);
+        // Multimedia pickers, each shown when relevant, live in the bottom bar on every device. Order per
+        // the design: quality, audio, subtitles, playlist.
         controls.addView(buttonQuality);
+        controls.addView(buttonAudio);
+        controls.addView(exoSubtitle);
         controls.addView(buttonPlaylist);
         if (mPrefs.repeatToggle) {
             controls.addView(exoRepeat);
@@ -1320,8 +1345,17 @@ public class PlayerActivity extends Activity {
         }
         if (!isTvBox) {
             styleClusterButton(buttonRotation);
-            // Group the header display icons into a chrome pill so they read as one designed control, not loose glyphs.
-            applyControlPill(headerButtons);
+            // No chrome behind the header icons: the design keeps the top light, so the glyphs are the only
+            // thing there — and it is the glyph edge, not a pill edge, that has to sit on the header's grid
+            // lines. Nudge the row out by the button padding that used to hide inside the pill: its glyphs
+            // then finish on the clock's right-hand line and on the bottom line where the poster and the last
+            // meta line end. Translation, not margins: a negative end margin squeezes the last button instead
+            // of moving the row. The panel must stop clipping to its padding for the nudge to survive.
+            final boolean rtl = getResources().getConfiguration().getLayoutDirection()
+                    == View.LAYOUT_DIRECTION_RTL;
+            headerButtons.setTranslationX(rtl ? -ui.clusterPad() : ui.clusterPad());
+            headerButtons.setTranslationY(ui.clusterPad());
+            topInfoPanel.setClipToPadding(false);
         }
         // Group the bottom-right pickers (subtitle / audio / HD / playlist / settings) into a matching pill.
         applyControlPill(controls);
@@ -4626,8 +4660,10 @@ public class PlayerActivity extends Activity {
         if (haveMedia) {
             hideEmptyState();
             if (isNetworkUri) {
-                timeBar.setBufferedColor(DefaultTimeBar.DEFAULT_BUFFERED_COLOR);
+                // Reads as a light rail ahead of the playhead, the way the design shows a buffering stream.
+                timeBar.setBufferedColor(0xC0FFFFFF);
             } else {
+                // Local files report the whole file as buffered, so anything brighter floods the bar:
                 // https://github.com/google/ExoPlayer/issues/5765
                 timeBar.setBufferedColor(0x33FFFFFF);
             }
