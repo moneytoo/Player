@@ -367,6 +367,7 @@ public class PlayerActivity extends Activity {
     private static final long LOADING_SPEED_DELAY_MS = 2_500L;
     private static final long LOADING_SPEED_TICK_MS = 1_000L;
     private long loadingSpeedBytes;
+    private boolean loadingSpeedScheduled;
     private final Runnable loadingSpeedRunnable = new Runnable() {
         @Override
         public void run() {
@@ -5164,9 +5165,8 @@ public class PlayerActivity extends Activity {
             playerView.removeCallbacks(sourceRetryRunnable);
             playerView.removeCallbacks(backgroundReleaseRunnable);
             playerView.removeCallbacks(resumeWatchdogRunnable);
-            playerView.removeCallbacks(loadingSpeedRunnable);
-            loadingSpeedView.setVisibility(View.GONE);
         }
+        stopLoadingSpeed();
         // An error deferred until the controller is fully visible belongs to the playback session being
         // torn down here. Kept around, it would surface over whatever plays next — an error screen for a
         // clip the user already moved on from.
@@ -6474,6 +6474,18 @@ public class PlayerActivity extends Activity {
         }
     }
 
+    // The rate lives exactly as long as the ring above it: when loading ends — for good or for the next
+    // retry — both go away together.
+    private void stopLoadingSpeed() {
+        loadingSpeedScheduled = false;
+        if (playerView != null) {
+            playerView.removeCallbacks(loadingSpeedRunnable);
+        }
+        if (loadingSpeedView != null) {
+            loadingSpeedView.setVisibility(View.GONE);
+        }
+    }
+
     private void updateLoading(final boolean enableLoading) {
         if (enableLoading) {
             // INVISIBLE (not GONE): keep the 90dp slot so the row doesn't resize while the spinner shows over it.
@@ -6486,13 +6498,16 @@ public class PlayerActivity extends Activity {
                 loading = mPrefs.mediaUri;
             }
             if (Utils.isSupportedNetworkUri(loading)) {
-                loadingSpeedBytes = TrackNameParsingDataSource.bytesRead.get();
-                playerView.removeCallbacks(loadingSpeedRunnable);
-                playerView.postDelayed(loadingSpeedRunnable, LOADING_SPEED_DELAY_MS);
+                // Arm it once per wait: this runs again on every STATE_BUFFERING, and re-posting would
+                // push the delay back past the wait itself.
+                if (!loadingSpeedScheduled) {
+                    loadingSpeedScheduled = true;
+                    loadingSpeedBytes = TrackNameParsingDataSource.bytesRead.get();
+                    playerView.postDelayed(loadingSpeedRunnable, LOADING_SPEED_DELAY_MS);
+                }
             }
         } else {
-            playerView.removeCallbacks(loadingSpeedRunnable);
-            loadingSpeedView.setVisibility(View.GONE);
+            stopLoadingSpeed();
             loadingProgressBar.setVisibility(View.GONE);
             exoPlayPause.setVisibility(View.VISIBLE);
             if (focusPlay) {
