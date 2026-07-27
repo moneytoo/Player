@@ -24,7 +24,6 @@ import android.media.MediaFormat;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.LocaleList;
 import android.os.storage.StorageManager;
@@ -63,14 +62,12 @@ import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 class Utils {
 
@@ -339,80 +336,6 @@ class Utils {
                         (float) context.getResources().getInteger(R.integer.exo_media_button_opacity_percentage_enabled) / 100 :
                         (float) context.getResources().getInteger(R.integer.exo_media_button_opacity_percentage_disabled) / 100
                 );
-    }
-
-    // Full, human-readable dump of an intent (action, data, extras, flags, ...) for diagnostics.
-    public static String buildIntentReport(final Intent intent) {
-        if (intent == null) {
-            return "null intent";
-        }
-        final StringBuilder sb = new StringBuilder();
-        sb.append("Action: ").append(intent.getAction()).append('\n');
-        sb.append("Data: ").append(intent.getDataString()).append('\n');
-        sb.append("Type: ").append(intent.getType()).append('\n');
-        sb.append("Scheme: ").append(intent.getScheme()).append('\n');
-        sb.append("Package: ").append(intent.getPackage()).append('\n');
-        final ComponentName component = intent.getComponent();
-        sb.append("Component: ").append(component != null ? component.flattenToString() : null).append('\n');
-        final Set<String> categories = intent.getCategories();
-        sb.append("Categories: ").append(categories).append('\n');
-        sb.append("Flags: 0x").append(Integer.toHexString(intent.getFlags())).append('\n');
-
-        Bundle extras = null;
-        try {
-            extras = intent.getExtras();
-        } catch (Exception e) {
-            sb.append("Extras: <unreadable: ").append(e).append(">\n");
-        }
-        if (extras != null) {
-            final Set<String> keys = extras.keySet();
-            sb.append("Extras (").append(keys.size()).append("):\n");
-            for (final String key : keys) {
-                sb.append("  ").append(key).append(" = ");
-                try {
-                    sb.append(formatExtra(extras.get(key)));
-                } catch (Exception e) {
-                    sb.append("<unreadable: ").append(e).append('>');
-                }
-                sb.append('\n');
-            }
-        } else {
-            sb.append("Extras: none\n");
-        }
-
-        try {
-            sb.append("URI: ").append(intent.toUri(Intent.URI_INTENT_SCHEME)).append('\n');
-        } catch (Exception ignored) {
-        }
-        return sb.toString();
-    }
-
-    private static String formatExtra(final Object value) {
-        if (value == null) {
-            return "null";
-        }
-        if (value instanceof Object[]) {
-            return Arrays.deepToString((Object[]) value);
-        }
-        if (value instanceof int[]) {
-            return Arrays.toString((int[]) value);
-        }
-        if (value instanceof long[]) {
-            return Arrays.toString((long[]) value);
-        }
-        if (value instanceof boolean[]) {
-            return Arrays.toString((boolean[]) value);
-        }
-        if (value instanceof float[]) {
-            return Arrays.toString((float[]) value);
-        }
-        if (value instanceof double[]) {
-            return Arrays.toString((double[]) value);
-        }
-        if (value instanceof byte[]) {
-            return "byte[" + ((byte[]) value).length + "]";
-        }
-        return value.toString();
     }
 
     public static void showText(final CustomPlayerView playerView, final String text, final long timeout) {

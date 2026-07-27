@@ -910,12 +910,6 @@ public class PlayerActivity extends Activity {
                         - titleView.getPaint().getFontMetricsInt().top);
         headerClockColumn.setLayoutParams(headerClockColumnParams);
 
-        // Long-press the clock to copy the full launch intent to the clipboard, for diagnostics.
-        headerClockColumn.setOnLongClickListener(view -> {
-            copyLaunchIntentToClipboard();
-            return true;
-        });
-
         topInfoPanel.addView(headerClockColumn);
 
         centerView.addView(topInfoPanel);
@@ -1117,25 +1111,6 @@ public class PlayerActivity extends Activity {
             swipeToUnlock.setOnStopTouchingListener(this::rescheduleSwipeHide);
             coordinatorLayout.addView(swipeToUnlock);
         }
-
-        topInfoPanel.setOnLongClickListener(view -> {
-            // Prevent FileUriExposedException
-            if (mPrefs.mediaUri != null && ContentResolver.SCHEME_FILE.equals(mPrefs.mediaUri.getScheme())) {
-                return false;
-            }
-
-            final Intent shareIntent = new Intent(Intent.ACTION_SEND);
-            shareIntent.putExtra(Intent.EXTRA_STREAM, mPrefs.mediaUri);
-            if (mPrefs.mediaType == null)
-                shareIntent.setType("video/*");
-            else
-                shareIntent.setType(mPrefs.mediaType);
-            shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            // Start without intent chooser to allow any target to be set as default
-            startActivity(shareIntent);
-
-            return true;
-        });
 
         if (Build.VERSION.SDK_INT >= 35) {
             getWindow().setNavigationBarContrastEnforced(false);
@@ -3193,16 +3168,6 @@ public class PlayerActivity extends Activity {
             playerView.removeCallbacks(swipeHider);
         }
         swipeToUnlock.setVisibility(View.GONE);
-    }
-
-    private void copyLaunchIntentToClipboard() {
-        final String report = Utils.buildIntentReport(getIntent());
-        final android.content.ClipboardManager clipboard =
-                (android.content.ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-        if (clipboard != null) {
-            clipboard.setPrimaryClip(android.content.ClipData.newPlainText("intent", report));
-            android.widget.Toast.makeText(this, R.string.intent_copied, android.widget.Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void startEndsAtUpdates() {
