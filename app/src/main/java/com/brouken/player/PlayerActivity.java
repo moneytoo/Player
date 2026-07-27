@@ -3308,11 +3308,22 @@ public class PlayerActivity extends Activity {
     }
 
     private void showPlaylistDialog() {
-        if (player == null || player.getMediaItemCount() <= 1) {
+        // A failure releases the player but not the playlist, and stepping off the broken episode is
+        // exactly what this list is for — so take the items from whichever source is still alive.
+        final boolean fromPlayer = player != null && player.getMediaItemCount() > 1;
+        final List<MediaItem> mediaItems = new ArrayList<>();
+        if (fromPlayer) {
+            for (int i = 0; i < player.getMediaItemCount(); i++) {
+                mediaItems.add(player.getMediaItemAt(i));
+            }
+        } else {
+            mediaItems.addAll(apiMediaItems);
+        }
+        if (mediaItems.size() <= 1) {
             return;
         }
-        final int count = player.getMediaItemCount();
-        final int current = player.getCurrentMediaItemIndex();
+        final int count = mediaItems.size();
+        final int current = fromPlayer ? player.getCurrentMediaItemIndex() : apiPlaylistStartIndex;
         final int radius = Utils.dpToPx(4);
         final View[] currentRow = new View[1];
 
@@ -3339,7 +3350,7 @@ public class PlayerActivity extends Activity {
 
         for (int i = 0; i < count; i++) {
             final int index = i;
-            final MediaItem item = player.getMediaItemAt(i);
+            final MediaItem item = mediaItems.get(i);
             final MediaMetadata md = item.mediaMetadata;
             CharSequence title = md != null ? md.title : null;
             if (title == null || title.length() == 0) {
@@ -3431,6 +3442,16 @@ public class PlayerActivity extends Activity {
                     player.seekToDefaultPosition(index);
                     player.setPlayWhenReady(true);
                     prepareIfIdle();
+                } else {
+                    // Nothing left to seek: a failure released the player, so start the picked episode
+                    // from scratch (initializePlayer rebuilds the playlist from this index) and resume
+                    // it where it was left, if it was ever played.
+                    apiPlaylistStartIndex = index;
+                    final long saved = apiPlaylistPositions != null && index < apiPlaylistPositions.length
+                            ? apiPlaylistPositions[index] : C.TIME_UNSET;
+                    mPrefs.updatePosition(saved == C.TIME_UNSET ? 0 : saved);
+                    playerView.setCustomErrorMessage(null);
+                    initializePlayer();
                 }
                 if (playlistDialog != null) {
                     playlistDialog.dismiss();
@@ -5173,7 +5194,9 @@ public class PlayerActivity extends Activity {
             menuDialog = null;
         }
         if (buttonPlaylist != null) {
-            buttonPlaylist.setVisibility(View.GONE);
+            // Keep it while there is a playlist to step through: after a failed episode this is the way
+            // off it, and showPlaylistDialog builds the list without a player.
+            buttonPlaylist.setVisibility(apiMediaItems.size() > 1 ? View.VISIBLE : View.GONE);
         }
         if (buttonQuality != null) {
             buttonQuality.setVisibility(View.GONE);
@@ -5494,8 +5517,7 @@ public class PlayerActivity extends Activity {
             // stop — this is an unsupported upstream flow, not an app bug, so it is not reported to Sentry.
             if (isResolverNotReadyForCurrentItem()) {
                 resolverNotReadyUri = null;
-                showSnack(getString(R.string.error_stream_not_ready), null);
-                releasePlayer(false);
+                stopWithMessage(getString(R.string.error_stream_not_ready), null);
                 return;
             }
             // An extensionless streaming URL (e.g. a resolver that returns HLS) gets guessed as a
@@ -5588,14 +5610,14 @@ public class PlayerActivity extends Activity {
             // line is all the user can act on, so no full-screen stack trace, and nothing to report: the
             // same bad host otherwise files a fresh issue on every attempt.
             if (isBrokenNetworkSource(error)) {
-                showSnack(getString(R.string.error_stream_broken), null);
                 // A playlist keeps everything: the other episodes are still watchable and the user may
                 // want to step back to this one, so stay here and re-enable the arrows (gated while loading).
                 if (player != null && player.getMediaItemCount() > 1) {
+                    showSnack(getString(R.string.error_stream_broken), null);
                     setEpisodeNavLoading(false);
                     return;
                 }
-                releasePlayer(false);
+                stopWithMessage(getString(R.string.error_stream_broken), null);
                 return;
             }
             // Enrich via the per-capture ScopeCallback overload (not withScope) so the tag/extra land
@@ -6065,6 +6087,19 @@ public class PlayerActivity extends Activity {
                 d.dismiss();
             }
         }
+    }
+
+    // Playback is over for this clip, but the page is not: the snackbar fades, so leave the reason on
+    // screen, and hand the controller a null player so its play/seek cannot poke a released instance.
+    // What stays usable is everything that never needed the player — the volume/brightness gestures, the
+    // gear (and the settings screen behind it) and the playlist, if there is one to step through.
+    private void stopWithMessage(final String text, final String details) {
+        showSnack(text, details);
+        releasePlayer(false);
+        playerView.setPlayer(null);
+        playerView.setCustomErrorMessage(text);
+        playerView.setControllerShowTimeoutMs(-1);
+        playerView.showController();
     }
 
     void showError(ExoPlaybackException error) {
@@ -6708,11 +6743,9 @@ public class PlayerActivity extends Activity {
             Utils.setButtonEnabled(this, buttonPiP, enable);
         }
         Utils.setButtonEnabled(this, buttonAspectRatio, enable);
-        if (isTvBox) {
-            Utils.setButtonEnabled(this, exoSettings, true);
-        } else {
-            Utils.setButtonEnabled(this, exoSettings, enable);
-        }
+        // The gear stays reachable with no player: its menu drops the player-dependent rows by itself
+        // (see showMoreMenu) and keeps "Open" and the settings screen — the way out of a failed clip.
+        Utils.setButtonEnabled(this, exoSettings, true);
     }
 
     private void scaleStart() {
