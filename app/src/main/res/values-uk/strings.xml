@@ -19,6 +19,7 @@
     <string name="error_playback_timeout">Відтворення надто довго не починається. Спробуйте ще раз.</string>
     <string name="error_playback_stalled">Відтворення зупинилося — цей пристрій, можливо, не може декодувати цей файл.</string>
     <string name="error_stream_broken">Потік відео пошкоджено або недоступний. Спробуйте ще раз.</string>
+    <string name="error_stream_http_status">Помилка сервера %1$d на %2$s</string>
     <string name="error_media_access_expired">Доступ до цього відео закінчився. Відкрийте його знову із застосунку, звідки поділилися.</string>
     <string name="error_media_missing">Цього відео більше немає.</string>
     <string name="error_screen_title">Щось пішло не так</string>
@@ -87,6 +88,9 @@
     <string name="pref_map_dv7">Резервний варіант Dolby Vision profile 7</string>
     <string name="pref_map_dv7_on">Відтворення контенту Dolby Vision profile 7 на дисплеях HDR</string>
     <string name="pref_map_dv7_off">Відтворення вмісту UHD Blu-ray, що містить Dolby Vision, як є</string>
+    <string name="pref_reset_audio_workarounds">Скинути вивчені аудіо-обхідні рішення</string>
+    <string name="pref_reset_audio_workarounds_summary">Забути аудіоформати, які цей пристрій навчився декодувати замість прямої передачі</string>
+    <string name="pref_reset_audio_workarounds_done">Очищено</string>
     <string name="shortcut_videos">Відео</string>
     <string name="button_open">Відкрити</string>
     <string name="button_crop">Змінити розмір</string>

@@ -142,6 +142,15 @@ public class SettingsActivity extends AppCompatActivity {
                 listPreferenceLanguageAudio.setEntryValues(entries.keySet().toArray(new String[0]));
             }
 
+            Preference resetAudioWorkarounds = findPreference("resetRevokedAudioMimes");
+            if (resetAudioWorkarounds != null) {
+                resetAudioWorkarounds.setOnPreferenceClickListener(preference -> {
+                    Prefs.resetRevokedAudioMimes(requireContext());
+                    Toast.makeText(getContext(), R.string.pref_reset_audio_workarounds_done, Toast.LENGTH_SHORT).show();
+                    return true;
+                });
+            }
+
             PreferenceCategory updateCategory = findPreference("updateCategory");
             if (!BuildConfig.ENABLE_UPDATE) {
                 if (updateCategory != null) {
