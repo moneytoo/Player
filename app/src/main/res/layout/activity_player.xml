@@ -16,13 +16,17 @@
 
     <!-- Branded empty state: shown while the player has no clip to play. The identity sits in the
          corner and the task sits in the middle — keeping the coral mark out of the column stops it
-         competing with the coral call to action, which is the only thing that should pull the eye. -->
+         competing with the coral call to action, which is the only thing that should pull the eye.
+         Clipping is off here too: the padding carries the system-bar insets, and the call to action's
+         attention pulse has to be able to grow into it once the action column is nearly that wide. -->
     <FrameLayout
         android:id="@+id/empty_state"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/bg_brand_wash"
         android:clickable="true"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         android:focusable="false"
         android:padding="24dp"
         android:visibility="gone">
@@ -114,6 +118,41 @@
                 android:textColor="@color/black"
                 android:textSize="16sp"
                 android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/empty_state_link"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_ghost_button"
+            android:clickable="true"
+            android:focusable="true"
+            android:gravity="center"
+            android:minHeight="48dp"
+            android:orientation="horizontal"
+            android:paddingStart="18dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/empty_state_link_icon"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:contentDescription="@null"
+                android:src="@drawable/ic_link_24dp"
+                android:tint="#E6FFFFFF" />
+
+            <TextView
+                android:id="@+id/empty_state_link_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:text="@string/empty_state_link"
+                android:textColor="#F2FFFFFF"
+                android:textSize="16sp" />
 
         </LinearLayout>
 

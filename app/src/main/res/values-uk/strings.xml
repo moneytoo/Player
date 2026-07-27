@@ -8,6 +8,8 @@
     <string name="video_orientation_system">Орієнтація пристрою</string>
     <string name="empty_state_subtitle">Немає відкритого відео</string>
     <string name="empty_state_open">Відкрити відео</string>
+    <string name="empty_state_link">Відкрити посилання</string>
+    <string name="error_link_invalid">Введіть посилання, що починається з http:// або rtsp://</string>
     <string name="open_subtitles">Завантажити субтитри</string>
     <string name="error_details">Детально</string>
     <string name="error_files_missing">Додаток \"Файли\" вимкнено або відсутній</string>
@@ -79,7 +81,7 @@
     <string name="pref_crash_reporting_on">Автоматично надсилати звіти про збої та помилки відтворення, щоб допомогти їх виправити</string>
     <string name="pref_crash_reporting_off">Дані про збої та помилки не залишають пристрій</string>
     <string name="time_ends_at">Закінчиться о %s</string>
-    <string name="time_ends_at_inline">до %1$s ·</string>
+    <string name="time_ends_at_inline">до %1$s</string>
     <string name="playlist">Список відтворення</string>
     <string name="pref_map_dv7">Резервний варіант Dolby Vision profile 7</string>
     <string name="pref_map_dv7_on">Відтворення контенту Dolby Vision profile 7 на дисплеях HDR</string>

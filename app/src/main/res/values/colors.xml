@@ -3,6 +3,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="brand">#fe6f61</color>
+    <!-- The mark's ramp (see design/just+.svg); the vector drawables carry these same two stops. -->
+    <color name="brand_ramp_start">#FFFF6E3C</color>
+    <color name="brand_ramp_end">#FFFF0D63</color>
     <color name="shortcut_background">#F5F5F5</color>
 
     <!-- Error screen (ErrorActivity): a calm dark surface, not an alarming full-red state. -->
@@ -13,6 +16,11 @@
 
     <!-- Full-frame dim behind the controls; fades with the controller via @id/exo_controls_background. -->
     <color name="controls_scrim">#66000000</color>
+
+    <!-- Progress bar: the played run and its scrubber, over a solid dark rail ahead of the playhead
+         (not a wash of the frame behind it). -->
+    <color name="timebar_played">#FFE96220</color>
+    <color name="timebar_track">#FF38393C</color>
 
     <!-- Volume/brightness OSD bar (LevelBar); the boost segment is everything above 100%. -->
     <color name="level_bar_track">#4DFFFFFF</color>

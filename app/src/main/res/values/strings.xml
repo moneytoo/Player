@@ -9,6 +9,8 @@
     <string name="video_orientation_system">Device orientation</string>
     <string name="empty_state_subtitle">No video open</string>
     <string name="empty_state_open">Open video</string>
+    <string name="empty_state_link">Open link</string>
+    <string name="error_link_invalid">Enter a link starting with http:// or rtsp://</string>
     <string name="open_subtitles">Load subtitles</string>
     <string name="error_details">Details</string>
     <string name="error_files_missing">Files app is disabled or missing</string>
@@ -95,9 +97,8 @@
     <string name="update_later">Later</string>
     <string name="update_skip">Skip this version</string>
     <string name="time_ends_at">Ends at %s</string>
-    <string name="time_ends_at_inline">until %1$s ·</string>
+    <string name="time_ends_at_inline">until %1$s</string>
     <string name="playlist">Playlist</string>
-    <string name="intent_copied">Launch intent copied to clipboard</string>
     <string name="pref_map_dv7">Dolby Vision profile 7 fallback</string>
     <string name="pref_map_dv7_on">Play Dolby Vision profile 7 content on HDR displays</string>
     <string name="pref_map_dv7_off">Play UHD Blu-ray content containing Dolby Vision as is</string>
