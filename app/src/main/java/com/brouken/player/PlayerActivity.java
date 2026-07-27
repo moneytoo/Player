@@ -257,6 +257,30 @@ public class PlayerActivity extends Activity {
             player.prepare();
         }
     };
+    // Backgrounding keeps the player (see onStop) instead of tearing it down, so a quick round-trip —
+    // settings, notification shade, app switch — returns to the same session instead of re-buffering the
+    // stream. The decoder is held for it, so give up on the session once the user is plainly gone: after
+    // this the teardown is the same as before. Tune if holding a decoder that long proves a problem.
+    private static final long BACKGROUND_RELEASE_MS = TimeUnit.MINUTES.toMillis(2);
+    private final Runnable backgroundReleaseRunnable = () -> releasePlayer(false);
+    // How long a resumed session gets to put a frame back on screen. The retained player is attached to a
+    // SurfaceView that was destroyed while we were away, and on a slow box the decoder does not always
+    // hand the surface back (Media3 reports that as ERROR_CODE_TIMEOUT — but not always at all).
+    private static final long RESUME_WATCHDOG_MS = 3_000L;
+    private boolean resumeFrameRendered;
+    private final Runnable resumeWatchdogRunnable = () -> {
+        if (player == null || resumeFrameRendered) {
+            return;
+        }
+        // Ready and playing, yet nothing has been drawn — or stopped outright: treat the retained session
+        // as dead and rebuild it. Position and meta were saved in onPause. Buffering is deliberately left
+        // alone: coming back to a slow stream is not a broken surface.
+        final int state = player.getPlaybackState();
+        if (state == Player.STATE_IDLE || (state == Player.STATE_READY && player.getPlayWhenReady())) {
+            releasePlayer(false);
+            initializePlayer();
+        }
+    };
     public static boolean controllerVisible;
     public static boolean controllerVisibleFully;
     public static Snackbar snackbar;
@@ -1502,7 +1526,24 @@ public class PlayerActivity extends Activity {
             playerView.removeCallbacks(barsHider);
             Utils.toggleSystemUi(this, playerView, true);
         }
-        initializePlayer();
+        playerView.removeCallbacks(backgroundReleaseRunnable);
+        if (player == null) {
+            initializePlayer();
+        } else if (player.getPlayerError() != null) {
+            // The session survived being backgrounded but the player did not: Media3 stops it when the
+            // surface detach times out (see onPlayerError), so resuming would show a dead picture.
+            releasePlayer(false);
+            initializePlayer();
+        } else {
+            if (restorePlayState) {
+                restorePlayState = false;
+                playerView.showController();
+                playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
+                player.setPlayWhenReady(true);
+            }
+            resumeFrameRendered = false;
+            playerView.postDelayed(resumeWatchdogRunnable, RESUME_WATCHDOG_MS);
+        }
         updateButtonRotation();
     }
 
@@ -1532,7 +1573,21 @@ public class PlayerActivity extends Activity {
             playerView.removeCallbacks(barsHider);
         }
         playerView.setCustomErrorMessage(null);
-        releasePlayer(false);
+        // With no session worth keeping (leaving for good, or nothing loaded) tear down as before —
+        // the empty state and its pulse are only ever (re)built by initializePlayer.
+        if (isFinishing() || player == null || !haveMedia) {
+            releasePlayer(false);
+            return;
+        }
+        // Otherwise keep the player and only stop the sound: a rebuild would re-buffer the stream and
+        // drop everything that lives on the instance (quality override, selected tracks, lock).
+        if (player.isPlaying()) {
+            if (restorePlayStateAllowed) {
+                restorePlayState = true;
+            }
+            player.pause();
+        }
+        playerView.postDelayed(backgroundReleaseRunnable, BACKGROUND_RELEASE_MS);
     }
 
     @SuppressLint("GestureBackNavigation")
@@ -4144,6 +4199,9 @@ public class PlayerActivity extends Activity {
         if (player == null || target == null) {
             return;
         }
+        // Carry the session's meta (selected tracks above all) into Prefs before the rebuild reads it
+        // back — this path only wrote the position, so the restore used to pick up a stale track id.
+        savePlayer();
         final int index = player.getCurrentMediaItemIndex();
         if (!apiMediaItems.isEmpty() && index >= 0 && index < apiMediaItems.size()) {
             final MediaItem old = apiMediaItems.get(index);
@@ -4184,6 +4242,18 @@ public class PlayerActivity extends Activity {
             selectedVideoQualityMode = VideoQualityChoice.MODE_SOURCE;
             switchSource(target, 0, player.getPlayWhenReady());
             return;
+        }
+    }
+
+    // The quality override lives on the player, so a rebuild drops it while the remembered choice (which
+    // lights up the quality button and ticks the dialog row) stays. Re-assert it once tracks are known.
+    // MODE_SOURCE needs nothing: its URL is already in mPrefs.mediaUri / apiMediaItems.
+    private void restoreVideoQuality() {
+        if (selectedVideoQualityMode == VideoQualityChoice.MODE_MAXIMUM) {
+            applyVideoQuality(VideoQualityChoice.maximum());
+        } else if (selectedVideoQualityMode == VideoQualityChoice.MODE_TRACK && selectedVideoTrackGroup != null) {
+            applyVideoQuality(VideoQualityChoice.track("", "", "", selectedVideoTrackGroup,
+                    selectedVideoTrackIndex, -1));
         }
     }
 
@@ -4376,9 +4446,17 @@ public class PlayerActivity extends Activity {
                 }
             }
         } else if (requestCode == REQUEST_SETTINGS) {
+            final Map<String, ?> settingsBefore = mPrefs.snapshot();
             mPrefs.loadUserPreferences();
             updateSubtitleStyle(this);
             updateOverlayClock();
+            // Coming back from the settings screen no longer rebuilds the player by itself (see onStop),
+            // but options like the decoder priority or tunneling are baked into it at build time. So
+            // rebuild when the screen actually changed something — going in for a look costs nothing.
+            if (player != null && !settingsBefore.equals(mPrefs.snapshot())) {
+                releasePlayer();
+                initializePlayer();
+            }
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }
@@ -5031,8 +5109,12 @@ public class PlayerActivity extends Activity {
     public void releasePlayer(boolean save) {
         cancelLoadWatchdog();
         // A pending source re-read belongs to the session being torn down here, same as errorToShow below.
+        // So do both watchdogs that guard a retained session (see onStop / onStart): whatever path got
+        // here, the session they were watching is gone.
         if (playerView != null) {
             playerView.removeCallbacks(sourceRetryRunnable);
+            playerView.removeCallbacks(backgroundReleaseRunnable);
+            playerView.removeCallbacks(resumeWatchdogRunnable);
         }
         // An error deferred until the controller is fully visible belongs to the playback session being
         // torn down here. Kept around, it would surface over whatever plays next — an error screen for a
@@ -5112,6 +5194,12 @@ public class PlayerActivity extends Activity {
                 playerView.post(() ->
                         playerView.applyAspectMode(AspectRatioFrameLayout.RESIZE_MODE_FIT, currentAspectRatio));
             }
+        }
+
+        // Also fires when a destroyed surface comes back, which is what the resume watchdog waits for.
+        @Override
+        public void onRenderedFirstFrame() {
+            resumeFrameRendered = true;
         }
 
         @Override
@@ -5374,9 +5462,11 @@ public class PlayerActivity extends Activity {
                     if (mPrefs.speed <= 0.99f || mPrefs.speed >= 1.01f) {
                         player.setPlaybackSpeed(mPrefs.speed);
                     }
-                    if (!apiAccess) {
-                        setSelectedTracks(mPrefs.subtitleTrackId, mPrefs.audioTrackId);
-                    }
+                    // Fresh player: re-assert what the user had picked. Also under apiAccess — the ids are
+                    // kept in memory there (Prefs is non-persistent) and cleared by updateMedia, so a
+                    // launcher-driven session restores its own choice and not a previous clip's.
+                    setSelectedTracks(mPrefs.subtitleTrackId, mPrefs.audioTrackId);
+                    restoreVideoQuality();
                 }
             } else if (state == Player.STATE_BUFFERING) {
                 // Buffering (e.g. switching episodes) — show the spinner in place of play and disable the arrows.

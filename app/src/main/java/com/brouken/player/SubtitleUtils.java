@@ -272,6 +272,10 @@ class SubtitleUtils {
             subtitleName = Utils.getFileName(context, uri);
 
         MediaItem.SubtitleConfiguration.Builder subtitleConfigurationBuilder = new MediaItem.SubtitleConfiguration.Builder(uri)
+                // Becomes the track's Format.id, which is how a selected subtitle is remembered and
+                // restored across a player rebuild. Without it every external subtitle carries a null id
+                // and the restore matches the first text track instead of the chosen one.
+                .setId(uri.toString())
                 .setMimeType(subtitleMime)
                 .setLanguage(subtitleLanguage)
                 .setRoleFlags(C.ROLE_FLAG_SUBTITLE)
