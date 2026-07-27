@@ -9,6 +9,7 @@
     <string name="empty_state_subtitle">Немає відкритого відео</string>
     <string name="empty_state_open">Відкрити відео</string>
     <string name="empty_state_link">Відкрити посилання</string>
+    <string name="loading_speed">%1$.1f МБ/с</string>
     <string name="error_link_invalid">Введіть посилання, що починається з http:// або rtsp://</string>
     <string name="open_subtitles">Завантажити субтитри</string>
     <string name="error_details">Детально</string>

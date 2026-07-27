@@ -161,6 +161,16 @@
 
   </LinearLayout>
 
+  <!-- Transfer rate, shown under the loading ring once buffering drags on (PlayerActivity.updateLoading).
+       Sits in the control view rather than in the ring's own FrameLayout, which would clip it; the exact
+       offset below the ring and the text size come from UiMetrics, like the ring's size. -->
+  <TextView android:id="@+id/loading_speed"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:layout_gravity="center"
+      android:textColor="#B3FFFFFF"
+      android:visibility="gone"/>
+
   <View android:id="@+id/exo_top"
       android:layout_width="match_parent"
       android:layout_height="0dp"

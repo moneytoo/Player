@@ -13,7 +13,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Set;
 
 class Prefs {
@@ -378,5 +380,12 @@ class Prefs {
 
     public void setPersistent(boolean persistentMode) {
         this.persistentMode = persistentMode;
+    }
+
+    // Everything the settings screen could have written, in one comparable value: the player bakes some
+    // of these in at build time, so the caller can tell "settings were changed" from "settings were only
+    // looked at" without keeping a hand-written list of the keys that matter.
+    public Map<String, ?> snapshot() {
+        return new HashMap<>(mSharedPreferences.getAll());
     }
 }

@@ -201,8 +201,9 @@ public class CustomPlayerView extends PlayerView implements GestureDetector.OnGe
         if (!PlayerActivity.controllerVisibleFully) {
             showController();
             return true;
-        } else if (PlayerActivity.haveMedia && PlayerActivity.player != null) {
-            // Hide on tap even while paused, so the interface can be cleared for a clean screenshot.
+        } else if (PlayerActivity.haveMedia) {
+            // Hide on tap even while paused, so the interface can be cleared for a clean screenshot —
+            // and after a failure, so the message left on screen can be read without the controls.
             hideController();
             return true;
         }
@@ -211,7 +212,10 @@ public class CustomPlayerView extends PlayerView implements GestureDetector.OnGe
 
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent1, float distanceX, float distanceY) {
-        if (mScaleDetector.isInProgress() || PlayerActivity.player == null || PlayerActivity.locked)
+        // No player check here: brightness and volume must stay reachable even when playback has died
+        // (a failed stream releases the player, and brightness has no other control at all). Seeking is
+        // gated on its own branch below, where the player is actually needed.
+        if (mScaleDetector.isInProgress() || PlayerActivity.locked)
             return false;
 
         // Exclude edge areas
@@ -225,7 +229,8 @@ public class CustomPlayerView extends PlayerView implements GestureDetector.OnGe
             return false;
         }
 
-        if (gestureOrientation == Orientation.HORIZONTAL || gestureOrientation == Orientation.UNKNOWN) {
+        if (PlayerActivity.player != null
+                && (gestureOrientation == Orientation.HORIZONTAL || gestureOrientation == Orientation.UNKNOWN)) {
             gestureScrollX += distanceX;
             if (Math.abs(gestureScrollX) > SCROLL_STEP || (gestureOrientation == Orientation.HORIZONTAL && Math.abs(gestureScrollX) > SCROLL_STEP_SEEK)) {
                 // Do not show controller if not already visible

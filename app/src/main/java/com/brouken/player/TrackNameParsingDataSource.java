@@ -16,6 +16,7 @@ import java.io.PipedOutputStream;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Wraps an upstream {@link DataSource} and, on the first read of a media item (offset 0), tees the
@@ -29,6 +30,14 @@ import java.util.Map;
  * caller degrades to the language name in that case.
  */
 final class TrackNameParsingDataSource implements DataSource {
+
+    /**
+     * Total bytes pulled through the media data sources. The UI samples the delta to show a real
+     * transfer rate while buffering: Media3's own BandwidthMeter only updates on completed transfers,
+     * so it keeps reporting the last estimate when a stream goes silent — which is the very case the
+     * rate has to expose. Monotonic; readers compare successive samples.
+     */
+    static final AtomicLong bytesRead = new AtomicLong();
 
     /** Receives parsed track metadata (on a background thread) and reports whether it already has it. */
     interface Listener {
@@ -199,9 +208,13 @@ final class TrackNameParsingDataSource implements DataSource {
 
     @Override
     public int read(byte[] buffer, int offset, int length) throws IOException {
-        return teeDataSource != null
+        final int count = teeDataSource != null
                 ? teeDataSource.read(buffer, offset, length)
                 : upstream.read(buffer, offset, length);
+        if (count > 0) {
+            bytesRead.addAndGet(count);
+        }
+        return count;
     }
 
     @Override
