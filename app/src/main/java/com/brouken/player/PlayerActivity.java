@@ -1226,7 +1226,16 @@ public class PlayerActivity extends Activity {
                 // Extend the header's background up over the status-bar area (top margin -> 0, top inset moved into
                 // the top padding). The content position is unchanged (padding pushes it down by the same amount the
                 // margin used to), but the panel now paints the status-bar strip, in perfect sync with the header.
-                Utils.setViewParams(topInfoPanel, paddingLeft + titleViewPaddingHorizontal, windowInsets.getSystemWindowInsetTop() + overscanV + Utils.dpToPx(4), paddingRight + titleViewPaddingHorizontal, titleViewPaddingVertical,
+                // Reserve that strip whether or not the status bar happens to be showing: the controls hide together
+                // with the system bars, so a top padding that tracked the live inset moved the header's clock every
+                // time they toggled, and the floating clock mirrors that position while remaining visible — which is
+                // how it crept upwards when a picker panel hid the controls. Landscape is where it showed, the top
+                // inset there really does fall to 0; in portrait a display cutout keeps it non-zero.
+                final int insetTop = Build.VERSION.SDK_INT >= 30
+                        ? Math.max(windowInsets.getSystemWindowInsetTop(),
+                                windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.statusBars()).top)
+                        : windowInsets.getSystemWindowInsetTop();
+                Utils.setViewParams(topInfoPanel, paddingLeft + titleViewPaddingHorizontal, insetTop + overscanV + Utils.dpToPx(4), paddingRight + titleViewPaddingHorizontal, titleViewPaddingVertical,
                         marginLeft, 0, marginRight, 0);
 
 
@@ -2490,6 +2499,41 @@ public class PlayerActivity extends Activity {
         dialog.show();
     }
 
+    // A long label does not fit the width of a picker panel, and the two device classes want opposite
+    // answers. On TV the row that has D-pad focus scrolls its text: focus makes the movement mean
+    // something ("this row"), it is the 10-foot idiom, and only one row is ever moving. In touch mode
+    // nothing is ever focused, so scrolling could only mean scrolling — six rows crawling in a list the
+    // user is trying to scan is motion without a message, so there the label wraps to a second line and
+    // ellipsizes instead, which shows more of it than a marquee does at any one moment. Scrolling also
+    // needs the view focused or selected, and the focusable view is the row, not its texts, hence the
+    // relay below; only the TextViews move, the poster/number box of a playlist row is a sibling.
+    private void fitLongText(final View row, final TextView... texts) {
+        final boolean scroll = ui.deviceClass == UiMetrics.DeviceClass.TV && !isReducedMotion();
+        for (final TextView text : texts) {
+            if (text == null) {
+                continue;
+            }
+            if (scroll) {
+                text.setSingleLine(true);
+                text.setEllipsize(TextUtils.TruncateAt.MARQUEE);
+                text.setMarqueeRepeatLimit(-1);
+                text.setHorizontalFadingEdgeEnabled(true);
+            } else {
+                text.setMaxLines(2);
+                text.setEllipsize(TextUtils.TruncateAt.END);
+            }
+        }
+        if (scroll) {
+            row.setOnFocusChangeListener((v, hasFocus) -> {
+                for (final TextView text : texts) {
+                    if (text != null) {
+                        text.setSelected(hasFocus);
+                    }
+                }
+            });
+        }
+    }
+
     // Bar state while a picker panel is open: navigation/gesture bar shown (avoids OxygenOS's fullscreen
     // back-gesture guard, which keys on hidden nav gestures), status bar hidden (clean top edge).
     private void applyPickerBars() {
@@ -3452,8 +3496,6 @@ public class PlayerActivity extends Activity {
             titleText.setText(title);
             titleText.setTextColor(isCurrent ? 0xFFFFFFFF : 0xFFDDDDDD);
             titleText.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.textList());
-            titleText.setMaxLines(2);
-            titleText.setEllipsize(TextUtils.TruncateAt.END);
             if (isCurrent) {
                 titleText.setTypeface(Typeface.DEFAULT_BOLD);
             }
@@ -3462,6 +3504,7 @@ public class PlayerActivity extends Activity {
             titleLp.gravity = Gravity.CENTER_VERTICAL;
             titleText.setLayoutParams(titleLp);
             row.addView(titleText);
+            fitLongText(row, titleText);
 
             row.setOnClickListener(v -> {
                 if (player != null) {
@@ -3712,22 +3755,22 @@ public class PlayerActivity extends Activity {
             title.setText(qualityChoiceTitle(choice));
             title.setTextColor(isCurrent ? 0xFFFFFFFF : 0xFFDDDDDD);
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.textBody());
-            title.setSingleLine(true);
             if (isCurrent) {
                 title.setTypeface(Typeface.DEFAULT_BOLD);
             }
             textBlock.addView(title);
 
             final String subtitle = qualityChoiceSubtitle(choice);
+            TextView details = null;
             if (subtitle != null && !subtitle.isEmpty()) {
-                final TextView details = new TextView(this);
+                details = new TextView(this);
                 details.setText(subtitle);
                 details.setTextColor(0x99FFFFFF);
                 details.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.textCaption());
-                details.setSingleLine(true);
                 textBlock.addView(details);
             }
             row.addView(textBlock);
+            fitLongText(row, title, details);
 
             if (choice.bitrateText != null && !choice.bitrateText.isEmpty()) {
                 final TextView bitrate = new TextView(this);
@@ -3923,21 +3966,21 @@ public class PlayerActivity extends Activity {
             title.setText(item.title);
             title.setTextColor(isCurrent ? 0xFFFFFFFF : 0xFFDDDDDD);
             title.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.textBody());
-            title.setSingleLine(true);
             if (isCurrent) {
                 title.setTypeface(Typeface.DEFAULT_BOLD);
             }
             textBlock.addView(title);
 
+            TextView details = null;
             if (item.subtitle != null && item.subtitle.length() > 0) {
-                final TextView details = new TextView(this);
+                details = new TextView(this);
                 details.setText(item.subtitle);
                 details.setTextColor(0x99FFFFFF);
                 details.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.textCaption());
-                details.setSingleLine(true);
                 textBlock.addView(details);
             }
             row.addView(textBlock);
+            fitLongText(row, title, details);
 
             row.setOnClickListener(v -> {
                 if (menuDialog != null) {
