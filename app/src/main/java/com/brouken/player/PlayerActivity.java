@@ -4206,7 +4206,10 @@ public class PlayerActivity extends Activity {
         if (buttonSkipOffset != null && buttonSkipOffset.getVisibility() == View.VISIBLE) {
             items.add(new MenuItem(R.drawable.ic_skip_offset_24dp, getString(R.string.button_skip_offset), null, false, this::showSkipOffsetDialog));
         }
-        items.add(new MenuItem(R.drawable.ic_folder_open_24dp, getString(R.string.button_open), null, false, () -> openFile(mPrefs.mediaUri)));
+        // Same two entry points the empty state offers (hence its strings), so opening something else is
+        // not a matter of first getting back to an empty player.
+        items.add(new MenuItem(R.drawable.ic_folder_open_24dp, getString(R.string.empty_state_open), null, false, () -> openFile(mPrefs.mediaUri)));
+        items.add(new MenuItem(R.drawable.ic_link_24dp, getString(R.string.empty_state_link), null, false, this::askForLink));
         // "More" → the full app settings screen (long-pressing the gear opens it directly, too).
         items.add(new MenuItem(R.drawable.ic_settings_24dp, getString(R.string.button_more), null, false, () ->
                 startActivityForResult(new Intent(this, SettingsActivity.class), REQUEST_SETTINGS)));
