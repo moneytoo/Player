@@ -360,6 +360,25 @@ public class PlayerActivity extends Activity {
     private ImageButton exoNext;
     private boolean episodeNavLoading;
     private ProgressBar loadingProgressBar;
+    // Transfer rate under the loading ring. A spinning ring says nothing about whether bytes are still
+    // arriving, so once the wait gets noticeable the rate answers it: 0,0 MB/s reads as "nothing is
+    // coming", anything else as "alive, just slow". Delayed so the short reloads after a seek stay clean.
+    private TextView loadingSpeedView;
+    private static final long LOADING_SPEED_DELAY_MS = 2_500L;
+    private static final long LOADING_SPEED_TICK_MS = 1_000L;
+    private long loadingSpeedBytes;
+    private final Runnable loadingSpeedRunnable = new Runnable() {
+        @Override
+        public void run() {
+            final long total = TrackNameParsingDataSource.bytesRead.get();
+            final double mbPerSec = Math.max(0, total - loadingSpeedBytes)
+                    * 1000d / LOADING_SPEED_TICK_MS / (1024 * 1024);
+            loadingSpeedBytes = total;
+            loadingSpeedView.setText(getString(R.string.loading_speed, mbPerSec));
+            loadingSpeedView.setVisibility(View.VISIBLE);
+            playerView.postDelayed(this, LOADING_SPEED_TICK_MS);
+        }
+    };
     private PlayerControlView controlView;
     private CustomDefaultTimeBar timeBar;
 
@@ -616,6 +635,12 @@ public class PlayerActivity extends Activity {
         spinnerLp.width = ui.spinnerSize();
         spinnerLp.height = ui.spinnerSize();
         loadingProgressBar.setLayoutParams(spinnerLp);
+        loadingSpeedView = findViewById(R.id.loading_speed);
+        loadingSpeedView.setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.textSkip());
+        // Just below the ring, whatever size the ring is on this device.
+        final FrameLayout.LayoutParams speedLp = (FrameLayout.LayoutParams) loadingSpeedView.getLayoutParams();
+        speedLp.topMargin = ui.spinnerSize() / 2 + ui.dpS(12);
+        loadingSpeedView.setLayoutParams(speedLp);
         exoPrev = findViewById(R.id.exo_prev);
         exoNext = findViewById(R.id.exo_next);
         setupEpisodeNavButtons();
@@ -5139,6 +5164,8 @@ public class PlayerActivity extends Activity {
             playerView.removeCallbacks(sourceRetryRunnable);
             playerView.removeCallbacks(backgroundReleaseRunnable);
             playerView.removeCallbacks(resumeWatchdogRunnable);
+            playerView.removeCallbacks(loadingSpeedRunnable);
+            loadingSpeedView.setVisibility(View.GONE);
         }
         // An error deferred until the controller is fully visible belongs to the playback session being
         // torn down here. Kept around, it would surface over whatever plays next — an error screen for a
@@ -6452,7 +6479,20 @@ public class PlayerActivity extends Activity {
             // INVISIBLE (not GONE): keep the 90dp slot so the row doesn't resize while the spinner shows over it.
             exoPlayPause.setVisibility(View.INVISIBLE);
             loadingProgressBar.setVisibility(View.VISIBLE);
+            // Network sources only: nothing flows through the media data source for a local file or a SAF
+            // document, so the rate would read 0,0 MB/s exactly where it is meant to reassure.
+            Uri loading = currentPlayingUri();
+            if (loading == null) {
+                loading = mPrefs.mediaUri;
+            }
+            if (Utils.isSupportedNetworkUri(loading)) {
+                loadingSpeedBytes = TrackNameParsingDataSource.bytesRead.get();
+                playerView.removeCallbacks(loadingSpeedRunnable);
+                playerView.postDelayed(loadingSpeedRunnable, LOADING_SPEED_DELAY_MS);
+            }
         } else {
+            playerView.removeCallbacks(loadingSpeedRunnable);
+            loadingSpeedView.setVisibility(View.GONE);
             loadingProgressBar.setVisibility(View.GONE);
             exoPlayPause.setVisibility(View.VISIBLE);
             if (focusPlay) {

@@ -10,6 +10,7 @@
     <string name="empty_state_subtitle">No video open</string>
     <string name="empty_state_open">Open video</string>
     <string name="empty_state_link">Open link</string>
+    <string name="loading_speed">%1$.1f MB/s</string>
     <string name="error_link_invalid">Enter a link starting with http:// or rtsp://</string>
     <string name="open_subtitles">Load subtitles</string>
     <string name="error_details">Details</string>
