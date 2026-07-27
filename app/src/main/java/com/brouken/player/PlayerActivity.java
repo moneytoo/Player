@@ -561,13 +561,13 @@ public class PlayerActivity extends Activity {
         mAudioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         playerView = findViewById(R.id.video_view);
         exoPlayPause = findViewById(R.id.exo_play_pause);
-        // Coral hero: the central Play/Pause sits on a brand disc (inset from the large tap target) with a
-        // white glyph. Doubles as a contrast anchor on bright frames, where a bare white glyph washes out.
-        // Coral hero: the central Play/Pause sits on a brand disc (inset from the large tap target) with a
-        // white glyph. Doubles as a contrast anchor on bright frames, where a bare white glyph washes out.
-        final GradientDrawable playDisc = new GradientDrawable();
+        // Brand hero: the central Play/Pause sits on a disc (inset from the large tap target) carrying the
+        // icon's ramp, with a white glyph. Doubles as a contrast anchor on bright frames, where a bare
+        // white glyph washes out. TR_BL is the direction the ramp runs in the mark itself.
+        final GradientDrawable playDisc = new GradientDrawable(GradientDrawable.Orientation.TR_BL,
+                new int[]{ContextCompat.getColor(this, R.color.brand_ramp_start),
+                        ContextCompat.getColor(this, R.color.brand_ramp_end)});
         playDisc.setShape(GradientDrawable.OVAL);
-        playDisc.setColor(brandColor());
         exoPlayPause.setBackground(new InsetDrawable((Drawable) playDisc, ui.heroInset()));
         // Hero size scales per device class (phone = 90dp, unchanged; larger on tablet/TV). Overrides the
         // Media3 style's exo_icon_size so the transport isn't tiny on a 10-foot screen.

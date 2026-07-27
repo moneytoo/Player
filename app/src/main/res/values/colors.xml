@@ -3,6 +3,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="brand">#fe6f61</color>
+    <!-- The mark's ramp (see design/just+.svg); the vector drawables carry these same two stops. -->
+    <color name="brand_ramp_start">#FFFF6E3C</color>
+    <color name="brand_ramp_end">#FFFF0D63</color>
     <color name="shortcut_background">#F5F5F5</color>
 
     <!-- Error screen (ErrorActivity): a calm dark surface, not an alarming full-red state. -->

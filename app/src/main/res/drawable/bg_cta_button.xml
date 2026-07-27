@@ -6,7 +6,12 @@
         <selector>
             <item android:state_focused="true">
                 <shape android:shape="rectangle">
-                    <solid android:color="@color/brand" />
+                    <!-- The mark's ramp, running top-right to bottom-left (angle 225) as it does in the
+                         mark itself and on the Play disc. -->
+                    <gradient
+                        android:angle="225"
+                        android:startColor="@color/brand_ramp_start"
+                        android:endColor="@color/brand_ramp_end" />
                     <corners android:radius="100dp" />
                     <stroke
                         android:width="3dp"
@@ -15,7 +20,10 @@
             </item>
             <item>
                 <shape android:shape="rectangle">
-                    <solid android:color="@color/brand" />
+                    <gradient
+                        android:angle="225"
+                        android:startColor="@color/brand_ramp_start"
+                        android:endColor="@color/brand_ramp_end" />
                     <corners android:radius="100dp" />
                 </shape>
             </item>
