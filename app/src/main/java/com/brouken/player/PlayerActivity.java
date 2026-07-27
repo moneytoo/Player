@@ -1176,7 +1176,16 @@ public class PlayerActivity extends Activity {
                 // Extend the header's background up over the status-bar area (top margin -> 0, top inset moved into
                 // the top padding). The content position is unchanged (padding pushes it down by the same amount the
                 // margin used to), but the panel now paints the status-bar strip, in perfect sync with the header.
-                Utils.setViewParams(topInfoPanel, paddingLeft + titleViewPaddingHorizontal, windowInsets.getSystemWindowInsetTop() + overscanV + Utils.dpToPx(4), paddingRight + titleViewPaddingHorizontal, titleViewPaddingVertical,
+                // Reserve that strip whether or not the status bar happens to be showing: the controls hide together
+                // with the system bars, so a top padding that tracked the live inset moved the header's clock every
+                // time they toggled, and the floating clock mirrors that position while remaining visible — which is
+                // how it crept upwards when a picker panel hid the controls. Landscape is where it showed, the top
+                // inset there really does fall to 0; in portrait a display cutout keeps it non-zero.
+                final int insetTop = Build.VERSION.SDK_INT >= 30
+                        ? Math.max(windowInsets.getSystemWindowInsetTop(),
+                                windowInsets.getInsetsIgnoringVisibility(WindowInsets.Type.statusBars()).top)
+                        : windowInsets.getSystemWindowInsetTop();
+                Utils.setViewParams(topInfoPanel, paddingLeft + titleViewPaddingHorizontal, insetTop + overscanV + Utils.dpToPx(4), paddingRight + titleViewPaddingHorizontal, titleViewPaddingVertical,
                         marginLeft, 0, marginRight, 0);
 
 
