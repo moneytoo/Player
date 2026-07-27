@@ -112,6 +112,7 @@ import androidx.media3.exoplayer.RenderersFactory;
 import androidx.media3.exoplayer.SeekParameters;
 import androidx.media3.exoplayer.audio.AudioRendererEventListener;
 import androidx.media3.exoplayer.audio.AudioSink;
+import androidx.media3.exoplayer.audio.ForwardingAudioSink;
 import androidx.media3.exoplayer.mediacodec.MediaCodecSelector;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector;
@@ -156,6 +157,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.TimeUnit;
 
 public class PlayerActivity extends Activity {
@@ -209,6 +212,8 @@ public class PlayerActivity extends Activity {
 
     public CustomPlayerView playerView;
     public static ExoPlayer player;
+    // Live handle to the current player's audio sink wrapper, for recoverByRevokingAudioMime().
+    private AudioPassthroughDenylistSink audioSink;
     private YouTubeOverlay youTubeOverlay;
 
     private Object mPictureInPictureParamsBuilder;
@@ -253,6 +258,15 @@ public class PlayerActivity extends Activity {
     // Held in a field (like loadTimeoutRunnable) so releasePlayer can drop a re-read that no longer has a
     // session to belong to.
     private final Runnable sourceRetryRunnable = () -> {
+        if (player != null) {
+            player.prepare();
+        }
+    };
+    // Re-reads spent on a transient decoder failure this session (see recoverFromDecoderFailure), reset
+    // per player build and on reaching STATE_READY.
+    private int decoderRetries;
+    private static final int MAX_DECODER_RETRIES = 3;
+    private final Runnable decoderRetryRunnable = () -> {
         if (player != null) {
             player.prepare();
         }
@@ -4582,6 +4596,43 @@ public class PlayerActivity extends Activity {
         return path != null && path.regionMatches(true, path.length() - 4, ".mkv", 0, 4);
     }
 
+    // Denies passthrough only for mimes this device has already proven broken (see
+    // recoverByRevokingAudioMime()). Keyed by mime, not by wire encoding: DefaultAudioSink.getFormatSupport
+    // in this build routes through the newer AudioOutputProvider abstraction rather than AudioCapabilities
+    // directly, and a mime-keyed denial needs neither that internal plumbing nor AudioCapabilities
+    // reconstruction (whose only public constructor drops speaker-layout/spatializer info). Delegates
+    // everything else untouched. Mutable so a revocation applies to the player already built, but
+    // deliberately silent: notifying the sink's listener here (Media3's own renderer-capabilities-changed
+    // path, the one it uses when an HDMI receiver is unplugged mid-playback) is only valid while the
+    // player is playing. Every revocation is decided from onPlayerError, by which point ExoPlayer has
+    // already reset and cleared its media period queue, so that notification lands in
+    // seekToCurrentPosition() with no playing period and throws (JPP-15). The caller re-prepares instead.
+    private static final class AudioPassthroughDenylistSink extends ForwardingAudioSink {
+        private final Set<String> deniedMimes;
+
+        AudioPassthroughDenylistSink(AudioSink sink, Set<String> initiallyDenied) {
+            super(sink);
+            this.deniedMimes = new CopyOnWriteArraySet<>(initiallyDenied);
+        }
+
+        @Override
+        public int getFormatSupport(Format format) {
+            return deniedMimes.contains(format.sampleMimeType)
+                    ? AudioSink.SINK_FORMAT_UNSUPPORTED : super.getFormatSupport(format);
+        }
+
+        @Override
+        public boolean supportsFormat(Format format) {
+            return !deniedMimes.contains(format.sampleMimeType) && super.supportsFormat(format);
+        }
+
+        // Called from the app thread by recoverByRevokingAudioMime(). deniedMimes is read on the
+        // playback thread by getFormatSupport/supportsFormat above — CopyOnWriteArraySet needs no lock.
+        void revoke(String mime) {
+            deniedMimes.add(mime);
+        }
+    }
+
     public void initializePlayer() {
         boolean isNetworkUri = Utils.isSupportedNetworkUri(mPrefs.mediaUri);
         haveMedia = mPrefs.mediaUri != null && !mPrefs.suppressResume;
@@ -4602,6 +4653,7 @@ public class PlayerActivity extends Activity {
 
         // Fresh player — the source re-read budget starts over.
         sourceRetries = 0;
+        decoderRetries = 0;
 
         // Fresh media — drop any container track names so the tap re-parses for this item.
         containerTracks.clear();
@@ -4616,6 +4668,7 @@ public class PlayerActivity extends Activity {
             player.clearMediaItems();
             player.release();
             player = null;
+            audioSink = null;
         }
 
         trackSelector = new DefaultTrackSelector(this);
@@ -4664,26 +4717,43 @@ public class PlayerActivity extends Activity {
         // (Atmos preserved); where it does not, the track falls through to the ffmpeg software
         // renderer. Only MKV audio on a TV is affected; video keeps the user's decoder priority.
         final boolean blockHeavyMkvAudio = isTvBox && isMatroskaMedia();
-        DefaultRenderersFactory baseRenderersFactory = blockHeavyMkvAudio
-                ? new DefaultRenderersFactory(this) {
-                    @Override
-                    protected void buildAudioRenderers(Context context, int extensionRendererMode,
-                                                       MediaCodecSelector mediaCodecSelector,
-                                                       boolean enableDecoderFallback, AudioSink audioSink,
-                                                       Handler eventHandler,
-                                                       AudioRendererEventListener eventListener,
-                                                       ArrayList<Renderer> out) {
-                        // Ensure the ffmpeg audio renderer exists as a fallback even when the user
-                        // chose "device decoders only"; keep it behind the platform renderer (ON, not
-                        // PREFER) so passthrough still wins when available. An explicit PREFER stands.
-                        super.buildAudioRenderers(context,
-                                extensionRendererMode == EXTENSION_RENDERER_MODE_OFF
-                                        ? EXTENSION_RENDERER_MODE_ON : extensionRendererMode,
-                                mediaCodecSelector, enableDecoderFallback, audioSink, eventHandler,
-                                eventListener, out);
-                    }
-                }
-                : new DefaultRenderersFactory(this);
+        // Audio sample mimes this device has already proven cannot passthrough (see
+        // recoverByRevokingAudioMime()) — denied at the sink only; the platform decoder for the same
+        // mime is left alone since it is an independent subsystem that may work fine.
+        final Set<String> revokedAudioMimes = mPrefs.revokedAudioMimes;
+        // Always subclassed (not only for blockHeavyMkvAudio/an existing revocation) so buildAudioSink
+        // below can install the live AudioPassthroughDenylistSink from a device's very first play —
+        // it needs to be present before any revocation exists, so a first stall can revoke into it
+        // without a player rebuild (see recoverByRevokingAudioMime()).
+        DefaultRenderersFactory baseRenderersFactory = new DefaultRenderersFactory(this) {
+            @Override
+            protected void buildAudioRenderers(Context context, int extensionRendererMode,
+                                               MediaCodecSelector mediaCodecSelector,
+                                               boolean enableDecoderFallback, AudioSink audioSink,
+                                               Handler eventHandler,
+                                               AudioRendererEventListener eventListener,
+                                               ArrayList<Renderer> out) {
+                // Ensure the ffmpeg audio renderer exists as a fallback whenever a heavy MKV codec is
+                // hidden from the platform decoder or a mime has been revoked — even when the user
+                // chose "device decoders only". Keep it behind the platform renderer (ON, not PREFER)
+                // so passthrough/decode still wins when available. An explicit PREFER stands.
+                super.buildAudioRenderers(context,
+                        (blockHeavyMkvAudio || !revokedAudioMimes.isEmpty())
+                                && extensionRendererMode == EXTENSION_RENDERER_MODE_OFF
+                                ? EXTENSION_RENDERER_MODE_ON : extensionRendererMode,
+                        mediaCodecSelector, enableDecoderFallback, audioSink, eventHandler,
+                        eventListener, out);
+            }
+
+            @Override
+            protected AudioSink buildAudioSink(Context context, boolean enableFloatOutput,
+                                                boolean enableAudioTrackPlaybackParams) {
+                AudioSink sink = super.buildAudioSink(context, enableFloatOutput,
+                        enableAudioTrackPlaybackParams);
+                audioSink = new AudioPassthroughDenylistSink(sink, revokedAudioMimes);
+                return audioSink;
+            }
+        };
         @SuppressLint("WrongConstant") DefaultRenderersFactory renderersFactory = baseRenderersFactory
                 .setExtensionRendererMode(mPrefs.decoderPriority)
                 .setMapDV7ToHevc(mPrefs.mapDV7ToHevc);
@@ -5206,6 +5276,7 @@ public class PlayerActivity extends Activity {
         // here, the session they were watching is gone.
         if (playerView != null) {
             playerView.removeCallbacks(sourceRetryRunnable);
+            playerView.removeCallbacks(decoderRetryRunnable);
             playerView.removeCallbacks(backgroundReleaseRunnable);
             playerView.removeCallbacks(resumeWatchdogRunnable);
         }
@@ -5233,6 +5304,7 @@ public class PlayerActivity extends Activity {
             player.clearMediaItems();
             player.release();
             player = null;
+            audioSink = null;
         }
         stopSkipPolling();
         cancelSegmentFinder();
@@ -5464,6 +5536,7 @@ public class PlayerActivity extends Activity {
                 cancelLoadWatchdog();
                 // Loaded successfully — clear any pending resolver-handshake flag from a prior attempt.
                 resolverNotReadyUri = null;
+                decoderRetries = 0;
 
                 // Ready — hide the spinner and re-enable the episode arrows. Done unconditionally (not only on
                 // the initial open) so episode switches, which don't set videoLoading, are also cleared.
@@ -5622,6 +5695,13 @@ public class PlayerActivity extends Activity {
                 if (recoverFromStuckPlayback()) {
                     return;
                 }
+                // Second rung: not a Dolby Vision video wedge (or already tried on this URI) — the
+                // more common cause in the field is passthrough audio that opened but never actually
+                // drained. Blame whichever mime was playing when the stall was declared.
+                final Format stalledAudioFormat = player != null ? player.getAudioFormat() : null;
+                if (recoverByRevokingAudioMime(stalledAudioFormat != null ? stalledAudioFormat.sampleMimeType : null)) {
+                    return;
+                }
                 showErrorScreen(errorSummary(error), "Stall class: device_decoder\n\n" + errorReport(error));
                 // Report as device/firmware telemetry (tagged), not an app bug.
                 io.sentry.Sentry.captureException(error, scope -> {
@@ -5635,6 +5715,16 @@ public class PlayerActivity extends Activity {
                     }
                 });
                 releasePlayer(false);
+                return;
+            }
+            // The device claims Dolby/DTS passthrough support it doesn't actually have: AudioTrack
+            // opening for that mime throws outright instead of just never draining. Same fix, reached
+            // from the loud symptom instead of the silent one.
+            if (error.errorCode == PlaybackException.ERROR_CODE_AUDIO_TRACK_INIT_FAILED
+                    && recoverByRevokingAudioMime(audioTrackInitFailureMime(error))) {
+                return;
+            }
+            if (isDecoderFailure(error) && recoverFromDecoderFailure()) {
                 return;
             }
             // The remembered clip can no longer be opened: a foreign app's one-off URI grant has
@@ -5683,14 +5773,21 @@ public class PlayerActivity extends Activity {
             // line is all the user can act on, so no full-screen stack trace, and nothing to report: the
             // same bad host otherwise files a fresh issue on every attempt.
             if (isBrokenNetworkSource(error)) {
+                // Prefer the status the server actually returned over the generic wording, so the user
+                // (and support) sees the real cause.
+                final HttpDataSource.InvalidResponseCodeException httpError = httpStatusFailure(error);
+                final String message = httpError != null && httpError.dataSpec != null
+                        ? getString(R.string.error_stream_http_status, httpError.responseCode,
+                                Utils.uriToReportString(httpError.dataSpec.uri))
+                        : getString(R.string.error_stream_broken);
                 // A playlist keeps everything: the other episodes are still watchable and the user may
                 // want to step back to this one, so stay here and re-enable the arrows (gated while loading).
                 if (player != null && player.getMediaItemCount() > 1) {
-                    showSnack(getString(R.string.error_stream_broken), null);
+                    showSnack(message, null);
                     setEpisodeNavLoading(false);
                     return;
                 }
-                stopWithMessage(getString(R.string.error_stream_broken), null);
+                stopWithMessage(message, null);
                 return;
             }
             // Enrich via the per-capture ScopeCallback overload (not withScope) so the tag/extra land
@@ -5774,7 +5871,9 @@ public class PlayerActivity extends Activity {
     // extractor then dies on the first malformed element ("No valid varint length mask found" from
     // MatroskaExtractor). Media3 never retries these itself: DefaultLoadErrorHandlingPolicy gives
     // Loader.UnexpectedLoaderException and ParserException no retry delay, so one bad read ends playback
-    // outright.
+    // outright. The same tolerance covers any HTTP status the server hands back (a torrent/proxy backend
+    // can answer 416 for a byte range it simply hasn't fetched yet) — a jitter, not a verdict, so it gets
+    // the same retry budget as a malformed read instead of ending playback on the first bad response.
     //
     // Recovery stays on the same player instance: after an error it is merely STATE_IDLE, and prepare()
     // re-reads the source keeping the media item, the position, the surface and the track selection — the
@@ -5787,12 +5886,6 @@ public class PlayerActivity extends Activity {
         }
         if (sourceRetries >= MAX_SOURCE_RETRIES) {
             return false;
-        }
-        // A refusal is an answer, not a hiccup: re-reading a 403/404 changes nothing.
-        for (Throwable t = error; t != null; t = t.getCause()) {
-            if (t instanceof HttpDataSource.InvalidResponseCodeException) {
-                return false;
-            }
         }
         sourceRetries++;
         updateLoading(true);
@@ -5832,6 +5925,77 @@ public class PlayerActivity extends Activity {
             releasePlayer();
             initializePlayer();
         });
+        return true;
+    }
+
+    // Revoke audio passthrough for this specific mime, for good, persisted for future playbacks.
+    // Reached from two symptoms of the same root cause — AudioTrack.Builder throwing at open, or a
+    // StuckPlayerException where the AudioTrack opened but never drained — since there is no way to
+    // ask a device in advance which mime will misbehave. Both symptoms arrive through onPlayerError,
+    // so the player is always STATE_IDLE here: prepare() re-reads the source keeping the media item,
+    // the position, the surface and the track selection (same as recoverFromSourceError), and the
+    // already-installed sink now denies the mime, so the track falls back to decoding. No player
+    // rebuild, so it does not read as a restart. One-way (until the user resets it in Settings),
+    // guarded by mPrefs.revokedAudioMimes itself, so a repeat failure on the same mime after the
+    // switch falls through to the normal error screen instead of looping.
+    private boolean recoverByRevokingAudioMime(String mime) {
+        if (mime == null || mPrefs.revokedAudioMimes.contains(mime) || player == null || audioSink == null) {
+            return false;
+        }
+        mPrefs.revokeAudioMime(mime);
+        audioSink.revoke(mime);
+        if (mPrefs.decoderPriority == DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF) {
+            // "Device decoders only", and this is the first revocation: the ffmpeg audio renderer the
+            // mime may now need is absent, since buildAudioRenderers only forces it in once a revocation
+            // exists. The one case that does need a rebuild — position is kept by savePlayer().
+            restorePlayState = true;
+            playerView.post(() -> {
+                releasePlayer();
+                initializePlayer();
+            });
+        } else {
+            player.prepare();
+        }
+        return true;
+    }
+
+    // AudioSink.InitializationException.format is a public field in this build — no reflection needed.
+    private static String audioTrackInitFailureMime(PlaybackException error) {
+        if (error.errorCode != PlaybackException.ERROR_CODE_AUDIO_TRACK_INIT_FAILED) {
+            return null;
+        }
+        for (Throwable cause = error.getCause(); cause != null; cause = cause.getCause()) {
+            if (cause instanceof AudioSink.InitializationException) {
+                Format format = ((AudioSink.InitializationException) cause).format;
+                return format != null ? format.sampleMimeType : null;
+            }
+        }
+        return null;
+    }
+
+    // A transient MediaCodec allocation race (common right after boot, or when another app just
+    // released a codec) can succeed on a second attempt with no state change. prepare() re-reads
+    // keeping the media item, position, surface and track selection (same as recoverFromSourceError).
+    // Budget is MAX_DECODER_RETRIES per player build; a genuinely unsupported format is excluded below
+    // since retrying it only delays a certain error.
+    private static boolean isDecoderFailure(PlaybackException error) {
+        switch (error.errorCode) {
+            case PlaybackException.ERROR_CODE_DECODER_INIT_FAILED:
+            case PlaybackException.ERROR_CODE_DECODER_QUERY_FAILED:
+            case PlaybackException.ERROR_CODE_DECODING_FAILED:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    private boolean recoverFromDecoderFailure() {
+        if (player == null || decoderRetries >= MAX_DECODER_RETRIES) {
+            return false;
+        }
+        decoderRetries++;
+        updateLoading(true);
+        playerView.postDelayed(decoderRetryRunnable, 1_200L * decoderRetries);
         return true;
     }
 
@@ -6236,6 +6400,17 @@ public class PlayerActivity extends Activity {
         }
     }
 
+    // The HTTP status the server actually returned, if that's what ended the broken-source retries
+    // above — so the user (and support) sees the real cause instead of a generic message.
+    private static HttpDataSource.InvalidResponseCodeException httpStatusFailure(PlaybackException error) {
+        for (Throwable t = error; t != null; t = t.getCause()) {
+            if (t instanceof HttpDataSource.InvalidResponseCodeException) {
+                return (HttpDataSource.InvalidResponseCodeException) t;
+            }
+        }
+        return null;
+    }
+
     // Short, human-facing text for the error screen's panel: the stable ExoPlayer error-code name, the
     // underlying error text, and the network URL that was being played (sanitised). No internal codes.
     private String errorSummary(PlaybackException error) {
@@ -6319,6 +6494,9 @@ public class PlayerActivity extends Activity {
             sb.append("\nRecovery: ")
                     .append(forceHevcForDolbyVision ? "forced HEVC for Dolby Vision" : "none")
                     .append(stuckRecoveryAttemptedUri != null ? ", after stuck playback" : "");
+        }
+        if (!mPrefs.revokedAudioMimes.isEmpty()) {
+            sb.append("\nAudio passthrough revoked: ").append(mPrefs.revokedAudioMimes);
         }
     }
 

@@ -20,6 +20,7 @@
     <string name="error_playback_timeout">Playback took too long to start. Please try again.</string>
     <string name="error_playback_stalled">Playback stalled — this device may not be able to decode this file.</string>
     <string name="error_stream_broken">The video stream is damaged or unavailable. Please try again.</string>
+    <string name="error_stream_http_status">Server error %1$d at %2$s</string>
     <string name="error_media_access_expired">Access to this video has expired. Open it again from the app you shared it from.</string>
     <string name="error_media_missing">This video is no longer available.</string>
     <string name="error_screen_title">Something went wrong</string>
@@ -103,6 +104,9 @@
     <string name="pref_map_dv7">Dolby Vision profile 7 fallback</string>
     <string name="pref_map_dv7_on">Play Dolby Vision profile 7 content on HDR displays</string>
     <string name="pref_map_dv7_off">Play UHD Blu-ray content containing Dolby Vision as is</string>
+    <string name="pref_reset_audio_workarounds">Reset learned audio workarounds</string>
+    <string name="pref_reset_audio_workarounds_summary">Forget audio formats this device learned to decode instead of passing through</string>
+    <string name="pref_reset_audio_workarounds_done">Cleared</string>
     <string name="shortcut_videos">Videos</string>
     <string name="button_open">Open</string>
     <string name="button_crop">Resize</string>

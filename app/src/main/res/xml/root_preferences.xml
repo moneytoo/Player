@@ -155,6 +155,11 @@
             app:summaryOff="@string/pref_map_dv7_off"
             app:title="@string/pref_map_dv7" />
 
+        <Preference
+            app:key="resetRevokedAudioMimes"
+            app:title="@string/pref_reset_audio_workarounds"
+            app:summary="@string/pref_reset_audio_workarounds_summary" />
+
     </PreferenceCategory>
 
     <PreferenceCategory app:title="@string/pref_privacy_header">

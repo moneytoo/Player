@@ -13,7 +13,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -62,6 +64,7 @@ class Prefs {
     private static final String PREF_KEY_AUTO_UPDATE = "autoUpdate";
     private static final String PREF_KEY_UPDATE_LAST_CHECK = "updateLastCheck";
     private static final String PREF_KEY_UPDATE_SKIPPED = "updateSkippedVersionCode";
+    private static final String PREF_KEY_REVOKED_AUDIO_MIMES = "revokedAudioMimes";
 
     public static final String SKIP_MODE_BUTTON = "button";
     public static final String SKIP_MODE_AUTO = "auto";
@@ -115,6 +118,10 @@ class Prefs {
     public boolean autoUpdate = true;
     public long updateLastCheck = 0L;
     public int updateSkippedVersionCode = 0;
+    // Audio sample mimes (Format.sampleMimeType, e.g. MimeTypes.AUDIO_DTS) this device has proven
+    // cannot passthrough — see PlayerActivity.recoverByRevokingAudioMime(). Never auto-expires;
+    // only the "Reset learned audio workarounds" setting or a full app data reset clears it.
+    public Set<String> revokedAudioMimes = Collections.emptySet();
 
     private LinkedHashMap positions;
 
@@ -181,6 +188,7 @@ class Prefs {
         showClock = mSharedPreferences.getBoolean(PREF_KEY_SHOW_CLOCK, showClock);
         crashReporting = mSharedPreferences.getBoolean(PREF_KEY_CRASH_REPORTING, crashReporting);
         autoUpdate = mSharedPreferences.getBoolean(PREF_KEY_AUTO_UPDATE, autoUpdate);
+        revokedAudioMimes = mSharedPreferences.getStringSet(PREF_KEY_REVOKED_AUDIO_MIMES, revokedAudioMimes);
     }
 
     public void updateMedia(final Context context, final Uri uri, final String type) {
@@ -279,6 +287,20 @@ class Prefs {
         final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
         sharedPreferencesEditor.putInt(PREF_KEY_UPDATE_SKIPPED, versionCode);
         sharedPreferencesEditor.apply();
+    }
+
+    public void revokeAudioMime(final String mime) {
+        final Set<String> updated = new HashSet<>(revokedAudioMimes);
+        updated.add(mime);
+        revokedAudioMimes = updated;
+        final SharedPreferences.Editor sharedPreferencesEditor = mSharedPreferences.edit();
+        sharedPreferencesEditor.putStringSet(PREF_KEY_REVOKED_AUDIO_MIMES, updated);
+        sharedPreferencesEditor.apply();
+    }
+
+    public static void resetRevokedAudioMimes(final Context context) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit()
+                .remove(PREF_KEY_REVOKED_AUDIO_MIMES).apply();
     }
 
     private void savePositions() {

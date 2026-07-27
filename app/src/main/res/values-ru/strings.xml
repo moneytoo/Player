@@ -6,6 +6,7 @@
     <string name="error_playback_timeout">Воспроизведение слишком долго не начинается. Попробуйте ещё раз.</string>
     <string name="error_playback_stalled">Воспроизведение остановилось — это устройство, возможно, не может декодировать этот файл.</string>
     <string name="error_stream_broken">Поток видео повреждён или недоступен. Попробуйте ещё раз.</string>
+    <string name="error_stream_http_status">Ошибка сервера %1$d на %2$s</string>
     <string name="error_media_access_expired">Доступ к этому видео истёк. Откройте его снова из того приложения.</string>
     <string name="error_media_missing">Этого видео больше нет.</string>
     <string name="error_details">Подробности</string>
@@ -127,6 +128,9 @@
     <string name="pref_language_track_device">Языки устройства</string>
     <string name="pref_language_track_default">По умолчанию</string>
     <string name="pref_map_dv7_on">Воспроизведение контента Dolby Vision profile 7 на дисплеях HDR</string>
+    <string name="pref_reset_audio_workarounds">Сбросить выученные аудио-обходы</string>
+    <string name="pref_reset_audio_workarounds_summary">Забыть аудиоформаты, которые это устройство научилось декодировать вместо прямой передачи</string>
+    <string name="pref_reset_audio_workarounds_done">Очищено</string>
     <string name="pref_subtitle_header">Субтитры</string>
     <string name="pref_subtitle_style_embedded">Встроенные стили</string>
     <string name="pref_subtitle_style_embedded_on">Применить встроенные стили субтитров</string>
