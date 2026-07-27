@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Cleave mark with the brand ramp, see design/logo_icon.svg and the drawable/
-     variant for the anchoring the group transform encodes. -->
+<!-- Cleave mark, see design/just+.svg, keeping that file's own path coordinates. What sits on the
+     viewport centre is the optical anchor, not the bounding box centre: the mark is a right-pointing
+     wedge, so its area centroid (61.07, 56.49) lies 11.5% of the width left of the box centre and
+     box-centring reads as leaning left. The anchor sits 18.2% of the way from the centroid back to
+     the box centre, the ratio Material uses in play_arrow. The scale is then the largest that still
+     clears the viewport once the mark is shifted that far right. Carries the brand ramp; drawable/ is the flat fallback. -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:aapt="http://schemas.android.com/aapt"
     android:width="24dp"
@@ -8,31 +12,18 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
     <group
-        android:scaleX="0.29"
-        android:scaleY="0.29"
-        android:translateX="-1.2965"
-        android:translateY="-2.1781">
-        <path android:pathData="M20,10 L79.28,42.08 A9,9 0 0 1 79.28,57.92 L55.09,71.01 L20,52.02 Z">
+        android:scaleX="0.1062258"
+        android:scaleY="0.1062258"
+        android:translateX="5.0321"
+        android:translateY="5.9565">
+        <path android:pathData="M -2.1069819,-31.409963 V 60.555704 C 7.5760174,77.720715 28.985592,84.136139 46.433971,75.37897 c 0.783538,-0.39325 2.004964,-0.363667 2.747176,0.10304 l 5.386917,3.387322 a 1.5875025,1.5875025 77.161858 0 1 0.498848,2.188943 l -5.925556,9.423548 a 1.5779208,1.5779208 76.988425 0 0 0.503939,2.180791 L 85.959577,115.19162 168.8872,67.313582 c 6.61024,-3.816403 6.61025,-13.35745 0.00002,-17.173869 L 12.766052,-39.996912 c -6.6102368,-3.816424 -14.8730344,0.954104 -14.8730339,8.586949 z m 0,103.394649 v 76.878604 c -0.0000007,7.63284 8.2627967,12.40337 14.8730339,8.58695 l 63.651084,-36.74898 c -8.610594,-13.18031 -25.952682,-17.24294 -39.458576,-9.51269 -0.760829,0.43547 -1.957956,0.44629 -2.700168,-0.0204 l -5.386916,-3.38732 a 1.5874895,1.5874895 77.162106 0 1 -0.498837,-2.18894 l 5.803342,-9.229012 A 1.5779217,1.5779217 76.988925 0 0 33.67206,94.182081 Z">
             <aapt:attr name="android:fillColor">
                 <gradient
                     android:type="linear"
-                    android:startX="22"
-                    android:startY="8"
-                    android:endX="74"
-                    android:endY="92">
-                    <item android:offset="0" android:color="#FF6E3C" />
-                    <item android:offset="1" android:color="#FF0D63" />
-                </gradient>
-            </aapt:attr>
-        </path>
-        <path android:pathData="M20,59.98 L47.73,74.99 L20,90 Z">
-            <aapt:attr name="android:fillColor">
-                <gradient
-                    android:type="linear"
-                    android:startX="22"
-                    android:startY="8"
-                    android:endX="74"
-                    android:endY="92">
+                    android:startX="102.07188"
+                    android:startY="50.749092"
+                    android:endX="57.154537"
+                    android:endY="193.65218">
                     <item android:offset="0" android:color="#FF6E3C" />
                     <item android:offset="1" android:color="#FF0D63" />
                 </gradient>
