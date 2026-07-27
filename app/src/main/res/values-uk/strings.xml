@@ -8,6 +8,8 @@
     <string name="video_orientation_system">Орієнтація пристрою</string>
     <string name="empty_state_subtitle">Немає відкритого відео</string>
     <string name="empty_state_open">Відкрити відео</string>
+    <string name="empty_state_link">Відкрити посилання</string>
+    <string name="error_link_invalid">Введіть посилання, що починається з http:// або rtsp://</string>
     <string name="open_subtitles">Завантажити субтитри</string>
     <string name="error_details">Детально</string>
     <string name="error_files_missing">Додаток \"Файли\" вимкнено або відсутній</string>

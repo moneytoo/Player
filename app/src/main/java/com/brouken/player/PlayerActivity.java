@@ -16,6 +16,8 @@ import android.app.PendingIntent;
 import android.app.PictureInPictureParams;
 import android.app.RemoteAction;
 import android.content.BroadcastReceiver;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -46,6 +48,7 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.DocumentsContract;
 import android.provider.Settings;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.util.Base64;
@@ -67,6 +70,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.PathInterpolator;
 import android.view.accessibility.CaptioningManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
@@ -4768,8 +4772,9 @@ public class PlayerActivity extends Activity {
                 Settings.Global.ANIMATOR_DURATION_SCALE, 1f) == 0f;
     }
 
-    // Branded empty state shown while there is no clip to play: an animated brand-mark reveal
-    // and a single "Open video" call to action (the only entry point to a file when nothing is loaded).
+    // Branded empty state shown while there is no clip to play: an animated brand-mark reveal, the
+    // "Open video" call to action and an "Open link" pill — together the only entry points to media
+    // when nothing is loaded.
     private void showEmptyState() {
         final View overlay = findViewById(R.id.empty_state);
         if (overlay == null) {
@@ -4779,9 +4784,11 @@ public class PlayerActivity extends Activity {
         final TextView title = findViewById(R.id.empty_state_title);
         final TextView subtitle = findViewById(R.id.empty_state_subtitle);
         final View open = findViewById(R.id.empty_state_open);
+        final View link = findViewById(R.id.empty_state_link);
         final View settings = findViewById(R.id.empty_state_settings);
 
         open.setOnClickListener(v -> openFile(mPrefs.mediaUri));
+        link.setOnClickListener(v -> askForLink());
         settings.setOnClickListener(v ->
                 startActivityForResult(new Intent(this, SettingsActivity.class), REQUEST_SETTINGS));
         stopEmptyStatePulse();
@@ -4806,6 +4813,11 @@ public class PlayerActivity extends Activity {
             final int padV = Utils.dpToPx(18);
             open.setPadding(Utils.dpToPx(30), padV, Utils.dpToPx(32), padV);
             open.setMinimumHeight(Utils.dpToPx(64));
+            setViewSize(findViewById(R.id.empty_state_link_icon), 28);
+            ((TextView) findViewById(R.id.empty_state_link_label))
+                    .setTextSize(TypedValue.COMPLEX_UNIT_SP, 22);
+            link.setPadding(Utils.dpToPx(26), padV, Utils.dpToPx(28), padV);
+            link.setMinimumHeight(Utils.dpToPx(64));
             setViewSize(findViewById(R.id.empty_state_settings_icon), 28);
             ((TextView) findViewById(R.id.empty_state_settings_label))
                     .setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
@@ -4819,6 +4831,9 @@ public class PlayerActivity extends Activity {
             setViewSize(findViewById(R.id.empty_state_open_icon), ui.dpS(20));
             ((TextView) findViewById(R.id.empty_state_open_label))
                     .setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.sp(16));
+            setViewSize(findViewById(R.id.empty_state_link_icon), ui.dpS(20));
+            ((TextView) findViewById(R.id.empty_state_link_label))
+                    .setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.sp(16));
             setViewSize(findViewById(R.id.empty_state_settings_icon), ui.dpS(20));
             ((TextView) findViewById(R.id.empty_state_settings_label))
                     .setTextSize(TypedValue.COMPLEX_UNIT_SP, ui.sp(15));
@@ -4827,7 +4842,7 @@ public class PlayerActivity extends Activity {
         overlay.setVisibility(View.VISIBLE);
         overlay.bringToFront();
 
-        final View[] items = {mark, title, subtitle, open, settings};
+        final View[] items = {mark, title, subtitle, open, link, settings};
 
         if (isReducedMotion()) {
             for (View v : items) {
@@ -4852,6 +4867,8 @@ public class PlayerActivity extends Activity {
         subtitle.setTranslationY(12 * density);
         open.setAlpha(0f);
         open.setTranslationY(16 * density);
+        link.setAlpha(0f);
+        link.setTranslationY(16 * density);
         settings.setAlpha(0f);
         settings.setTranslationY(16 * density);
 
@@ -4865,8 +4882,61 @@ public class PlayerActivity extends Activity {
                     open.requestFocus();
                     startEmptyStatePulse(open);
                 }).start();
+        link.animate().alpha(1f).translationY(0f)
+                .setStartDelay(310).setDuration(350).setInterpolator(easeOutExpo).start();
         settings.animate().alpha(1f).translationY(0f)
-                .setStartDelay(320).setDuration(350).setInterpolator(easeOutExpo).start();
+                .setStartDelay(360).setDuration(350).setInterpolator(easeOutExpo).start();
+    }
+
+    // Typing a URL into a player is the exception, so it lives behind a plain input dialog rather than
+    // a surface of its own. Prefilled from the clipboard when that already holds a playable link — the
+    // usual way one arrives here, and the only bearable one with a TV remote.
+    private void askForLink() {
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_TEXT_VARIATION_URI);
+        input.setSingleLine(true);
+        input.setHint("https://");
+        final Uri pasted = clipboardUri();
+        if (pasted != null) {
+            input.setText(pasted.toString());
+            input.setSelection(input.getText().length());
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.empty_state_link)
+                .setView(input)
+                .setPositiveButton(android.R.string.ok,
+                        (dialog, which) -> openLink(input.getText().toString()))
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
+    }
+
+    private void openLink(final String text) {
+        final Uri uri = Uri.parse(text.trim());
+        if (!Utils.isSupportedNetworkUri(uri)) {
+            showSnack(getString(R.string.error_link_invalid), null);
+            return;
+        }
+        // Hand the link to the same VIEW path a shared link takes through onNewIntent, so API state
+        // reset, subtitle discovery and focus behave identically — and getIntent() keeps pointing at
+        // what is actually playing.
+        final Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+        setIntent(intent);
+        handleViewIntent(intent);
+        initializePlayer();
+    }
+
+    private Uri clipboardUri() {
+        final ClipboardManager cm = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+        final ClipData clip = cm != null ? cm.getPrimaryClip() : null;
+        if (clip == null || clip.getItemCount() == 0) {
+            return null;
+        }
+        final CharSequence text = clip.getItemAt(0).coerceToText(this);
+        if (text == null) {
+            return null;
+        }
+        final Uri uri = Uri.parse(text.toString().trim());
+        return Utils.isSupportedNetworkUri(uri) ? uri : null;
     }
 
     // Inset the empty state by the system bars plus a margin — 48dp on TV, where panels still cut
@@ -4912,6 +4982,9 @@ public class PlayerActivity extends Activity {
     }
 
     private void startEmptyStatePulse(View view) {
+        // Rasterise the pill once and scale that texture. Scaling the view itself re-measures the label
+        // and re-hints its glyphs every frame, which reads as the text twitching rather than growing.
+        view.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         emptyStatePulse = ObjectAnimator.ofPropertyValuesHolder(view,
                 PropertyValuesHolder.ofFloat(View.SCALE_X, 1f, 1.04f),
                 PropertyValuesHolder.ofFloat(View.SCALE_Y, 1f, 1.04f));
@@ -4926,6 +4999,11 @@ public class PlayerActivity extends Activity {
         if (emptyStatePulse != null) {
             emptyStatePulse.cancel();
             emptyStatePulse = null;
+        }
+        // Drop the layer whenever the pulse is not running — it is only worth its texture while animating.
+        final View open = findViewById(R.id.empty_state_open);
+        if (open != null) {
+            open.setLayerType(View.LAYER_TYPE_NONE, null);
         }
     }
 
