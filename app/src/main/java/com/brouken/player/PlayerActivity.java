@@ -4601,24 +4601,18 @@ public class PlayerActivity extends Activity {
     // in this build routes through the newer AudioOutputProvider abstraction rather than AudioCapabilities
     // directly, and a mime-keyed denial needs neither that internal plumbing nor AudioCapabilities
     // reconstruction (whose only public constructor drops speaker-layout/spatializer info). Delegates
-    // everything else untouched. Mutable and live: revoke() adds a mime and notifies the sink's own
-    // listener, which drives Media3's existing renderer-capabilities-changed path
-    // (BaseRenderer.onRendererCapabilitiesChanged -> ExoPlayerImplInternal -> reselectTracksInternalAndSeek)
-    // — a disable/re-enable of renderers at the current position, not a player rebuild. The same path
-    // Media3 itself uses when an HDMI receiver is unplugged mid-playback.
+    // everything else untouched. Mutable so a revocation applies to the player already built, but
+    // deliberately silent: notifying the sink's listener here (Media3's own renderer-capabilities-changed
+    // path, the one it uses when an HDMI receiver is unplugged mid-playback) is only valid while the
+    // player is playing. Every revocation is decided from onPlayerError, by which point ExoPlayer has
+    // already reset and cleared its media period queue, so that notification lands in
+    // seekToCurrentPosition() with no playing period and throws (JPP-15). The caller re-prepares instead.
     private static final class AudioPassthroughDenylistSink extends ForwardingAudioSink {
         private final Set<String> deniedMimes;
-        private volatile AudioSink.Listener listener;
 
         AudioPassthroughDenylistSink(AudioSink sink, Set<String> initiallyDenied) {
             super(sink);
             this.deniedMimes = new CopyOnWriteArraySet<>(initiallyDenied);
-        }
-
-        @Override
-        public void setListener(AudioSink.Listener listener) {
-            this.listener = listener;
-            super.setListener(listener);
         }
 
         @Override
@@ -4635,9 +4629,7 @@ public class PlayerActivity extends Activity {
         // Called from the app thread by recoverByRevokingAudioMime(). deniedMimes is read on the
         // playback thread by getFormatSupport/supportsFormat above — CopyOnWriteArraySet needs no lock.
         void revoke(String mime) {
-            if (deniedMimes.add(mime) && listener != null) {
-                listener.onAudioCapabilitiesChanged();
-            }
+            deniedMimes.add(mime);
         }
     }
 
@@ -5727,14 +5719,9 @@ public class PlayerActivity extends Activity {
             }
             // The device claims Dolby/DTS passthrough support it doesn't actually have: AudioTrack
             // opening for that mime throws outright instead of just never draining. Same fix, reached
-            // from the loud symptom instead of the silent one. The player is already in a fatal error
-            // state by the time this callback fires (unlike the silent stall above, where it is still
-            // playing), so revoking live isn't enough on its own — follow with the same light
-            // player.prepare() recoverFromSourceError() already uses elsewhere: keeps the media item,
-            // position, surface and track selection, no player rebuild.
+            // from the loud symptom instead of the silent one.
             if (error.errorCode == PlaybackException.ERROR_CODE_AUDIO_TRACK_INIT_FAILED
                     && recoverByRevokingAudioMime(audioTrackInitFailureMime(error))) {
-                player.prepare();
                 return;
             }
             if (isDecoderFailure(error) && recoverFromDecoderFailure()) {
@@ -5944,20 +5931,31 @@ public class PlayerActivity extends Activity {
     // Revoke audio passthrough for this specific mime, for good, persisted for future playbacks.
     // Reached from two symptoms of the same root cause — AudioTrack.Builder throwing at open, or a
     // StuckPlayerException where the AudioTrack opened but never drained — since there is no way to
-    // ask a device in advance which mime will misbehave. Live: mutating the sink's denied set and
-    // notifying its listener drives Media3's own renderer-capabilities-changed path (disable/re-enable
-    // renderers at the current position — the same mechanism Media3 uses when an HDMI receiver is
-    // unplugged mid-playback), so no player rebuild is needed here; the caller only needs an explicit
-    // player.prepare() if the player was already in a fatal error state (see the loud AudioTrack-init
-    // trigger in onPlayerError). One-way (until the user resets it in Settings), guarded by
-    // mPrefs.revokedAudioMimes itself, so a repeat failure on the same mime after the switch falls
-    // through to the normal error screen instead of looping.
+    // ask a device in advance which mime will misbehave. Both symptoms arrive through onPlayerError,
+    // so the player is always STATE_IDLE here: prepare() re-reads the source keeping the media item,
+    // the position, the surface and the track selection (same as recoverFromSourceError), and the
+    // already-installed sink now denies the mime, so the track falls back to decoding. No player
+    // rebuild, so it does not read as a restart. One-way (until the user resets it in Settings),
+    // guarded by mPrefs.revokedAudioMimes itself, so a repeat failure on the same mime after the
+    // switch falls through to the normal error screen instead of looping.
     private boolean recoverByRevokingAudioMime(String mime) {
         if (mime == null || mPrefs.revokedAudioMimes.contains(mime) || player == null || audioSink == null) {
             return false;
         }
         mPrefs.revokeAudioMime(mime);
         audioSink.revoke(mime);
+        if (mPrefs.decoderPriority == DefaultRenderersFactory.EXTENSION_RENDERER_MODE_OFF) {
+            // "Device decoders only", and this is the first revocation: the ffmpeg audio renderer the
+            // mime may now need is absent, since buildAudioRenderers only forces it in once a revocation
+            // exists. The one case that does need a rebuild — position is kept by savePlayer().
+            restorePlayState = true;
+            playerView.post(() -> {
+                releasePlayer();
+                initializePlayer();
+            });
+        } else {
+            player.prepare();
+        }
         return true;
     }
 
