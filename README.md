@@ -1,6 +1,8 @@
 # Just (Video) Player 
 
-[![Media3](https://img.shields.io/badge/Media3-1.10.1-007ec6?cacheSeconds=3600)](https://github.com/androidx/media/releases/tag/1.10.1)
+[![Latest release](https://img.shields.io/github/v/release/just-plus-player/just-plus-player?logo=github&logoColor=white&cacheSeconds=3600)](https://github.com/just-plus-player/just-plus-player/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/just-plus-player/just-plus-player/total?logo=github&logoColor=white&label=downloads&cacheSeconds=3600)](https://github.com/just-plus-player/just-plus-player/releases)
+[![Media3](https://img.shields.io/badge/Media3-1.11.0--beta01-007ec6?cacheSeconds=3600)](https://github.com/androidx/media/releases/tag/1.11.0-beta01)
 [![Weblate project translated](https://img.shields.io/weblate/progress/just-player?logo=weblate&logoColor=white&cacheSeconds=36000)](https://hosted.weblate.org/engage/just-player/)
 
 Android video player based on [Media3](https://github.com/androidx/media) (formerly [ExoPlayer](https://github.com/google/ExoPlayer)), compatible with Android 6+ and Android TV.
@@ -66,7 +68,7 @@ Some advanced features can be enabled or configured in settings. To access it, l
  * Skip silence
  * Repeat toggle
 
-**`WRITE_SETTINGS` ("Modify system settings") permission**: When the system file chooser is opened, it will always use current system orientation, even if the Player app sets its own. Granting this permission via adb (`adb shell pm grant com.brouken.player android.permission.WRITE_SETTINGS`) or App info screen will allow this app to temporarily enable Auto-rotate to at least partially mitigate [this imperfection](https://issuetracker.google.com/issues/141968218).
+**`WRITE_SETTINGS` ("Modify system settings") permission**: When the system file chooser is opened, it will always use current system orientation, even if the Player app sets its own. Granting this permission via adb (`adb shell pm grant com.justplus.player android.permission.WRITE_SETTINGS`) or App info screen will allow this app to temporarily enable Auto-rotate to at least partially mitigate [this imperfection](https://issuetracker.google.com/issues/141968218).
 
 Translate: [Weblate](https://hosted.weblate.org/engage/just-player/)
 
