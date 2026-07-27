@@ -6118,7 +6118,10 @@ public class PlayerActivity extends Activity {
     }
 
     private TrackGroup getTrackGroupFromFormatId(int trackType, String id) {
-        if ((id == null && trackType == C.TRACK_TYPE_AUDIO ) || player == null) {
+        // No id means nothing was recorded for that track type, so there is nothing to match. Not just a
+        // shortcut: HLS leaves Format.id null on every rendition, so a null id would match the first
+        // group of the type and force-select it — the first subtitle track switching itself on at start.
+        if (id == null || player == null) {
             return null;
         }
         for (Tracks.Group group : player.getCurrentTracks().getGroups()) {
@@ -6144,25 +6147,20 @@ public class PlayerActivity extends Activity {
         TrackGroup subtitleGroup = getTrackGroupFromFormatId(C.TRACK_TYPE_TEXT, subtitleId);
         TrackGroup audioGroup = getTrackGroupFromFormatId(C.TRACK_TYPE_AUDIO, audioId);
 
-        TrackSelectionParameters.Builder overridesBuilder = new TrackSelectionParameters.Builder(this);
-        TrackSelectionOverride trackSelectionOverride = null;
-        final List<Integer> tracks = new ArrayList<>(); tracks.add(0);
+        if (player == null) {
+            return;
+        }
+        // setOverrideForType replaces only the overrides of that track type, so applying both keeps both —
+        // a single shared override variable used to let the audio one drop the subtitle one on the floor.
+        final List<Integer> tracks = Collections.singletonList(0);
+        TrackSelectionParameters.Builder builder = player.getTrackSelectionParameters().buildUpon();
         if (subtitleGroup != null) {
-            trackSelectionOverride = new TrackSelectionOverride(subtitleGroup, tracks);
-            overridesBuilder.addOverride(trackSelectionOverride);
+            builder.setOverrideForType(new TrackSelectionOverride(subtitleGroup, tracks));
         }
         if (audioGroup != null) {
-            trackSelectionOverride = new TrackSelectionOverride(audioGroup, tracks);
-            overridesBuilder.addOverride(trackSelectionOverride);
+            builder.setOverrideForType(new TrackSelectionOverride(audioGroup, tracks));
         }
-
-        if (player != null) {
-            TrackSelectionParameters.Builder trackSelectionParametersBuilder = player.getTrackSelectionParameters().buildUpon();
-            if (trackSelectionOverride != null) {
-                trackSelectionParametersBuilder.setOverrideForType(trackSelectionOverride);
-            }
-            player.setTrackSelectionParameters(trackSelectionParametersBuilder.build());
-        }
+        player.setTrackSelectionParameters(builder.build());
     }
 
     private boolean hasOverrideType(final int trackType) {
