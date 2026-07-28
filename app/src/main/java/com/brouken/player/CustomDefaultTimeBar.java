@@ -11,8 +11,6 @@ import androidx.annotation.Nullable;
 import androidx.media3.ui.DefaultTimeBar;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 class CustomDefaultTimeBar extends DefaultTimeBar {
 
@@ -133,21 +131,34 @@ class CustomDefaultTimeBar extends DefaultTimeBar {
             else
                 scrubbing = true;
         }
-        if (!scrubbing && event.getAction() == MotionEvent.ACTION_MOVE && scrubberBar != null) {
+        // The DOWN was swallowed above, so the base class is not scrubbing. Start it now, either
+        // because the finger has moved far enough to be a deliberate drag, or because the finger
+        // was lifted without moving at all — a tap, which seeks to the touched point.
+        if (!scrubbing && scrubberBar != null
+                && (event.getAction() == MotionEvent.ACTION_MOVE || event.getAction() == MotionEvent.ACTION_UP)) {
             final int distanceFromStart = Math.abs(((int)event.getX()) - scrubbingStartX);
-            if (distanceFromStart > Utils.dpToPx(6)) {
-                scrubbing = true;
-                try {
-                    final Method method = DefaultTimeBar.class.getDeclaredMethod("startScrubbing", long.class);
-                    method.setAccessible(true);
-                    method.invoke(this, (long) 0);
-                } catch (NoSuchMethodException | SecurityException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            } else {
+            if (event.getAction() == MotionEvent.ACTION_MOVE && distanceFromStart <= Utils.dpToPx(6)) {
                 return true;
             }
+            scrubbing = true;
+            startScrubbingAt(event);
         }
         return super.onTouchEvent(event);
+    }
+
+    /**
+     * Hands the base class the ACTION_DOWN it never received, so it positions the scrubber itself.
+     * The press is clamped onto the bar because the finger may already have left it — dragging off
+     * the bar is how fine scrubbing is started — and a press outside the bar would be ignored.
+     */
+    private void startScrubbingAt(MotionEvent event) {
+        final MotionEvent down = MotionEvent.obtainNoHistory(event);
+        down.setAction(MotionEvent.ACTION_DOWN);
+        if (progressBar != null) {
+            final float x = Math.min(Math.max(event.getX(), progressBar.left), progressBar.right - 1);
+            down.setLocation(x, progressBar.centerY());
+        }
+        super.onTouchEvent(down);
+        down.recycle();
     }
 }
