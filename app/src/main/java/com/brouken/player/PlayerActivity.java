@@ -283,11 +283,15 @@ public class PlayerActivity extends Activity {
         }
     };
     // Backgrounding keeps the player (see onStop) instead of tearing it down, so a quick round-trip —
-    // settings, notification shade, app switch — returns to the same session instead of re-buffering the
-    // stream. The decoder is held for it, so give up on the session once the user is plainly gone: after
+    // settings, notification shade, app switch — returns to the same session, paused, instead of
+    // re-buffering the stream. The decoder is held for it, so give up once the user is plainly gone: after
     // this the teardown is the same as before. Tune if holding a decoder that long proves a problem.
-    private static final long BACKGROUND_RELEASE_MS = TimeUnit.MINUTES.toMillis(2);
-    private final Runnable backgroundReleaseRunnable = () -> releasePlayer(false);
+    private static final long BACKGROUND_RELEASE_MS = TimeUnit.MINUTES.toMillis(5);
+    private final Runnable backgroundReleaseRunnable = () -> {
+        // The return finds no player and rebuilds it; that rebuild must not start playing on its own.
+        sourceSwitchKeepPaused = true;
+        releasePlayer(false);
+    };
     // How long a resumed session gets to put a frame back on screen. The retained player is attached to a
     // SurfaceView that was destroyed while we were away, and on a slow box the decoder does not always
     // hand the surface back (Media3 reports that as ERROR_CODE_TIMEOUT — but not always at all).
@@ -297,11 +301,19 @@ public class PlayerActivity extends Activity {
         if (player == null || resumeFrameRendered) {
             return;
         }
-        // Ready and playing, yet nothing has been drawn — or stopped outright: treat the retained session
-        // as dead and rebuild it. Position and meta were saved in onPause. Buffering is deliberately left
-        // alone: coming back to a slow stream is not a broken surface.
+        // Nothing has been drawn since we came back — or the player stopped outright: treat the retained
+        // session as dead and rebuild it. Position and meta were saved in onPause. Playback is paused on
+        // return, which is no excuse for a black frame: a paused player still re-renders when the surface
+        // comes back (setOutput drops firstFrameState to FIRST_FRAME_NOT_RENDERED, which releases a frame
+        // whether started or not). It does not "join" while paused though, so until that frame lands the
+        // renderer reports not-ready and the player sits in BUFFERING rather than READY — which is why
+        // buffering counts here. What separates it from an honestly slow stream is the buffer: the retained
+        // session still holds the one it had. Audio-only media never renders a frame, so it is exempt.
         final int state = player.getPlaybackState();
-        if (state == Player.STATE_IDLE || (state == Player.STATE_READY && player.getPlayWhenReady())) {
+        final boolean stalledWithData = (state == Player.STATE_READY || state == Player.STATE_BUFFERING)
+                && player.getVideoFormat() != null && player.getTotalBufferedDuration() > 0;
+        if (state == Player.STATE_IDLE || stalledWithData) {
+            sourceSwitchKeepPaused = true;
             releasePlayer(false);
             initializePlayer();
         }
@@ -411,7 +423,9 @@ public class PlayerActivity extends Activity {
     private boolean restoreOrientationLock;
     private boolean restorePlayState;
     private boolean restorePlayStateAllowed;
-    private boolean play;
+    // "Start playing once the player is ready". Read live by Utils.playIfCan, whose frame-rate probe runs on
+    // a background thread: a snapshot taken before it started would still play after onStop cleared this.
+    boolean play;
     private float subtitlesScale;
     private boolean isScrubbing;
     private boolean scrubbingNoticeable;
@@ -534,8 +548,9 @@ public class PlayerActivity extends Activity {
     private boolean skipSeenThisSession;
     private static final double SKIP_OFFSET_MAX_SEC = 30;   // ± range of the offset slider
     private static final double SKIP_OFFSET_STEP_SEC = 0.25; // fine step (touch / ± buttons)
-    // Set before a SOURCE-switch reinitialisation so the player keeps a paused state (initializePlayer
-    // otherwise force-plays under apiAccess). Consumed once inside initializePlayer.
+    // Set before a reinitialisation that must not auto-play — a SOURCE switch, or any rebuild caused by
+    // returning to the foreground (initializePlayer otherwise force-plays under apiAccess or at position
+    // zero). Consumed once inside initializePlayer.
     boolean sourceSwitchKeepPaused;
     List<MediaItem.SubtitleConfiguration> apiSubs = new ArrayList<>();
     boolean intentReturnResult;
@@ -1615,20 +1630,21 @@ public class PlayerActivity extends Activity {
             Utils.toggleSystemUi(this, playerView, true);
         }
         playerView.removeCallbacks(backgroundReleaseRunnable);
+        // Coming back never resumes playback — that is the user's call. Clear the latch before anything
+        // below can read it: whatever the trip to the background interrupted (a scrub drag) may have left
+        // it armed, and a rebuild here or in onActivityResult would consume it as "play". Show the
+        // controls with it, so the return lands on an obviously paused player and not a frozen frame.
+        restorePlayState = false;
+        playerView.showController();
         if (player == null) {
             initializePlayer();
         } else if (player.getPlayerError() != null) {
             // The session survived being backgrounded but the player did not: Media3 stops it when the
             // surface detach times out (see onPlayerError), so resuming would show a dead picture.
+            sourceSwitchKeepPaused = true;
             releasePlayer(false);
             initializePlayer();
         } else {
-            if (restorePlayState) {
-                restorePlayState = false;
-                playerView.showController();
-                playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
-                player.setPlayWhenReady(true);
-            }
             resumeFrameRendered = false;
             playerView.postDelayed(resumeWatchdogRunnable, RESUME_WATCHDOG_MS);
         }
@@ -1669,12 +1685,17 @@ public class PlayerActivity extends Activity {
         }
         // Otherwise keep the player and only stop the sound: a rebuild would re-buffer the stream and
         // drop everything that lives on the instance (quality override, selected tracks, lock).
-        if (player.isPlaying()) {
-            if (restorePlayStateAllowed) {
-                restorePlayState = true;
-            }
-            player.pause();
+        // Unconditional, and the pending auto-play with it: while buffering isPlaying() is false but
+        // playWhenReady is set, and the STATE_READY handler would call play() the moment the buffer fills,
+        // leaving video playing with sound in the background. Nothing is latched for a resume.
+        play = false;
+        // The frame-rate switch registers this listener while waiting to auto-play; with play cleared behind
+        // its back it would never unregister itself.
+        if (displayManager != null && displayListener != null) {
+            displayManager.unregisterDisplayListener(displayListener);
         }
+        player.pause();
+        playerView.removeCallbacks(resumeWatchdogRunnable);
         playerView.postDelayed(backgroundReleaseRunnable, BACKGROUND_RELEASE_MS);
     }
 
@@ -1817,6 +1838,9 @@ public class PlayerActivity extends Activity {
             final String action = intent.getAction();
             final String type = intent.getType();
             final Uri uri = intent.getData();
+            // New media, not a return: it must play even if a background teardown armed the keep-paused
+            // one-shot while we were away (this can be delivered before onStart consumes it).
+            sourceSwitchKeepPaused = false;
 
             if (Intent.ACTION_VIEW.equals(action) && uri != null) {
                 // Keep getIntent() pointing at what is actually playing (used by the intent report).
@@ -4653,6 +4677,7 @@ public class PlayerActivity extends Activity {
             // but options like the decoder priority or tunneling are baked into it at build time. So
             // rebuild when the screen actually changed something — going in for a look costs nothing.
             if (player != null && !settingsBefore.equals(mPrefs.snapshot())) {
+                sourceSwitchKeepPaused = true;
                 releasePlayer();
                 initializePlayer();
             }
@@ -4749,6 +4774,15 @@ public class PlayerActivity extends Activity {
             skipMediaAfterFatalError = false;
             haveMedia = false;
         }
+
+        // A reinitialisation that must not auto-play — a SOURCE quality switch, or a rebuild triggered by
+        // returning to the foreground; otherwise apiAccess or a zero position would force it. Consumed here
+        // rather than next to its use below, which the empty state skips: the flag must never outlive this
+        // call and suppress the next file the user opens.
+        final boolean keepPaused = sourceSwitchKeepPaused;
+        sourceSwitchKeepPaused = false;
+        // A watchdog armed for the player being replaced must not judge the fresh one.
+        resumeFrameRendered = true;
 
         // Unless this is the stuck-playback recovery rebuild (which must keep forceHevcForDolbyVision),
         // clear the one-shot Dolby Vision recovery state so a normal open plays DV through its regular
@@ -5040,10 +5074,6 @@ public class PlayerActivity extends Activity {
 
             updateLoading(true);
 
-            // A SOURCE quality-switch that was paused must stay paused after reinitialisation; otherwise
-            // apiAccess would force auto-play. Consume the one-shot flag here.
-            final boolean keepPaused = sourceSwitchKeepPaused;
-            sourceSwitchKeepPaused = false;
             if ((mPrefs.getPosition() == 0L || apiAccess || apiAccessPartial) && !keepPaused) {
                 play = true;
             }
@@ -5080,7 +5110,9 @@ public class PlayerActivity extends Activity {
         player.addListener(playerListener);
         player.prepare();
 
-        if (restorePlayState) {
+        // Only while the activity is up: a recovery rebuild posted from onPlayerError can land after the user
+        // has already left, and resuming there would play in the background.
+        if (restorePlayState && alive) {
             restorePlayState = false;
             playerView.showController();
             playerView.setControllerShowTimeoutMs(PlayerActivity.CONTROLLER_TIMEOUT);
@@ -5763,7 +5795,7 @@ public class PlayerActivity extends Activity {
                             }
                             displayManager.registerDisplayListener(displayListener, null);
                         }
-                        switched = Utils.switchFrameRate(PlayerActivity.this, mPrefs.mediaUri, play);
+                        switched = Utils.switchFrameRate(PlayerActivity.this, mPrefs.mediaUri);
                     }
                     if (!switched) {
                         if (displayManager != null) {
@@ -6011,7 +6043,9 @@ public class PlayerActivity extends Activity {
         }
         player.setMediaItems(items, index, position);
         player.prepare();
-        player.play();
+        if (alive) {
+            player.play();
+        }
         return true;
     }
 

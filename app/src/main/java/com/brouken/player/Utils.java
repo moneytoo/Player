@@ -593,7 +593,7 @@ class Utils {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.M)
-    static void handleFrameRate(final PlayerActivity activity, float frameRate, boolean play) {
+    static void handleFrameRate(final PlayerActivity activity, float frameRate) {
         activity.runOnUiThread(() -> {
             boolean switchingModes = false;
 
@@ -653,13 +653,15 @@ class Utils {
             }
 
             if (!switchingModes) {
-                playIfCan(activity, play);
+                playIfCan(activity);
             }
         });
     }
 
-    static void playIfCan(final PlayerActivity activity, boolean play) {
-        if (play) {
+    // Reads activity.play now rather than a value captured before the frame-rate probe ran: that probe takes
+    // seconds on a network file, and the user may have left in the meantime (onStop clears it).
+    static void playIfCan(final PlayerActivity activity) {
+        if (activity.play) {
             if (PlayerActivity.player != null)
                 PlayerActivity.player.play();
             if (activity.playerView != null)
@@ -922,7 +924,7 @@ class Utils {
         return frameRate;
     }
 
-    public static boolean switchFrameRate(final PlayerActivity activity, final Uri uri, final boolean play) {
+    public static boolean switchFrameRate(final PlayerActivity activity, final Uri uri) {
         // preferredDisplayModeId only available on SDK 23+
         // ExoPlayer already uses Surface.setFrameRate() on Android 11+
         if (Build.VERSION.SDK_INT >= 23) {
@@ -931,7 +933,7 @@ class Utils {
             }
             activity.frameRateSwitchThread = new Thread(() -> {
                 float frameRate = getFrameRate(activity, uri);
-                Utils.handleFrameRate(activity, frameRate, play);
+                Utils.handleFrameRate(activity, frameRate);
             });
             activity.frameRateSwitchThread.start();
             return true;
