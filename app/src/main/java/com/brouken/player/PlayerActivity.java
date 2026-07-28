@@ -1894,6 +1894,21 @@ public class PlayerActivity extends Activity {
                         return true;
                 }
                 break;
+            case KeyEvent.KEYCODE_DPAD_UP:
+                if (controllerVisibleFully) {
+                    // Up from the topmost row dismisses the controls instead of waiting out the timeout.
+                    // Anywhere else it stays plain focus navigation: consuming the key here would suppress
+                    // the focus search this mirrors, because onKeyDown runs before it.
+                    final View focusedUp = getCurrentFocus();
+                    if (!haveMedia || (focusedUp != null && focusedUp.focusSearch(View.FOCUS_UP) != null))
+                        break;
+                    // Repeats are swallowed below: a held key would re-show what the first press dismissed.
+                    if (event.getRepeatCount() == 0)
+                        playerView.hideController();
+                } else if (event.getRepeatCount() == 0) {
+                    playerView.showController();
+                }
+                return true;
             case KeyEvent.KEYCODE_BACK:
                 if (isTvBox) {
                     if (controllerVisible && player != null && player.isPlaying()) {
