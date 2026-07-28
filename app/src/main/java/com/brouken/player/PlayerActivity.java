@@ -46,6 +46,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
+import android.os.SystemClock;
 import android.provider.DocumentsContract;
 import android.provider.Settings;
 import android.text.InputType;
@@ -415,6 +416,15 @@ public class PlayerActivity extends Activity {
     private boolean isScrubbing;
     private boolean scrubbingNoticeable;
     private long scrubbingStart;
+    // Key seek (D-pad arrows, ◀◀/▶▶) accelerates: the longer the key is held — or the faster it is
+    // clicked — the bigger the step, and the seek itself happens once, after the presses stop. A fixed
+    // 10s per press cannot get through a feature-length film, and one seekTo per press is one
+    // re-buffering per press: on a network stream a burst of clicks means seconds of black screen
+    // instead of a single jump.
+    private long keyScrubTarget = -1;   // -1 = no scrub in progress
+    private int keyScrubSteps;          // presses in a row (drives the step size)
+    private long keyScrubLastMs;
+    private final Runnable keyScrubCommit = this::commitKeyScrub;
     // A passthrough AudioTrack that has been paused and resumed comes back silent on a fair number of TVs
     // and receivers: the bitstream still leaves the box but nothing downstream re-locks onto it. Video keeps
     // playing and the position keeps advancing, so nothing in Media3 (nor recoverByRevokingAudioMime) ever
@@ -1872,43 +1882,16 @@ public class PlayerActivity extends Activity {
             case KeyEvent.KEYCODE_BUTTON_L2:
             case KeyEvent.KEYCODE_MEDIA_REWIND:
                 if (!controllerVisibleFully || keyCode == KeyEvent.KEYCODE_MEDIA_REWIND) {
-                    if (player == null)
-                        break;
-                    playerView.removeCallbacks(playerView.textClearRunnable);
-                    long pos = player.getCurrentPosition();
-                    if (playerView.keySeekStart == -1) {
-                        playerView.keySeekStart = pos;
-                    }
-                    long seekTo = pos - 10_000;
-                    if (seekTo < 0)
-                        seekTo = 0;
-                    player.setSeekParameters(SeekParameters.PREVIOUS_SYNC);
-                    player.seekTo(seekTo);
-                    final String message = Utils.formatMilisSign(seekTo - playerView.keySeekStart) + "\n" + Utils.formatMilis(seekTo);
-                    playerView.setCustomErrorMessage(message);
-                    return true;
+                    if (seekWithKey(false, event.getRepeatCount() > 0))
+                        return true;
                 }
                 break;
             case KeyEvent.KEYCODE_DPAD_RIGHT:
             case KeyEvent.KEYCODE_BUTTON_R2:
             case KeyEvent.KEYCODE_MEDIA_FAST_FORWARD:
                 if (!controllerVisibleFully || keyCode == KeyEvent.KEYCODE_MEDIA_FAST_FORWARD) {
-                    if (player == null)
-                        break;
-                    playerView.removeCallbacks(playerView.textClearRunnable);
-                    long pos = player.getCurrentPosition();
-                    if (playerView.keySeekStart == -1) {
-                        playerView.keySeekStart = pos;
-                    }
-                    long seekTo = pos + 10_000;
-                    long seekMax = player.getDuration();
-                    if (seekMax != C.TIME_UNSET && seekTo > seekMax)
-                        seekTo = seekMax;
-                    PlayerActivity.player.setSeekParameters(SeekParameters.NEXT_SYNC);
-                    player.seekTo(seekTo);
-                    final String message = Utils.formatMilisSign(seekTo - playerView.keySeekStart) + "\n" + Utils.formatMilis(seekTo);
-                    playerView.setCustomErrorMessage(message);
-                    return true;
+                    if (seekWithKey(true, event.getRepeatCount() > 0))
+                        return true;
                 }
                 break;
             case KeyEvent.KEYCODE_BACK:
@@ -1949,9 +1932,74 @@ public class PlayerActivity extends Activity {
                 if (!isScrubbing) {
                     playerView.postDelayed(playerView.textClearRunnable, 1000);
                 }
+                if (keyScrubTarget >= 0) {
+                    // Wait longer than the acceleration window, so a burst of clicks coalesces into one
+                    // seek instead of one seek (and one re-buffering) per click.
+                    playerView.removeCallbacks(keyScrubCommit);
+                    playerView.postDelayed(keyScrubCommit, 520);
+                }
                 break;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    private boolean seekWithKey(boolean forward, boolean held) {
+        if (player == null)
+            return false;
+        playerView.removeCallbacks(playerView.textClearRunnable);
+        final long pos = player.getCurrentPosition();
+        if (playerView.keySeekStart == -1) {
+            playerView.keySeekStart = pos;
+        }
+        final long duration = player.getDuration();
+        if (duration <= 0) {
+            // Live, unseekable, or a duration not known yet (C.TIME_UNSET): nothing to clamp the target
+            // against — clamping to a zero duration would throw every press to the start of the file, so
+            // keep the plain 10s step per press.
+            final long seekTo = Math.max(0, pos + (forward ? 10_000 : -10_000));
+            player.setSeekParameters(forward ? SeekParameters.NEXT_SYNC : SeekParameters.PREVIOUS_SYNC);
+            player.seekTo(seekTo);
+            showKeySeekMessage(seekTo);
+            return true;
+        }
+        final long now = SystemClock.uptimeMillis();
+        keyScrubSteps = held || now - keyScrubLastMs < 450 ? keyScrubSteps + 1 : 0;
+        keyScrubLastMs = now;
+        final long from = keyScrubTarget >= 0 ? keyScrubTarget : pos;
+        final long step = keyScrubStep(duration);
+        keyScrubTarget = Math.max(0, Math.min(duration, from + (forward ? step : -step)));
+        showKeySeekMessage(keyScrubTarget);
+        // While the key is held down the target keeps flying; don't seek until it settles.
+        playerView.removeCallbacks(keyScrubCommit);
+        playerView.postDelayed(keyScrubCommit, 700);
+        return true;
+    }
+
+    /** 10s → 30s → 1m → 2% of the duration (≈2.5 min per press in a 2-hour film). */
+    private long keyScrubStep(long duration) {
+        if (keyScrubSteps < 1)
+            return 10_000;
+        if (keyScrubSteps < 5)
+            return 30_000;
+        if (keyScrubSteps < 12)
+            return 60_000;
+        return Math.max(120_000, duration / 50);
+    }
+
+    private void showKeySeekMessage(long target) {
+        playerView.setCustomErrorMessage(Utils.formatMilisSign(target - playerView.keySeekStart)
+                + "\n" + Utils.formatMilis(target));
+    }
+
+    private void commitKeyScrub() {
+        final long target = keyScrubTarget;
+        keyScrubTarget = -1;
+        keyScrubSteps = 0;
+        if (target < 0 || player == null)
+            return;
+        player.setSeekParameters(target >= player.getCurrentPosition()
+                ? SeekParameters.NEXT_SYNC : SeekParameters.PREVIOUS_SYNC);
+        player.seekTo(target);
     }
 
     @Override
@@ -5329,7 +5377,12 @@ public class PlayerActivity extends Activity {
             playerView.removeCallbacks(resumeWatchdogRunnable);
             playerView.removeCallbacks(passthroughRestartRunnable);
             playerView.removeCallbacks(showLoadingRunnable);
+            // A pending key-seek target belongs to the session being torn down; left armed it would land
+            // on whatever plays next.
+            playerView.removeCallbacks(keyScrubCommit);
         }
+        keyScrubTarget = -1;
+        keyScrubSteps = 0;
         stopLoadingSpeed();
         // An error deferred until the controller is fully visible belongs to the playback session being
         // torn down here. Kept around, it would surface over whatever plays next — an error screen for a
