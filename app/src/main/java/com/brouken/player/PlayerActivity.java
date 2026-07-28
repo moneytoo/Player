@@ -5804,7 +5804,8 @@ public class PlayerActivity extends Activity {
                     && recoverByRevokingAudioMime(audioTrackInitFailureMime(error))) {
                 return;
             }
-            if (isDecoderFailure(error) && recoverFromDecoderFailure()) {
+            if ((isDecoderFailure(error) || isUnexpectedPlaybackError(error))
+                    && recoverFromDecoderFailure()) {
                 return;
             }
             // The remembered clip can no longer be opened: a foreign app's one-off URI grant has
@@ -6085,6 +6086,19 @@ public class PlayerActivity extends Activity {
             default:
                 return false;
         }
+    }
+
+    // A RuntimeException that escaped on Media3's playback thread, reported as "Unexpected runtime
+    // error". Always an internal player bug rather than anything wrong with the media: the one seen in
+    // the field is the renderer losing the queued entry for its output format when a track reselection
+    // seeks before the first frame has been drained, so the next output buffer finds no format at all
+    // (https://github.com/androidx/media/issues/2965 — the same hole is still open in MediaCodecRenderer).
+    // Nothing about the item, the position or the selection is at fault, so it gets the same bounded
+    // re-prepare as a decoder race instead of ending playback; matched on the exception type, not on
+    // ERROR_CODE_UNSPECIFIED, which is the catch-all code for far more than this.
+    private static boolean isUnexpectedPlaybackError(PlaybackException error) {
+        return error instanceof ExoPlaybackException
+                && ((ExoPlaybackException) error).type == ExoPlaybackException.TYPE_UNEXPECTED;
     }
 
     private boolean recoverFromDecoderFailure() {

@@ -121,7 +121,12 @@ class SubtitleFetcher {
                         if (mediaItem != null) {
                             MediaItem.SubtitleConfiguration subtitle = SubtitleUtils.buildSubtitle(activity, convertedSubtitleUri, null, true);
                             mediaItem = mediaItem.buildUpon().setSubtitleConfigurations(Collections.singletonList(subtitle)).build();
-                            PlayerActivity.player.setMediaItem(mediaItem, false);
+                            // Replace only the item the subtitle belongs to. setMediaItem would swap the
+                            // whole playlist for this single item, so an episode list opened from a
+                            // launcher lost the other episodes — and with them the next/prev arrows and
+                            // their remembered positions — the moment a sidecar subtitle turned up.
+                            PlayerActivity.player.replaceMediaItem(
+                                    PlayerActivity.player.getCurrentMediaItemIndex(), mediaItem);
                             if (BuildConfig.DEBUG) {
                                 Toast.makeText(activity, "Subtitle found", Toast.LENGTH_SHORT).show();
                             }
