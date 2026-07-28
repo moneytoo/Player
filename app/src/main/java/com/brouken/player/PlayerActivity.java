@@ -226,6 +226,11 @@ public class PlayerActivity extends Activity {
     // (stuck buffering, a broken next-episode URL, etc.) a friendly LOAD_TIMEOUT message is shown.
     // Such stalls often produce no PlaybackException, so onPlayerError alone would never catch them.
     private static final long VIDEO_LOAD_TIMEOUT_MS = 30_000L;
+    // Buffering that resolves this fast is not worth an indicator: the spinner would replace the play button
+    // for a frame or two and read as a glitch. Recreating the audio track (restartPassthroughAudio) takes
+    // about 35 ms, a track switch or a seek inside the buffer are the same order, and a real wait is always
+    // longer than this. Explicit updateLoading() calls (opening a clip, switching source) are unaffected.
+    private static final long LOADING_INDICATOR_DELAY_MS = 250L;
     // Heavy MKV audio codecs whose platform MediaCodec decoder can wedge on init on some TV boxes
     // (JPP-1005). On TV+MKV these are hidden from the platform decoder via a MediaCodecSelector, so
     // MediaCodecAudioRenderer either bitstreams to a receiver that advertises passthrough (Atmos kept)
@@ -237,6 +242,11 @@ public class PlayerActivity extends Activity {
             MimeTypes.AUDIO_DTS, MimeTypes.AUDIO_DTS_HD, MimeTypes.AUDIO_DTS_EXPRESS,
             MimeTypes.AUDIO_TRUEHD);
     private final Runnable loadTimeoutRunnable = this::reportVideoLoadTimeout;
+    // Deferred by LOADING_INDICATOR_DELAY_MS from STATE_BUFFERING; cancelled by any explicit updateLoading().
+    private final Runnable showLoadingRunnable = () -> {
+        updateLoading(true);
+        setEpisodeNavLoading(true);
+    };
     // One-shot recovery for a mid-playback stall (Media3 StuckPlayerDetector → ERROR_CODE_TIMEOUT),
     // typically the device's Dolby Vision decoder wedging on a stream: re-decode the DV track as plain
     // HEVC (HDR10). forceHevcForDolbyVision drives the codec selector at the next player build;
@@ -405,6 +415,25 @@ public class PlayerActivity extends Activity {
     private boolean isScrubbing;
     private boolean scrubbingNoticeable;
     private long scrubbingStart;
+    // A passthrough AudioTrack that has been paused and resumed comes back silent on a fair number of TVs
+    // and receivers: the bitstream still leaves the box but nothing downstream re-locks onto it. Video keeps
+    // playing and the position keeps advancing, so nothing in Media3 (nor recoverByRevokingAudioMime) ever
+    // sees a failure — the user just loses the sound, and only a seek brings it back. What the seek actually
+    // cures is a single thing: it releases the AudioOutput and the next buffer opens a fresh AudioTrack,
+    // which the resume then starts — that start is what makes a receiver re-lock. Everything else a seek
+    // does is collateral, and expensive: it repositions the source, and with no back buffer configured the
+    // sample queues hold no keyframe at the target, so the whole look-ahead is thrown away and re-read.
+    // Recreating the track needs none of that, so ask for exactly it — disable the audio track type, then
+    // put it back. That path (reselectTracksInternal → MediaPeriodHolder.applyTrackSelection →
+    // ProgressiveMediaPeriod.selectTracks) retains the video stream untouched, and the re-enable re-reads
+    // the audio from the sample queue that is still in memory (selectTracks seeks inside the queue and only
+    // falls back to the source if that fails), so nothing is lost and nothing re-loads. It is the same
+    // machinery as the app's own audio-track menu. Restoring has to wait for onTracksChanged, because a
+    // reselect reads the selector's current parameters and skips equivalent results: two calls made back to
+    // back can both land after the restore and cancel each other out. Armed with post() rather than inline
+    // from the listener, which is dispatched inside player.pause() — there isScrubbing is not set yet.
+    private boolean audioRestartInFlight;
+    private final Runnable passthroughRestartRunnable = this::restartPassthroughAudio;
     public boolean frameRendered;
     private boolean alive;
     public static boolean focusPlay = false;
@@ -4609,10 +4638,27 @@ public class PlayerActivity extends Activity {
     // seekToCurrentPosition() with no playing period and throws (JPP-15). The caller re-prepares instead.
     private static final class AudioPassthroughDenylistSink extends ForwardingAudioSink {
         private final Set<String> deniedMimes;
+        // True while the sink bitstreams a compressed format: the renderer configures us with a non-PCM
+        // format only when it runs in bypass (passthrough), never when a decoder feeds us. Read on the app
+        // thread by restartPassthroughAudio(), written here on the playback thread. Deliberately
+        // conservative rather than exact: configure() is the only writer, so disabling the audio renderer
+        // leaves the flag set from the last bitstream, and DefaultAudioSink may still be holding the new
+        // config in pendingConfiguration when we read it. Both only ever cost one needless seek.
+        private volatile boolean passthrough;
 
         AudioPassthroughDenylistSink(AudioSink sink, Set<String> initiallyDenied) {
             super(sink);
             this.deniedMimes = new CopyOnWriteArraySet<>(initiallyDenied);
+        }
+
+        @Override
+        public void configure(AudioSink.AudioSinkConfig config) throws AudioSink.ConfigurationException {
+            passthrough = !MimeTypes.AUDIO_RAW.equals(config.format.sampleMimeType);
+            super.configure(config);
+        }
+
+        boolean isPassthrough() {
+            return passthrough;
         }
 
         @Override
@@ -4654,6 +4700,8 @@ public class PlayerActivity extends Activity {
         // Fresh player — the source re-read budget starts over.
         sourceRetries = 0;
         decoderRetries = 0;
+        // A restart that never got its onTracksChanged belongs to the player being replaced here.
+        audioRestartInFlight = false;
 
         // Fresh media — drop any container track names so the tap re-parses for this item.
         containerTracks.clear();
@@ -5279,6 +5327,8 @@ public class PlayerActivity extends Activity {
             playerView.removeCallbacks(decoderRetryRunnable);
             playerView.removeCallbacks(backgroundReleaseRunnable);
             playerView.removeCallbacks(resumeWatchdogRunnable);
+            playerView.removeCallbacks(passthroughRestartRunnable);
+            playerView.removeCallbacks(showLoadingRunnable);
         }
         stopLoadingSpeed();
         // An error deferred until the controller is fully visible belongs to the playback session being
@@ -5460,6 +5510,19 @@ public class PlayerActivity extends Activity {
 
         @Override
         public void onTracksChanged(Tracks tracks) {
+            // Second half of restartPassthroughAudio(): the disable has provably reached the playback thread,
+            // so put the audio track type back — rebuilt from the current parameters, not from a snapshot, so
+            // a track choice made in between is not clobbered. Returns early: this intermediate selection has
+            // no audio and is replaced within the same pass, and refreshing the UI for it would only make the
+            // audio button flicker.
+            if (audioRestartInFlight) {
+                audioRestartInFlight = false;
+                if (player != null) {
+                    player.setTrackSelectionParameters(player.getTrackSelectionParameters().buildUpon()
+                            .setTrackTypeDisabled(C.TRACK_TYPE_AUDIO, false).build());
+                }
+                return;
+            }
             // Tracks are now known — (re)map any container names onto them, then refresh the header.
             resolveTrackNames();
             updateMediaInfo();
@@ -5474,6 +5537,23 @@ public class PlayerActivity extends Activity {
             if (playerView != null) {
                 playerView.post(PlayerActivity.this::applyStickyQuality);
             }
+        }
+
+        // Only a pause the user asked for. AUDIO_BECOMING_NOISY means the HDMI or headphone output has just
+        // gone away, so re-opening a direct track for it is the last thing to do; AUDIO_FOCUS_LOSS and
+        // SUPPRESSED_TOO_LONG mean another app holds the output. Nothing wanted is lost by the filter: the
+        // play/pause button, the remote keys, the PiP actions and a media session all report USER_REQUEST or
+        // REMOTE. A transient focus loss (a notification chime on TV) does not change playWhenReady at all
+        // and so is not covered here — nor is a rebuffer's own stopRenderers().
+        @Override
+        public void onPlayWhenReadyChanged(boolean playWhenReady, int reason) {
+            playerView.removeCallbacks(passthroughRestartRunnable);
+            if (playWhenReady
+                    || (reason != Player.PLAY_WHEN_READY_CHANGE_REASON_USER_REQUEST
+                        && reason != Player.PLAY_WHEN_READY_CHANGE_REASON_REMOTE)) {
+                return;
+            }
+            playerView.post(passthroughRestartRunnable);
         }
 
         @Override
@@ -5638,9 +5718,9 @@ public class PlayerActivity extends Activity {
                     restoreVideoQuality();
                 }
             } else if (state == Player.STATE_BUFFERING) {
-                // Buffering (e.g. switching episodes) — show the spinner in place of play and disable the arrows.
-                updateLoading(true);
-                setEpisodeNavLoading(true);
+                // Buffering (e.g. switching episodes) — show the spinner in place of play and disable the
+                // arrows, but only once the wait is worth showing (see LOADING_INDICATOR_DELAY_MS).
+                playerView.postDelayed(showLoadingRunnable, LOADING_INDICATOR_DELAY_MS);
                 // (Re)arm the watchdog: if this buffering never resolves to STATE_READY, it is a stuck load.
                 playerView.removeCallbacks(loadTimeoutRunnable);
                 playerView.postDelayed(loadTimeoutRunnable, VIDEO_LOAD_TIMEOUT_MS);
@@ -5957,6 +6037,24 @@ public class PlayerActivity extends Activity {
             player.prepare();
         }
         return true;
+    }
+
+    // Recreates the AudioTrack behind a paused bitstream (see audioRestartInFlight). Runs one message after
+    // the pause was dispatched, so the guards are real: the player may already be gone, and the user may
+    // have gone on to scrub, in which case their own seek recreates the track anyway. STATE_READY keeps us
+    // out of a rebuffer that is already under way; alive drops the onStop pause, where savePlayer() has run
+    // and the work would be spent on a session that is going away. Nothing here seeks, so seekability and
+    // liveness do not matter — and with no audio track selected there is nothing to recreate.
+    private void restartPassthroughAudio() {
+        if (!alive || player == null || isScrubbing || audioRestartInFlight
+                || audioSink == null || !audioSink.isPassthrough() || mPrefs.tunneling
+                || player.getPlaybackState() != Player.STATE_READY
+                || !player.getCurrentTracks().isTypeSelected(C.TRACK_TYPE_AUDIO)) {
+            return;
+        }
+        audioRestartInFlight = true;
+        player.setTrackSelectionParameters(player.getTrackSelectionParameters().buildUpon()
+                .setTrackTypeDisabled(C.TRACK_TYPE_AUDIO, true).build());
     }
 
     // AudioSink.InitializationException.format is a public field in this build — no reflection needed.
@@ -6706,6 +6804,11 @@ public class PlayerActivity extends Activity {
     }
 
     private void updateLoading(final boolean enableLoading) {
+        // Whatever decided the indicator's state now outranks a deferred STATE_BUFFERING show — including the
+        // show itself, which posts this call and must not leave its own trigger armed.
+        if (playerView != null) {
+            playerView.removeCallbacks(showLoadingRunnable);
+        }
         if (enableLoading) {
             // INVISIBLE (not GONE): keep the 90dp slot so the row doesn't resize while the spinner shows over it.
             exoPlayPause.setVisibility(View.INVISIBLE);
