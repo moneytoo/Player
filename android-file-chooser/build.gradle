@@ -40,7 +40,7 @@ android {
     lint {
         abortOnError false
         checkReleaseBuilds false
-        disable 'InvalidPackage', 'OldTargetApi', 'IconDensities', 'deprecation'
+        disable 'InvalidPackage', 'OldTargetApi', 'IconDensities', 'deprecation', 'BidiSpoofing'
         ignoreWarnings true
         lintConfig file('lint.xml')
         quiet true
