@@ -2,41 +2,34 @@ name: Android Build APK
 
 on:
   push:
+    branches: [ main, master ]
     tags:
       - 'v0.*'
+  workflow_dispatch: # لتشغيل البناء يدوياً من تبويب Actions في أي وقت
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-java@v4
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: 17
+          java-version: '17'
           cache: gradle
 
-      - run: echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 --decode > ${GITHUB_WORKSPACE}/keystore.jks
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
 
-      - run: ./gradlew assembleRelease bundleRelease
-          -Pandroid.injected.signing.store.file=${GITHUB_WORKSPACE}/keystore.jks
-          -Pandroid.injected.signing.store.password=${{ secrets.KEYSTORE_PASSWORD }}
-          -Pandroid.injected.signing.key.alias=key
-          -Pandroid.injected.signing.key.password=${{ secrets.KEYSTORE_PASSWORD }}
+      - name: Build APK (Unsigned / Release)
+        run: ./gradlew assembleLatestUniversalRelease
 
-      - uses: softprops/action-gh-release@v2
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
         with:
-          files: |
-            app/build/outputs/apk/latestUniversal/release/*.apk
-            app/build/outputs/apk/legacyUniversal/release/*.apk
-          prerelease: true
-          draft: true
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: release
-          path: |
-            app/build/outputs/apk/*/release/*.apk
-            app/build/outputs/bundle/*/*.aab
+          name: Jaziri-Player-APK
+          path: app/build/outputs/apk/latestUniversal/release/*.apk
