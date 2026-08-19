@@ -5,7 +5,7 @@ on:
     branches: [ main, master ]
     tags:
       - 'v0.*'
-  workflow_dispatch: # لتشغيل البناء يدوياً من تبويب Actions في أي وقت
+  workflow_dispatch:
 
 jobs:
   build:
@@ -25,10 +25,15 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
-      - name: Build APK (Unsigned / Release)
+      - name: Build APK (Unsigned Release)
         run: ./gradlew assembleLatestUniversalRelease
 
-      - name: Upload APK Artifact
+      - name: Sign APK with uber-apk-signer
+        run: |
+          wget https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar
+          java -jar uber-apk-signer-1.3.0.jar --apks app/build/outputs/apk/latestUniversal/release/*.apk --overwrite
+
+      - name: Upload Signed APK Artifact
         uses: actions/upload-artifact@v4
         with:
           name: Jaziri-Player-APK
