@@ -3,14 +3,14 @@ plugins {
 }
 
 android {
-    // تم التعديل إلى com.jaziri.player
-    namespace 'com.jaziri.player'
+    // namespace لازم يطابق الباكاج المستعمل فعليًا فـ ملفات الجافا (com.brouken.player)
+    namespace 'com.brouken.player'
     compileSdk = 36
     ndkVersion '29.0.14206865'
 
     defaultConfig {
         def abiFilter = project.findProperty("abiFilter")
-        // تم التعديل إلى com.jaziri.player
+        // applicationId يقدر يبقى مختلف عن الـ namespace - هوة هوية التطبيق فـ Play Store/الجهاز
         applicationId "com.jaziri.player"
         minSdkVersion 23
         targetSdkVersion 36
