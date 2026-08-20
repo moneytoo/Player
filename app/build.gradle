@@ -3,13 +3,15 @@ plugins {
 }
 
 android {
-    namespace 'com.brouken.player'
+    // تم التعديل إلى com.jaziri.player
+    namespace 'com.jaziri.player'
     compileSdk = 36
     ndkVersion '29.0.14206865'
 
     defaultConfig {
         def abiFilter = project.findProperty("abiFilter")
-        applicationId "com.brouken.player"
+        // تم التعديل إلى com.jaziri.player
+        applicationId "com.jaziri.player"
         minSdkVersion 23
         targetSdkVersion 36
         versionCode 216
@@ -23,7 +25,8 @@ android {
         }
     }
     base {
-        archivesName = "Just.Player.v${defaultConfig.versionName}"
+        // تم تغيير اسم الملف إلى Jaziri.Player
+        archivesName = "Jaziri.Player.v${defaultConfig.versionName}"
     }
     buildTypes {
         release {
