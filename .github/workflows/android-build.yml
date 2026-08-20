@@ -26,8 +26,13 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y imagemagick
           find app/src/main/res -iname "ic_launcher*.png" -print -exec mogrify -strip {} \;
+      - name: Show Java version being used by Gradle
+        run: |
+          echo "JAVA_HOME=$JAVA_HOME"
+          java -version
+          ./gradlew -version
       - name: Build APK (Unsigned Release)
-        run: ./gradlew assembleLatestUniversalRelease
+        run: ./gradlew assembleLatestUniversalRelease --no-daemon -Dorg.gradle.java.home="$JAVA_HOME"
       - name: Sign APK with uber-apk-signer
         run: |
           wget https://github.com/patrickfav/uber-apk-signer/releases/download/v1.3.0/uber-apk-signer-1.3.0.jar
