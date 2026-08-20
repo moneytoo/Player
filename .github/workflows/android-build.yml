@@ -21,6 +21,11 @@ jobs:
           cache: gradle
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+      - name: Sanitize launcher icon PNGs
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y imagemagick
+          find app/src/main/res -iname "ic_launcher*.png" -print -exec mogrify -strip {} \;
       - name: Build APK (Unsigned Release)
         run: ./gradlew assembleLatestUniversalRelease
       - name: Sign APK with uber-apk-signer
