@@ -71,6 +71,8 @@ import java.util.Map;
 
 class Utils {
 
+    public static final String TAG = "JustPlayer";
+
     public static final String FEATURE_FIRE_TV = "amazon.hardware.fire_tv";
 
     public static final String[] supportedExtensionsVideo = new String[] { "3gp", "m4v", "mkv", "mov", "mp4", "ts", "webm" };
@@ -155,7 +157,7 @@ class Utils {
         }
     }
 
-    public static String getFileName(Context context, Uri uri) {
+    public static String getFileName(Context context, Uri uri, boolean keepExtension) {
         String result = null;
         try {
             if (ContentResolver.SCHEME_CONTENT.equals(uri.getScheme())) {
@@ -174,10 +176,11 @@ class Utils {
                     result = result.substring(cut + 1);
                 }
             }
-            if (result.indexOf(".") > 0)
-                result = result.substring(0, result.lastIndexOf("."));
+            if (!keepExtension) {
+                if (result.indexOf(".") > 0) result = result.substring(0, result.lastIndexOf("."));
+            }
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.w(TAG, e);
         }
         return result;
     }
