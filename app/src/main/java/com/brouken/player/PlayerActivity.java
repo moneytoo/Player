@@ -1295,16 +1295,10 @@ public class PlayerActivity extends Activity {
             MediaItem.Builder mediaItemBuilder = new MediaItem.Builder()
                     .setUri(mPrefs.mediaUri)
                     .setMimeType(mPrefs.mediaType);
-            String title;
             if (apiTitle != null) {
-                title = apiTitle;
-            } else {
-                title = Utils.getFileName(PlayerActivity.this, mPrefs.mediaUri);
-            }
-            if (title != null) {
                 final MediaMetadata mediaMetadata = new MediaMetadata.Builder()
-                        .setTitle(title)
-                        .setDisplayTitle(title)
+                        .setTitle(apiTitle)
+                        .setDisplayTitle(apiTitle)
                         .build();
                 mediaItemBuilder.setMediaMetadata(mediaMetadata);
             }
@@ -1426,6 +1420,15 @@ public class PlayerActivity extends Activity {
     }
 
     private class PlayerListener implements Player.Listener {
+        @Override
+        public void onMediaMetadataChanged(MediaMetadata mediaMetadata) {
+            if (mediaMetadata.title != null && mediaMetadata.title.length() > 0) {
+                titleView.setText(mediaMetadata.title);
+            } else if (apiTitle == null) {
+                titleView.setText(Utils.getFileName(PlayerActivity.this, mPrefs.mediaUri));
+            }
+        }
+
         @Override
         public void onAudioSessionIdChanged(int audioSessionId) {
             try {
