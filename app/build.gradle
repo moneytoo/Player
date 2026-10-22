@@ -10,9 +10,9 @@ android {
     defaultConfig {
         def abiFilter = project.findProperty("abiFilter")
         applicationId "com.brouken.player"
-        minSdkVersion 23
+        minSdkVersion 24
         targetSdkVersion 36
-        versionCode 218
+        versionCode 219
         versionName "0.${versionCode}"
         if (abiFilter) {
             def abiCodeMap = ["x86": 1, "x86_64": 2, "armeabi-v7a": 3, "arm64-v8a": 4]
@@ -87,7 +87,7 @@ android {
 
 dependencies {
     implementation 'androidx.documentfile:documentfile:1.1.0'
-    def media3_version = '1.11.1'
+    def media3_version = '1.12.0-alpha01'
     def androidxCoreVersion = '1.9.0'
     implementation "androidx.media3:media3-session:$media3_version"
     implementation "androidx.media3:media3-datasource:$media3_version"

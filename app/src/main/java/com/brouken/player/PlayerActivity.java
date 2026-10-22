@@ -81,6 +81,7 @@ import androidx.media3.exoplayer.ExoPlaybackException;
 import androidx.media3.exoplayer.ExoPlayer;
 import androidx.media3.exoplayer.RenderersFactory;
 import androidx.media3.exoplayer.SeekParameters;
+import androidx.media3.exoplayer.mediacodec.MediaCodecUtil;
 import androidx.media3.exoplayer.source.DefaultMediaSourceFactory;
 import androidx.media3.exoplayer.trackselection.DefaultTrackSelector;
 import androidx.media3.extractor.DefaultExtractorsFactory;
@@ -1223,9 +1224,9 @@ public class PlayerActivity extends Activity {
         DefaultExtractorsFactory extractorsFactory = new DefaultExtractorsFactory()
                 .setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS)
                 .setTsExtractorTimestampSearchBytes(1500 * TsExtractor.TS_PACKET_SIZE);
+        MediaCodecUtil.setMapDV7ToHevc(mPrefs.mapDV7ToHevc);
         @SuppressLint("WrongConstant") RenderersFactory renderersFactory = new DefaultRenderersFactory(this)
-                .setExtensionRendererMode(mPrefs.decoderPriority)
-                .setMapDV7ToHevc(mPrefs.mapDV7ToHevc);
+                .setExtensionRendererMode(mPrefs.decoderPriority);
 
         ExoPlayer.Builder playerBuilder = new ExoPlayer.Builder(this, renderersFactory)
                 .setTrackSelector(trackSelector)
