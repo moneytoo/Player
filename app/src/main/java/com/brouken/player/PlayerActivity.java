@@ -56,6 +56,8 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -214,6 +216,8 @@ public class PlayerActivity extends Activity {
             Utils.toggleSystemUi(PlayerActivity.this, playerView, false);
         }
     };
+
+    final Object onBackInvokedCallback = createOnBackInvokedCallback();
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -685,6 +689,21 @@ public class PlayerActivity extends Activity {
                         errorToShow = null;
                     }
                 }
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && isTvBox) {
+                    if (visibility == View.VISIBLE) {
+                        if (player != null && player.isPlaying()) {
+                            //noinspection DataFlowIssue
+                            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                                    (OnBackInvokedCallback) onBackInvokedCallback
+                            );
+                        }
+                    } else {
+                        //noinspection DataFlowIssue
+                        getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback((OnBackInvokedCallback) onBackInvokedCallback);
+                    }
+                }
             }
         });
 
@@ -715,6 +734,18 @@ public class PlayerActivity extends Activity {
             if (useMediaStore()) {
                 Utils.scanMediaStorage(this);
             }
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_SYSTEM_NAVIGATION_OBSERVER,
+                    () -> restorePlayStateAllowed = false
+            );
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT,
+                    this::onBackPressed
+            );
         }
     }
 
@@ -824,7 +855,6 @@ public class PlayerActivity extends Activity {
         }
     }
 
-    @SuppressLint("GestureBackNavigation")
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         switch (keyCode) {
@@ -908,13 +938,18 @@ public class PlayerActivity extends Activity {
                     return true;
                 }
                 break;
+            //noinspection "GestureBackNavigation"
             case KeyEvent.KEYCODE_BACK:
-                if (isTvBox) {
-                    if (controllerVisible && player != null && player.isPlaying()) {
-                        playerView.hideController();
-                        return true;
-                    } else {
-                        onBackPressed();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    return super.onKeyDown(keyCode, event);
+                } else {
+                    if (isTvBox) {
+                        if (controllerVisible && player != null && player.isPlaying()) {
+                            playerView.hideController();
+                            return true;
+                        } else {
+                            onBackPressed();
+                        }
                     }
                 }
                 break;
@@ -2318,6 +2353,14 @@ public class PlayerActivity extends Activity {
             } else {
                 buttonRotation.setImageResource(R.drawable.ic_screen_landscape_24dp);
             }
+        }
+    }
+
+    private Object createOnBackInvokedCallback() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return (OnBackInvokedCallback) () -> playerView.hideController();
+        } else {
+            return null;
         }
     }
 }
